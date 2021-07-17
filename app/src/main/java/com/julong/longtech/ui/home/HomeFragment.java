@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
         dbhelper = new DatabaseHelper(getContext());
 
         tvnamauser = root.findViewById(R.id.tvNamaUser);
-        tvSystemNameFragmentHome = root.findViewById(R.id.systemNameFragmentHome);
+        //tvSystemNameFragmentHome = root.findViewById(R.id.systemNameFragmentHome);
         clBgMainActivity = root.findViewById(R.id.clBgMainActivity);
         tvjabatanuser = root.findViewById(R.id.tvJabatanUser);
         bubbleTabBar = root.findViewById(R.id.bubbleTabBar);
