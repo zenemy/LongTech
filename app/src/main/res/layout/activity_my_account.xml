@@ -32,9 +32,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="-40dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:layout_weight="1"
         android:background="@drawable/tombol"
         android:backgroundTint="@color/white"
@@ -52,8 +52,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:background="#EFECEC"
-                android:scaleType="fitXY"
                 android:onClick="ChangeProfilePicture"
+                android:scaleType="fitXY"
                 android:src="@drawable/user"
                 app:shapeAppearanceOverlay="@style/roundedCornersImageView" />
 
@@ -65,7 +65,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
-                android:text="AWAL MAULANA MARYADI"
+                android:text="NAMA"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -182,7 +182,7 @@
                     android:text="Jabatan"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvJabatanMyAccount"
@@ -316,7 +316,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:layout_margin="4dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancelMyAccount"

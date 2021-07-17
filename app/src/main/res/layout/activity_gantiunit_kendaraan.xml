@@ -32,9 +32,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="-40dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="@color/white">
 
@@ -47,12 +47,12 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:hint="Tanggal"
                 app:endIconDrawable="@drawable/ic_baseline_calendar_24"
-                app:endIconMode="custom"
-                android:hint="Tanggal">
+                app:endIconMode="custom">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etTodayDateGantiUnit"
@@ -73,11 +73,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:endIconMode="dropdown_menu"
-                android:hint="Driver / Operator">
+                android:hint="Driver / Operator"
+                app:endIconMode="dropdown_menu">
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/acDriverGantiUnit"
@@ -95,11 +95,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:endIconMode="dropdown_menu"
-                android:hint="Kendaraan Kerja">
+                android:hint="Kendaraan Kerja"
+                app:endIconMode="dropdown_menu">
 
                 <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/acKendaraanKerjaGantiUnit"
@@ -120,9 +120,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:endIconMode="custom"
+                android:hint="Tanggal Pelaksanaan"
                 app:endIconDrawable="@drawable/ic_baseline_calendar_24"
-                android:hint="Tanggal Pelaksanaan">
+                app:endIconMode="custom">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPelaksanaanTglGantiUnit"
@@ -142,16 +142,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                app:endIconMode="clear_text"
-                android:hint="Deskripsi Catatan (Opsional)">
+                android:hint="Deskripsi Catatan (Opsional)"
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDescGantiUnit"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:gravity="top"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
-                    android:gravity="top"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
                     android:textColor="@color/black"
@@ -164,36 +164,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/btnBackGantiUnit"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginEnd="4dp"
+            android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
-            android:layout_weight="1"
             android:text="KEMBALI"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/btnSubmitGantiUnit"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
             android:text="SIMPAN"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 
 </LinearLayout>

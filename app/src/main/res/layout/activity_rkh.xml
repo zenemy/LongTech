@@ -36,7 +36,7 @@
         android:id="@+id/linearLayout10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/tombol"
@@ -74,20 +74,20 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:visibility="gone"
-            android:hint="Nomor Dokumen">
+            android:hint="Nomor Dokumen"
+            android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTglPenginputanRKH"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
+                android:editable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="none"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
-                android:editable="false"
-                android:focusableInTouchMode="false"
-                android:inputType="none"
                 android:text="RKH/190621/194201"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -107,12 +107,12 @@
                 android:id="@+id/etPelaksanaanTglRKH"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:focusableInTouchMode="false"
+                android:inputType="none"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
-                android:focusableInTouchMode="false"
-                android:inputType="none"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -124,8 +124,8 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            app:endIconMode="clear_text"
-            android:hint="Catatan Rencana Kerja Harian">
+            android:hint="Catatan Rencana Kerja Harian"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDescRKH"
@@ -144,7 +144,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
+        android:layout_margin="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout16"

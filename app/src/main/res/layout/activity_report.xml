@@ -32,9 +32,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="-40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="@color/white">
 
@@ -47,12 +47,12 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                app:endIconMode="dropdown_menu"
-                android:hint="Tipe Laporan">
+                android:layout_marginBottom="8dp"
+                android:hint="Tipe Laporan"
+                app:endIconMode="dropdown_menu">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:layout_width="match_parent"

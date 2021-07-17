@@ -34,9 +34,9 @@
         android:id="@+id/scrollView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="60dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="@color/white"
         android:paddingTop="8dp"
@@ -195,9 +195,9 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_gravity="center"
                     android:gravity="center"
-                    android:layout_gravity="center">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -268,16 +268,16 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                app:endIconMode="clear_text"
-                android:hint="Catatan Tambahan (Optional)">
+                android:hint="Catatan Tambahan (Optional)"
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
+                    android:gravity="top"
                     android:inputType="text"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
-                    android:gravity="top"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
                     android:textSize="14sp" />
@@ -289,9 +289,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -305,9 +305,9 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
             android:text="KEMBALI"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button"
@@ -317,8 +317,8 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
             android:text="SIMPAN"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

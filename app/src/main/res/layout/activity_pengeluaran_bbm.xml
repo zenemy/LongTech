@@ -34,9 +34,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="-40dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="@color/white"
         android:paddingTop="8dp">
@@ -71,8 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Kode Gudang BBM"
                 app:endIconMode="dropdown_menu">
 
@@ -92,8 +92,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Kode Kendaraan Alat Berat"
                 app:endIconMode="dropdown_menu">
 
@@ -113,8 +113,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Kode Material BBM"
                 app:endIconMode="dropdown_menu">
 
@@ -134,11 +134,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
-                app:endIconMode="custom"
+                android:layout_marginEnd="8dp"
+                android:hint="Jumlah Pengeluaran BBM"
                 app:endIconDrawable="@drawable/ic_baseline_gas_station_24"
-                android:hint="Jumlah Pengeluaran BBM">
+                app:endIconMode="custom">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -156,17 +156,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                app:endIconMode="clear_text"
-                android:hint="Catatan Deskripsi (Optional)">
+                android:hint="Catatan Deskripsi (Optional)"
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
-                    android:inputType="text"
                     android:gravity="top"
+                    android:inputType="text"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
@@ -180,24 +180,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal">
 
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/btnCancelPengeluaranBBM"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
             android:text="KEMBALI"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSimpanPengeluaranBBM"
@@ -208,9 +208,9 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
             android:text="SIMPAN"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 
 </LinearLayout>

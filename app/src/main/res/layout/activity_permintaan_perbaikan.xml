@@ -34,12 +34,12 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="-40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingTop="8dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/tombol"
-        android:backgroundTint="@color/white">
+        android:backgroundTint="@color/white"
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,8 +70,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="NIK Pimpinan Tujuan Divisi"
                 app:endIconMode="clear_text">
 
@@ -90,8 +90,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Tipe Pemeliharaan"
                 app:endIconMode="dropdown_menu">
 
@@ -110,8 +110,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Kode Workshop"
                 app:endIconMode="dropdown_menu">
 
@@ -130,8 +130,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Kode Kendaraan Alat Berat"
                 app:endIconMode="dropdown_menu">
 
@@ -150,8 +150,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Driver / Operator"
                 app:endIconMode="dropdown_menu">
 
@@ -170,8 +170,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:hint="Catatan Deskripsi (Optional)"
                 app:endIconMode="clear_text">
@@ -179,10 +179,10 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
+                    android:gravity="top"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:gravity="top"
                     android:paddingBottom="4dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -193,10 +193,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button"
@@ -206,9 +206,9 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
             android:text="KEMBALI"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button"
@@ -218,9 +218,9 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:cornerRadius="10dp"
             android:text="SIMPAN"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
