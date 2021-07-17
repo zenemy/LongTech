@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.julong.longtech">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT" />
+
+            <data android:mimeType="image/*" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Longtech.NoActionBar">
+        <activity android:name=".menuvehicle.AdjustmentUnit"></activity>
+        <activity android:name=".menusetup.RegistrasiKaryawan" />
+        <activity android:name=".menuvehicle.KartuKerjaVehicle" />
+        <activity android:name=".menusetup.AppSetting" />
+        <activity android:name=".menuhcm.AbsensiMandiri" />
+        <activity android:name=".ReportActivity" />
+        <activity android:name=".menusetup.MyAccount" />
+        <activity android:name=".menusetup.UpdateSystem" />
+        <activity android:name=".menusetup.UploadData" />
+        <activity android:name=".menusetup.DownloadData" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity android:name=".menuvehicle.InspeksiHasilKerja" />
+        <activity android:name=".menuvehicle.VerifikasiGIS" />
+        <activity android:name=".menuworkshop.SelesaiPerbaikanBA" />
+        <activity android:name=".menuworkshop.PerintahPerbaikan" />
+        <activity android:name=".menuworkshop.PermintaanPerbaikan" />
+        <activity android:name=".menuinventory.PengeluaranBBM" />
+        <activity android:name=".menuinventory.PermintaanBBM" />
+        <activity android:name=".menuvehicle.GantiUnitKendaraan" />
+        <activity android:name=".menuhcm.AbsensiBekerjaUnit" />
+        <activity android:name=".menuhcm.ApelPagi" />
+        <activity android:name=".menuhcm.MesinAbsensi" />
+        <activity android:name=".menuhcm.BiodataKaryawan" />
+        <activity android:name=".menuvehicle.PemeriksaanPengecekanHarian" />
+        <activity android:name=".menuvehicle.InputRincianRKH" />
+        <activity android:name=".menuvehicle.RencanaKerjaHarian" />
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/Theme.Longtech.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
