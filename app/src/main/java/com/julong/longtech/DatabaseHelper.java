@@ -829,7 +829,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor view_upload_tr01() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, comp_id, site_id, IFNULL(date1, '') AS date1, IFNULL(date2, '') AS date2, IFNULL(date2, '') AS date2, " +
+        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, comp_id, site_id, IFNULL(date1, '') AS date1, IFNULL(date2, '') AS date2, " +
                 "IFNULL(date3, '') AS date3, IFNULL(date4, '') AS date4, IFNULL(date5, '') AS date5, IFNULL(text1, '') AS text1, IFNULL(text2, '') AS text2, IFNULL(text3, '') AS text3, " +
                 "IFNULL(text4, '') AS text4, IFNULL(text5, '') AS text5, IFNULL(text6, '') AS text6, IFNULL(text7, '') AS text7, IFNULL(text8, '') AS text8, IFNULL(text9, '') AS text9, " +
                 "IFNULL(text10, '') AS text10, IFNULL(text11, '') AS text11, IFNULL(text12, '') AS text12, IFNULL(text13, '') AS text13, IFNULL(text14, '') AS text14, IFNULL(text15, '') AS text15, " +
@@ -841,7 +841,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor view_upload_tr02() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, itemdata, subitemdata, comp_id, site_id, IFNULL(date1, '') AS date1, IFNULL(date2, '') AS date2, IFNULL(date2, '') AS date2, IFNULL(date3, '') AS date3, " +
+        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, itemdata, subitemdata, comp_id, site_id, IFNULL(date1, '') AS date1, IFNULL(date2, '') AS date2, IFNULL(date3, '') AS date3, " +
                 "IFNULL(date4, '') AS date4, IFNULL(date5, '') AS date5, IFNULL(text1, '') AS text1, IFNULL(text2, '') AS text2, IFNULL(text3, '') AS text3, IFNULL(text4, '') AS text4, " +
                 "IFNULL(text5, '') AS text5, IFNULL(text6, '') AS text6, IFNULL(text7, '') AS text7, IFNULL(text8, '') AS text8, IFNULL(text9, '') AS text9, IFNULL(text10, '') AS text10, \n" +
                 "IFNULL(text11, '') AS text11, IFNULL(text12, '') AS text12, IFNULL(text13, '') AS text13, IFNULL(text14, '') AS text14, IFNULL(text15, '') AS text15, IFNULL(text16, '') AS text16, " +
@@ -853,7 +853,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor view_upload_bl01() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, comp_id, site_id, IFNULL(remarks, '') AS remarks, IFNULL(blob1, '') AS blob1, IFNULL(blob2, '') AS blob2, " +
+        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, itemdata, subitemdata, comp_id, site_id, IFNULL(remarks, '') AS remarks, IFNULL(blob1, '') AS blob1, IFNULL(blob2, '') AS blob2, " +
                 "IFNULL(blob3, '') AS blob3, IFNULL(blob4, '') AS blob4, IFNULL(blob5, '') AS blob5 FROM bl_01 WHERE uploaded = 0", null);
         return cursor;
     }
