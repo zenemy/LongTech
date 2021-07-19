@@ -18,7 +18,6 @@ import android.widget.ScrollView;
 
 public class InputRincianRKH extends AppCompatActivity {
 
-    ScrollView scrollViewShift1, scrollViewShift2, scrollViewShift3;
     FloatingActionButton btnShowInputRincianKerja;
     EditText etDriverRincianKegiatan, etShiftRincianKegiatan;
     Button btnSimpanPenginputanRKH, btnCancelPenginputanRKH;

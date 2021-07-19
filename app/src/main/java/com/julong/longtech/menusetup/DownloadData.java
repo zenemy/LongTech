@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.LoginActivity;
+import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
 
 import org.json.JSONArray;
@@ -40,6 +42,8 @@ public class DownloadData extends AppCompatActivity {
     DatabaseHelper dbhelper;
     TextView tvSubJudulDownloadGS, tvSubJudulDownloadMD;
     SweetAlertDialog progressDialog;
+
+    Handler handler = new Handler();
 
     boolean isDownloadGSDone;
     boolean isDownloadMDDone;
@@ -173,7 +177,6 @@ public class DownloadData extends AppCompatActivity {
                             if (jsonPostDoneGS.getString("ALLDATAGS").equals("DONE")) {
                                 tvSubJudulDownloadGS.setText("Jumlah Data : " + dbhelper.count_datadownloadGS() + " Data");
                                 isDownloadGSDone = true;
-                                progressDialog.dismiss();
                                 eventAfterDownload();
                             }
 
@@ -185,7 +188,6 @@ public class DownloadData extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
                         eventAfterDownload();
                         error.printStackTrace();
                         requestQueueDownloadDataGS.stop();
@@ -224,7 +226,6 @@ public class DownloadData extends AppCompatActivity {
                             if (jsonPostDoneMD.getString("ALLDATAMD").equals("DONE")) {
                                 tvSubJudulDownloadMD.setText("Jumlah Data : " + dbhelper.count_tablemd() + " Data");
                                 isDownloadMDDone = true;
-                                progressDialog.dismiss();
                                 eventAfterDownload();
                             }
 
@@ -236,7 +237,6 @@ public class DownloadData extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
                         eventAfterDownload();
                         error.printStackTrace();
                         requestQueueDownloadMD.stop();
@@ -249,21 +249,20 @@ public class DownloadData extends AppCompatActivity {
 
     void eventAfterDownload() {
         final SweetAlertDialog successDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Download Data").setConfirmText("OK");
-        if (isDownloadMDDone || isDownloadGSDone) {
-            if (successDlg.isShowing()) {
-                successDlg.dismiss();
-            } else {
-                successDlg.show();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isDownloadMDDone && isDownloadGSDone) {
+                    progressDialog.dismiss();
+                    successDlg.show();
+                }
+                else {
+                    progressDialog.dismiss();
+                    final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Periksa Jaringan!").setConfirmText("OK");
+                    errorDlg.show();
+                }
+                handler.removeCallbacks(this);
             }
-        }
-        else {
-            progressDialog.dismiss();
-            final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Periksa Jaringan!").setConfirmText("OK");
-            if (errorDlg.isShowing()) {
-                errorDlg.dismiss();
-            } else {
-                errorDlg.show();
-            }
-        }
+        }, 1500);
     }
 }

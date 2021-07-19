@@ -86,6 +86,7 @@
         android:layout_marginBottom="8dp"
         android:insetTop="0dp"
         android:insetBottom="0dp"
+        android:onClick="uploadData"
         android:text="Upload"
         android:textColor="#FFFEFE"
         android:textSize="16sp"

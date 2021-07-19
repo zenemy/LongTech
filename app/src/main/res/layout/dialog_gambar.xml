@@ -11,33 +11,24 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/tombol"
         android:backgroundTint="#EFF2F4"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout6"
-            android:layout_width="0dp"
+        <ImageView
+            android:layout_width="180dp"
             android:layout_height="40dp"
-            android:layout_marginStart="85dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="85dp"
             android:background="@drawable/ic_logohome"
             android:backgroundTint="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_gravity="center_horizontal" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgDlgFotoUser"
@@ -46,9 +37,7 @@
             android:layout_marginTop="5dp"
             android:drawingCacheQuality="high"
             android:scaleType="fitXY"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout6"
+            android:layout_gravity="center_horizontal"
             app:shapeAppearanceOverlay="@style/roundedCornersImageView"
             app:srcCompat="@drawable/user" />
 
@@ -56,16 +45,13 @@
             android:id="@+id/tvNamaDlgShowImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif-medium"
             android:text="Nama"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:textStyle="bold|italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imgDlgFotoUser" />
+            android:textStyle="bold|italic" />
 
         <TextView
             android:id="@+id/tvNikDlgShowImg"
@@ -80,126 +66,122 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNamaDlgShowImg" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/shapeableImageView"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/tombol"
-            android:src="@drawable/ic_baseline_dept_24"
-            android:tint="@color/white"
-            app:contentPadding="8dp"
-            app:layout_constraintStart_toStartOf="@+id/shapeableImageView2"
-            app:layout_constraintTop_toBottomOf="@+id/shapeableImageView2"
-            app:shapeAppearance="@style/roundedCornersImageView" />
-
-        <TextView
-            android:id="@+id/tvDeptDlgImg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="4dp"
-            android:text="Department"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout5"
-            app:layout_constraintStart_toEndOf="@+id/shapeableImageView"
-            app:layout_constraintTop_toTopOf="@+id/shapeableImageView" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/shapeableImageView2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/tombol"
-            android:src="@drawable/ic_baseline_work_24"
-            android:tint="@color/white"
-            app:contentPadding="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvNikDlgShowImg"
-            app:shapeAppearance="@style/roundedCornersImageView" />
-
-        <TextView
-            android:id="@+id/tvJabatanDlgShowImg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Jabatan"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/shapeableImageView2"
-            app:layout_constraintTop_toTopOf="@+id/shapeableImageView2" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/shapeableImageView3"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/tombol"
-            android:src="@drawable/ic_baseline_phone_24"
-            android:tint="@color/white"
-            app:contentPadding="8dp"
-            app:layout_constraintStart_toEndOf="@+id/constraintLayout5"
-            app:layout_constraintTop_toTopOf="@+id/shapeableImageView"
-            app:shapeAppearance="@style/roundedCornersImageView" />
-
-        <TextView
-            android:id="@+id/tvTelpDlgImg"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:text="No Telp"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/shapeableImageView3"
-            app:layout_constraintTop_toTopOf="@+id/shapeableImageView3" />
+            android:layout_marginTop="8dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout5"
-            android:layout_width="1dp"
-            android:layout_height="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout3">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/tombol"
+                android:src="@drawable/ic_baseline_work_24"
+                android:tint="@color/white"
+                app:contentPadding="8dp"
+                app:shapeAppearance="@style/roundedCornersImageView" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvJabatanDlgShowImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Jabatan"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout3"
-            android:layout_width="0dp"
-            android:layout_height="20dp"
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/tbl_border_l"
-            android:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shapeableImageView3">
+            android:weightSum="2">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout2"
-            android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:background="@drawable/tbl_r_btn"
-            android:backgroundTint="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/constraintLayout5"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout3">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/tombol"
+                    android:src="@drawable/ic_baseline_dept_24"
+                    android:tint="@color/white"
+                    app:contentPadding="8dp"
+                    app:shapeAppearance="@style/roundedCornersImageView" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tvDeptDlgImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:text="Department"
+                    android:textColor="#000000"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/tombol"
+                    android:src="@drawable/ic_baseline_phone_24"
+                    android:tint="@color/white"
+                    app:contentPadding="8dp"
+                    app:shapeAppearance="@style/roundedCornersImageView" />
+
+                <TextView
+                    android:id="@+id/tvTelpDlgImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="8dp"
+                    android:text="No Telp"
+                    android:textColor="#000000"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/tbl_l_btn"
+                android:backgroundTint="@color/colorPrimary"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/tbl_r_btn"
+                android:backgroundTint="@color/black"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

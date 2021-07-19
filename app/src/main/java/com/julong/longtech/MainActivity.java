@@ -346,6 +346,16 @@ public class MainActivity extends AppCompatActivity {
                 expandableListAdapter = new com.julong.longtech.ExpandableListAdapter(MainActivity.this, listGroupMenu, listMenu, 1);
                 expandableListView.setAdapter(expandableListAdapter);
                 proDialog.dismiss();
+
+                if (dbhelper.count_tablemd().equals("0") && dbhelper.count_datadownloadGS().equals("0")) {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Download data terlebih dahulu!");
+                    warningExitDlg.setConfirmText("YA");
+                    warningExitDlg.showCancelButton(false);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> startActivity(new Intent(MainActivity.this, DownloadData.class)));
+                    warningExitDlg.show();
+                }
+
                 handler.removeCallbacks(this);
             }
         }, 1500);

@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/tvTanggalCarLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -42,6 +42,7 @@
             app:layout_constraintTop_toBottomOf="@id/judulCarLog" />
 
         <TextView
+            android:id="@+id/tvInfoUnitCarLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EXCAVATOR-99 [158792]"
@@ -50,7 +51,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView6" />
+            app:layout_constraintTop_toBottomOf="@id/tvTanggalCarLog" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

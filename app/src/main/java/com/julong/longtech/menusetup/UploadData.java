@@ -60,17 +60,10 @@ public class UploadData extends AppCompatActivity {
         btnUpload = findViewById(R.id.btnOkUpload);
         listviewUpload = findViewById(R.id.lvUpload);
 
-        btnUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadData();
-            }
-        });
-
         loaduploaddata();
     }
 
-    void uploadData() throws SQLiteException {
+    public void uploadData(View v) throws SQLiteException {
         dbHelper = new DatabaseHelper(this);
         progressDialog.show();
 
@@ -117,7 +110,7 @@ public class UploadData extends AppCompatActivity {
                     String text27 = cursorTransaction1.getString(36);
                     String text28 = cursorTransaction1.getString(37);
                     String text29 = cursorTransaction1.getString(38);
-                    String text30 = cursorTransaction1.getString(cursorTransaction1.getColumnIndex("text30"));
+                    String text30 = cursorTransaction1.getString(39);
 
                     RequestQueue requestQueueAbsenData = Volley.newRequestQueue(this);
                     String server_url = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/uploaddata/uploaddata.php?upload=transaction1";

@@ -834,8 +834,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "IFNULL(text4, '') AS text4, IFNULL(text5, '') AS text5, IFNULL(text6, '') AS text6, IFNULL(text7, '') AS text7, IFNULL(text8, '') AS text8, IFNULL(text9, '') AS text9, " +
                 "IFNULL(text10, '') AS text10, IFNULL(text11, '') AS text11, IFNULL(text12, '') AS text12, IFNULL(text13, '') AS text13, IFNULL(text14, '') AS text14, IFNULL(text15, '') AS text15, " +
                 "IFNULL(text16, '') AS text16, IFNULL(text17, '') AS text17, IFNULL(text18, '') AS text18, IFNULL(text19, '') AS text19, IFNULL(text20, '') AS text20, IFNULL(text21, '') AS text21, " +
-                "IFNULL(text22, '') AS text22, IFNULL(text23, '') AS text23, IFNULL(text24, '') AS text24, IFNULL(text26, '') AS text26, IFNULL(text27, '') AS text27, IFNULL(text28, '') AS text28, " +
-                "IFNULL(text29, '') AS text29, IFNULL(text30, '') AS text30 FROM tr_01 WHERE uploaded = 0", null);
+                "IFNULL(text22, '') AS text22, IFNULL(text23, '') AS text23, IFNULL(text24, '') AS text24, IFNULL(text25, '') AS text25, IFNULL(text26, '') AS text26, IFNULL(text27, '') AS text27, " +
+                "IFNULL(text28, '') AS text28, IFNULL(text29, '') AS text29, IFNULL(text30, '') AS text30 FROM tr_01 WHERE uploaded = 0", null);
         return cursor;
     }
 
@@ -846,15 +846,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "IFNULL(text5, '') AS text5, IFNULL(text6, '') AS text6, IFNULL(text7, '') AS text7, IFNULL(text8, '') AS text8, IFNULL(text9, '') AS text9, IFNULL(text10, '') AS text10, \n" +
                 "IFNULL(text11, '') AS text11, IFNULL(text12, '') AS text12, IFNULL(text13, '') AS text13, IFNULL(text14, '') AS text14, IFNULL(text15, '') AS text15, IFNULL(text16, '') AS text16, " +
                 "IFNULL(text17, '') AS text17, IFNULL(text18, '') AS text18, IFNULL(text19, '') AS text19, IFNULL(text20, '') AS text20, IFNULL(text21, '') AS text21, IFNULL(text22, '') AS text22, " +
-                "IFNULL(text23, '') AS text23, IFNULL(text24, '') AS text24, IFNULL(text26, '') AS text26, IFNULL(text27, '') AS text27, IFNULL(text28, '') AS text28, IFNULL(text29, '') AS text29, " +
-                "IFNULL(text30, '') AS text30 FROM tr_02 WHERE uploaded = 0", null);
+                "IFNULL(text23, '') AS text23, IFNULL(text24, '') AS text24, IFNULL(text25, '') AS text25, IFNULL(text26, '') AS text26, IFNULL(text27, '') AS text27, IFNULL(text28, '') AS text28, " +
+                "IFNULL(text29, '') AS text29, IFNULL(text30, '') AS text30 FROM tr_02 WHERE uploaded = 0", null);
         return cursor;
     }
 
     public Cursor view_upload_bl01() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, itemdata, subitemdata, comp_id, site_id, IFNULL(remarks, '') AS remarks, IFNULL(blob1, '') AS blob1, IFNULL(blob2, '') AS blob2, " +
-                "IFNULL(blob3, '') AS blob3, IFNULL(blob4, '') AS blob4, IFNULL(blob5, '') AS blob5 FROM bl_01 WHERE uploaded = 0", null);
+        Cursor cursor = db.rawQuery("SELECT documentno, datatype, subdatatype, itemdata, subitemdata, comp_id, site_id, IFNULL(remarks, '') AS remarks, IFNULL(blob1, 'a') AS blob1, IFNULL(blob2, 'a') AS blob2, " +
+                "IFNULL(blob3, 'a') AS blob3, IFNULL(blob4, 'a') AS blob4, IFNULL(blob5, 'a') AS blob5 FROM bl_01 WHERE uploaded = 0", null);
         return cursor;
     }
 
@@ -862,6 +862,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT DISTINCT text2 FROM md_01 WHERE DATATYPE = 'VEHICLE'";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(0));
+            }
+
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
+    public List<String> get_employee() {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT text2 FROM md_01 WHERE DATATYPE = 'EMPLOYEE'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
