@@ -27,7 +27,6 @@ public class UploadAdapter extends ArrayAdapter<UploadParam> {
     public static TextView data;
     DatabaseHelper dbhelper;
     public static CheckBox checkBox;
-    int listPosititon;
 
     public UploadAdapter(Activity context, int download_list, List<UploadParam> uploadParams) {
         super(context, R.layout.upload_list, uploadParams);
@@ -43,12 +42,11 @@ public class UploadAdapter extends ArrayAdapter<UploadParam> {
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        listPosititon = position;
-        ViewHolder viewHolder = null;
         if (convertView == null) {
             LayoutInflater inflator = context.getLayoutInflater();
             convertView = inflator.inflate(R.layout.upload_list, null);
-            viewHolder = new UploadAdapter.ViewHolder();
+
+            ViewHolder viewHolder = new UploadAdapter.ViewHolder();
             viewHolder.tvJudulUpload = (TextView) convertView.findViewById(R.id.tvJudulUploadData);
             viewHolder.tvSubJudulUpload = (TextView) convertView.findViewById(R.id.tvSubJudulUploadData);
 
@@ -56,9 +54,9 @@ public class UploadAdapter extends ArrayAdapter<UploadParam> {
             convertView.setTag(R.id.tvJudulUploadData, viewHolder.tvJudulUpload);
             convertView.setTag(R.id.tvSubJudulUploadData, viewHolder.tvSubJudulUpload);
 
-        } else {
-            viewHolder = (UploadAdapter.ViewHolder) convertView.getTag();
         }
+
+        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
         viewHolder.tvJudulUpload.setText(uploadParams.get(position).getNama());
         viewHolder.tvSubJudulUpload.setText("Jumlah Data : " +uploadParams.get(position).getJumlah_data() + " Data");

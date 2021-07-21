@@ -47,6 +47,7 @@ import com.julong.longtech.menusetup.AppSetting;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.UpdateSystem;
 import com.julong.longtech.menusetup.UploadData;
+import com.julong.longtech.menuvehicle.AdjustmentUnit;
 import com.julong.longtech.menuvehicle.InspeksiHasilKerja;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuhcm.MesinAbsensi;
@@ -242,29 +243,20 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (groupPosition == 2 && childPosition == 5) {
-
+                    Intent intent = new Intent(MainActivity.this, AdjustmentUnit.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    onPause();
                 }
 
                 if (groupPosition == 2 && childPosition == 6) {
-
-                }
-
-                if (groupPosition == 2 && childPosition == 7) {
-
-                }
-
-                if (groupPosition == 2 && childPosition == 8) {
-
-                }
-
-                if (groupPosition == 2 && childPosition == 9) {
                     Intent intent = new Intent(MainActivity.this, VerifikasiGIS.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     onPause();
                 }
 
-                if (groupPosition == 2 && childPosition == 10) {
+                if (groupPosition == 2 && childPosition == 7) {
                     Intent intent = new Intent(MainActivity.this, InspeksiHasilKerja.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
@@ -354,11 +346,12 @@ public class MainActivity extends AppCompatActivity {
                     warningExitDlg.showCancelButton(false);
                     warningExitDlg.setConfirmClickListener(sweetAlertDialog -> startActivity(new Intent(MainActivity.this, DownloadData.class)));
                     warningExitDlg.show();
+                    warningExitDlg.dismiss();
                 }
 
                 handler.removeCallbacks(this);
             }
-        }, 1500);
+        }, 2000);
 
 
     }
@@ -423,17 +416,18 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray jsonArray = response.getJSONArray("DATAHCM");
+
                             int i = 0;
-                            if (dbhelper.count_hcmmenuexist().equals("0")) {
-                                while (i < jsonArray.length()) {
-                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                    dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                            jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                            jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                            jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                    i++;
-                                }
+                            dbhelper.delete_menuGS02("HCM");
+                            while (i < jsonArray.length()) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
+                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
+                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
+                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
+                                i++;
                             }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -458,16 +452,16 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = response.getJSONArray("DATAWORKSHOP");
                             int i = 0;
-                            if (dbhelper.count_menuGS02("02", "OPERASIONAL", "0201").equals("0")) {
-                                while (i < jsonArray.length()) {
-                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                    dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                            jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                            jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                            jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                    i++;
-                                }
+                            dbhelper.delete_menuGS02("WORKSHOP");
+                            while (i < jsonArray.length()) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
+                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
+                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
+                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
+                                i++;
                             }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -492,16 +486,16 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = response.getJSONArray("DATAVEHICLE");
                             int i = 0;
-                            if (dbhelper.count_menuGS02("02", "OPERASIONAL", "0202").equals("0")) {
-                                while (i < jsonArray.length()) {
-                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                    dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                            jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                            jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                            jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                    i++;
-                                }
+                            dbhelper.delete_menuGS02("VEHICLE");
+                            while (i < jsonArray.length()) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
+                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
+                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
+                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
+                                i++;
                             }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -526,16 +520,16 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = response.getJSONArray("DATAINVENTORY");
                             int i = 0;
-                            if (dbhelper.count_menuGS02("03", "DISTRIBUTION", "0301").equals("0")) {
-                                while (i < jsonArray.length()) {
-                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                    dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                            jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                            jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                            jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                    i++;
-                                }
+                            dbhelper.delete_menuGS02("INVENTORY");
+                            while (i < jsonArray.length()) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
+                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
+                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
+                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
+                                i++;
                             }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

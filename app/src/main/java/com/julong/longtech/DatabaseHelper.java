@@ -15,8 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -155,6 +157,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         dbwrite.execSQL("DELETE FROM gs_01");
         dbwrite.execSQL("DELETE FROM gs_06");
         dbwrite.execSQL("DELETE FROM gs_07");
+    }
+
+    public void delete_menuGS02(String moduledesc) {
+        SQLiteDatabase dbwrite = this.getWritableDatabase();
+        dbwrite.execSQL("DELETE FROM gs_02 WHERE moduledesc = '"+moduledesc+"'");
     }
 
     public void delete_masterdata() {
@@ -437,7 +444,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String get_vehiclecode(int index, String vehiclename) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT text1, text30 FROM md_01 WHERE text2 = '"+vehiclename+"'", null);
+        Cursor cursor = db.rawQuery("SELECT text1, text30 FROM md_01 WHERE text2 = '"+vehiclename+"' AND datatype = 'VEHICLE'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -447,6 +454,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String get_empcode(String empname) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text1 FROM md_01 WHERE text2 = '"+empname+"' AND datatype = 'EMPLOYEE'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return "0";
+        }
+    }
+
+    public String get_empname(String empcode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text2 FROM md_01 WHERE text1 = '"+empcode+"' AND datatype = 'EMPLOYEE'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return "0";
+        }
+    }
 
     public boolean insert_tblusername(String userid, String username, String usertype, String position_name, String comp_id, String site_id, String deptcode, String divcode, String gangcode,
                                       String ancakcode, String shiftcode, String no_telp, String email, String empname, String empcode, String password, String language) {
@@ -650,6 +680,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insert_rkh_detail1(String nodoc, String vehiclecode, String vehiclename, String shiftkerja,
+                                      String driver, String helper1, String helper2, String kebutuhanBBM) {
+
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        Date tomorrow = calendar.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String tglPelaksanaan = dateFormat.format(tomorrow);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("documentno", nodoc);
+        contentValues.put("datatype", "RKHVH");
+        contentValues.put("subdatatype", get_tbl_username(0));
+        contentValues.put("itemdata", "DETAIL1");
+        contentValues.put("subitemdata", vehiclecode);
+        contentValues.put("date1", savedate);
+        contentValues.put("date2", tglPelaksanaan);
+        contentValues.put("text1", vehiclename);
+        contentValues.put("text2", shiftkerja);
+        contentValues.put("text3", driver);
+        contentValues.put("text4", helper1);
+        contentValues.put("text5", helper2);
+        contentValues.put("text6", kebutuhanBBM);
+
+        long insert = db.insert("tr_02", null, contentValues);
+        if (insert == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public Cursor view_tbl_uploadlist() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT (CASE WHEN a.datatype LIKE '%ABS%' AND b.doctypecode LIKE '%ABS%' THEN 'ABS' " +
@@ -659,6 +723,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "SUM(CASE WHEN a.uploaded = 0 THEN 1 ELSE 0 END) AS datapending, SUM(CASE WHEN a.uploaded = 1 THEN 1 ELSE 0 END) AS uploadeddata " +
                 "FROM tr_01 a INNER JOIN gs_02 b ON a.datatype = b.doctypecode " +
                 "GROUP BY dataabsen HAVING datapending > 0 ORDER BY b.submodulecode", null);
+        return cursor;
+    }
+
+    public Cursor listview_rkh(String nodoc) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text1, text2, text3, text4, text5, text6 FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH'", null);
         return cursor;
     }
 
