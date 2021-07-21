@@ -948,7 +948,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_loadtype() {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT parameterdesc FROM gs_01 WHERE groupparamdesc = 'LOADTYPE'";
+        String query = "SELECT DISTINCT text4 FROM md_01 WHERE datatype = 'TRANSPORTRATE'";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(0));
+            }
+
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
+    public List<String> get_loadcategory(String loadtype) {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT text6 FROM md_01 WHERE datatype = 'TRANSPORTRATE' AND text4 = '"+loadtype+"'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -1141,6 +1158,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text28", text28);
         contentValues.put("text29", text29);
         contentValues.put("text30", text30);
+
+        long insert = db.insert("md_01", null, contentValues);
+        if (insert == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean insert_transportmd(String datatype, String subdatatype, String compid, String siteid, String text1, String text2,
+                                      String text3, String text4, String text5, String text6, String text7) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("datatype", datatype);
+        contentValues.put("subdatatype", subdatatype);
+        contentValues.put("comp_id", compid);
+        contentValues.put("site_id", siteid);
+        contentValues.put("text1", text1);
+        contentValues.put("text2", text2);
+        contentValues.put("text3", text3);
+        contentValues.put("text4", text4);
+        contentValues.put("text5", text5);
+        contentValues.put("text6", text6);
+        contentValues.put("text7", text7);
 
         long insert = db.insert("md_01", null, contentValues);
         if (insert == -1) {

@@ -3,9 +3,11 @@ package com.julong.longtech.menusetup;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -198,7 +200,7 @@ public class DownloadData extends AppCompatActivity {
 
             if (checkBoxMD.isChecked()) {
                 RequestQueue requestQueueDownloadMD = Volley.newRequestQueue(getApplicationContext());
-                String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/getmastermenu.php?tipedata=masterdata";
+                String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/getmastermenu.php?tipedata=masterdata&userid="+dbhelper.get_tbl_username(0)+"&ancakcode="+dbhelper.get_tbl_username(19);
                 JsonObjectRequest jsonRequestMD = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -219,6 +221,16 @@ public class DownloadData extends AppCompatActivity {
                                         jsonObjectMD.getString("TEXT24"), jsonObjectMD.getString("TEXT25"), jsonObjectMD.getString("TEXT26"), jsonObjectMD.getString("TEXT27"),
                                         jsonObjectMD.getString("TEXT28"), jsonObjectMD.getString("TEXT29"), jsonObjectMD.getString("TEXT30"));
                                 intMD++;
+                            }
+
+                            JSONArray jsonArrayTransportMD = response.getJSONArray("DATATRANSPORT");
+                            int intTrasport = 0;
+                            while (intTrasport < jsonArrayTransportMD.length()) {
+                                JSONObject jsonObjectTransportMD = jsonArrayTransportMD.getJSONObject(intTrasport);
+                                dbhelper.insert_transportmd(jsonObjectTransportMD.getString("DATATYPE"), jsonObjectTransportMD.getString("SUBDATATYPE"), jsonObjectTransportMD.getString("COMP_ID"), jsonObjectTransportMD.getString("SITE_ID"),
+                                        jsonObjectTransportMD.getString("TEXT1"), jsonObjectTransportMD.getString("TEXT2"), jsonObjectTransportMD.getString("TEXT3"), jsonObjectTransportMD.getString("TEXT4"),
+                                        jsonObjectTransportMD.getString("TEXT5"), jsonObjectTransportMD.getString("TEXT6"), jsonObjectTransportMD.getString("TEXT7"));
+                                intTrasport++;
                             }
 
                             JSONObject jsonPostDoneMD = new JSONObject(response.toString());
@@ -264,5 +276,14 @@ public class DownloadData extends AppCompatActivity {
                 handler.removeCallbacks(this);
             }
         }, 1500);
+    }
+
+    //Function Tombol Back
+    @Override
+    public void onBackPressed() {
+        Intent backPressed = new Intent();
+        backPressed.putExtra("check", "download"); //pass intent extra here
+        setResult(RESULT_OK, backPressed);
+        finish();
     }
 }

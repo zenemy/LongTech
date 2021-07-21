@@ -344,9 +344,13 @@ public class MainActivity extends AppCompatActivity {
                     warningExitDlg.setContentText("Download data terlebih dahulu!");
                     warningExitDlg.setConfirmText("YA");
                     warningExitDlg.showCancelButton(false);
-                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> startActivity(new Intent(MainActivity.this, DownloadData.class)));
+                    warningExitDlg.setCancelable(false);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
+                        startActivityForResult(intentDownload, 1);
+                    });
                     warningExitDlg.show();
-                    warningExitDlg.dismiss();
                 }
 
                 handler.removeCallbacks(this);
@@ -543,6 +547,27 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         Volley.newRequestQueue(this).add(jsonRequest);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode==1) {
+            if (dbhelper.count_tablemd().equals("0") && dbhelper.count_datadownloadGS().equals("0")) {
+                final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                warningExitDlg.setContentText("Download data terlebih dahulu!");
+                warningExitDlg.setConfirmText("YA");
+                warningExitDlg.showCancelButton(false);
+                warningExitDlg.setCancelable(false);
+                warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                    warningExitDlg.dismiss();
+                    Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
+                    startActivityForResult(intentDownload, 1);
+                });
+                warningExitDlg.show();
+            }
+
+        }
     }
 
     @Override

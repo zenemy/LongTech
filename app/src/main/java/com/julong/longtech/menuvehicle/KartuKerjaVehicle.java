@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.R;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -22,10 +24,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     String savedate;
 
     TextView tvTanggalCarLog;
-    AutoCompleteTextView acLoadTypeCarLog;
+    AutoCompleteTextView acLoadTypeCarLog, acHelper1CarLog, acHelper2CarLog, acLoadCategoryCarLog;
 
-    private List<String> listMuatanCarLog;
-    ArrayAdapter<String> adapterMuatanCarLog;
+    private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan;
+    ArrayAdapter<String> adapterMuatanCarLog, adapterEmployee, adapterCategoryMuatan;
     DatabaseHelper dbhelper;
 
     @Override
@@ -37,10 +39,28 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
         tvTanggalCarLog = findViewById(R.id.tvTanggalCarLog);
         acLoadTypeCarLog = findViewById(R.id.acLoadTypeCarLog);
+        acHelper1CarLog = findViewById(R.id.acHelper1CarLog);
+        acHelper2CarLog = findViewById(R.id.acHelper2CarLog);
+        acLoadCategoryCarLog = findViewById(R.id.acLoadCategoryCarLog);
 
         listMuatanCarLog = dbhelper.get_loadtype();
         adapterMuatanCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listMuatanCarLog);
         acLoadTypeCarLog.setAdapter(adapterMuatanCarLog);
+
+        listEmployee = dbhelper.get_employee();
+        adapterEmployee = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listEmployee);
+        acHelper1CarLog.setAdapter(adapterEmployee);
+        acHelper2CarLog.setAdapter(adapterEmployee);
+
+        acLoadTypeCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                acLoadCategoryCarLog.setText("");
+                listCategoryMuatan = dbhelper.get_loadcategory(adapterMuatanCarLog.getItem(position));
+                adapterCategoryMuatan = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listCategoryMuatan);
+                acLoadCategoryCarLog.setAdapter(adapterCategoryMuatan);
+            }
+        });
 
         todayDate();
     }

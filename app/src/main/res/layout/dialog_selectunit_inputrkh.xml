@@ -33,18 +33,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:nextFocusDown="@id/acShiftDriverRKH"
             android:layout_marginEnd="8dp"
             android:hint="Unit Kendaraan / Alat Berat"
             app:endIconMode="dropdown_menu">
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/acUnitInputRKH"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="16dp"
+                android:nextFocusDown="@id/acShiftDriverRKH"
+                android:imeOptions="actionNext"
                 android:paddingBottom="4dp"
+                android:singleLine="true"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -63,13 +67,15 @@
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/acShiftDriverRKH"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:editable="false"
                 android:inputType="none"
+                android:nextFocusDown="@id/acDriverInputRKH"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="16dp"
                 android:paddingBottom="4dp"
+                android:singleLine="true"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -88,13 +94,14 @@
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/acDriverInputRKH"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:editable="false"
-                android:inputType="none"
+                android:layout_height="40dp"
+                android:nextFocusDown="@id/acHelper1InputRKH"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="16dp"
                 android:paddingBottom="4dp"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -114,11 +121,14 @@
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/acHelper1InputRKH"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
+                android:nextFocusDown="@id/acHelper2InputRKH"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="16dp"
                 android:paddingBottom="4dp"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -137,11 +147,14 @@
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/acHelper2InputRKH"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="16dp"
+                android:nextFocusDown="@id/etInputRKHBBM"
+                android:imeOptions="actionNext"
                 android:paddingBottom="4dp"
+                android:singleLine="true"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -155,41 +168,21 @@
             android:hint="Kebutuhan BBM"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
+            app:suffixText="Liter"
             android:paddingEnd="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etInputRKHBBM"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:inputType="number"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="16dp"
                 android:paddingBottom="4dp"
+                android:singleLine="true"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:hint="Helper 3"
-            android:visibility="gone"
-            app:endIconMode="dropdown_menu">
-
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/acHelper3InputRKH"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:padding="8dp"
-                android:textSize="14sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
 
     </LinearLayout>
 
