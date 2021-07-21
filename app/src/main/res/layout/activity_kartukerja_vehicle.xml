@@ -74,22 +74,21 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
-                android:padding="8dp"
+                android:padding="4dp"
                 android:weightSum="2">
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Jenis Muatan"
                     android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
+                    android:hint="Jenis Muatan"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acLoadTypeCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="35dp"
                         android:editable="false"
                         android:inputType="none"
                         android:paddingStart="8dp"
@@ -112,7 +111,7 @@
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acLoadCategoryCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="35dp"
                         android:editable="false"
                         android:inputType="none"
                         android:paddingStart="8dp"
@@ -127,24 +126,22 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
-                android:layout_marginTop="4dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="4dp">
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
                     android:hint="Helper 1"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="35dp"
                         android:editable="false"
                         android:inputType="none"
                         android:paddingStart="8dp"
@@ -158,16 +155,13 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="2dp"
                     android:hint="Helper 2"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="35dp"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
@@ -180,7 +174,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
                 android:orientation="vertical">
@@ -188,10 +182,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/bottomborderonly"
                     android:gravity="center_horizontal|top"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:text="Asal Muatan"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -200,9 +194,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
                     android:weightSum="2">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -216,7 +210,7 @@
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="35dp"
                             android:editable="false"
                             android:inputType="none"
                             android:paddingStart="8dp"
@@ -237,7 +231,7 @@
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="35dp"
                             android:editable="false"
                             android:inputType="none"
                             android:paddingStart="8dp"
@@ -253,16 +247,16 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
                     android:hint="Lokasi"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="35dp"
                         android:editable="false"
                         android:inputType="none"
                         android:paddingStart="8dp"
@@ -277,7 +271,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
                 android:orientation="vertical">
@@ -285,10 +279,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/bottomborderonly"
                     android:gravity="center_horizontal|top"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:text="Tujuan Muatan"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -297,9 +291,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
                     android:weightSum="2">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -313,7 +307,7 @@
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="35dp"
                             android:editable="false"
                             android:inputType="none"
                             android:paddingStart="8dp"
@@ -334,7 +328,7 @@
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="35dp"
                             android:editable="false"
                             android:inputType="none"
                             android:paddingStart="8dp"
@@ -350,15 +344,15 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="4dp"
                     android:hint="Lokasi"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="35dp"
                         android:editable="false"
                         android:inputType="none"
                         android:paddingStart="8dp"
@@ -372,16 +366,16 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
                     android:hint="Kegiatan"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="35dp"
                         android:editable="false"
                         android:inputType="none"
                         android:paddingStart="8dp"
@@ -396,16 +390,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
-                android:layout_weight="1"
-                android:padding="8dp">
+                android:padding="4dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -418,7 +412,7 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="35dp"
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="16dp"
@@ -430,7 +424,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="2dp"
                         android:layout_weight="1"
                         android:hint="Catatan Tambahan"
                         app:endIconMode="clear_text">
