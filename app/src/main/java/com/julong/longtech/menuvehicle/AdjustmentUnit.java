@@ -48,14 +48,8 @@ public class AdjustmentUnit extends AppCompatActivity {
         acDriver = findViewById(R.id.acNamaSupirGantiDriver);
         keyListenerAcDriver = acDriver.getKeyListener();
 
-        acPilihanMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapterMenuOption = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, arrayPilihanMenu);
-                acPilihanMenu.setAdapter(adapterMenuOption);
-                acPilihanMenu.showDropDown();
-            }
-        });
+        adapterMenuOption = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, arrayPilihanMenu);
+        acPilihanMenu.setAdapter(adapterMenuOption);
 
         acPilihanMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
