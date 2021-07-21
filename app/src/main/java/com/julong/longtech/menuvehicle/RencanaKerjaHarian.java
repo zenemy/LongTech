@@ -3,6 +3,7 @@ package com.julong.longtech.menuvehicle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.R;
 
 import android.app.Dialog;
@@ -21,26 +22,32 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class RencanaKerjaHarian extends AppCompatActivity {
 
     String[] arrayMenuShift = {"Shift 1", "Shift 2", "Shift 3"};
     ArrayAdapter<String> adapterMenuShift;
+    private List<String> listVehicleDlgRKH, listEmployeeDlgRKH;
+    ArrayAdapter<String> adapterVehicleDlgRKH, adapterEmployeeDlgRKH;
 
     FloatingActionButton btnAddRKH;
-    EditText etPelaksanaanTglRKH;
+    EditText etPelaksanaanTglRKH, etDescRKH;
     Button btnSubmitRKH, btnBackRKH;
 
-
     Dialog dlgAddUnit;
+    DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rkh);
 
+        dbHelper = new DatabaseHelper(this);
+
         btnAddRKH = findViewById(R.id.btnAddRKH);
         etPelaksanaanTglRKH = findViewById(R.id.etPelaksanaanTglRKH);
+        etDescRKH = findViewById(R.id.etDescRKH);
         btnSubmitRKH = findViewById(R.id.btnSubmitRKH);
         btnBackRKH = findViewById(R.id.btnBackRKH);
 
@@ -61,9 +68,19 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         windowValueA2.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         Button btnDlgCancelPilihUnitInputKRH = dlgAddUnit.findViewById(R.id.btnDlgCancelPilihUnitInputKRH);
         Button btnDlgSimpanPilihUnitInputKRH = dlgAddUnit.findViewById(R.id.btnDlgSimpanPilihUnitInputKRH);
+        AutoCompleteTextView acUnitInputRKH = dlgAddUnit.findViewById(R.id.acUnitInputRKH);
         AutoCompleteTextView acShiftDriverRKH = dlgAddUnit.findViewById(R.id.acShiftDriverRKH);
+        AutoCompleteTextView acDriverInputRKH = dlgAddUnit.findViewById(R.id.acDriverInputRKH);
         adapterMenuShift = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuShift);
         acShiftDriverRKH.setAdapter(adapterMenuShift);
+
+        listVehicleDlgRKH = dbHelper.get_vehiclemasterdata();
+        adapterVehicleDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleDlgRKH);
+        acUnitInputRKH.setAdapter(adapterVehicleDlgRKH);
+
+        listEmployeeDlgRKH = dbHelper.get_employee();
+        adapterEmployeeDlgRKH = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinnerlist, R.id.spinnerItem, listEmployeeDlgRKH);
+        acDriverInputRKH.setAdapter(adapterEmployeeDlgRKH);
 
         btnAddRKH.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +88,8 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 dlgAddUnit.show();
             }
         });
+
+        btnBackRKH.setOnClickListener(v -> finish());
 
         btnDlgCancelPilihUnitInputKRH.setOnClickListener(new View.OnClickListener() {
             @Override

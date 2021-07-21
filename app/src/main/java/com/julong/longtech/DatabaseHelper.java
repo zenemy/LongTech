@@ -729,7 +729,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String count_datadownloadGS() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT (SELECT COUNT(*) FROM gs_01 WHERE GROUPPARAMCODE IN ('GS05', 'GS06', 'GS07', 'GS08', 'GS11')) + (SELECT count(*) FROM gs_06) + (SELECT count(*) FROM gs_07) AS total_rows;", null);
+        Cursor cursor = db.rawQuery("SELECT (SELECT COUNT(*) FROM gs_01 WHERE GROUPPARAMCODE IN ('GS04', 'GS05', 'GS06', 'GS07', 'GS08', 'GS10', 'GS11')) + (SELECT count(*) FROM gs_06) + (SELECT count(*) FROM gs_07) AS total_rows;", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -862,6 +862,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT DISTINCT text2 FROM md_01 WHERE DATATYPE = 'VEHICLE'";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(0));
+            }
+
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
+    public List<String> get_loadtype() {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT parameterdesc FROM gs_01 WHERE groupparamdesc = 'LOADTYPE'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
