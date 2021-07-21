@@ -10,7 +10,7 @@
         android:id="@+id/log"
         android:color="@color/white"
         android:icon="@drawable/ic_baseline_history_24"
-        android:title="Riwayat" />
+        android:title="Laporan" />
 
     <item
         android:id="@+id/feedback"
