@@ -65,6 +65,7 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
                     intent.putExtra("nodoc", RencanaKerjaHarian.nodocRKH);
                     intent.putExtra("vehicle", viewHolder.tvVehicleNameLvRKH.getText().toString());
                     intent.putExtra("shiftkerja", viewHolder.tvShiftLvRKH.getText().toString());
+                    intent.putExtra("driver", viewHolder.tvDriverNameLvRKH.getText().toString());
                     context.startActivity(intent);
                 }
             });
@@ -82,7 +83,7 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
         viewHolder.tvVehicleNameLvRKH.setText(uploadParams.get(position).getVehiclename());
-        viewHolder.tvShiftLvRKH.setText("(" + uploadParams.get(position).getShiftkerja() + ")");
+        viewHolder.tvShiftLvRKH.setText(uploadParams.get(position).getShiftkerja());
         viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(uploadParams.get(position).getDrivername()));
         viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(uploadParams.get(position).getHelper1Name()));
         viewHolder.tvHelper2NameLvRKH.setText(dbhelper.get_empname(uploadParams.get(position).getHelper2Name()));

@@ -122,10 +122,20 @@ public class RencanaKerjaHarian extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
+
                 dbHelper.insert_rkh_detail1(nodocRKH, dbHelper.get_vehiclecode(0, acUnitInputRKH.getText().toString()), acUnitInputRKH.getText().toString(),
                         acShiftDriverRKH.getText().toString(), dbHelper.get_empcode(acDriverInputRKH.getText().toString()), dbHelper.get_empcode(acHelper1InputRKH.getText().toString()),
                         dbHelper.get_empcode(acHelper2InputRKH.getText().toString()), etInputRKHBBM.getText().toString());
+
+                dbHelper.delete_rkh_header(nodocRKH);
+                dbHelper.insert_rkh_header(nodocRKH, dbHelper.get_count_totalrkh(nodocRKH), etDescRKH.getText().toString(), "Proses");
                 dlgAddUnit.dismiss();
+                acUnitInputRKH.setText("");
+                acShiftDriverRKH.setText("");
+                acDriverInputRKH.setText("");
+                acHelper1InputRKH.setText("");
+                acHelper2InputRKH.setText("");
+                etInputRKHBBM.setText(null);
                 loadListViewRKH();
             }
         });
