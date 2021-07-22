@@ -44,7 +44,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     EditText etHasilKerjaCarLog;
     TextView tvTanggalCarLog, tvInfoUnitCarLog;
     AutoCompleteTextView acLoadTypeCarLog, acHelper1CarLog, acHelper2CarLog, acLoadCategoryCarLog;
-    LinearLayout layoutHelperCarlog, layoutAsalCarLog, layoutTujuanCarLog;
+    LinearLayout layoutHelperCarlog, layoutAsalCarLog, layoutTujuanCarLog, layoutHasilKerja;
     Button btnSubmitCarlog, btnBackCarLog;
     ImageButton btnAddHasilKerja, btnMinusHasilKerja, btnCameraCarLog;
     TextInputLayout inputLayoutAsalKebun, inputLayoutAsalDivisi, inputLayoutAsalLokasi, inputLayoutTujuanKebun, inputLayoutHelper1CarLog,
@@ -66,6 +66,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         layoutAsalCarLog = findViewById(R.id.layoutAsalMuatanCarLog);
         layoutTujuanCarLog = findViewById(R.id.layoutTujuanMuatanCarLog);
         layoutHelperCarlog = findViewById(R.id.layoutHelperCarlog);
+        layoutHasilKerja = findViewById(R.id.LayoutHasilKerja);
         inputLayoutHelper1CarLog = findViewById(R.id.inputLayoutHelper1CarLog);
         inputLayoutHelper2CarLog = findViewById(R.id.inputLayoutHelper2CarLog);
         acLoadTypeCarLog = findViewById(R.id.acLoadTypeCarLog);
@@ -115,6 +116,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 acLoadCategoryCarLog.setText("");
+                layoutHasilKerja.setVisibility(View.GONE);
                 layoutTujuanCarLog.setVisibility(View.GONE);
                 layoutAsalCarLog.setVisibility(View.GONE);
                 layoutHelperCarlog.setVisibility(View.GONE);
@@ -206,13 +208,21 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 }
 
                 if (dbhelper.layoutsetting_carlog(9, adapterCategoryMuatan.getItem(position)).equals("Y")) {
+                    layoutHasilKerja.setVisibility(View.VISIBLE);
                     etHasilKerjaCarLog.setKeyListener(keyListenerEtHasilKerja);
                     btnAddHasilKerja.setVisibility(View.GONE);
                     btnMinusHasilKerja.setVisibility(View.GONE);
                 } else if (dbhelper.layoutsetting_carlog(9, adapterCategoryMuatan.getItem(position)).equals("N")) {
+                    layoutHasilKerja.setVisibility(View.VISIBLE);
                     etHasilKerjaCarLog.setKeyListener(null);
                     btnAddHasilKerja.setVisibility(View.VISIBLE);
                     btnMinusHasilKerja.setVisibility(View.VISIBLE);
+                } else if (dbhelper.layoutsetting_carlog(9, adapterCategoryMuatan.getItem(position)).equals("R")) {
+                    layoutHasilKerja.setVisibility(View.VISIBLE);
+                    etHasilKerjaCarLog.setKeyListener(null);
+                    etHasilKerjaCarLog.setText("1");
+                    btnAddHasilKerja.setVisibility(View.GONE);
+                    btnMinusHasilKerja.setVisibility(View.GONE);
                 }
 
                 inputLayoutHasilKerjaCarLog.setSuffixText(dbhelper.settingcarlog_satuanhasilkerja(adapterCategoryMuatan.getItem(position)));

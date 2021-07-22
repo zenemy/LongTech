@@ -384,13 +384,15 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/LayoutHasilKerja"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
-                android:padding="4dp">
+                android:padding="4dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -416,37 +418,37 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="35dp"
                                 android:inputType="number"
-                                android:text="0"
                                 android:paddingStart="8dp"
                                 android:paddingTop="8dp"
                                 android:paddingEnd="16dp"
                                 android:paddingBottom="4dp"
+                                android:text="0"
                                 android:textSize="14sp" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <ImageButton
                             android:id="@+id/btnReduceHasilKerjaCarLog"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="4dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:scaleType="fitXY"
                             android:src="@drawable/ic_baseline_remove_circle_outline_24"
-                            app:tint="@color/red"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+                            app:tint="@color/red" />
 
                         <ImageButton
                             android:id="@+id/btnAddHasilKerjaCarLog"
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="4dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:scaleType="fitXY"
                             android:src="@drawable/ic_baseline_add_circle_outline_24"
-                            app:tint="@color/green"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+                            app:tint="@color/green" />
 
                     </LinearLayout>
 
