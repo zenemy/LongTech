@@ -115,13 +115,17 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acLoadTypeCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Clear Value
                 acLoadCategoryCarLog.setText("");
+
+                //Gone Group input
                 layoutHasilKerja.setVisibility(View.GONE);
                 layoutTujuanCarLog.setVisibility(View.GONE);
                 layoutAsalCarLog.setVisibility(View.GONE);
                 layoutHelperCarlog.setVisibility(View.GONE);
                 btnAddHasilKerja.setVisibility(View.GONE);
                 btnMinusHasilKerja.setVisibility(View.GONE);
+
                 inputLayoutHasilKerjaCarLog.setSuffixText(null);
                 listCategoryMuatan = dbhelper.get_loadcategory(adapterMuatanCarLog.getItem(position));
                 adapterCategoryMuatan = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listCategoryMuatan);
@@ -132,6 +136,19 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acLoadCategoryCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //Clear Value
+                etHasilKerjaCarLog.setText("0");
+                acHelper1CarLog.setText("");
+                acHelper2CarLog.setText("");
+                //inputLayoutAsalKebun.setText("");
+                //inputLayoutAsalDivisi.setText("");
+                //inputLayoutAsalLokasi.setText("");
+                //inputLayoutTujuanKebun.setText("");
+                //inputLayoutTujuanDivisi.setText("");
+                //inputLayoutTujuanLokasi.setText("");
+                //inputLayoutTujuanKegiatan.setText("");
+                //catatan juga di kosongkan
 
                 if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("Y")) {
                     layoutHelperCarlog.setVisibility(View.VISIBLE);
