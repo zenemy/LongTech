@@ -1072,7 +1072,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_itemkebun() {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text2 FROM md_01 WHERE datatype = 'ORG_STRUCTURE'";
+        String query = "SELECT DISTINCT text2 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' ORDER BY CAST(text1 AS UNSIGNED)";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -1089,7 +1089,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_itemdivisi(String estate) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text4 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' AND text2 = '"+estate+"'";
+        String query = "SELECT DISTINCT text4 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' AND text2 = '"+estate+"' ORDER BY CAST(text3 AS UNSIGNED)";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -1123,7 +1123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_employee() {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text2 FROM md_01 WHERE DATATYPE = 'EMPLOYEE'";
+        String query = "SELECT DISTINCT text1 || ' - ' || text2 AS empolee FROM md_01 WHERE DATATYPE = 'EMPLOYEE'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {

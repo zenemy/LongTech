@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.KeyListener;
 import android.view.View;
@@ -37,18 +38,18 @@ import java.util.Locale;
 public class KartuKerjaVehicle extends AppCompatActivity {
 
     String savedate;
-    private KeyListener keyListenerEtHasilKerja;
+    private KeyListener keyListenerEtHasilKerja, keyListenerJumlahRitase;
     byte[] gambarCarLog;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    EditText etHasilKerjaCarLog, etCatatanCarLog;
+    EditText etHasilKerjaCarLog, etCatatanCarLog, etHasilSatuanMuat, etHasilKerjaLaterite;
     TextView tvTanggalCarLog, tvInfoUnitCarLog;
     AutoCompleteTextView acLoadTypeCarLog, acHelper1CarLog, acHelper2CarLog, acLoadCategoryCarLog, acAsalKebunCarLog, acAsalDivisiCarLog,
             acAsalLokasiCarLog, acTujuanKebunCarLog, acTujuanDivisiCarLog, acTujuanLokasiCarLog, acTujuanKegiatanCarLog;
     LinearLayout layoutHelperCarlog, layoutAsalCarLog, layoutTujuanCarLog, layoutHasilKerja;
     Button btnSubmitCarlog, btnBackCarLog;
-    ImageButton btnAddHasilKerja, btnMinusHasilKerja, btnCameraCarLog;
-    TextInputLayout inputLayoutAsalKebun, inputLayoutAsalDivisi, inputLayoutAsalLokasi, inputLayoutTujuanKebun, inputLayoutHelper1CarLog,
+    ImageButton btnAddHasilKerja, btnMinusHasilKerja, btnReduceHasilKerjaLaterite, btnAddHasilKerjaLaterite, btnCameraCarLog;
+    TextInputLayout inputLayoutAsalKebun, inputLayoutAsalDivisi, inputLayoutAsalLokasi, inputLayoutTujuanKebun, inputLayoutHelper1CarLog, inputLayoutSatuanMuat,
             inputLayoutHelper2CarLog, inputLayoutTujuanDivisi, inputLayoutTujuanLokasi, inputLayoutTujuanKegiatan, inputLayoutHasilKerjaCarLog;
 
     private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan, listAsalKebunCarLog, listAsalDivisiCarLog, listTujuanKebunCarLog, listTujuanDivisiCarLog;
@@ -83,6 +84,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acTujuanKegiatanCarLog = findViewById(R.id.acTujuanKegiatanCarLog);
         btnAddHasilKerja = findViewById(R.id.btnAddHasilKerjaCarLog);
         btnMinusHasilKerja = findViewById(R.id.btnReduceHasilKerjaCarLog);
+        btnAddHasilKerjaLaterite = findViewById(R.id.btnAddHasilKerjaLaterite);
+        btnReduceHasilKerjaLaterite = findViewById(R.id.btnReduceHasilKerjaLaterite);
         btnSubmitCarlog = findViewById(R.id.btnSubmitCarLog);
         btnBackCarLog = findViewById(R.id.btnBackCarLog);
         inputLayoutAsalKebun = findViewById(R.id.inputLayoutAsalKebun);
@@ -92,11 +95,15 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         inputLayoutTujuanDivisi = findViewById(R.id.inputLayoutTujuanDivisi);
         inputLayoutTujuanLokasi = findViewById(R.id.inputLayoutTujuanLokasi);
         inputLayoutTujuanKegiatan = findViewById(R.id.inputLayoutTujuanKegiatan);
+        inputLayoutSatuanMuat = findViewById(R.id.inputLayoutSatuanMuat);
         etHasilKerjaCarLog = findViewById(R.id.etHasilKerjaCarLog);
         etCatatanCarLog = findViewById(R.id.etCatatanCarLog);
+        etHasilKerjaLaterite = findViewById(R.id.etHasilKerjaLaterite);
+        etHasilSatuanMuat = findViewById(R.id.etHasilSatuanMuat);
         inputLayoutHasilKerjaCarLog = findViewById(R.id.inputLayoutHasilKerjaCarLog);
         btnCameraCarLog = findViewById(R.id.imgCarLog);
         keyListenerEtHasilKerja = etHasilKerjaCarLog.getKeyListener();
+        keyListenerJumlahRitase= etHasilKerjaLaterite.getKeyListener();
 
         btnBackCarLog.setOnClickListener(v -> finish());
 
@@ -189,8 +196,11 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
                 if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("Y")) {
                     layoutHelperCarlog.setVisibility(View.VISIBLE);
+                    inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
+                    inputLayoutHelper2CarLog.setVisibility(View.VISIBLE);
                 } else if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("N")) {
                     layoutHelperCarlog.setVisibility(View.VISIBLE);
+                    inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
                     inputLayoutHelper2CarLog.setVisibility(View.GONE);
                 }
                 else if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("N") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("N")) {
@@ -264,11 +274,13 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 if (dbhelper.layoutsetting_carlog(9, adapterCategoryMuatan.getItem(position)).equals("Y")) {
                     layoutHasilKerja.setVisibility(View.VISIBLE);
                     etHasilKerjaCarLog.setKeyListener(keyListenerEtHasilKerja);
+                    etHasilKerjaCarLog.setText(null);
                     btnAddHasilKerja.setVisibility(View.GONE);
                     btnMinusHasilKerja.setVisibility(View.GONE);
                 } else if (dbhelper.layoutsetting_carlog(9, adapterCategoryMuatan.getItem(position)).equals("N")) {
                     layoutHasilKerja.setVisibility(View.VISIBLE);
                     etHasilKerjaCarLog.setKeyListener(null);
+                    etHasilKerjaCarLog.setText("0");
                     btnAddHasilKerja.setVisibility(View.VISIBLE);
                     btnMinusHasilKerja.setVisibility(View.VISIBLE);
                 } else if (dbhelper.layoutsetting_carlog(9, adapterCategoryMuatan.getItem(position)).equals("R")) {
@@ -277,10 +289,42 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     etHasilKerjaCarLog.setText("1");
                     btnAddHasilKerja.setVisibility(View.GONE);
                     btnMinusHasilKerja.setVisibility(View.GONE);
+                } else if (dbhelper.layoutsetting_carlog(9, adapterCategoryMuatan.getItem(position)).equals("L")) {
+                    layoutHasilKerja.setVisibility(View.VISIBLE);
+                    etHasilKerjaCarLog.setKeyListener(null);
+                    etHasilKerjaLaterite.setKeyListener(null);
+                    etHasilKerjaCarLog.setText("0");
+                    inputLayoutSatuanMuat.setSuffixText("M3");
+                    btnAddHasilKerjaLaterite.setVisibility(View.VISIBLE);
+                    btnReduceHasilKerjaLaterite.setVisibility(View.VISIBLE);
+                    btnAddHasilKerja.setVisibility(View.GONE);
+                    btnMinusHasilKerja.setVisibility(View.GONE);
                 }
 
                 inputLayoutHasilKerjaCarLog.setSuffixText(dbhelper.settingcarlog_satuanhasilkerja(adapterCategoryMuatan.getItem(position)));
 
+            }
+        });
+
+        etHasilKerjaLaterite.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                if (etHasilKerjaLaterite.getText().toString().contains("-")) {
+                    etHasilKerjaLaterite.setText("0");
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                // TODO Auto-generated method stub
             }
         });
 
@@ -306,6 +350,101 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             }
         });
 
+        etHasilSatuanMuat.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                if (etHasilSatuanMuat.getText().toString().equals("")) {
+                    btnAddHasilKerjaLaterite.setEnabled(false);
+                    btnReduceHasilKerjaLaterite.setEnabled(false);
+                }
+                else if (etHasilSatuanMuat.getText().toString().length() > 0) {
+                    btnAddHasilKerjaLaterite.setEnabled(true);
+                    btnReduceHasilKerjaLaterite.setEnabled(true);
+                    inputLayoutSatuanMuat.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                // TODO Auto-generated method stub
+            }
+        });
+
+        acAsalKebunCarLog.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                if (acAsalKebunCarLog.getText().toString().equals("")) {
+                    acAsalDivisiCarLog.setAdapter(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                // TODO Auto-generated method stub
+            }
+        });
+
+        acTujuanKebunCarLog.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                if (acTujuanKebunCarLog.getText().toString().equals("")) {
+                    acTujuanDivisiCarLog.setAdapter(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                // TODO Auto-generated method stub
+            }
+        });
+
+        btnAddHasilKerjaLaterite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(etHasilSatuanMuat.getText().toString().trim())) {
+                    inputLayoutSatuanMuat.setError("Isi Satuan Muat");
+                } else {
+                    int result = Integer.parseInt(etHasilKerjaLaterite.getText().toString()) + 1;
+                    etHasilKerjaLaterite.setText(String.valueOf(result));
+                }
+
+            }
+        });
+
+        btnReduceHasilKerjaLaterite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int result = Integer.parseInt(etHasilKerjaLaterite.getText().toString()) - 1;
+                etHasilKerjaLaterite.setText(String.valueOf(result));
+
+                int resultKerja = Integer.parseInt(etHasilKerjaCarLog.getText().toString()) - Integer.parseInt(etHasilSatuanMuat.getText().toString());
+                etHasilKerjaCarLog.setText(String.valueOf(resultKerja));
+            }
+        });
 
         btnAddHasilKerja.setOnClickListener(new View.OnClickListener() {
             @Override

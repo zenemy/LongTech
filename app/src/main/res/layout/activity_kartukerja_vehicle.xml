@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clHeaderCarLog"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="135dp"
         android:background="@drawable/tbl_lr_bottom"
         android:backgroundTint="@color/colorPrimary">
 
@@ -32,6 +32,7 @@
             android:id="@+id/tvTanggalCarLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Kamis, 8 Juli 2021"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
@@ -58,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="-45dp"
+        android:layout_marginTop="-40dp"
         android:layout_marginEnd="4dp"
         android:layout_weight="1"
         android:fillViewport="true">
@@ -133,7 +134,7 @@
                 android:paddingTop="4dp"
                 android:paddingEnd="4dp"
                 android:paddingBottom="8dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutHelper1CarLog"
@@ -185,7 +186,7 @@
                 android:backgroundTint="@color/white"
                 android:orientation="vertical"
                 android:paddingBottom="8dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -205,9 +206,9 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
                     android:hint="Kebun"
                     app:endIconMode="dropdown_menu">
 
@@ -228,8 +229,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
                     android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
                     android:hint="Divisi"
                     app:endIconMode="dropdown_menu">
 
@@ -278,7 +279,7 @@
                 android:backgroundTint="@color/white"
                 android:orientation="vertical"
                 android:paddingBottom="8dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -298,9 +299,9 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginTop="4dp"
                     android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
                     android:hint="Kebun"
                     app:endIconMode="dropdown_menu">
 
@@ -320,9 +321,9 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginTop="4dp"
                     android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
                     android:hint="Divisi"
                     app:endIconMode="dropdown_menu">
 
@@ -392,7 +393,7 @@
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
                 android:padding="4dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -404,6 +405,94 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/inputLayoutSatuanMuat"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Satuan Per Sekali Muat">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etHasilSatuanMuat"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:inputType="number"
+                                android:paddingStart="8dp"
+                                android:paddingTop="8dp"
+                                android:paddingEnd="16dp"
+                                android:paddingBottom="4dp"
+                                android:textSize="14sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="90dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="8dp"
+                            android:gravity="end"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/inputLayoutHasilKerjaLaterite"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Jumlah Ritase Muat">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etHasilKerjaLaterite"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:inputType="number"
+                                android:paddingStart="8dp"
+                                android:paddingTop="8dp"
+                                android:paddingEnd="16dp"
+                                android:paddingBottom="4dp"
+                                android:text="0"
+                                android:textSize="14sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnReduceHasilKerjaLaterite"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                            android:visibility="visible"
+                            app:tint="@color/red" />
+
+                        <ImageButton
+                            android:id="@+id/btnAddHasilKerjaLaterite"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_baseline_add_circle_outline_24"
+                            android:visibility="visible"
+                            app:tint="@color/green" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp">
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/inputLayoutHasilKerjaCarLog"
@@ -452,12 +541,12 @@
 
                     </LinearLayout>
 
-
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="4dp"
+                        android:layout_weight="1"
                         android:hint="Catatan Tambahan"
                         app:endIconMode="clear_text">
 
@@ -477,8 +566,8 @@
 
                 <ImageButton
                     android:id="@+id/imgCarLog"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="65dp"
+                    android:layout_height="70dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
                     android:background="?android:attr/selectableItemBackgroundBorderless"

@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (dbhelper.count_tablemd().equals("0") && dbhelper.count_datadownloadGS().equals("0")) {
                     final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
-                    warningExitDlg.setContentText("Download data terlebih dahulu!");
+                    warningExitDlg.setContentText("Download data dahulu!");
                     warningExitDlg.setConfirmText("YA");
                     warningExitDlg.showCancelButton(false);
                     warningExitDlg.setCancelable(false);
@@ -555,7 +555,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode==1) {
             if (dbhelper.count_tablemd().equals("0") && dbhelper.count_datadownloadGS().equals("0")) {
                 final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
-                warningExitDlg.setContentText("Download data terlebih dahulu!");
+                warningExitDlg.setContentText("Download data dahulu!");
                 warningExitDlg.setConfirmText("YA");
                 warningExitDlg.showCancelButton(false);
                 warningExitDlg.setCancelable(false);
