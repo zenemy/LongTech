@@ -236,6 +236,16 @@ public class DownloadData extends AppCompatActivity {
                                 intTrasport++;
                             }
 
+                            JSONArray jsonArrayOrgStructure = response.getJSONArray("DATAORGSTRUCTURE");
+                            int intOrgStructure = 0;
+                            while (intOrgStructure < jsonArrayOrgStructure.length()) {
+                                JSONObject jsonObjectOrgStructure = jsonArrayOrgStructure.getJSONObject(intOrgStructure);
+                                dbhelper.insert_orgstructuremd(jsonObjectOrgStructure.getString("DATATYPE"), jsonObjectOrgStructure.getString("SUBDATATYPE"), jsonObjectOrgStructure.getString("COMP_ID"), jsonObjectOrgStructure.getString("SITE_ID"),
+                                        jsonObjectOrgStructure.getString("TEXT1"), jsonObjectOrgStructure.getString("TEXT2"), jsonObjectOrgStructure.getString("TEXT3"), jsonObjectOrgStructure.getString("TEXT4"),
+                                        jsonObjectOrgStructure.getString("TEXT5"), jsonObjectOrgStructure.getString("TEXT6"), jsonObjectOrgStructure.getString("TEXT7"), jsonObjectOrgStructure.getString("TEXT8"));
+                                intOrgStructure++;
+                            }
+
                             JSONObject jsonPostDoneMD = new JSONObject(response.toString());
 
                             if (jsonPostDoneMD.getString("ALLDATAMD").equals("DONE")) {
@@ -278,7 +288,7 @@ public class DownloadData extends AppCompatActivity {
                 }
                 handler.removeCallbacks(this);
             }
-        }, 1500);
+        }, 2000);
     }
 
     //Function Tombol Back

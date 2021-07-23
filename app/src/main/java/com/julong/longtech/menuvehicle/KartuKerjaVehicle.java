@@ -41,17 +41,18 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     byte[] gambarCarLog;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    EditText etHasilKerjaCarLog;
+    EditText etHasilKerjaCarLog, etCatatanCarLog;
     TextView tvTanggalCarLog, tvInfoUnitCarLog;
-    AutoCompleteTextView acLoadTypeCarLog, acHelper1CarLog, acHelper2CarLog, acLoadCategoryCarLog;
+    AutoCompleteTextView acLoadTypeCarLog, acHelper1CarLog, acHelper2CarLog, acLoadCategoryCarLog, acAsalKebunCarLog, acAsalDivisiCarLog,
+            acAsalLokasiCarLog, acTujuanKebunCarLog, acTujuanDivisiCarLog, acTujuanLokasiCarLog, acTujuanKegiatanCarLog;
     LinearLayout layoutHelperCarlog, layoutAsalCarLog, layoutTujuanCarLog, layoutHasilKerja;
     Button btnSubmitCarlog, btnBackCarLog;
     ImageButton btnAddHasilKerja, btnMinusHasilKerja, btnCameraCarLog;
     TextInputLayout inputLayoutAsalKebun, inputLayoutAsalDivisi, inputLayoutAsalLokasi, inputLayoutTujuanKebun, inputLayoutHelper1CarLog,
             inputLayoutHelper2CarLog, inputLayoutTujuanDivisi, inputLayoutTujuanLokasi, inputLayoutTujuanKegiatan, inputLayoutHasilKerjaCarLog;
 
-    private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan;
-    ArrayAdapter<String> adapterMuatanCarLog, adapterEmployee, adapterCategoryMuatan;
+    private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan, listKebunCarLog, listDivisiCarLog;
+    ArrayAdapter<String> adapterMuatanCarLog, adapterEmployee, adapterCategoryMuatan, adapterKebunCarLog, adapterDivisiCarLog;
     DatabaseHelper dbhelper;
 
     @Override
@@ -72,7 +73,14 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acLoadTypeCarLog = findViewById(R.id.acLoadTypeCarLog);
         acHelper1CarLog = findViewById(R.id.acHelper1CarLog);
         acHelper2CarLog = findViewById(R.id.acHelper2CarLog);
+        acAsalKebunCarLog = findViewById(R.id.acAsalKebunCarLog);
+        acAsalDivisiCarLog = findViewById(R.id.acAsalDivisiCarLog);
+        acAsalLokasiCarLog = findViewById(R.id.acAsalLokasiCarLog);
         acLoadCategoryCarLog = findViewById(R.id.acLoadCategoryCarLog);
+        acTujuanKebunCarLog = findViewById(R.id.acTujuanKebunCarLog);
+        acTujuanDivisiCarLog = findViewById(R.id.acTujuanDivisiCarLog);
+        acTujuanLokasiCarLog = findViewById(R.id.acTujuanLokasiCarLog);
+        acTujuanKegiatanCarLog = findViewById(R.id.acTujuanKegiatanCarLog);
         btnAddHasilKerja = findViewById(R.id.btnAddHasilKerjaCarLog);
         btnMinusHasilKerja = findViewById(R.id.btnReduceHasilKerjaCarLog);
         btnSubmitCarlog = findViewById(R.id.btnSubmitCarLog);
@@ -85,6 +93,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         inputLayoutTujuanLokasi = findViewById(R.id.inputLayoutTujuanLokasi);
         inputLayoutTujuanKegiatan = findViewById(R.id.inputLayoutTujuanKegiatan);
         etHasilKerjaCarLog = findViewById(R.id.etHasilKerjaCarLog);
+        etCatatanCarLog = findViewById(R.id.etCatatanCarLog);
         inputLayoutHasilKerjaCarLog = findViewById(R.id.inputLayoutHasilKerjaCarLog);
         btnCameraCarLog = findViewById(R.id.imgCarLog);
         keyListenerEtHasilKerja = etHasilKerjaCarLog.getKeyListener();
@@ -98,6 +107,16 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         listMuatanCarLog = dbhelper.get_loadtype();
         adapterMuatanCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listMuatanCarLog);
         acLoadTypeCarLog.setAdapter(adapterMuatanCarLog);
+
+        listKebunCarLog = dbhelper.get_orgstructure(0);
+        adapterKebunCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listKebunCarLog);
+        acAsalKebunCarLog.setAdapter(adapterKebunCarLog);
+        acTujuanKebunCarLog.setAdapter(adapterKebunCarLog);
+
+        listDivisiCarLog = dbhelper.get_orgstructure(1);
+        adapterDivisiCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listDivisiCarLog);
+        acAsalDivisiCarLog.setAdapter(adapterDivisiCarLog);
+        acTujuanDivisiCarLog.setAdapter(adapterDivisiCarLog);
 
         listEmployee = dbhelper.get_employee();
         adapterEmployee = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listEmployee);
@@ -139,16 +158,16 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
                 //Clear Value
                 etHasilKerjaCarLog.setText("0");
-                acHelper1CarLog.setText("");
-                acHelper2CarLog.setText("");
-                //inputLayoutAsalKebun.setText("");
-                //inputLayoutAsalDivisi.setText("");
-                //inputLayoutAsalLokasi.setText("");
-                //inputLayoutTujuanKebun.setText("");
-                //inputLayoutTujuanDivisi.setText("");
-                //inputLayoutTujuanLokasi.setText("");
-                //inputLayoutTujuanKegiatan.setText("");
-                //catatan juga di kosongkan
+                acHelper1CarLog.setText(null);
+                acHelper2CarLog.setText(null);
+                acAsalDivisiCarLog.setText(null);
+                acAsalKebunCarLog.setText(null);
+                acAsalLokasiCarLog.setText(null);
+                acTujuanDivisiCarLog.setText(null);
+                acTujuanKebunCarLog.setText(null);
+                acAsalLokasiCarLog.setText(null);
+                acTujuanKegiatanCarLog.setText(null);
+                etCatatanCarLog.setText(null);
 
                 if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("Y")) {
                     layoutHelperCarlog.setVisibility(View.VISIBLE);

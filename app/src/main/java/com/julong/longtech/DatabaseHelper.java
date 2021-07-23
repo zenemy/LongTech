@@ -817,7 +817,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_rkh(String nodoc) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT text1, text2, text3, text4, text5, text6 FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH'", null);
+        Cursor cursor = db.rawQuery("SELECT text1, text2, text3, text4, text5, text6 FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH' AND itemdata = 'DETAIL1'", null);
+        return cursor;
+    }
+
+    public Cursor listview_rincianrkh(String nodoc) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text1, text2, text3, text4, text5, text6, text7, text8, text9, text10, text11 FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH' AND itemdata = 'DETAIL1'", null);
         return cursor;
     }
 
@@ -1063,6 +1069,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dataList;
     }
 
+    public List<String> get_orgstructure(int index) {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT text2, text4 FROM md_01 WHERE datatype = 'ORG_STRUCTURE'";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(index));
+            }
+
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
     public List<String> get_loadcategory(String loadtype) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1294,6 +1317,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text15", text15);
         contentValues.put("text16", text16);
         contentValues.put("text17", text17);
+
+        long insert = db.insert("md_01", null, contentValues);
+        if (insert == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean insert_orgstructuremd(String datatype, String subdatatype, String compid, String siteid, String text1, String text2, String text3, String text4,
+                                      String text5, String text6, String text7, String text8) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("datatype", datatype);
+        contentValues.put("subdatatype", subdatatype);
+        contentValues.put("comp_id", compid);
+        contentValues.put("site_id", siteid);
+        contentValues.put("text1", text1);
+        contentValues.put("text2", text2);
+        contentValues.put("text3", text3);
+        contentValues.put("text4", text4);
+        contentValues.put("text5", text5);
+        contentValues.put("text6", text6);
+        contentValues.put("text7", text7);
+        contentValues.put("text8", text8);
 
         long insert = db.insert("md_01", null, contentValues);
         if (insert == -1) {

@@ -212,6 +212,7 @@
                         app:endIconMode="dropdown_menu">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/acAsalKebunCarLog"
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
                             android:paddingStart="8dp"
@@ -232,6 +233,7 @@
                         app:endIconMode="dropdown_menu">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/acAsalDivisiCarLog"
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
                             android:paddingStart="8dp"
@@ -255,6 +257,7 @@
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/acAsalLokasiCarLog"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:paddingStart="8dp"
@@ -308,6 +311,7 @@
                         app:endIconMode="dropdown_menu">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/acTujuanKebunCarLog"
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
                             android:paddingStart="8dp"
@@ -328,6 +332,7 @@
                         app:endIconMode="dropdown_menu">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/acTujuanDivisiCarLog"
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
                             android:paddingStart="8dp"
@@ -351,6 +356,7 @@
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/acTujuanLokasiCarLog"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:paddingStart="8dp"
@@ -372,6 +378,7 @@
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/acTujuanKegiatanCarLog"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:paddingStart="8dp"
@@ -463,6 +470,7 @@
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCatatanCarLog"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="top"
