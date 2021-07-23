@@ -23,17 +23,15 @@ import java.util.List;
 
 public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
-    private List<ListParamRKH> uploadParams;
+    private List<ListParamRKH> rkhParams;
     private final Activity context;
     public static TextView data;
     DatabaseHelper dbhelper;
-    public static CheckBox checkBox;
 
-    public AdapterRKH(Activity context, int download_list, List<ListParamRKH> uploadParams) {
-        super(context, R.layout.upload_list, uploadParams);
+    public AdapterRKH(Activity context, int list, List<ListParamRKH> rkhParams) {
+        super(context, R.layout.item_lvrkh, rkhParams);
         this.context = context;
-        this.uploadParams = uploadParams;
-        this.uploadParams = uploadParams;
+        this.rkhParams = rkhParams;
     }
 
     static class ViewHolder {
@@ -82,12 +80,12 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
-        viewHolder.tvVehicleNameLvRKH.setText(uploadParams.get(position).getVehiclename());
-        viewHolder.tvShiftLvRKH.setText(uploadParams.get(position).getShiftkerja());
-        viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(uploadParams.get(position).getDrivername()));
-        viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(uploadParams.get(position).getHelper1Name()));
-        viewHolder.tvHelper2NameLvRKH.setText(dbhelper.get_empname(uploadParams.get(position).getHelper2Name()));
-        viewHolder.tvBensinLvRKH.setText("BBM " + uploadParams.get(position).getKebutuhanBBM() + " Liter");
+        viewHolder.tvVehicleNameLvRKH.setText(rkhParams.get(position).getVehiclename());
+        viewHolder.tvShiftLvRKH.setText(rkhParams.get(position).getShiftkerja());
+        viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getDrivername()));
+        viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper1Name()));
+        viewHolder.tvHelper2NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper2Name()));
+        viewHolder.tvBensinLvRKH.setText("BBM " + rkhParams.get(position).getKebutuhanBBM() + " Liter");
 
         return convertView;
     }

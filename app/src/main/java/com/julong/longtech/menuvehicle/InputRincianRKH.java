@@ -10,6 +10,7 @@ import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.R;
 
 import android.app.Dialog;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -19,10 +20,12 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +36,7 @@ public class InputRincianRKH extends AppCompatActivity {
     EditText etDriverRincianKegiatan, etShiftRincianKegiatan, etWaktuKerjaRincianRKH;
     Button btnSimpanPenginputanRKH, btnCancelPenginputanRKH;
     TextView tvUnitRincianRKH;
+    ListView lvRincianRKH;
 
     Dialog dlgInputRincianKerja, dlgSubmitRincianRKH;
     String todayDateRincianRKH, nodocRKH, vehicleNameRKH, shiftRincianRKH, driverDetailRKH;
@@ -53,6 +57,7 @@ public class InputRincianRKH extends AppCompatActivity {
         btnSimpanPenginputanRKH = findViewById(R.id.btnSimpanPenginputanRKH);
         btnCancelPenginputanRKH = findViewById(R.id.btnCancelPenginputanRKH);
         tvUnitRincianRKH = findViewById(R.id.tvUnitRincianRKH);
+        lvRincianRKH = findViewById(R.id.lvRincianRKH);
 
         Bundle bundle = getIntent().getExtras();
         todayDateRincianRKH = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());

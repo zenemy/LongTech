@@ -1069,15 +1069,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dataList;
     }
 
-    public List<String> get_orgstructure(int index) {
+    public List<String> get_itemkebun() {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text2, text4 FROM md_01 WHERE datatype = 'ORG_STRUCTURE'";
+        String query = "SELECT DISTINCT text2 FROM md_01 WHERE datatype = 'ORG_STRUCTURE'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
             do {
-                dataList.add(cursor.getString(index));
+                dataList.add(cursor.getString(0));
+            }
+
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
+    public List<String> get_itemdivisi(String estate) {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT text4 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' AND text2 = '"+estate+"'";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(0));
             }
 
             while (cursor.moveToNext());

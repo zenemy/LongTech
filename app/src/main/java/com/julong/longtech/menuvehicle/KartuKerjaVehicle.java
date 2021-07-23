@@ -51,8 +51,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     TextInputLayout inputLayoutAsalKebun, inputLayoutAsalDivisi, inputLayoutAsalLokasi, inputLayoutTujuanKebun, inputLayoutHelper1CarLog,
             inputLayoutHelper2CarLog, inputLayoutTujuanDivisi, inputLayoutTujuanLokasi, inputLayoutTujuanKegiatan, inputLayoutHasilKerjaCarLog;
 
-    private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan, listKebunCarLog, listDivisiCarLog;
-    ArrayAdapter<String> adapterMuatanCarLog, adapterEmployee, adapterCategoryMuatan, adapterKebunCarLog, adapterDivisiCarLog;
+    private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan, listAsalKebunCarLog, listAsalDivisiCarLog, listTujuanKebunCarLog, listTujuanDivisiCarLog;
+    ArrayAdapter<String> adapterMuatanCarLog, adapterEmployee, adapterCategoryMuatan, adapterAsalKebunCarLog, adapterAsalDivisiCarLog, adapterTujuanKebunCarLog, adapterTujuanDivisiCarLog;
     DatabaseHelper dbhelper;
 
     @Override
@@ -108,15 +108,13 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         adapterMuatanCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listMuatanCarLog);
         acLoadTypeCarLog.setAdapter(adapterMuatanCarLog);
 
-        listKebunCarLog = dbhelper.get_orgstructure(0);
-        adapterKebunCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listKebunCarLog);
-        acAsalKebunCarLog.setAdapter(adapterKebunCarLog);
-        acTujuanKebunCarLog.setAdapter(adapterKebunCarLog);
+        listAsalKebunCarLog = dbhelper.get_itemkebun();
+        adapterAsalKebunCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listAsalKebunCarLog);
+        acAsalKebunCarLog.setAdapter(adapterAsalKebunCarLog);
 
-        listDivisiCarLog = dbhelper.get_orgstructure(1);
-        adapterDivisiCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listDivisiCarLog);
-        acAsalDivisiCarLog.setAdapter(adapterDivisiCarLog);
-        acTujuanDivisiCarLog.setAdapter(adapterDivisiCarLog);
+        listTujuanKebunCarLog = dbhelper.get_itemkebun();
+        adapterTujuanKebunCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanKebunCarLog);
+        acTujuanKebunCarLog.setAdapter(adapterTujuanKebunCarLog);
 
         listEmployee = dbhelper.get_employee();
         adapterEmployee = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listEmployee);
@@ -128,6 +126,26 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(this.getPackageManager()) != null) {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        });
+
+        acAsalKebunCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listAsalDivisiCarLog = dbhelper.get_itemdivisi(adapterAsalKebunCarLog.getItem(position));
+                adapterAsalDivisiCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listAsalDivisiCarLog);
+                acAsalDivisiCarLog.setAdapter(adapterAsalDivisiCarLog);
+                acAsalDivisiCarLog.setText("");
+            }
+        });
+
+        acTujuanKebunCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listTujuanDivisiCarLog = dbhelper.get_itemdivisi(adapterTujuanKebunCarLog.getItem(position));
+                adapterTujuanDivisiCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanDivisiCarLog);
+                acTujuanDivisiCarLog.setAdapter(adapterTujuanDivisiCarLog);
+                acTujuanDivisiCarLog.setText("");
             }
         });
 
