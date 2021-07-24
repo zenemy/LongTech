@@ -240,9 +240,10 @@
                     app:layout_constraintTop_toTopOf="@+id/textView10">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center" />
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/religi" />
                 </androidx.cardview.widget.CardView>
 
                 <TextView
