@@ -55,72 +55,73 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="-40dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/tombol"
+        android:backgroundTint="@color/white"
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        android:weightSum="2">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Jenis Muatan"
+            app:endIconMode="dropdown_menu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acLoadTypeCarLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Kategori Muatan"
+            app:endIconMode="dropdown_menu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acLoadCategoryCarLog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/tombol"
-                android:backgroundTint="@color/white"
-                android:orientation="vertical"
-                android:paddingStart="4dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="4dp"
-                android:paddingBottom="8dp"
-                android:weightSum="2">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Jenis Muatan"
-                    app:endIconMode="dropdown_menu">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/acLoadTypeCarLog"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="4dp"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="1"
-                    android:hint="Kategori Muatan"
-                    app:endIconMode="dropdown_menu">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/acLoadCategoryCarLog"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="4dp"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layoutHelperCarlog"
@@ -130,26 +131,40 @@
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
                 android:orientation="vertical"
-                android:paddingStart="4dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="4dp"
                 android:paddingBottom="8dp"
                 android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/judulHelper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/tbl_lr_top"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="Helper"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutHelper1CarLog"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Helper 1"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acHelper1CarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -160,16 +175,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Helper 2"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acHelper2CarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -194,8 +210,8 @@
                     android:background="@drawable/tbl_lr_top"
                     android:backgroundTint="@color/colorPrimary"
                     android:gravity="center_horizontal"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:text="Asal Muatan"
                     android:textColor="@color/white"
                     android:textSize="16sp"
@@ -206,18 +222,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Kebun"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acAsalKebunCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -228,18 +243,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Divisi"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acAsalDivisiCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -251,18 +265,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Lokasi"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acAsalLokasiCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -287,8 +300,8 @@
                     android:background="@drawable/tbl_lr_top"
                     android:backgroundTint="@color/colorPrimary"
                     android:gravity="center_horizontal"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:text="Tujuan Muatan"
                     android:textColor="@color/white"
                     android:textSize="16sp"
@@ -299,18 +312,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Kebun"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acTujuanKebunCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -321,18 +333,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Divisi"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acTujuanDivisiCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -343,18 +354,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Lokasi"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acTujuanLokasiCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -365,18 +375,17 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:hint="Kegiatan"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acTujuanKegiatanCarLog"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingStart="8dp"
-                        android:paddingTop="8dp"
+                        android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textSize="14sp" />
@@ -389,190 +398,220 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_weight="1"
                 android:background="@drawable/tombol"
                 android:backgroundTint="@color/white"
-                android:padding="4dp"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
                 android:visibility="gone">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/judulHasilKerja"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
+                    android:background="@drawable/tbl_lr_top"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="Hasil Kerja"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/inputLayoutSatuanMuat"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:hint="Satuan Per Sekali Muat">
+                            android:orientation="vertical">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etHasilSatuanMuat"
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="40dp"
-                                android:inputType="number"
-                                android:paddingStart="8dp"
-                                android:paddingTop="8dp"
-                                android:paddingEnd="16dp"
-                                android:paddingBottom="4dp"
-                                android:textSize="14sp" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="4dp"
+                                android:visibility="visible">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="90dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="8dp"
-                            android:gravity="end"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/inputLayoutSatuanMuat"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:hint="Per Sekali Muat">
 
-                    </LinearLayout>
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/etHasilSatuanMuat"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="number"
+                                        android:minHeight="45dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingEnd="8dp"
+                                        android:paddingBottom="4dp"
+                                        android:textSize="14sp" />
+                                </com.google.android.material.textfield.TextInputLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp">
+                            </LinearLayout>
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/inputLayoutHasilKerjaLaterite"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="Jumlah Ritase Muat">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etHasilKerjaLaterite"
+                            <LinearLayout
+                                android:id="@+id/layoutRitaseMuat"
                                 android:layout_width="match_parent"
-                                android:layout_height="40dp"
-                                android:inputType="number"
-                                android:paddingStart="8dp"
-                                android:paddingTop="8dp"
-                                android:paddingEnd="16dp"
-                                android:paddingBottom="4dp"
-                                android:text="0"
-                                android:textSize="14sp" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="4dp"
+                                android:visibility="visible">
 
-                        <ImageButton
-                            android:id="@+id/btnReduceHasilKerjaLaterite"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_baseline_remove_circle_outline_24"
-                            android:visibility="visible"
-                            app:tint="@color/red" />
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/inputLayoutHasilKerjaLaterite"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:hint="Ritase Muat">
 
-                        <ImageButton
-                            android:id="@+id/btnAddHasilKerjaLaterite"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_baseline_add_circle_outline_24"
-                            android:visibility="visible"
-                            app:tint="@color/green" />
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/etHasilKerjaLaterite"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="number"
+                                        android:minHeight="45dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingEnd="8dp"
+                                        android:paddingBottom="4dp"
+                                        android:textSize="14sp" />
+                                </com.google.android.material.textfield.TextInputLayout>
 
-                    </LinearLayout>
+                                <ImageButton
+                                    android:id="@+id/btnReduceHasilKerjaLaterite"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="4dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                                    android:visibility="visible"
+                                    app:tint="@color/red" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp">
+                                <ImageButton
+                                    android:id="@+id/btnAddHasilKerjaLaterite"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="4dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/ic_baseline_add_circle_outline_24"
+                                    android:visibility="visible"
+                                    app:tint="@color/green" />
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/inputLayoutHasilKerjaCarLog"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="Hasil Kerja">
+                            </LinearLayout>
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/etHasilKerjaCarLog"
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="40dp"
-                                android:inputType="number"
-                                android:paddingStart="8dp"
-                                android:paddingTop="8dp"
-                                android:paddingEnd="16dp"
-                                android:paddingBottom="4dp"
-                                android:text="0"
-                                android:textSize="14sp" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="4dp"
+                                android:visibility="visible">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/inputLayoutHasilKerjaCarLog"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:hint="Hasil Kerja">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/etHasilKerjaCarLog"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="number"
+                                        android:minHeight="45dp"
+                                        android:paddingStart="8dp"
+                                        android:paddingTop="4dp"
+                                        android:paddingEnd="8dp"
+                                        android:paddingBottom="4dp"
+                                        android:textSize="14sp" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <ImageButton
+                                    android:id="@+id/btnReduceHasilKerjaCarLog"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="4dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                                    android:visibility="visible"
+                                    app:tint="@color/red" />
+
+                                <ImageButton
+                                    android:id="@+id/btnAddHasilKerjaCarLog"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="4dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/ic_baseline_add_circle_outline_24"
+                                    android:visibility="visible"
+                                    app:tint="@color/green" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                         <ImageButton
-                            android:id="@+id/btnReduceHasilKerjaCarLog"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_gravity="center_vertical"
+                            android:id="@+id/imgCarLog"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
                             android:layout_marginStart="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_baseline_remove_circle_outline_24"
-                            android:visibility="visible"
-                            app:tint="@color/red" />
-
-                        <ImageButton
-                            android:id="@+id/btnAddHasilKerjaCarLog"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="4dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_baseline_add_circle_outline_24"
-                            android:visibility="visible"
-                            app:tint="@color/green" />
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="?android:attr/selectableItemBackgroundBorderless"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_menu_camera" />
 
                     </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="4dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:hint="Catatan Tambahan"
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCatatanCarLog"
                             android:layout_width="match_parent"
-                            android:layout_height="55dp"
+                            android:layout_height="wrap_content"
                             android:gravity="top"
+                            android:minHeight="50dp"
                             android:paddingStart="8dp"
-                            android:paddingTop="8dp"
+                            android:paddingTop="4dp"
                             android:paddingEnd="8dp"
                             android:paddingBottom="4dp"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/imgCarLog"
-                    android:layout_width="65dp"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_menu_camera" />
 
             </LinearLayout>
         </LinearLayout>
