@@ -59,7 +59,7 @@ public class AdjustmentUnit extends AppCompatActivity {
                 if (selection.equals("Ganti Driver / Operator")) {
                     codeOptionMenu = "CHANGE";
                     layoutKMHMVehicle.setVisibility(View.GONE);
-                    listEmployeeAdjustmentUnit = dbHelper.get_employee();
+                    listEmployeeAdjustmentUnit = dbHelper.get_employee(1);
                     adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdjustmentUnit);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
                     acDriver.setKeyListener(keyListenerAcDriver);

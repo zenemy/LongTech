@@ -107,7 +107,7 @@ public class InputRincianRKH extends AppCompatActivity {
         Button btnDlgSimpanInputRincianRKH = dlgInputRincianKerja.findViewById(R.id.btnDlgSimpanInputRincianRKH);
         dlgInputRincianKerja.show();
 
-        listMuatanRincianRKH = dbhelper.get_loadtype();
+        listMuatanRincianRKH = dbhelper.get_loadtype(1);
         adapterMuatanRincianRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listMuatanRincianRKH);
         acLoadTypeRincianRKH.setAdapter(adapterMuatanRincianRKH);
 
