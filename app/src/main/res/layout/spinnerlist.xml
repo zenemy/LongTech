@@ -12,6 +12,7 @@
         android:paddingBottom="10dp"
         android:paddingEnd="8dp"
         android:background="@drawable/topborderonly"
+        android:foreground="?attr/selectableItemBackground"
         android:paddingStart="8dp"
         android:textSize="14sp"
         android:textColor="#000" />

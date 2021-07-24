@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
+import com.julong.longtech.LoginActivity;
+import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
 
 import android.content.Intent;
@@ -34,6 +36,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class KartuKerjaVehicle extends AppCompatActivity {
 
@@ -311,6 +315,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     etHasilKerjaCarLog.setKeyListener(null);
                     etHasilKerjaLaterite.setKeyListener(null);
                     etHasilKerjaCarLog.setText("0");
+                    etHasilKerjaLaterite.setText("0");
                     inputLayoutSatuanMuat.setSuffixText("M3");
                     btnAddHasilKerjaLaterite.setVisibility(View.VISIBLE);
                     btnReduceHasilKerjaLaterite.setVisibility(View.VISIBLE);
@@ -375,33 +380,38 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             }
         });
 
-        etHasilSatuanMuat.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-                if (etHasilSatuanMuat.getText().toString().equals("")) {
-                    btnAddHasilKerjaLaterite.setEnabled(false);
-                    btnReduceHasilKerjaLaterite.setEnabled(false);
+        if (dbhelper.layoutsetting_carlog(9, acLoadCategoryCarLog.getText().toString()).equals("L")) {
+            etHasilSatuanMuat.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // TODO Auto-generated method stub
+
+                    if (etHasilSatuanMuat.getText().toString().length() > 0) {
+                        btnAddHasilKerjaLaterite.setEnabled(true);
+                        btnReduceHasilKerjaLaterite.setEnabled(true);
+                        inputLayoutSatuanMuat.setError(null);
+                        inputLayoutSatuanMuat.setErrorEnabled(false);
+                    }
+                    else if (etHasilSatuanMuat.getText().toString().length() == 0) {
+                        etHasilKerjaCarLog.setText("0");
+                        etHasilKerjaLaterite.setText("0");
+                    }
+
                 }
-                else if (etHasilSatuanMuat.getText().toString().length() > 0) {
-                    btnAddHasilKerjaLaterite.setEnabled(true);
-                    btnReduceHasilKerjaLaterite.setEnabled(true);
-                    inputLayoutSatuanMuat.setError(null);
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    // TODO Auto-generated method stub
                 }
-            }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                @Override
+                public void afterTextChanged(Editable s) {
 
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                // TODO Auto-generated method stub
-            }
-        });
+                    // TODO Auto-generated method stub
+                }
+            });
+        }
 
         acAsalKebunCarLog.addTextChangedListener(new TextWatcher() {
             @Override
@@ -451,10 +461,19 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(etHasilSatuanMuat.getText().toString().trim())) {
+                    inputLayoutSatuanMuat.setErrorEnabled(true);
                     inputLayoutSatuanMuat.setError("Isi Satuan Muat");
-                } else {
+                }
+                else if (etHasilSatuanMuat.getText().toString().equals("0")) {
+                    inputLayoutSatuanMuat.setErrorEnabled(true);
+                    inputLayoutSatuanMuat.setError("Satuan Muat kurang!");
+                }
+                else {
                     int result = Integer.parseInt(etHasilKerjaLaterite.getText().toString()) + 1;
                     etHasilKerjaLaterite.setText(String.valueOf(result));
+
+                    int resultKerja = Integer.parseInt(etHasilKerjaCarLog.getText().toString()) + Integer.parseInt(etHasilSatuanMuat.getText().toString());
+                    etHasilKerjaCarLog.setText(String.valueOf(resultKerja));
                 }
 
             }
@@ -463,11 +482,22 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         btnReduceHasilKerjaLaterite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int result = Integer.parseInt(etHasilKerjaLaterite.getText().toString()) - 1;
-                etHasilKerjaLaterite.setText(String.valueOf(result));
+                if (TextUtils.isEmpty(etHasilSatuanMuat.getText().toString().trim())) {
+                    inputLayoutSatuanMuat.setErrorEnabled(true);
+                    inputLayoutSatuanMuat.setError("Isi Satuan Muat");
+                }
+                else if (etHasilSatuanMuat.getText().toString().equals("0")) {
+                    inputLayoutSatuanMuat.setErrorEnabled(true);
+                    inputLayoutSatuanMuat.setError("Satuan Muat kurang!");
+                }
+                else {
+                    int result = Integer.parseInt(etHasilKerjaLaterite.getText().toString()) - 1;
+                    etHasilKerjaLaterite.setText(String.valueOf(result));
 
-                int resultKerja = Integer.parseInt(etHasilKerjaCarLog.getText().toString()) - Integer.parseInt(etHasilSatuanMuat.getText().toString());
-                etHasilKerjaCarLog.setText(String.valueOf(resultKerja));
+                    int resultKerja = Integer.parseInt(etHasilKerjaCarLog.getText().toString()) - Integer.parseInt(etHasilSatuanMuat.getText().toString());
+                    etHasilKerjaCarLog.setText(String.valueOf(resultKerja));
+                }
+
             }
         });
 
@@ -487,6 +517,199 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void eventSubmitCarlog(View v) {
+        if (TextUtils.isEmpty(acLoadCategoryCarLog.getText().toString().trim())) {
+            new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Kategori Muatan").setConfirmText("OK").show();
+        } else {
+            if (dbhelper.get_categorymuatan().equals("Angkut Air/Cair Limbah [KG]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
+                || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("MN ke Blok [PKK]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("PN ke MN [RIT]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("Angkut Material Dalam Kebun  [KM]") || dbhelper.get_categorymuatan().equals("Angkt Limbah Padat Ke Lapangan [KG]")
+                    || dbhelper.get_categorymuatan().equals("Janjang Kosong [KG]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("Angkut Tangki Air [RIT]") || dbhelper.get_categorymuatan().equals("Angkut Tangki Semprot [RIT]")
+            || dbhelper.get_categorymuatan().equals("Angkut Tangki Solar [RIT]") || dbhelper.get_categorymuatan().equals("Tarik Unit [RIT]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("Antar ke Lapangan [RIT]") || dbhelper.get_categorymuatan().equals("Ke klinik / Beribadah [RIT]")
+            || dbhelper.get_categorymuatan().equals("Antar belanja [RIT]") || dbhelper.get_categorymuatan().equals("Antar anak sekolah [RIT]")) {
+                if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("Hari - Angkut Team Semprot [DAYS]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("Angkut Laterite [M3]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(etHasilKerjaLaterite.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+            else if (dbhelper.get_categorymuatan().equals("Angkut Pupuk [KG]")) {
+                if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanKegiatanCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
+                }
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setContentText("Yakin menyelesaikan pekerjaan?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        warningExitDlg.dismiss();
+                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                                .setConfirmClickListener(sweetAlertDialog1 -> finish()).setConfirmText("SELESAI").show();
+                    });
+                    warningExitDlg.show();
+                }
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

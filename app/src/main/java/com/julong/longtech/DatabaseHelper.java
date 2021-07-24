@@ -1310,7 +1310,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean insert_transportmd(String datatype, String subdatatype, String compid, String siteid, String text1, String text2, String text3, String text4,
                                       String text5, String text6, String text7, String text8, String text9, String text10, String text11, String text12,
-                                      String text13, String text14, String text15, String text16, String text17) {
+                                      String text13, String text14, String text15, String text16, String text17, String text18, String text19) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("datatype", datatype);
@@ -1334,6 +1334,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text15", text15);
         contentValues.put("text16", text16);
         contentValues.put("text17", text17);
+        contentValues.put("text18", text18);
+        contentValues.put("text19", text19);
 
         long insert = db.insert("md_01", null, contentValues);
         if (insert == -1) {
@@ -1371,6 +1373,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String get_groupmenu(String groupparamdesc, String controlsystem) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT moduledesc FROM gs_02 WHERE groupparamdesc = '" + groupparamdesc + "'  AND controlsystem = '" + controlsystem + "' ORDER BY seq ASC", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String get_categorymuatan() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT text6 FROM md_01 WHERE datatype = 'TRANSPORTRATE'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);

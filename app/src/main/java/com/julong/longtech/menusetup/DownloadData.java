@@ -232,7 +232,7 @@ public class DownloadData extends AppCompatActivity {
                                         jsonObjectTransportMD.getString("TEXT5"), jsonObjectTransportMD.getString("TEXT6"), jsonObjectTransportMD.getString("TEXT7"), jsonObjectTransportMD.getString("TEXT8"),
                                         jsonObjectTransportMD.getString("TEXT9"), jsonObjectTransportMD.getString("TEXT10"), jsonObjectTransportMD.getString("TEXT11"), jsonObjectTransportMD.getString("TEXT12"),
                                         jsonObjectTransportMD.getString("TEXT13"), jsonObjectTransportMD.getString("TEXT14"), jsonObjectTransportMD.getString("TEXT15"), jsonObjectTransportMD.getString("TEXT16"),
-                                        jsonObjectTransportMD.getString("TEXT17"));
+                                        jsonObjectTransportMD.getString("TEXT17"), jsonObjectTransportMD.getString("TEXT18"), jsonObjectTransportMD.getString("TEXT19"));
                                 intTrasport++;
                             }
 
