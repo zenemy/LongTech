@@ -335,6 +335,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public byte[] get_fotocarlog(String documentno) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT blob1, blob2 FROM bl_01 WHERE documentno = '"+documentno+"'", null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getBlob(0);
+        } else {
+            return null;
+        }
+    }
+
 
     public byte[] get_companyimg(int index) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1194,7 +1205,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String get_transactiontime(String nodoc) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT strftime('%H:%M', date1) AS startdate FROM tr_01 WHERE documentno = '"+nodoc+"' AND datatype = 'CARLOG'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
 
+    public String getnodoc_todayprosescarlog() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT documentno FROM tr_01 WHERE date(date1) = date('now', 'localtime') AND datatype = 'CARLOG' AND text20 = 'Progress'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
 
     public List<String> get_loadtype(int index) {
         ArrayList<String> dataList = new ArrayList<String>();
@@ -1637,6 +1670,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return dataList;
+    }
+
+    public Boolean change_updatestatus_carlog(String nodoc, String kmhmakhir, String latakhir, String longakhir, String status, byte[] fotokmhm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        contentValues.put("date2", savedate);
+        contentValues.put("text16", kmhmakhir);
+        contentValues.put("text21", latakhir);
+        contentValues.put("text22", longakhir);
+        contentValues.put("text23", status);
+
+        ContentValues contentValuesPhoto = new ContentValues();
+        contentValuesPhoto.put("blob2", fotokmhm);
+
+        long update = db.update("tr_01", contentValues, "documentno = '"+nodoc+"'", null);
+        long updatePhoto = db.update("bl_01", contentValuesPhoto, "documentno = '"+nodoc+"'", null);
+        if (update == -1 && updatePhoto == -1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public Boolean changepassword_myaccount(String updatedpassword) {

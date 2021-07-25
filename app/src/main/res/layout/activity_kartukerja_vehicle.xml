@@ -267,6 +267,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingStart="12dp"
+                        android:editable="false"
+                        android:inputType="none"
                         android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
@@ -364,6 +366,8 @@
                         android:id="@+id/acTujuanDivisiCarLog"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:inputType="none"
                         android:paddingStart="12dp"
                         android:paddingTop="4dp"
                         android:paddingEnd="8dp"
@@ -428,7 +432,7 @@
                 android:backgroundTint="@color/white"
                 android:orientation="vertical"
                 android:paddingBottom="8dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/judulHasilKerja"

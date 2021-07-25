@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -35,7 +36,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
     public static String nodocRKH;
     String[] arrayMenuShift = {"Shift 1", "Shift 2", "Shift 3"};
     ArrayAdapter<String> adapterMenuShift;
-    private List<String> listVehicleDlgRKH, listEmployeeDlgRKH;
+    private List<String> listVehicleCodeDlg, listVehicleNameDlg, listEmployeeNameDlg, listDriverCodeDlg, listHelper1Dlg, listHelper2Dlg;
     ArrayAdapter<String> adapterVehicleDlgRKH, adapterEmployeeDlgRKH;
 
     FloatingActionButton btnAddRKH;
@@ -45,6 +46,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
     private List<ListParamRKH> listParamRKH;
     AdapterRKH adapterRKH;
+    String selectedHelper1, selectedHelper2, selectedDriver;
 
     Dialog dlgAddUnit;
     DatabaseHelper dbHelper;
@@ -90,22 +92,41 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         adapterMenuShift = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuShift);
         acShiftDriverRKH.setAdapter(adapterMenuShift);
 
-        listVehicleDlgRKH = dbHelper.get_vehiclemasterdata();
-        adapterVehicleDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleDlgRKH);
+        listVehicleNameDlg = dbHelper.get_vehiclemasterdata();
+        adapterVehicleDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleNameDlg);
         acUnitInputRKH.setAdapter(adapterVehicleDlgRKH);
 
-        listEmployeeDlgRKH = dbHelper.get_employee(1);
-        adapterEmployeeDlgRKH = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeDlgRKH);
+        listEmployeeNameDlg = dbHelper.get_employee(1);
+        listDriverCodeDlg = dbHelper.get_employee(0);
+        listHelper1Dlg = dbHelper.get_employee(0);
+        listHelper2Dlg = dbHelper.get_employee(0);
+        adapterEmployeeDlgRKH = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeNameDlg);
         acDriverInputRKH.setAdapter(adapterEmployeeDlgRKH);
         acHelper1InputRKH.setAdapter(adapterEmployeeDlgRKH);
         acHelper2InputRKH.setAdapter(adapterEmployeeDlgRKH);
 
-        btnAddRKH.setOnClickListener(new View.OnClickListener() {
+        acDriverInputRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                dlgAddUnit.show();
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedDriver = listDriverCodeDlg.get(position);
             }
         });
+
+        acHelper1InputRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedHelper1 = listHelper1Dlg.get(position);
+            }
+        });
+
+        acHelper2InputRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedHelper2 = listHelper2Dlg.get(position);
+            }
+        });
+
+        btnAddRKH.setOnClickListener(v -> dlgAddUnit.show());
 
         btnBackRKH.setOnClickListener(v -> finish());
 
@@ -124,8 +145,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
 
                 dbHelper.insert_rkh_detail1(nodocRKH, dbHelper.get_vehiclecode(0, acUnitInputRKH.getText().toString()), acUnitInputRKH.getText().toString(),
-                        acShiftDriverRKH.getText().toString(), dbHelper.get_empcode(acDriverInputRKH.getText().toString()), dbHelper.get_empcode(acHelper1InputRKH.getText().toString()),
-                        dbHelper.get_empcode(acHelper2InputRKH.getText().toString()), etInputRKHBBM.getText().toString());
+                        acShiftDriverRKH.getText().toString(), selectedDriver, selectedHelper1, selectedHelper2, etInputRKHBBM.getText().toString());
 
                 dbHelper.delete_rkh_header(nodocRKH);
                 dbHelper.insert_rkh_header(nodocRKH, dbHelper.get_count_totalrkh(nodocRKH), etDescRKH.getText().toString(), "Proses");
