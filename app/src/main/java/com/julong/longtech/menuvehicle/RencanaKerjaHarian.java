@@ -95,7 +95,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         acUnitInputRKH.setAdapter(adapterVehicleDlgRKH);
 
         listEmployeeDlgRKH = dbHelper.get_employee(1);
-        adapterEmployeeDlgRKH = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinnerlist, R.id.spinnerItem, listEmployeeDlgRKH);
+        adapterEmployeeDlgRKH = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeDlgRKH);
         acDriverInputRKH.setAdapter(adapterEmployeeDlgRKH);
         acHelper1InputRKH.setAdapter(adapterEmployeeDlgRKH);
         acHelper2InputRKH.setAdapter(adapterEmployeeDlgRKH);
