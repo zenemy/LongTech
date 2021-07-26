@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
     ImageButton btnrefresh, openDrawerBtn, imgcamkendala;
     String lat_awal, long_awal, savedate;
     ScrollView scrollkendala;
-    ConstraintLayout clRiwayatFragment, clBgMainActivity;
+    ConstraintLayout clRiwayatFragment, clBgMainActivity, clreport;
     LinearLayout linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H, linearLayoutCarLog, linearLayoutBBM, linearLayoutService;
 
     private List<String> listKendala;
@@ -122,6 +122,7 @@ public class HomeFragment extends Fragment {
         etlebarkendala = root.findViewById(R.id.etLebarKendala);
         etluaskendala = root.findViewById(R.id.etLuasKendala);
         clRiwayatFragment = root.findViewById(R.id.clRiwayatFragment);
+        clreport = root.findViewById(R.id.cl_report);
         filtertglhistory = root.findViewById(R.id.etFilterTglHistory);
         linearLayoutAbsen = root.findViewById(R.id.linearLayoutAbsen);
         linearLayoutRKH = root.findViewById(R.id.linearLayoutRKH);
@@ -177,16 +178,16 @@ public class HomeFragment extends Fragment {
                 switch (id) {
                     case R.id.homefragment:
                         lvfragment.setVisibility(View.VISIBLE);
-                        clRiwayatFragment.setVisibility(View.GONE);
+                        clreport.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.GONE);
                         break;
                     case R.id.log:
-                        clRiwayatFragment.setVisibility(View.VISIBLE);
+                        clreport.setVisibility(View.VISIBLE);
                         lvfragment.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.GONE);
                         break;
                     case R.id.feedback:
-                        clRiwayatFragment.setVisibility(View.GONE);
+                        clreport.setVisibility(View.GONE);
                         lvfragment.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.VISIBLE);
                         break;
