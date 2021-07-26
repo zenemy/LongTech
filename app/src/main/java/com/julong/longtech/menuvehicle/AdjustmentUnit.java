@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
@@ -24,14 +25,15 @@ import java.util.Locale;
 public class AdjustmentUnit extends AppCompatActivity {
 
     String[] arrayPilihanMenu = {"Perintah Operasi Unit", "Ganti Driver / Operator", "Status Standby Unit", "Adjusment KM/HM", "Status Unit Breakdown"};
-    String codeOptionMenu;
-    private List<String> listVehicleAdjustmentUni, listEmployeeAdjustmentUnit;
+    String codeOptionMenu, selectedVehicle, selectedEmp;
+    private List<String> listVehicleName, listVehicleCode, listEmployeeName, listEmployeeCode;
     ArrayAdapter<String> adapterMenuOption, adapterVehicleAdjustmentUnit, adapterEmployeeAdjustmentUnit;
     DatabaseHelper dbHelper;
     private KeyListener keyListenerAcDriver;
 
     TextInputLayout layoutKMHMVehicle;
-    AutoCompleteTextView acPilihanMenu, acVehicleAdjustmentUnit, acVehicleStatus, acDriver;
+    Button btnSubmitAdjustment, btnBackAdjustment;
+    AutoCompleteTextView acPilihanMenu, acVehicleAdjustmentUnit, acDriver;
     EditText todayDateAdjustmentUnit;
 
     @Override
@@ -46,10 +48,18 @@ public class AdjustmentUnit extends AppCompatActivity {
         acVehicleAdjustmentUnit = findViewById(R.id.acKendaraanKerjaGantiDriver);
         layoutKMHMVehicle = findViewById(R.id.layoutKMHMVehicle);
         acDriver = findViewById(R.id.acNamaSupirGantiDriver);
+        btnSubmitAdjustment = findViewById(R.id.btnSubmitAdjustmentVehicle);
+        btnBackAdjustment = findViewById(R.id.btnBackAdjustmentVehicle);
         keyListenerAcDriver = acDriver.getKeyListener();
 
+        todayDateAdjustmentUnit.setText(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
         adapterMenuOption = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, arrayPilihanMenu);
         acPilihanMenu.setAdapter(adapterMenuOption);
+
+        listVehicleCode = dbHelper.get_vehiclemasterdata(0);
+        listVehicleName = dbHelper.get_vehiclemasterdata(1);
+        adapterVehicleAdjustmentUnit = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
+        acVehicleAdjustmentUnit.setAdapter(adapterVehicleAdjustmentUnit);
 
         acPilihanMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -59,8 +69,9 @@ public class AdjustmentUnit extends AppCompatActivity {
                 if (selection.equals("Ganti Driver / Operator")) {
                     codeOptionMenu = "CHANGE";
                     layoutKMHMVehicle.setVisibility(View.GONE);
-                    listEmployeeAdjustmentUnit = dbHelper.get_employee(1);
-                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdjustmentUnit);
+                    listEmployeeCode = dbHelper.get_employee(0);
+                    listEmployeeName = dbHelper.get_employee(1);
+                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinnerlist, R.id.spinnerItem, listEmployeeName);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
                     acDriver.setKeyListener(keyListenerAcDriver);
                 }
@@ -95,11 +106,17 @@ public class AdjustmentUnit extends AppCompatActivity {
             }
         });
 
-        listVehicleAdjustmentUni = dbHelper.get_vehiclemasterdata();
-        adapterVehicleAdjustmentUnit = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleAdjustmentUni);
-        acVehicleAdjustmentUnit.setAdapter(adapterVehicleAdjustmentUnit);
+        acVehicleAdjustmentUnit.setOnItemClickListener((adapterView, view, position, l) -> selectedVehicle = listVehicleCode.get(position));
+        acDriver.setOnItemClickListener((adapterView, view, position, l) -> selectedEmp = listEmployeeCode.get(position));
 
-        todayDateAdjustmentUnit.setText(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
+        btnBackAdjustment.setOnClickListener(view -> finish());
+
+        btnSubmitAdjustment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
 
     }
 }

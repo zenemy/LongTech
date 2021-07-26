@@ -23,6 +23,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -65,8 +66,8 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
     ImageButton imgTakePictP2H;
     Button btnSubmitP2H, btnCancelP2H;
 
-    String nodocP2H, latitudeP2H, longitudeP2H;
-    private List<String> listVehicleP2H;
+    String nodocP2H, latitudeP2H, longitudeP2H, selectedVehicleCode;
+    private List<String> listVehicleCode, listVehicleName;
     ArrayAdapter<String> adapterVehicleP2H;
 
     @Override
@@ -135,8 +136,9 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
         btnCancelP2H.setOnClickListener(v -> finish());
 
-        listVehicleP2H = dbHelper.get_vehiclemasterdata();
-        adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleP2H);
+        listVehicleCode = dbHelper.get_vehiclemasterdata(0);
+        listVehicleName = dbHelper.get_vehiclemasterdata(1);
+        adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
         acKendaraanP2H.setAdapter(adapterVehicleP2H);
 
         etJamAwalP2H.setOnClickListener(v -> {
@@ -165,11 +167,14 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             }
         });
 
-        eventClickLayout();
-
-        btnSubmitP2H.setOnClickListener(v -> {
-            eventSubmitP2H();
+        acKendaraanP2H.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedVehicleCode = listVehicleCode.get(position);
+            }
         });
+
+        eventClickLayout();
 
     }
 
@@ -319,10 +324,10 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         });
     }
 
-    private void eventSubmitP2H() {
+    public void eventSubmitP2H(View v) {
         getLocation();
         nodocP2H = dbHelper.get_tbl_username(0) + "/P2HVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-        dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecode(1, acKendaraanP2H.getText().toString()), dbHelper.get_vehiclecode(0, acKendaraanP2H.getText().toString()),
+        dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecode(1, acKendaraanP2H.getText().toString()), selectedVehicleCode,
                 etDescPengecekan.getText().toString(), latitudeP2H, longitudeP2H, byteImgP2H);
 
         if (checkKebocoranOli.isChecked()) {
@@ -390,12 +395,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         }
 
         new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Menyelesaikan P2H")
-                .setConfirmText("OK") .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        finish();
-                    }
-                }).show();
+                .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> finish()).show();
     }
 
     private void onTimeAwalSelected(int hour, int minute) {

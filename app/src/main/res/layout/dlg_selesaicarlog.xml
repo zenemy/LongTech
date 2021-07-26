@@ -316,7 +316,7 @@
             android:textColor="@color/black" />
 
         <ImageButton
-            android:id="@+id/imgCarLog"
+            android:id="@+id/imgKilometerDlgCarLog"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="4dp"

@@ -839,6 +839,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor listview_infohome() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT gs.submoduledesc AS dataname, IFNULL(tr.uploaded, '0') AS statusupload FROM tr_01 tr INNER JOIN gs_02 gs ON tr.datatype = gs.doctypecode;", null);
+        return cursor;
+    }
+
     public boolean insert_absvh(String nodoc, String kategoriabsen, String jenisabsensi,
                                 String lokasiabsen, String latitude, String longitude, byte[] fotoabsen) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -908,10 +914,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text15", ritasemuata);
         contentValues.put("text16", hasilkerja);
         contentValues.put("text17", keterangan);
-        contentValues.put("text18", latitude);
-        contentValues.put("text19", longitude);
-        contentValues.put("text20", status);
-        contentValues.put("uploaded", 0);
+        contentValues.put("text19", latitude);
+        contentValues.put("text20", longitude);
+        contentValues.put("text23", status);
 
         ContentValues contentValuesPhoto = new ContentValues();
         contentValuesPhoto.put("documentno", nodoc);
@@ -922,7 +927,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValuesPhoto.put("comp_id", get_tbl_username(14));
         contentValuesPhoto.put("site_id", get_tbl_username(15));
         contentValuesPhoto.put("blob1", fotoabsen);
-        contentValuesPhoto.put("uploaded", 0);
 
         long insert = db.insert("tr_01", null, contentValues);
         long insertPhoto = db.insert("bl_01", null, contentValuesPhoto);
@@ -1101,15 +1105,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public List<String> get_vehiclemasterdata() {
+    public List<String> get_vehiclemasterdata(int index) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text2 FROM md_01 WHERE DATATYPE = 'VEHICLE'";
+        String query = "SELECT DISTINCT text1, text2 FROM md_01 WHERE DATATYPE = 'VEHICLE'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
             do {
-                dataList.add(cursor.getString(0));
+                dataList.add(cursor.getString(index));
             }
 
             while (cursor.moveToNext());
@@ -1195,7 +1199,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String get_transactionstatuscarlog(int index) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT COUNT(*), text1, text2, text3, text4, text5, text6, text7, text8, text9, text10, text11, text12, text13, text14, text15, text16, " +
-                "text17, text18, text19, text20 FROM tr_01 WHERE datatype = 'CARLOG' AND text20 = 'Progress' AND DATE(date1) = DATE('now', 'localtime') AND uploaded = 0", null);
+                "text17, text18, text19, text20 FROM tr_01 WHERE datatype = 'CARLOG' AND text23 = 'Progress' AND DATE(date1) = DATE('now', 'localtime') AND uploaded IS NULL", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -1219,7 +1223,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getnodoc_todayprosescarlog() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT documentno FROM tr_01 WHERE date(date1) = date('now', 'localtime') AND datatype = 'CARLOG' AND text20 = 'Progress'", null);
+        Cursor cursor = db.rawQuery("SELECT documentno FROM tr_01 WHERE date(date1) = date('now', 'localtime') AND datatype = 'CARLOG' AND text23 = 'Progress'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -1672,18 +1676,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dataList;
     }
 
-    public Boolean change_updatestatus_carlog(String nodoc, String kmhmakhir, String latakhir, String longakhir, String status, byte[] fotokmhm) {
+    public Boolean change_updatestatus_carlog(String nodoc, String helper1, String helper2, String asalkebun, String asaldivisi, String asallokasi, String tujuankebun,
+                                              String tujuandivisi, String tujuanlokasi, String tujuankegiatan, String satuanmuata, String ritasemuata, String hasilkerja,
+                                              String keterangan, String kmhmakhir, String latakhir, String longakhir, String status, byte[] fotokmhm) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         contentValues.put("date2", savedate);
-        contentValues.put("text16", kmhmakhir);
+        contentValues.put("text5", helper1);
+        contentValues.put("text6", helper2);
+        contentValues.put("text7", asalkebun);
+        contentValues.put("text8", asaldivisi);
+        contentValues.put("text9", asallokasi);
+        contentValues.put("text10", tujuankebun);
+        contentValues.put("text11", tujuandivisi);
+        contentValues.put("text12", tujuanlokasi);
+        contentValues.put("text13", tujuankegiatan);
+        contentValues.put("text14", satuanmuata);
+        contentValues.put("text15", ritasemuata);
+        contentValues.put("text16", hasilkerja);
+        contentValues.put("text17", keterangan);
+        contentValues.put("text18", kmhmakhir);
         contentValues.put("text21", latakhir);
         contentValues.put("text22", longakhir);
         contentValues.put("text23", status);
+        contentValues.put("uploaded", 0);
 
         ContentValues contentValuesPhoto = new ContentValues();
         contentValuesPhoto.put("blob2", fotokmhm);
+        contentValuesPhoto.put("uploaded", 0);
 
         long update = db.update("tr_01", contentValues, "documentno = '"+nodoc+"'", null);
         long updatePhoto = db.update("bl_01", contentValuesPhoto, "documentno = '"+nodoc+"'", null);

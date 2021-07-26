@@ -164,6 +164,13 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             }
         });
 
+        acTujuanKegiatanCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedTujuanKegiatan = listTujuanKegiatanCode.get(position);
+            }
+        });
+
         acAsalDivisiCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -648,42 +655,49 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 layoutAsalCarLog.setVisibility(View.VISIBLE);
                 inputLayoutAsalKebun.setVisibility(View.VISIBLE);
                 acAsalKebunCarLog.setText(dbhelper.get_singlekebun(dbhelper.get_transactionstatuscarlog(7)));
+                selectedAsalKebun = dbhelper.get_transactionstatuscarlog(7);
             }
 
             if (dbhelper.get_transactionstatuscarlog(8).length() > 0) {
                 layoutAsalCarLog.setVisibility(View.VISIBLE);
                 inputLayoutAsalDivisi.setVisibility(View.VISIBLE);
                 acAsalDivisiCarLog.setText(dbhelper.get_singledivisi(dbhelper.get_transactionstatuscarlog(8)));
+                selectedAsalDivisi = dbhelper.get_transactionstatuscarlog(8);
             }
 
             if (dbhelper.get_transactionstatuscarlog(9).length() > 0) {
                 layoutAsalCarLog.setVisibility(View.VISIBLE);
                 inputLayoutAsalLokasi.setVisibility(View.VISIBLE);
                 acAsalLokasiCarLog.setText(dbhelper.get_singlelokasi(dbhelper.get_transactionstatuscarlog(9)));
+                selectedAsalLokasi = dbhelper.get_transactionstatuscarlog(9);
             }
 
             if (dbhelper.get_transactionstatuscarlog(10).length() > 0) {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanKebun.setVisibility(View.VISIBLE);
                 acTujuanKebunCarLog.setText(dbhelper.get_singlekebun(dbhelper.get_transactionstatuscarlog(10)));
+                selectedTujuanKebun = dbhelper.get_transactionstatuscarlog(10);
             }
 
             if (dbhelper.get_transactionstatuscarlog(11).length() > 0) {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanDivisi.setVisibility(View.VISIBLE);
                 acTujuanDivisiCarLog.setText(dbhelper.get_singledivisi(dbhelper.get_transactionstatuscarlog(11)));
+                selectedTujuanDivisi = dbhelper.get_transactionstatuscarlog(11);
             }
 
             if (dbhelper.get_transactionstatuscarlog(12).length() > 0) {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanLokasi.setVisibility(View.VISIBLE);
                 acTujuanLokasiCarLog.setText(dbhelper.get_singlelokasi(dbhelper.get_transactionstatuscarlog(12)));
+                selectedTujuanLokasi = dbhelper.get_transactionstatuscarlog(12);
             }
 
             if (dbhelper.get_transactionstatuscarlog(13).length() > 0) {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanKegiatan.setVisibility(View.VISIBLE);
                 acTujuanKegiatanCarLog.setText(dbhelper.get_transactionstatuscarlog(13));
+                selectedTujuanKegiatan = dbhelper.get_transactionstatuscarlog(13);
             }
 
             if (dbhelper.get_transactionstatuscarlog(14).length() > 0) {
@@ -765,7 +779,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             EditText etNoteDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etNoteDlgCarLog);
             TextInputLayout inputlayoutDlgKmAkhir = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhir);
             TextInputLayout inputlayoutDlgKmAkhirDecimal = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhirDecimal);
-            btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgCarLog);
+            btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
 
             etKMHMAkhirDlgCarLog.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -860,7 +874,9 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         String kilometerAkhir = etKMHMAkhirDlgCarLog.getText().toString() + "," + etKMHMAkhirKomaDlgCarLog.getText().toString();
 
-                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), kilometerAkhir, latCarLog, longCarLog, "Selesai", fotoKilometer);
+                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), selectedHelper1, selectedHelper2, selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi,
+                                selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi, selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
+                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), kilometerAkhir, latCarLog, longCarLog, "Selesai", fotoKilometer);
                         dlgSelesaiCarLog.dismiss();
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
                                 .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
@@ -1130,24 +1146,29 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            gambarCarLog = stream.toByteArray();
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarCarLog, 0, gambarCarLog.length);
-            btnCameraCarLog.setImageBitmap(compressedBitmap);
-            btnCameraCarLog.setForeground(null);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                gambarCarLog = stream.toByteArray();
+                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarCarLog, 0, gambarCarLog.length);
+                btnCameraCarLog.setImageBitmap(compressedBitmap);
+                btnCameraCarLog.setBackground(null);
+            }
+
         }
 
-        if (requestCode == 2 && resultCode == RESULT_OK) {
-            Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            fotoKilometer = stream.toByteArray();
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(fotoKilometer, 0, fotoKilometer.length);
-            btnFotoKilometer.setImageBitmap(compressedBitmap);
-            btnFotoKilometer.setForeground(null);
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                fotoKilometer = stream.toByteArray();
+                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(fotoKilometer, 0, fotoKilometer.length);
+                btnFotoKilometer.setImageBitmap(compressedBitmap);
+                btnFotoKilometer.setBackground(null);
+            }
         }
     }
 

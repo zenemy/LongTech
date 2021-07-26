@@ -1040,6 +1040,7 @@
             android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
+            android:onClick="eventSubmitP2H"
             android:insetBottom="0dp"
             app:cornerRadius="10dp"
             android:text="SIMPAN"

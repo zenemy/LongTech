@@ -92,7 +92,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         adapterMenuShift = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuShift);
         acShiftDriverRKH.setAdapter(adapterMenuShift);
 
-        listVehicleNameDlg = dbHelper.get_vehiclemasterdata();
+        listVehicleNameDlg = dbHelper.get_vehiclemasterdata(1);
         adapterVehicleDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleNameDlg);
         acUnitInputRKH.setAdapter(adapterVehicleDlgRKH);
 

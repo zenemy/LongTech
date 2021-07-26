@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -63,6 +64,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -91,11 +93,14 @@ public class HomeFragment extends Fragment {
     ImageButton btnrefresh, openDrawerBtn, imgcamkendala;
     String lat_awal, long_awal, savedate;
     ScrollView scrollkendala;
-    ConstraintLayout clRiwayatFragment, clBgMainActivity, clreport;
-    LinearLayout linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H, linearLayoutCarLog, linearLayoutBBM, linearLayoutService;
+    ConstraintLayout clRiwayatFragment, clBgMainActivity;
+    LinearLayout linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H, linearLayoutCarLog, linearLayoutBBM, linearLayoutService, clreport;
 
     private List<String> listKendala;
     ArrayAdapter<String> adapterKendala;
+    private List<ParamListHomeInfo> informationsHome;
+    private AdapterHomeInfo adapterHomeInfo;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -180,6 +185,7 @@ public class HomeFragment extends Fragment {
                         lvfragment.setVisibility(View.VISIBLE);
                         clreport.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.GONE);
+                        loadlvinfohome();
                         break;
                     case R.id.log:
                         clreport.setVisibility(View.VISIBLE);
@@ -419,6 +425,24 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
 
+        loadlvinfohome();
+    }
+
+    public void loadlvinfohome() {
+        informationsHome = new ArrayList<>();
+        informationsHome.clear();
+        Cursor cursor = dbhelper.listview_infohome();
+        if (cursor.moveToFirst()) {
+            do {
+                ParamListHomeInfo infoListFragment = new ParamListHomeInfo(
+                        cursor.getString(cursor.getColumnIndex("dataname")),
+                        cursor.getString(cursor.getColumnIndex("statusupload"))
+                );
+                informationsHome.add(infoListFragment);
+            } while (cursor.moveToNext());
+        }
+        adapterHomeInfo = new AdapterHomeInfo(getContext(), R.layout.item_lvworkinfohome, informationsHome);
+        lvfragment.setAdapter(adapterHomeInfo);
     }
 
     private void getLocation() {
