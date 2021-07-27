@@ -692,6 +692,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insert_adjustmentunit(String nodoc, String tglPerintah, String unitstatus, String vehiclecode, String empcode, String note, String kmhm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        contentValues.put("documentno", nodoc);
+        contentValues.put("datatype", "RUNVH");
+        contentValues.put("subdatatype", get_tbl_username(0));
+        contentValues.put("comp_id", get_tbl_username(14));
+        contentValues.put("site_id", get_tbl_username(15));
+        contentValues.put("date1", savedate);
+        contentValues.put("date2", tglPerintah);
+        contentValues.put("text1", unitstatus);
+        contentValues.put("text2", vehiclecode);
+        contentValues.put("text3", empcode);
+        contentValues.put("text4", note);
+        contentValues.put("text5", kmhm);
+        contentValues.put("uploaded", 0);
+
+        long insert = db.insert("tr_01", null, contentValues);
+        if (insert == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public boolean delete_rkh_header(String nodoc) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -841,7 +867,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_infohome() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT gs.submoduledesc AS dataname, IFNULL(tr.uploaded, '0') AS statusupload FROM tr_01 tr INNER JOIN gs_02 gs ON tr.datatype = gs.doctypecode;", null);
+        Cursor cursor = db.rawQuery("SELECT gs.submoduledesc AS dataname, IFNULL(tr.uploaded, '0') AS statusupload, strftime('%d-%m-%Y', tr.date1) AS transactiondate FROM tr_01 tr INNER JOIN gs_02 gs ON tr.datatype = gs.doctypecode;", null);
         return cursor;
     }
 

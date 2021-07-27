@@ -50,10 +50,10 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
         final View listViewItem = inflater.inflate(R.layout.item_lvworkinfohome, null, true);
         final TextView tvWorkType = (TextView) listViewItem.findViewById(R.id.tvWorkTypeInfoHome);
         final TextView tvWorkStatus = (TextView) listViewItem.findViewById(R.id.tvWorkStatusInfoHome);
+        final TextView tvTransactionDate = (TextView) listViewItem.findViewById(R.id.tvTransactionDateInfoHome);
         final ParamListHomeInfo listInfo = listHomeInfos.get(position);
 
         tvWorkType.setText(listInfo.getDatatype());
-        tvWorkStatus.setText(listInfo.getWorkstatus());
 
         if (listInfo.getWorkstatus().equals("0")) {
             tvWorkStatus.setText("Pekerjaan belum diupload");
@@ -61,6 +61,8 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
         else {
             tvWorkStatus.setText("Pekerjaan sudah diupload");
         }
+
+        tvTransactionDate.setText(listInfo.getTransactiondate());
 
         return listViewItem;
     }

@@ -436,7 +436,8 @@ public class HomeFragment extends Fragment {
             do {
                 ParamListHomeInfo infoListFragment = new ParamListHomeInfo(
                         cursor.getString(cursor.getColumnIndex("dataname")),
-                        cursor.getString(cursor.getColumnIndex("statusupload"))
+                        cursor.getString(cursor.getColumnIndex("statusupload")),
+                        cursor.getString(cursor.getColumnIndex("transactiondate"))
                 );
                 informationsHome.add(infoListFragment);
             } while (cursor.moveToNext());

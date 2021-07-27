@@ -142,7 +142,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         acKendaraanP2H.setAdapter(adapterVehicleP2H);
 
         etJamAwalP2H.setOnClickListener(v -> {
-            MaterialTimePicker timePickerJamAwalP2H = new MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_24H).build();
+            MaterialTimePicker timePickerJamAwalP2H = new MaterialTimePicker.Builder().setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD).setTimeFormat(TimeFormat.CLOCK_24H).build();
             timePickerJamAwalP2H.show(getSupportFragmentManager(), "TAG");
 
             timePickerJamAwalP2H.addOnPositiveButtonClickListener(selection -> {
@@ -151,7 +151,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         });
 
         etJamAkhirP2H.setOnClickListener(v -> {
-            MaterialTimePicker timePickerJamAkhirP2H = new MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_24H).build();
+            MaterialTimePicker timePickerJamAkhirP2H = new MaterialTimePicker.Builder().setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD).setTimeFormat(TimeFormat.CLOCK_24H).build();
             timePickerJamAkhirP2H.show(getSupportFragmentManager(), "TAG");
 
             timePickerJamAkhirP2H.addOnPositiveButtonClickListener(selection -> {
