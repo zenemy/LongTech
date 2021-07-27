@@ -58,6 +58,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class KartuKerjaVehicle extends AppCompatActivity {
 
+    private static int dataProcess, REQUEST_IMAGE_CAPTURE = 1;
     private KeyListener keyListenerEtHasilKerja, keyListenerJumlahRitase;
     byte[] gambarCarLog, fotoKilometer;
     Handler handler = new Handler();
@@ -141,9 +142,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
         btnCameraCarLog.setOnClickListener(v -> {
             gambarCarLog = null;
+            dataProcess = 1;
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(this.getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, 1);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         });
 
@@ -844,9 +846,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     fotoKilometer = null;
+                    dataProcess = 2;
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(KartuKerjaVehicle.this.getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, 2);
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                     }
                 }
             });
@@ -1146,8 +1149,9 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
+
+        if (dataProcess == 1) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
@@ -1156,11 +1160,11 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 btnCameraCarLog.setImageBitmap(compressedBitmap);
                 btnCameraCarLog.setBackground(null);
             }
-
         }
 
-        if (requestCode == 2) {
-            if (resultCode == RESULT_OK) {
+
+        if (dataProcess == 2) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);

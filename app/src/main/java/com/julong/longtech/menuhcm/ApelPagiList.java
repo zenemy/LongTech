@@ -2,40 +2,29 @@ package com.julong.longtech.menuhcm;
 
 public class ApelPagiList {
 
-    private String empcode;
-    private String empname;
-    private String jabatan;
-    private String ancak;
-    private String time;
-    private String tipeabsen;
+    private String employeeName;
+    private String positionName;
+    private String metodeAbsen;
+    private String waktuAbsem;
 
-    public ApelPagiList(String empcode, String empname, String jabatan, String ancak, String time, String tipeabsen, String gantiancak) {
-
-        this.empcode = empcode;
-        this.empname = empname;
-        this.jabatan = jabatan;
-        this.ancak = ancak;
-        this.tipeabsen = tipeabsen;
-        this.time = time;
+    public ApelPagiList(String employeeName, String positionName, String metodeAbsen, String waktuAbsem) {
+        this.employeeName = employeeName;
+        this.positionName = positionName;
+        this.metodeAbsen = metodeAbsen;
+        this.waktuAbsem = waktuAbsem;
     }
 
-    public String getEmpcode() {
-        return empcode;
+    public String getEmployeeName() {
+        return employeeName;
     }
-    public String getEmpname() {
-        return empname;
+    public String getPositionName() {
+        return positionName;
     }
-    public String getJabatan() {
-        return jabatan;
+    public String getMetodeAbsen() {
+        return metodeAbsen;
     }
-    public String getAncak() {
-        return ancak;
-    }
-    public String gettime() {
-        return time;
-    }
-    public String getTipeabsen() {
-        return tipeabsen;
+    public String getWaktuAbsem() {
+        return waktuAbsem;
     }
 
 }

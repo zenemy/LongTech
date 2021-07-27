@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvEmpNameApelPagiLV"
+            android:id="@+id/tvEmpApelPagiLV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="EMPLOYEE NAME"
