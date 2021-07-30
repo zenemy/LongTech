@@ -25,12 +25,15 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static String url_fetchversion = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/dsi_version.php?systemcode=LONGTECH01";
-    public static String url_fetchlanguage = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/dsi_language.php";
+    public static String url_api = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/";
+    public static String systemCode = "LONGTECH01";
+    public static String systemName = "DSI SYSTEM";
+    public static int versionNumber = 0;
+    public static String versionName = "Version 0.1";
 
     public DatabaseHelper(Context context) {
         super(context, "db_dsi.db", null,
-                31);
+                32);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         //Setting awal dan User
         db.execSQL("CREATE TABLE tbl_companyurl (groupcompanycode text, logocomp blob, backgroundimg blob, systemname text, urlapi text, " +
-                "picname TEXT, picemail TEXT, picnotelp TEXT, compaddress TEXT, reg_type text, tdate date, headercolor text, textcolor text, lastupdate date)");
+                "picname TEXT, picemail TEXT, picnotelp TEXT, compaddress TEXT, reg_type text, tdate date, headercolor text, textcolor text, lastupdate datetime)");
 
         db.execSQL("CREATE TABLE tbl_username (userid text PRIMARY KEY, username text, " +
                 "usertype text, userrole text, password text, pin text, reg_status varchar, " +
@@ -139,11 +142,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean insert_tbl_version(String v_versionnumber_new, String v_versionname_new, String v_tdate,
                                       String v_remarks_new, String link_download) {
-
-        String systemCode = "LONGTECH01";
-        String systemName = "DSI SYSTEM";
-        int versionNumber = 0;
-        String versionName = "Version 0.1";
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from tbl_version");
@@ -1212,7 +1210,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean insert_companyinfo(String groupcompanycode, byte[] logocomp, byte[] bgimage, String sysname, String urlapi, String picname, String picemail, String pictelp, String compaddress) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM tbl_companyurl");
         ContentValues contentValues = new ContentValues();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         contentValues.put("groupcompanycode", groupcompanycode);
         contentValues.put("logocomp", logocomp);
         contentValues.put("backgroundimg", bgimage);
@@ -1222,6 +1222,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("picemail", picemail);
         contentValues.put("picnotelp", pictelp);
         contentValues.put("compaddress", compaddress);
+        contentValues.put("lastupdate", savedate);
 
         long insert = db.insert("tbl_companyurl", null, contentValues);
         if (insert == -1) {

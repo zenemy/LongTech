@@ -11,15 +11,15 @@
 
     </style>
 
-    <style name="AppTest" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="ThemeDarkBlue" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimaryDark</item>
-        <item name="android:textColor">@color/red</item>
-        <item name="android:textSize" >12dp</item>
-
+        <item name="colorPrimary">#30336B</item>
+        <item name="colorPrimaryDark">#30336B</item>
+        <item name="colorAccent">#30336B</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize" >14sp</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="roundedCornersImageView" parent="">

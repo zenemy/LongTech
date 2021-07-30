@@ -46,10 +46,10 @@ public class UpdateSystem extends AppCompatActivity {
             public void onResponse(String response) {
                 try {
                     JSONObject jsonPost = new JSONObject(response.toString());
-                    dbhelper.generate_tbl_version(jsonPost.getString("VERSIONNUMBER"),
+                    dbhelper.insert_tbl_version(jsonPost.getString("VERSIONNUMBER"),
                             jsonPost.getString("VERSIONNAME"),
                             jsonPost.getString("TDATE"),
-                            jsonPost.getString("REMARKS"));
+                            jsonPost.getString("REMARKS"), jsonPost.getString("link_download"));
                     String status_update;
                     try {
                         if (!dbhelper.get_tbl_version(2).equals(dbhelper.get_tbl_version(6))) {

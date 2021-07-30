@@ -61,14 +61,17 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static com.julong.longtech.DatabaseHelper.url_fetchlanguage;
-import static com.julong.longtech.DatabaseHelper.url_fetchversion;
+import static com.julong.longtech.DatabaseHelper.systemCode;
+import static com.julong.longtech.DatabaseHelper.url_api;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -76,9 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     HashPassword hashPassword;
 
     //Inisialisasi String
-    public static String v_dlg_title,
-            v_dlg_btn1, v_dlg_btn2, v_dlg_btn3,
-            v_rtn_dlg_string, v_rtn_dlg_string2, v_rtn_dlg_string3;
+    public static String v_dlg_title, v_dlg_btn1, v_dlg_btn2, v_rtn_dlg_string;
     public static String return_koneksi, url_data, checkuser, server_url;
     private List<String> languages;
     ArrayAdapter<String> adapterMenuLanguage;
@@ -166,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         btnDialogInfo.setOnClickListener(v -> dialoginfo.dismiss());
 
         generate_version();
+        generate_companyinfo();
 //        generate_language();
 
         //Inisialisasi Dialog Gambar
@@ -578,9 +580,6 @@ public class LoginActivity extends AppCompatActivity {
                                     dbhelper.delete_data_username();
                                     et_password.setText(null);
 
-                                    byte[] decodedLogoComp = Base64.decode(jsonPost.getString("LOGOCOMP"), Base64.DEFAULT);
-                                    byte[] decodedBgComp = Base64.decode(jsonPost.getString("BACKGROUNDIMG"), Base64.DEFAULT);
-
                                     dbhelper.insert_tblusername(jsonPost.getString("USERID"), jsonPost.getString("USERNAME"), jsonPost.getString("USERTYPE"), jsonPost.getString("POSITION_NAME"),
                                             jsonPost.getString("COMP_ID"), jsonPost.getString("SITE_ID"), jsonPost.getString("DEPTCODE"), jsonPost.getString("DIVCODE"),
                                             jsonPost.getString("GANGCODE"), jsonPost.getString("ANCAKCODE"), jsonPost.getString("SHIFTCODE"),
@@ -591,10 +590,6 @@ public class LoginActivity extends AppCompatActivity {
                                         byte[] decodedUserPhoto = Base64.decode(jsonPost.getString("BLOBUSERPHOTO"), Base64.DEFAULT);
                                         dbhelper.update_userpphoto(decodedUserPhoto);
                                     }
-
-                                    dbhelper.insert_companyinfo(jsonPost.getString("GROUPCOMPANYCODE"), decodedLogoComp, decodedBgComp, jsonPost.getString("SYSTEMNAME"),
-                                            jsonPost.getString("URLAPI"), jsonPost.getString("PICNAME"), jsonPost.getString("PICEMAIL"),
-                                            jsonPost.getString("PICNOTELP"), jsonPost.getString("ADDRESS"));
 
                                     try {
                                         Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(), 0, dbhelper.get_gambar_user().length);
@@ -649,12 +644,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                     queue.add(stringRequest);
-                    queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
-                        @Override
-                        public void onRequestFinished(Request<Object> request) {
-                            pDialog.dismiss();
-                        }
-                    });
                     handler.removeCallbacks(this);
                 }
             }, 2000);
@@ -665,69 +654,110 @@ public class LoginActivity extends AppCompatActivity {
     void generate_version() {
         RequestQueue queue = Volley.newRequestQueue(this);
         return_koneksi = null;
-        JSONObject jsonBody = new JSONObject();
-        final String requestBody = jsonBody.toString();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_fetchversion, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonPost = new JSONObject(response.toString());
-                    return_koneksi = "OK";
-                    dbhelper.insert_tbl_version(jsonPost.getString("VERSIONNUMBER"), jsonPost.getString("VERSIONNAME"),
-                            jsonPost.getString("TDATE"), jsonPost.getString("REMARKS"), jsonPost.getString("link_download"));
-                    String status_update;
+        if (systemCode != null || systemCode.equals("")) {
+            url_data = url_api + "dsi_version.php?systemcode=" + systemCode;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_data, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
                     try {
-                        if (!dbhelper.get_tbl_version(2).equals(dbhelper.get_tbl_version(6))) {
-                            status_update = "NEW";
-                            dbhelper.updatestatusversion(status_update);
-                            tvversion.setTextColor(0xFFD51616);
-                            tvversion.setText("Update System Tersedia");
-                            tvDlgInfoTitle.setText("Update System Tersedia\n\n"+ dbhelper.get_tbl_version(7)+ "\n[" +
-                                    dbhelper.get_tbl_version(8)+ "]\n\n" +dbhelper.get_tbl_version(9));
-                            dialoginfo.show();
+                        JSONObject jsonPost = new JSONObject(response.toString());
+                        return_koneksi = "OK";
+                        dbhelper.insert_tbl_version(jsonPost.getString("VERSIONNUMBER"), jsonPost.getString("VERSIONNAME"),
+                                jsonPost.getString("TDATE"), jsonPost.getString("REMARKS"), jsonPost.getString("link_download"));
+                        String status_update;
+                        try {
+                            if (!dbhelper.get_tbl_version(2).equals(dbhelper.get_tbl_version(6))) {
+                                status_update = "NEW";
+                                dbhelper.updatestatusversion(status_update);
+                                tvversion.setTextColor(0xFFD51616);
+                                tvversion.setText("Update System Tersedia");
+                                tvDlgInfoTitle.setText("Update System Tersedia\n\n"+ dbhelper.get_tbl_version(7)+ "\n[" +
+                                        dbhelper.get_tbl_version(8)+ "]\n\n" +dbhelper.get_tbl_version(9));
+                                dialoginfo.show();
 
-                            tvversion.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    tvDlgInfoTitle.setText("Update System Tersedia\n\n"+ dbhelper.get_tbl_version(7)+ "\n[" +
-                                            dbhelper.get_tbl_version(8)+ "]\n\n" +dbhelper.get_tbl_version(9));
-                                    dialoginfo.show();
-                                }
-                            });
-                        } else {
-                            status_update = "NO";
-                            dbhelper.updatestatusversion(status_update);
-                            tvversion.setTextColor(0xff305031);
-                            tvversion.setText(dbhelper.get_tbl_version(3));
+                                tvversion.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        tvDlgInfoTitle.setText("Update System Tersedia\n\n"+ dbhelper.get_tbl_version(7)+ "\n[" +
+                                                dbhelper.get_tbl_version(8)+ "]\n\n" +dbhelper.get_tbl_version(9));
+                                        dialoginfo.show();
+                                    }
+                                });
+                            } else {
+                                status_update = "NO";
+                                dbhelper.updatestatusversion(status_update);
+                                tvversion.setTextColor(0xff305031);
+                                tvversion.setText(dbhelper.get_tbl_version(3));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        }, new Response.ErrorListener() {
+            }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                return_koneksi = null;
-                tvDlgInfoTitle.setText("Anda Berada Pada Mode Offline");
-                dialoginfo.show();
-                String status_update;
-                status_update = "NO";
-                dbhelper.updatestatusversion(status_update);
-                tvversion.setTextColor(0xff305031);
-                tvversion.setText(dbhelper.get_tbl_version(3));
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    return_koneksi = null;
+                    tvDlgInfoTitle.setText("Anda Berada Pada Mode Offline");
+                    dialoginfo.show();
+                    String status_update;
+                    status_update = "NO";
+                    dbhelper.updatestatusversion(status_update);
+                    tvversion.setTextColor(0xff305031);
+                    tvversion.setText(dbhelper.get_tbl_version(3));
 
-            }
-        });
-        queue.add(stringRequest);
+                }
+            });
+            queue.add(stringRequest);
+        }
+    }
+
+    void generate_companyinfo() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        if (systemCode != null || systemCode.equals("")) {
+            String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+            dbhelper.get_companyinfo(14);
+            url_data = url_api + "fetchdata/getcompanyinfo.php?systemcode=" + systemCode + "&sysdate=" + currentDateTime;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_data, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonPost = new JSONObject(response.toString());
+                        try {
+                            //Jika dapat perintah update, update table company: background logo dan nama system
+                            if (jsonPost.getString("RESPON").equals("UPDATECOMPANY")) {
+                                byte[] decodedLogoComp = Base64.decode(jsonPost.getString("LOGOCOMP"), Base64.DEFAULT);
+                                byte[] decodedBgComp = Base64.decode(jsonPost.getString("BACKGROUNDIMG"), Base64.DEFAULT);
+
+                                dbhelper.insert_companyinfo(jsonPost.getString("GROUPCOMPANYCODE"), decodedLogoComp, decodedBgComp,
+                                        jsonPost.getString("SYSTEMNAME"), jsonPost.getString("URLAPI"),
+                                        jsonPost.getString("PICNAME"), jsonPost.getString("PICEMAIL"),
+                                        jsonPost.getString("PICNOTELP"), jsonPost.getString("ADDRESS"));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            queue.add(stringRequest);
+        }
     }
 
     void generate_language() {
+        url_data = url_api + "dsi_language.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url_fetchlanguage, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
