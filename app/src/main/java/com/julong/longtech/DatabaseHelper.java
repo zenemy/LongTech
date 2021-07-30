@@ -156,6 +156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("versionname_new", v_versionname_new);
         contentValues.put("tdate_new", v_tdate);
         contentValues.put("remarks_new", v_remarks_new);
+        contentValues.put("link_download", link_download);
 
         // Insert Row
         long insert = db.insert("tbl_version", null, contentValues);
