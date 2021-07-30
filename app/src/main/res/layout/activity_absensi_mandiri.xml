@@ -219,6 +219,7 @@
                         android:id="@+id/etLokasiAbsensiMandiri"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:singleLine="true"
                         android:hint="Masukkan Lokasi Absen"
                         android:paddingStart="16dp"
                         android:paddingTop="8dp"

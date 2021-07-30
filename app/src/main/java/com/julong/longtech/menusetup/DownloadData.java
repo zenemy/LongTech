@@ -219,8 +219,28 @@ public class DownloadData extends AppCompatActivity {
                                         jsonObjectMD.getString("TEXT16"), jsonObjectMD.getString("TEXT17"), jsonObjectMD.getString("TEXT18"), jsonObjectMD.getString("TEXT19"),
                                         jsonObjectMD.getString("TEXT20"), jsonObjectMD.getString("TEXT21"), jsonObjectMD.getString("TEXT22"), jsonObjectMD.getString("TEXT23"),
                                         jsonObjectMD.getString("TEXT24"), jsonObjectMD.getString("TEXT25"), jsonObjectMD.getString("TEXT26"), jsonObjectMD.getString("TEXT27"),
-                                        jsonObjectMD.getString("TEXT28"), jsonObjectMD.getString("TEXT29"), jsonObjectMD.getString("TEXT30"));
+                                        jsonObjectMD.getString("TEXT28"), jsonObjectMD.getString("TEXT29"), jsonObjectMD.getString("TEXT30"), jsonObjectMD.getString("WEBID"),
+                                        jsonObjectMD.getString("WEBPARENTID"), jsonObjectMD.getString("WEBPARENTITEMID"));
                                 intMD++;
+                            }
+
+                            JSONArray jsonArrayMD2 = response.getJSONArray("MASTERDATA2");
+                            int intMD2 = 0;
+                            while (intMD2 < jsonArrayMD2.length()) {
+                                JSONObject jsonObjectMD2 = jsonArrayMD2.getJSONObject(intMD2);
+                                dbhelper.insert_tablemd2(jsonObjectMD2.getString("DOCUMENTNO"), jsonObjectMD2.getString("DATATYPE"), jsonObjectMD2.getString("SUBDATATYPE"),
+                                        jsonObjectMD2.getString("ITEMDATA"), jsonObjectMD2.getString("SUBITEMDATA"), jsonObjectMD2.getString("COMP_ID"),
+                                        jsonObjectMD2.getString("SITE_ID"), jsonObjectMD2.getString("DATE1"), jsonObjectMD2.getString("DATE2"),
+                                        jsonObjectMD2.getString("DATE3"), jsonObjectMD2.getString("DATE4"), jsonObjectMD2.getString("DATE5"), jsonObjectMD2.getString("TEXT1"),
+                                        jsonObjectMD2.getString("TEXT2"), jsonObjectMD2.getString("TEXT3"), jsonObjectMD2.getString("TEXT4"), jsonObjectMD2.getString("TEXT5"),
+                                        jsonObjectMD2.getString("TEXT6"), jsonObjectMD2.getString("TEXT7"), jsonObjectMD2.getString("TEXT8"), jsonObjectMD2.getString("TEXT9"),
+                                        jsonObjectMD2.getString("TEXT10"), jsonObjectMD2.getString("TEXT11"), jsonObjectMD2.getString("TEXT12"), jsonObjectMD2.getString("TEXT13"),
+                                        jsonObjectMD2.getString("TEXT14"), jsonObjectMD2.getString("TEXT15"), jsonObjectMD2.getString("TEXT16"), jsonObjectMD2.getString("TEXT17"),
+                                        jsonObjectMD2.getString("TEXT18"), jsonObjectMD2.getString("TEXT19"), jsonObjectMD2.getString("TEXT20"), jsonObjectMD2.getString("TEXT21"),
+                                        jsonObjectMD2.getString("TEXT22"), jsonObjectMD2.getString("TEXT23"), jsonObjectMD2.getString("TEXT24"), jsonObjectMD2.getString("TEXT25"),
+                                        jsonObjectMD2.getString("TEXT26"), jsonObjectMD2.getString("TEXT27"), jsonObjectMD2.getString("TEXT28"), jsonObjectMD2.getString("TEXT29"),
+                                        jsonObjectMD2.getString("TEXT30"), jsonObjectMD2.getString("WEBID"), jsonObjectMD2.getString("WEBPARENTID"), jsonObjectMD2.getString("WEBPARENTITEMID"));
+                                intMD2++;
                             }
 
                             JSONArray jsonArrayTransportMD = response.getJSONArray("DATATRANSPORT");

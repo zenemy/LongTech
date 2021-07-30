@@ -2,12 +2,14 @@ package com.julong.longtech.ui.home;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
@@ -16,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -43,8 +47,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.GPSTracker;
+import com.julong.longtech.HashPassword;
 import com.julong.longtech.LoginActivity;
 import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
@@ -77,8 +86,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private final int MAX_NUMBER = 99;
-    private int notification_numbercount = 1;
+    HashPassword hashPassword;
 
     DatabaseHelper dbhelper;
     public static TextView tvjabatanuser, tvnamauser;
@@ -94,7 +102,7 @@ public class HomeFragment extends Fragment {
     String lat_awal, long_awal, savedate;
     ScrollView scrollkendala;
     ConstraintLayout clRiwayatFragment, clBgMainActivity;
-    LinearLayout linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H, linearLayoutCarLog, linearLayoutBBM, linearLayoutService, clreport;
+    LinearLayout linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H, linearLayoutCarLog, linearLayoutBBM, linearLayoutService, clreport;
 
     private List<String> listKendala;
     ArrayAdapter<String> adapterKendala;
@@ -106,6 +114,7 @@ public class HomeFragment extends Fragment {
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         dbhelper = new DatabaseHelper(getContext());
+        hashPassword = new HashPassword(11);
 
         tvnamauser = root.findViewById(R.id.tvNamaUser);
         //tvSystemNameFragmentHome = root.findViewById(R.id.systemNameFragmentHome);
@@ -135,6 +144,7 @@ public class HomeFragment extends Fragment {
         linearLayoutCarLog = root.findViewById(R.id.linearLayoutCarLog);
         linearLayoutBBM = root.findViewById(R.id.linearLayoutBBM);
         linearLayoutService = root.findViewById(R.id.linearLayoutService);
+        linearLayoutQR = root.findViewById(R.id.linearLayoutMyQR);
 
         generate_listkendala();
 
@@ -394,6 +404,46 @@ public class HomeFragment extends Fragment {
     }
 
     private void eventClickMenu() {
+
+        linearLayoutQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialogMyQR = new Dialog(getActivity());
+                dialogMyQR.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialogMyQR.setContentView(R.layout.dialog_myqr);
+                dialogMyQR.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                dialogMyQR.setCanceledOnTouchOutside(false);
+                Window windowQR = dialogMyQR.getWindow();
+                windowQR.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                TextView tvEmpNameDialogQR = dialogMyQR.findViewById(R.id.tvEmpNameDialogQR);
+                ImageView imgQrEmployee = dialogMyQR.findViewById(R.id.imgQrEmployee);
+                Button btnBackDlgQR = dialogMyQR.findViewById(R.id.btnBackDlgQR);
+                tvEmpNameDialogQR.setText(dbhelper.get_tbl_username(10));
+                dialogMyQR.show();
+
+                btnBackDlgQR.setOnClickListener(view1 -> dialogMyQR.dismiss());
+                QRCodeWriter writer = new QRCodeWriter();
+
+                try {
+                    String hashedValue = hashPassword.HashPassword(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()) + dbhelper.get_tbl_username(8));
+                    String finalValueQR = hashedValue + "longtech" + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    BitMatrix bitMatrix = writer.encode(finalValueQR, BarcodeFormat.QR_CODE, 512, 512);
+                    int width = bitMatrix.getWidth();
+                    int height = bitMatrix.getHeight();
+                    Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                    for (int x = 0; x < width; x++) {
+                        for (int y = 0; y < height; y++) {
+                            bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                        }
+                    }
+                    imgQrEmployee.setImageBitmap(bmp);
+
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
         linearLayoutAbsen.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AbsensiMandiri.class);

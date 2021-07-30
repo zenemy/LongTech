@@ -249,11 +249,11 @@ public class UploadData extends AppCompatActivity {
                         public void onResponse(String response) {
                             try {
                                 JSONObject jsonPostTR02 = new JSONObject(response.toString());
-                                if (jsonPostTR02.getString("UPLOAD").equals("SUCCESS")) {
-                                    dbHelper.change_statusuploadtr02(nodoctr2);
-                                    isUploadDone = true;
-                                    afterEventUpload();
-                                }
+
+                                dbHelper.change_statusuploadtr02(nodoctr2);
+                                isUploadDone = true;
+                                afterEventUpload();
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -345,7 +345,6 @@ public class UploadData extends AppCompatActivity {
                     String base64blob4 = android.util.Base64.encodeToString(cursorImg.getBlob(11),  android.util.Base64.DEFAULT);
                     String base64blob5 = android.util.Base64.encodeToString(cursorImg.getBlob(12),  android.util.Base64.DEFAULT);
 
-
                     RequestQueue requestQueueAbsenImg = Volley.newRequestQueue(this);
                     String server_url = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/uploaddata/uploaddata.php?upload=blob1";
                     StringRequest stringRequestImg = new StringRequest(Request.Method.POST, server_url, new Response.Listener<String>() {
@@ -353,11 +352,11 @@ public class UploadData extends AppCompatActivity {
                         public void onResponse(String response) {
                             try {
                                 JSONObject jsonPostImg = new JSONObject(response.toString());
-                                if (jsonPostImg.getString("UPLOAD").equals("SUCCESS")) {
-                                    dbHelper.change_statusuploadimg(nodoc);
-                                    isUploadDone = true;
-                                    afterEventUpload();
-                                }
+
+                                dbHelper.change_statusuploadimg(nodoc);
+                                isUploadDone = true;
+                                afterEventUpload();
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

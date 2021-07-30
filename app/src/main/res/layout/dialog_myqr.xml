@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingStart="48dp"
+    android:paddingEnd="48dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@drawable/tbl_lr_top"
+        android:backgroundTint="@color/white"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvEmpNameDialogQR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="EMPLOYEE NAME"/>
+        
+        <ImageView
+            android:id="@+id/imgQrEmployee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"/>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBackDlgQR"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="KEMBALI"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRounded"/>
+
+</LinearLayout>
