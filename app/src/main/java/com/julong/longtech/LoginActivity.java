@@ -1,4 +1,4 @@
-    package com.julong.longtech;
+package com.julong.longtech;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -66,6 +66,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static com.julong.longtech.DatabaseHelper.url_fetchversion;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -683,21 +685,18 @@ public class LoginActivity extends AppCompatActivity {
 
     //Function Generate Version
     void generate_version() {
-        url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/dsi_version.php?systemcode=LONGTECH01";
         RequestQueue queue = Volley.newRequestQueue(this);
         return_koneksi = null;
         JSONObject jsonBody = new JSONObject();
         final String requestBody = jsonBody.toString();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_data, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url_fetchversion, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonPost = new JSONObject(response.toString());
                     return_koneksi = "OK";
-                    dbhelper.generate_tbl_version(jsonPost.getString("VERSIONNUMBER"),
-                            jsonPost.getString("VERSIONNAME"),
-                            jsonPost.getString("TDATE"),
-                            jsonPost.getString("REMARKS"));
+                    dbhelper.insert_tbl_version(jsonPost.getString("VERSIONNUMBER"), jsonPost.getString("VERSIONNAME"),
+                            jsonPost.getString("TDATE"), jsonPost.getString("REMARKS"), jsonPost.getString("link_download"));
                     String status_update;
                     try {
                         if (!dbhelper.get_tbl_version(2).equals(dbhelper.get_tbl_version(6))) {
@@ -805,16 +804,6 @@ public class LoginActivity extends AppCompatActivity {
         Volley.newRequestQueue(this).add(jsonRequest);
     }
 
-    //Function Cek Internet
-    public boolean checkInternet() {
-        Boolean internetStatus = false;
-        ConnectivityManager ConnectionManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = ConnectionManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected() == true) {
-            internetStatus = true;
-        }
-        return internetStatus;
-    }
 
     //Function Tombol Back
     @Override

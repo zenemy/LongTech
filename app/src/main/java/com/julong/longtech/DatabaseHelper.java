@@ -24,9 +24,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    public static String url_fetchversion = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/dsi_version.php?systemcode=LONGTECH01";
+
     public DatabaseHelper(Context context) {
         super(context, "db_dsi.db", null,
-                30);
+                31);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "remarks varchar, blob1 blob, blob2 blob, blob3 blob, blob4 blob, blob5 blob, uploaded integer);");
 
         db.execSQL("CREATE TABLE tbl_version (systemcode varchar, systemname varchar, versionnumber integer, versionname varchar, remarks varchar, status varchar, " +
-                "versionnumber_new integer, versionname_new varchar, tdate_new varchar, remarks_new varchar);");
+                "versionnumber_new integer, versionname_new varchar, tdate_new varchar, remarks_new varchar, link_download varchar);");
     }
 
     @Override
@@ -133,14 +136,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean generate_tbl_version(String v_versionnumber_new, String v_versionname_new, String v_tdate, String v_remarks_new) {
+    public boolean insert_tbl_version(String v_versionnumber_new, String v_versionname_new, String v_tdate,
+                                      String v_remarks_new, String link_download) {
+
+        String systemCode = "LONGTECH01";
+        String systemName = "DSI SYSTEM";
+        int versionNumber = 0;
+        String versionName = "Version 0.1";
+
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from tbl_version");
         ContentValues contentValues = new ContentValues();
-        contentValues.put("systemcode", "LONGTECH01");
-        contentValues.put("systemname", "DSI SYSTEM");
-        contentValues.put("versionnumber", 0);
-        contentValues.put("versionname", "Version 0.1");
+        contentValues.put("systemcode", systemCode);
+        contentValues.put("systemname", systemName);
+        contentValues.put("versionnumber", versionNumber);
+        contentValues.put("versionname", versionName);
         contentValues.put("versionnumber_new", v_versionnumber_new);
         contentValues.put("versionname_new", v_versionname_new);
         contentValues.put("tdate_new", v_tdate);
