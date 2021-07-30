@@ -26,6 +26,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static String url_fetchversion = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/dsi_version.php?systemcode=LONGTECH01";
+    public static String url_fetchlanguage = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/dsi_language.php";
 
     public DatabaseHelper(Context context) {
         super(context, "db_dsi.db", null,

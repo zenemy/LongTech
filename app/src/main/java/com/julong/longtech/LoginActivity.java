@@ -67,6 +67,7 @@ import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.julong.longtech.DatabaseHelper.url_fetchlanguage;
 import static com.julong.longtech.DatabaseHelper.url_fetchversion;
 
 public class LoginActivity extends AppCompatActivity {
@@ -165,30 +166,7 @@ public class LoginActivity extends AppCompatActivity {
         btnDialogInfo.setOnClickListener(v -> dialoginfo.dismiss());
 
         generate_version();
-        generate_language();
-
-        //Inisialisasi Lupa Sandi
-//        dialoglupasandi = new Dialog(this);
-//        dialoglupasandi.setCanceledOnTouchOutside(false);
-//        dialoglupasandi.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialoglupasandi.setContentView(R.layout.activity_frm_lupasandi);
-//        Window window = dialoglupasandi.getWindow();
-//        dialoglupasandi.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//        EditText etkodeverifikasi   = (EditText)dialoglupasandi.findViewById(R.id.et_kode_verifikasi);
-//        TextView tvlppasspass       = (TextView)dialoglupasandi.findViewById(R.id.tv_lppass_pass);
-//        TextView tvlppasspass2      = (TextView)dialoglupasandi.findViewById(R.id.tv_lppass_pass2);
-//        TextView tvpassdlg          = (TextView)dialoglupasandi.findViewById(R.id.tv_pass);
-//        TextView tvpassdlg2         = (TextView)dialoglupasandi.findViewById(R.id.tv_pass2);
-//        EditText etlppasspass       = (EditText)dialoglupasandi.findViewById(R.id.et_lppass_pass);
-//        EditText etlppasspass2      = (EditText)dialoglupasandi.findViewById(R.id.et_lppass_pass2);
-//        Button btnverifikasi        = (Button)dialoglupasandi.findViewById(R.id.btn_verifikasi);
-//        Button btnverifikasi2       = (Button)dialoglupasandi.findViewById(R.id.btn_verifikasi4);
-//        Button btnlppasssave        = (Button)dialoglupasandi.findViewById(R.id.btn_lppass_save);
-//        EditText etregnik           = (EditText)dialoglupasandi.findViewById(R.id.et_reg_nik);
-//        EditText etregtelp          = (EditText)dialoglupasandi.findViewById(R.id.et_reg_telp);
-//        ConstraintLayout clsandi    = (ConstraintLayout)dialoglupasandi.findViewById(R.id.clsandi);
-//        ConstraintLayout clkode     = (ConstraintLayout)dialoglupasandi.findViewById(R.id. constraintLayout26);
+//        generate_language();
 
         //Inisialisasi Dialog Gambar
         dialoggambar = new Dialog(this);
@@ -748,9 +726,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void generate_language() {
-        url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/dsi_language.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, url_fetchlanguage, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
