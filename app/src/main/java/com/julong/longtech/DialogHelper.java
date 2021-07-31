@@ -37,7 +37,7 @@ public class DialogHelper extends Dialog {
         btn_no = dialog.findViewById(R.id.btn_dlg2_no);
         tvtitle = dialog.findViewById(R.id.tv_dlg2_title);
         tvjuduldialog = dialog.findViewById(R.id.textView43);
-        imgLogoDlg = dialog.findViewById(R.id.imageView14);
+        imgLogoDlg = dialog.findViewById(R.id.imgDlgYesNo);
 
         try {
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0), 0, dbhelper.get_companyimg(0).length);

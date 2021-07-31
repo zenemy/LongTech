@@ -33,8 +33,6 @@
             android:textSize="16sp"
             android:textStyle="bold|italic"
             app:layout_constraintBottom_toBottomOf="@+id/imgLogoDlgInfo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imgLogoDlgInfo"
             app:layout_constraintTop_toTopOf="@+id/imgLogoDlgInfo" />
 
