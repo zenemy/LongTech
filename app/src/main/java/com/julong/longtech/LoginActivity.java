@@ -268,6 +268,8 @@ public class LoginActivity extends AppCompatActivity {
                 v_dlg_title = "TEST DIALOG";
                 v_dlg_btn1 = "OK";
                 dialogHelper.showDialogInfo();
+
+
                 /*handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
