@@ -209,18 +209,6 @@ public class LoginActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
-        // Menampilkan Logo
-//            try {
-//                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(1), 0, dbhelper.get_gambar_user(1).length);
-//                imglogo.setImageBitmap(compressedBitmap);
-//                imglogo.setVisibility(View.VISIBLE);
-//                imglogo.setBackground(null);
-//                tvlogo.setVisibility(View.GONE);
-//                //imgphoto.setForeground(null);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
         //Background Company
 //            try {
 //                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(2), 0, dbhelper.get_gambar_user(2).length);
@@ -350,9 +338,17 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //Event Update Version dan Company info=====================================================
-        generate_version();
         generate_companyinfo();
+        generate_version();
         //generate_language();
+        // Menampilkan Logo
+        try {
+            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
+                    0, dbhelper.get_companyimg(0).length);
+            imgLogoDlgInfo.setImageBitmap(compressedBitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void eventClickLogin(View view) {
@@ -893,7 +889,7 @@ public class LoginActivity extends AppCompatActivity {
         if (systemCode != null || systemCode.equals("")) {
             String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                     Locale.getDefault()).format(new Date());
-            dbhelper.get_companyinfo(14);
+            dbhelper.get_companyinfo(13);
             url_data = url_api + "fetchdata/getcompanyinfo.php?systemcode=" + systemCode
                     + "&sysdate=" + currentDateTime;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url_data,
@@ -918,6 +914,24 @@ public class LoginActivity extends AppCompatActivity {
                                         jsonPost.getString("PICEMAIL"),
                                         jsonPost.getString("PICNOTELP"),
                                         jsonPost.getString("ADDRESS"));
+
+                                try {
+                                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
+                                            0, dbhelper.get_companyimg(0).length);
+                                    DialogHelper.imgLogoDlgYesNo.setImageBitmap(compressedBitmap);
+                                    DialogHelper.imgLogoDlgHelperInfo.setImageBitmap(compressedBitmap);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                try {
+                                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
+                                            0, dbhelper.get_companyimg(0).length);
+                                    DialogHelper.imgLogoDlgYesNo.setImageBitmap(compressedBitmap);
+                                    DialogHelper.imgLogoDlgHelperInfo.setImageBitmap(compressedBitmap);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -929,7 +943,16 @@ public class LoginActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    try {
+                        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
+                                0, dbhelper.get_companyimg(0).length);
+                        DialogHelper.imgLogoDlgYesNo.setBackground(null);
+                        DialogHelper.imgLogoDlgYesNo.setImageBitmap(compressedBitmap);
+                        DialogHelper.imgLogoDlgHelperInfo.setBackground(null);
+                        DialogHelper.imgLogoDlgHelperInfo.setImageBitmap(compressedBitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             queue.add(stringRequest);
