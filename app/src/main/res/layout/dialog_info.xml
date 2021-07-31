@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cldialoginfo"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:bottomLeftRadius="50dp"
     android:bottomRightRadius="50dp"
     android:paddingStart="16dp"
@@ -15,7 +15,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clDlgInfo"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/tbl_lr_top"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,11 +27,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:text="LONG TECH"
             android:textColor="#2E5C30"
             android:textSize="16sp"
             android:textStyle="bold|italic"
             app:layout_constraintBottom_toBottomOf="@+id/imgLogoDlgInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/imgLogoDlgInfo"
             app:layout_constraintTop_toTopOf="@+id/imgLogoDlgInfo" />
 
@@ -51,11 +54,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout10"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/topborderonly"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/clDlgInfo"
+        app:layout_constraintStart_toStartOf="@+id/clDlgInfo"
         app:layout_constraintTop_toBottomOf="@+id/clDlgInfo">
 
         <TextView
@@ -80,18 +83,18 @@
         android:id="@+id/btnDialogInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="@color/colorPrimary"
+        android:foreground="@drawable/tbl_lr_bottom"
         android:insetTop="0dp"
         android:insetBottom="0dp"
-        android:stateListAnimator="@null"
         android:text="OK"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/colorTextButton"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout10"
-        app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRounded" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout10" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

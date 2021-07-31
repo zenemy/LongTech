@@ -141,12 +141,13 @@ public class DialogHelper extends Dialog {
                 dialog.dismiss();
             }
         });
-        dialog.setOnCancelListener(new OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                LoginActivity.v_rtn_dlg_string = "CANCEL";
-            }
-        });
+
+//        dialog.setOnCancelListener(new OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                LoginActivity.v_rtn_dlg_string = "CANCEL";
+//            }
+//        });
     }
 
 //    public void showDialogPassword() {

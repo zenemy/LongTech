@@ -262,8 +262,31 @@ public class LoginActivity extends AppCompatActivity {
         imglogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, AdjustmentUnit.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(LoginActivity.this, AdjustmentUnit.class);
+                startActivity(intent);*/
+
+                v_dlg_title = "TEST DIALOG";
+                v_dlg_btn1 = "OK";
+                dialogHelper.showDialogInfo();
+                /*handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        handler.postDelayed(this, 500);
+                        if (v_rtn_dlg_string.equals("CANCEL") ||
+                                v_rtn_dlg_string.equals("NO")) {
+                            v_rtn_dlg_string = "";
+                            handler.removeCallbacks(this);
+                        }
+                        if (v_rtn_dlg_string.equals("OK")) {
+                            v_rtn_dlg_string = "";
+                            handler.removeCallbacks(this);
+                            finish();
+                        }
+                    }
+                }, 500);*/
+
+
+
             }
         });
 

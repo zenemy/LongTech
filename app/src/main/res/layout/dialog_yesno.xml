@@ -79,31 +79,31 @@
             android:id="@+id/btn_dlg2_no"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:insetTop="0dp"
             android:layout_weight="1"
+            android:background="@drawable/tbl_l_btn"
+            android:backgroundTint="@color/colorPrimary"
+            android:foreground="@drawable/tbl_l_btn"
+            android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="No"
-            android:layout_marginEnd="0.5dp"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/colorTextButton"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder" />
+            android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_dlg2_ok"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/tbl_r_btn"
+            android:backgroundTint="@color/colorPrimary"
+            android:foreground="@drawable/tbl_r_btn"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="Oke"
-            android:layout_marginStart="0.5dp"
-            android:layout_weight="1"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/colorTextButton"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
