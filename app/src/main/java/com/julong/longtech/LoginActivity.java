@@ -79,7 +79,13 @@ public class LoginActivity extends AppCompatActivity {
     //Deklarasi Variable
     //==============================================================================================
 
-    public static String return_koneksi, url_data, checkuser, server_url;
+    //Public
+    public static String return_koneksi, checkuser, namasystem;
+    public static ImageView imgphoto, imagedialog;
+    public static Bitmap bitmaplogosystem;
+
+    //Private
+    private String url_data;
     private List<String> languages;
     ArrayAdapter<String> adapterMenuLanguage;
 
@@ -91,17 +97,16 @@ public class LoginActivity extends AppCompatActivity {
     //Class / package / Helper
     DatabaseHelper dbhelper;
     HashPassword hashPassword;
-    Dialog dialogregistrasi, dialoginfo, dialoggambar, dialoginsertpassword;
     DialogHelper dialogHelper;
     Handler handler = new Handler();
+    Dialog dialogregistrasi, dialoginfo, dialoggambar, dialoginsertpassword;
 
     //Object
-    EditText et_username, et_password;
-    Button btnlogin, btnDialogInfo;
-    public static ImageView imgphoto, imagedialog;
-    ImageView imglogo, imgbackground, imgtakephotoreg;
     TextView tv_lupasandi, tvversion, tvnamasystem, tvLoginHeader, tvKeteranganBahasa,
             tvDlgInfoTitle;
+    EditText et_username, et_password;
+    Button btnlogin, btnDialogInfo;
+    ImageView imglogo, imgbackground, imgtakephotoreg;
     AutoCompleteTextView imgChangeLanguage;
     //END===========================================================================================
 
@@ -133,20 +138,7 @@ public class LoginActivity extends AppCompatActivity {
         imglogo = findViewById(R.id.myPict);
         imgbackground = findViewById(R.id.imgBgLogin);
         imgChangeLanguage = findViewById(R.id.imgChangeLanguage);
-        //Dialog Info
-        dialoginfo = new Dialog(this);
-        dialoginfo.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialoginfo.setContentView(R.layout.dialog_info);
-        dialoginfo.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        dialoginfo.setCanceledOnTouchOutside(false);
-        Window dialoginfoWindow = dialoginfo.getWindow();
-        dialoginfoWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
-        ImageView imgLogoDlgInfo = (ImageView) dialoginfo.findViewById(R.id.imgLogoDlgInfo);
-        TextView tvSystemNameDlgInfo = (TextView) dialoginfo.findViewById(R.id.tvSystemNameDlgInfo);
-        tvDlgInfoTitle = (TextView) dialoginfo.findViewById(R.id.tvDlgInfoTitle);
-        btnDialogInfo = (Button) dialoginfo.findViewById(R.id.btnDialogInfo);
-        btnDialogInfo.setOnClickListener(v -> dialoginfo.dismiss());
+
         // Dialog Gambar
         dialoggambar = new Dialog(this);
         dialoggambar.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -181,12 +173,31 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         //Setup Profile System======================================================================
-        //tambahkan kondisi jika table company url kosong
         try {
+            namasystem = dbhelper.get_companyinfo(3);
+            tvnamasystem.setText(namasystem);
+            bitmaplogosystem = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
+                    0, dbhelper.get_companyimg(0).length);
+            imglogo.setImageBitmap(bitmaplogosystem);
+            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
+                    dbhelper.get_companyimg(1), 0, dbhelper.get_companyimg(1).length);
+            imgbackground.setImageBitmap(compressedBitmap);
+
+            try {
+                Bitmap profileuser = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(),
+                        0, dbhelper.get_gambar_user().length);
+                imgphoto.setBackground(null);
+                imgphoto.setImageBitmap(profileuser);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //Setup Tema
             btnlogin.setBackgroundTintList(ColorStateList.valueOf(Color
                     .parseColor(dbhelper.get_tbl_username(26))));
             tvLoginHeader.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
             tv_lupasandi.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 et_password.setCompoundDrawableTintList(ColorStateList.valueOf(Color
                         .parseColor(dbhelper.get_tbl_username(26))));
@@ -202,28 +213,23 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //Nama System (jangan ambil dari username, ambil dari company info)
-//        try {
-//            tvnamasystem.setText(dbhelper.get_tbl_username(25));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        //Background Company
-//            try {
-//                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(2), 0, dbhelper.get_gambar_user(2).length);
-//                imgbackground.setImageBitmap(compressedBitmap);
-//                imgbackground.setVisibility(View.VISIBLE);
-//                imgbackground.setBackground(null);
-//                //imgphoto.setForeground(null);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
-        //Setup Profile User========================================================================
+        //Setup Bahasa==============================================================================
         if (!dbhelper.get_count_tbl_username().equals("0")) {
-            et_username.setText(dbhelper.get_tbl_username(1));
 
+            languages = dbhelper.get_loginlanguage();
+            adapterMenuLanguage = new ArrayAdapter<String>(LoginActivity.this,
+                    R.layout.spinnerlist, R.id.spinnerItem, languages);
+            adapterMenuLanguage.setDropDownViewResource(R.layout.spinnerlist);
+            imgChangeLanguage.setAdapter(adapterMenuLanguage);
+            imgChangeLanguage.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    imgChangeLanguage.showDropDown();
+                    return false;
+                }
+            });
+
+            et_username.setText(dbhelper.get_tbl_username(1));
             if (dbhelper.get_tbl_username(26).equals("INDONESIA")) {
                 tvKeteranganBahasa.setText("ID");
             } else if (dbhelper.get_tbl_username(26).equals("ENGLISH")) {
@@ -231,48 +237,15 @@ public class LoginActivity extends AppCompatActivity {
             } else if (dbhelper.get_tbl_username(26).equals("CHINA")) {
                 tvKeteranganBahasa.setText("CN");
             }
-
-            try {
-                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(),
-                        0, dbhelper.get_gambar_user().length);
-                imgphoto.setBackground(null);
-                imgphoto.setImageBitmap(compressedBitmap);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         //Event OnClick untuk Test Menu=============================================================
         imglogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(LoginActivity.this, AdjustmentUnit.class);
-                startActivity(intent);*/
-
                 DialogHelper.v_dlg_title = "TEST DIALOG";
                 DialogHelper.v_dlg_btn1 = "OK";
                 dialogHelper.showDialogInfo();
-
-
-                /*handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        handler.postDelayed(this, 500);
-                        if (v_rtn_dlg_string.equals("CANCEL") ||
-                                v_rtn_dlg_string.equals("NO")) {
-                            v_rtn_dlg_string = "";
-                            handler.removeCallbacks(this);
-                        }
-                        if (v_rtn_dlg_string.equals("OK")) {
-                            v_rtn_dlg_string = "";
-                            handler.removeCallbacks(this);
-                            finish();
-                        }
-                    }
-                }, 500);*/
-
-
-
             }
         });
 
@@ -340,15 +313,7 @@ public class LoginActivity extends AppCompatActivity {
         //Event Update Version dan Company info=====================================================
         generate_companyinfo();
         generate_version();
-        //generate_language();
-        // Menampilkan Logo
-        try {
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
-                    0, dbhelper.get_companyimg(0).length);
-            imgLogoDlgInfo.setImageBitmap(compressedBitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        generate_language();
     }
 
     public void eventClickLogin(View view) {
@@ -473,9 +438,9 @@ public class LoginActivity extends AppCompatActivity {
                                                 RequestQueue requestQueueChangePassword =
                                                         Volley.newRequestQueue(
                                                                 getApplicationContext());
-                                                server_url = url_api + "dlgchangepassword.php";
+                                                url_data = url_api + "dlgchangepassword.php";
                                                 StringRequest stringRequest = new StringRequest(
-                                                        Request.Method.POST, server_url,
+                                                        Request.Method.POST, url_data,
                                                         new Response.Listener<String>() {
                                                     @Override
                                                     public void onResponse(String response) {
@@ -639,10 +604,10 @@ public class LoginActivity extends AppCompatActivity {
                                                 RequestQueue requestQueueChangePassword =
                                                         Volley.newRequestQueue(
                                                                 getApplicationContext());
-                                                server_url = url_api + "dlgchangepassword.php";
+                                                url_data = url_api + "dlgchangepassword.php";
                                                 StringRequest stringRequest =
                                                         new StringRequest(Request.Method.POST,
-                                                                server_url,
+                                                                url_data,
                                                                 new Response.Listener<String>() {
                                                     @Override
                                                     public void onResponse(String response) {
@@ -837,20 +802,21 @@ public class LoginActivity extends AppCompatActivity {
                                 dbhelper.updatestatusversion(status_update);
                                 tvversion.setTextColor(0xFFD51616);
                                 tvversion.setText("Update System Tersedia");
-                                tvDlgInfoTitle.setText("Update System Tersedia\n\n" +
+                                DialogHelper.v_dlg_title = "Update System Tersedia\n\n" +
                                         dbhelper.get_tbl_version(7) + "\n[" +
                                         dbhelper.get_tbl_version(8) + "]\n\n" +
-                                        dbhelper.get_tbl_version(9));
-                                dialoginfo.show();
-
+                                        dbhelper.get_tbl_version(9);
+                                DialogHelper.v_dlg_btn1 = "OK";
+                                dialogHelper.showDialogInfo();
                                 tvversion.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        tvDlgInfoTitle.setText("Update System Tersedia\n\n" +
+                                        DialogHelper.v_dlg_title = "Update System Tersedia\n\n" +
                                                 dbhelper.get_tbl_version(7) + "\n[" +
                                                 dbhelper.get_tbl_version(8) + "]\n\n" +
-                                                dbhelper.get_tbl_version(9));
-                                        dialoginfo.show();
+                                                dbhelper.get_tbl_version(9);
+                                        DialogHelper.v_dlg_btn1 = "OK";
+                                        dialogHelper.showDialogInfo();
                                     }
                                 });
                             } else {
@@ -905,7 +871,6 @@ public class LoginActivity extends AppCompatActivity {
                                         .getString("LOGOCOMP"), Base64.DEFAULT);
                                 byte[] decodedBgComp = Base64.decode(jsonPost
                                         .getString("BACKGROUNDIMG"), Base64.DEFAULT);
-
                                 dbhelper.insert_companyinfo(jsonPost.getString("GROUPCOMPANYCODE"),
                                         decodedLogoComp, decodedBgComp,
                                         jsonPost.getString("SYSTEMNAME"),
@@ -914,24 +879,21 @@ public class LoginActivity extends AppCompatActivity {
                                         jsonPost.getString("PICEMAIL"),
                                         jsonPost.getString("PICNOTELP"),
                                         jsonPost.getString("ADDRESS"));
-
                                 try {
-                                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
-                                            0, dbhelper.get_companyimg(0).length);
-                                    DialogHelper.imgLogoDlgYesNo.setImageBitmap(compressedBitmap);
-                                    DialogHelper.imgLogoDlgHelperInfo.setImageBitmap(compressedBitmap);
+                                    bitmaplogosystem = BitmapFactory.decodeByteArray(
+                                            dbhelper.get_companyimg(0), 0,
+                                            dbhelper.get_companyimg(0).length);
+                                    imglogo.setImageBitmap(bitmaplogosystem);
+                                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
+                                            dbhelper.get_companyimg(1), 0,
+                                            dbhelper.get_companyimg(1).length);
+                                    imgbackground.setImageBitmap(compressedBitmap);
+                                    namasystem = dbhelper.get_companyinfo(3);
+                                    tvnamasystem.setText(namasystem);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             } else {
-                                try {
-                                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
-                                            0, dbhelper.get_companyimg(0).length);
-                                    DialogHelper.imgLogoDlgYesNo.setImageBitmap(compressedBitmap);
-                                    DialogHelper.imgLogoDlgHelperInfo.setImageBitmap(compressedBitmap);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -943,23 +905,14 @@ public class LoginActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    try {
-                        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
-                                0, dbhelper.get_companyimg(0).length);
-                        DialogHelper.imgLogoDlgYesNo.setBackground(null);
-                        DialogHelper.imgLogoDlgYesNo.setImageBitmap(compressedBitmap);
-                        DialogHelper.imgLogoDlgHelperInfo.setBackground(null);
-                        DialogHelper.imgLogoDlgHelperInfo.setImageBitmap(compressedBitmap);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+
                 }
             });
             queue.add(stringRequest);
         }
     }
 
-    //Function Update Company Setting===============================================================
+    //Function Bahasa===============================================================================
     void generate_language() {
         url_data = url_api + "dsi_language.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
@@ -994,18 +947,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                 });
                             } else {
-                                languages = dbhelper.get_loginlanguage();
-                                adapterMenuLanguage = new ArrayAdapter<String>(LoginActivity.this,
-                                        R.layout.spinnerlist, R.id.spinnerItem, languages);
-                                adapterMenuLanguage.setDropDownViewResource(R.layout.spinnerlist);
-                                imgChangeLanguage.setAdapter(adapterMenuLanguage);
-                                imgChangeLanguage.setOnTouchListener(new View.OnTouchListener() {
-                                    @Override
-                                    public boolean onTouch(View v, MotionEvent event) {
-                                        imgChangeLanguage.showDropDown();
-                                        return false;
-                                    }
-                                });
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
