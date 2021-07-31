@@ -235,23 +235,23 @@ public class AppSetting extends AppCompatActivity {
         btnsimpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginActivity.v_dlg_title = "Apakah anda yakin akan menyimpan perubahan?";
-                LoginActivity.v_dlg_btn1 = "YA";
-                LoginActivity.v_dlg_btn2 = "TIDAK";
+                DialogHelper.v_dlg_title = "Apakah anda yakin akan menyimpan perubahan?";
+                DialogHelper.v_dlg_btn1 = "YA";
+                DialogHelper.v_dlg_btn2 = "TIDAK";
                 dialogHelper.showDialogYesNo();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         handler.postDelayed(this, 500);
 
-                        if (LoginActivity.v_rtn_dlg_string.equals("CANCEL") ||
-                                LoginActivity.v_rtn_dlg_string.equals("NO")) {
-                            LoginActivity.v_rtn_dlg_string = "";
+                        if (DialogHelper.v_rtn_dlg_string.equals("CANCEL") ||
+                                DialogHelper.v_rtn_dlg_string.equals("NO")) {
+                            DialogHelper.v_rtn_dlg_string = "";
                             handler.removeCallbacks(this);
                         }
 
-                        if (LoginActivity.v_rtn_dlg_string.equals("OK")) {
-                            LoginActivity.v_rtn_dlg_string = "";
+                        if (DialogHelper.v_rtn_dlg_string.equals("OK")) {
+                            DialogHelper.v_rtn_dlg_string = "";
                             handler.removeCallbacks(this);
 
                             if (!previewtvnamasystem.getText().toString().equals("")) {
@@ -327,8 +327,8 @@ public class AppSetting extends AppCompatActivity {
                         gambar1 = stream1.toByteArray();
 
                         if (gambar1.length > 500000) {
-                            LoginActivity.v_dlg_title = "Ukuran Gambar Terlalu Besar";
-                            LoginActivity.v_dlg_btn1 = "OK";
+                            DialogHelper.v_dlg_title = "Ukuran Gambar Terlalu Besar";
+                            DialogHelper.v_dlg_btn1 = "OK";
                             dialogHelper.showDialogInfo();
                         }
                         else {
@@ -353,8 +353,8 @@ public class AppSetting extends AppCompatActivity {
                         gambar2 = stream1.toByteArray();
 
                         if (gambar2.length > 500000) {
-                            LoginActivity.v_dlg_title = "Ukuran Gambar Terlalu Besar";
-                            LoginActivity.v_dlg_btn1 = "OK";
+                            DialogHelper.v_dlg_title = "Ukuran Gambar Terlalu Besar";
+                            DialogHelper.v_dlg_btn1 = "OK";
                             dialogHelper.showDialogInfo();
                         }
                         else {
@@ -380,8 +380,8 @@ public class AppSetting extends AppCompatActivity {
                         gambar3 = stream1.toByteArray();
 
                         if (gambar3.length > 500000) {
-                            LoginActivity.v_dlg_title = "Ukuran Gambar Terlalu Besar";
-                            LoginActivity.v_dlg_btn1 = "OK";
+                            DialogHelper.v_dlg_title = "Ukuran Gambar Terlalu Besar";
+                            DialogHelper.v_dlg_btn1 = "OK";
                             dialogHelper.showDialogInfo();
                         }
                         else {

@@ -61,9 +61,12 @@
                     android:hint="Kebun"
                     app:endIconMode="dropdown_menu">
 
-                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/acKebunGIS"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:editable="false"
+                        android:inputType="none"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
@@ -81,8 +84,11 @@
                     android:hint="Divisi"
                     app:endIconMode="dropdown_menu">
 
-                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/acDivisiGIS"
                         android:layout_width="match_parent"
+                        android:editable="false"
+                        android:inputType="none"
                         android:layout_height="40dp"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
@@ -95,16 +101,17 @@
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="Lokasi Verifikasi"
-                app:endIconMode="clear_text">
+                app:endIconMode="dropdown_menu">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:paddingStart="8dp"
@@ -155,15 +162,17 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Satuan Kerja"
-                        app:endIconMode="dropdown_menu">
+                        android:hint="Satuan Kerja">
 
-                        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSatuanKerjaGIS"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
+                            android:editable="false"
+                            android:inputType="none"
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
@@ -181,6 +190,7 @@
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etHasilGIS"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:inputType="number"
@@ -201,26 +211,49 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView13"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="Foto Verifikasi"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgTakeCameraVerifikasiGIS"
+                    <ImageButton
+                        android:id="@+id/imgTakePictGIS"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="4dp"
                         android:layout_weight="1"
-                        android:background="@drawable/ic_menu_camera"
-                        android:backgroundTint="#555555"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:foreground="@drawable/ic_menu_camera"
+                        android:foregroundTint="#555555"
                         android:scaleType="fitXY" />
                 </LinearLayout>
 
             </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:hint="Kegiatan Verifikasi"
+                app:endIconMode="dropdown_menu">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -234,6 +267,7 @@
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNoteGIS"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="top"
@@ -251,12 +285,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackGIS"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -265,10 +300,12 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="KEMBALI"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitGIS"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="4dp"
@@ -276,6 +313,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="SIMPAN"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
     </LinearLayout>

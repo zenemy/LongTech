@@ -24,10 +24,10 @@ public class DialogHelper extends Dialog {
     //Define Object
     final Dialog dialog = new Dialog(getContext());
     DatabaseHelper dbhelper = new DatabaseHelper(getContext());
-    EditText et_text1, et_text2;
-    Button btn_ok,btn_ok2, btn_no;
+    Button btn_ok, btn_ok2, btn_no;
     TextView tvtitle, tvjuduldialog;
-    ImageView imgdialog;
+    ImageView imgLogoDlg;
+    public static String v_dlg_title, v_dlg_btn1, v_dlg_btn2, v_rtn_dlg_string;
 
     public void showDialogYesNo() {
         //Inisialisasi Object
@@ -37,7 +37,15 @@ public class DialogHelper extends Dialog {
         btn_no = dialog.findViewById(R.id.btn_dlg2_no);
         tvtitle = dialog.findViewById(R.id.tv_dlg2_title);
         tvjuduldialog = dialog.findViewById(R.id.textView43);
-        imgdialog     = dialog.findViewById(R.id.imageView14);
+        imgLogoDlg = dialog.findViewById(R.id.imageView14);
+
+        try {
+            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0), 0, dbhelper.get_companyimg(0).length);
+            imgLogoDlg.setBackground(null);
+            imgLogoDlg.setImageBitmap(compressedBitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 //        try {
 //            btn_ok.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
@@ -65,12 +73,12 @@ public class DialogHelper extends Dialog {
 
 
         //Inisialisasi Variable Return
-        LoginActivity.v_rtn_dlg_string = "";
+        v_rtn_dlg_string = "";
 
         //Inisialisasi Object Title/Text
-        tvtitle.setText(LoginActivity.v_dlg_title);
-        btn_ok.setText(LoginActivity.v_dlg_btn1);
-        btn_no.setText(LoginActivity.v_dlg_btn2);
+        tvtitle.setText(v_dlg_title);
+        btn_ok.setText(v_dlg_btn1);
+        btn_no.setText(v_dlg_btn2);
 
         dialog.show();
 
@@ -78,7 +86,7 @@ public class DialogHelper extends Dialog {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginActivity.v_rtn_dlg_string = "OK";
+                v_rtn_dlg_string = "OK";
                 dialog.dismiss();
             }
         });
@@ -87,7 +95,7 @@ public class DialogHelper extends Dialog {
         btn_no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginActivity.v_rtn_dlg_string = "NO";
+                v_rtn_dlg_string = "NO";
                 dialog.dismiss();
             }
         });
@@ -96,7 +104,7 @@ public class DialogHelper extends Dialog {
         dialog.setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                LoginActivity.v_rtn_dlg_string = "CANCEL";
+                v_rtn_dlg_string = "CANCEL";
             }
         });
 
@@ -109,7 +117,16 @@ public class DialogHelper extends Dialog {
         btn_ok = dialog.findViewById(R.id.btnDialogInfo);
         tvtitle = dialog.findViewById(R.id.tvDlgInfoTitle);
         tvjuduldialog = dialog.findViewById(R.id.tvSystemNameDlgInfo);
-        imgdialog = dialog.findViewById(R.id.imgLogoDlgInfo);
+        imgLogoDlg = dialog.findViewById(R.id.imgLogoDlgInfo);
+
+        //Ubah logo di dialog
+        try {
+            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0), 0, dbhelper.get_companyimg(0).length);
+            imgLogoDlg.setBackground(null);
+            imgLogoDlg.setImageBitmap(compressedBitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 //        try {
 //            btn_ok.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
@@ -128,8 +145,8 @@ public class DialogHelper extends Dialog {
 //        }
 
         //Inisialisasi Object Title/Text
-        tvtitle.setText(LoginActivity.v_dlg_title);
-        btn_ok.setText(LoginActivity.v_dlg_btn1);
+        tvtitle.setText(v_dlg_title);
+        btn_ok.setText(v_dlg_btn1);
 
         dialog.show();
 
@@ -137,17 +154,11 @@ public class DialogHelper extends Dialog {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginActivity.v_rtn_dlg_string = "OK";
+                v_rtn_dlg_string = "OK";
                 dialog.dismiss();
             }
         });
 
-//        dialog.setOnCancelListener(new OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                LoginActivity.v_rtn_dlg_string = "CANCEL";
-//            }
-//        });
     }
 
 //    public void showDialogPassword() {

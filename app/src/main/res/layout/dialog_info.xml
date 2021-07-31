@@ -45,7 +45,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/julong1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -56,45 +55,47 @@
         android:id="@+id/constraintLayout10"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/topborderonly"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/clDlgInfo"
         app:layout_constraintStart_toStartOf="@+id/clDlgInfo"
         app:layout_constraintTop_toBottomOf="@+id/clDlgInfo">
 
         <TextView
             android:id="@+id/tvDlgInfoTitle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:background="@drawable/topborderonly"
+            android:paddingTop="16dp"
             android:gravity="center"
             android:text="Title"
             android:textColor="#0C0C0C"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnDialogInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/tbl_lr_bottom"
-        android:backgroundTint="@color/colorPrimary"
-        android:foreground="@drawable/tbl_lr_bottom"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="OK"
-        android:textColor="@color/colorTextButton"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout10" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="1dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="OK"
+            android:textColor="@color/colorTextButton"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDlgInfoTitle"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRounded"
+            app:strokeColor="@color/white" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

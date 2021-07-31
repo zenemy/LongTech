@@ -78,15 +78,11 @@ public class LoginActivity extends AppCompatActivity {
     //==============================================================================================
     //Deklarasi Variable
     //==============================================================================================
-    //String
-    public static String v_dlg_title, v_dlg_btn1, v_dlg_btn2, v_rtn_dlg_string;
+
     public static String return_koneksi, url_data, checkuser, server_url;
     private List<String> languages;
     ArrayAdapter<String> adapterMenuLanguage;
-    //Integer
-    private int RESULT_LOAD_IMG = 100, v_data_proses;
-    //ByteArray
-    byte[] gambar;
+
     //END===========================================================================================
 
     //==============================================================================================
@@ -265,8 +261,8 @@ public class LoginActivity extends AppCompatActivity {
                 /*Intent intent = new Intent(LoginActivity.this, AdjustmentUnit.class);
                 startActivity(intent);*/
 
-                v_dlg_title = "TEST DIALOG";
-                v_dlg_btn1 = "OK";
+                DialogHelper.v_dlg_title = "TEST DIALOG";
+                DialogHelper.v_dlg_btn1 = "OK";
                 dialogHelper.showDialogInfo();
 
 
@@ -341,7 +337,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        //????======================================================================================
+        // Kalau click enter, ngeclick button login
         et_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -399,14 +395,18 @@ public class LoginActivity extends AppCompatActivity {
                     .setContentText("Masukkan User ID").setConfirmText("OK").show();
         } else if (TextUtils.isEmpty(et_password.getText().toString().trim())
                 && (et_username.getText().toString().equals(dbhelper.get_tbl_username(0)) ||
-                et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
-                et_username.getText().toString().equals(dbhelper.get_tbl_username(8)))) {
+                TextUtils.isEmpty(et_password.getText().toString().trim())
+                        && et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
+                TextUtils.isEmpty(et_password.getText().toString().trim())
+                        && et_username.getText().toString().equals(dbhelper.get_tbl_username(8)))) {
             new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Masukkan Password").setConfirmText("OK").show();
         } else if (TextUtils.isEmpty(et_password.getText().toString().trim())
                 && (!et_username.getText().toString().equals(dbhelper.get_tbl_username(0)) ||
-                !et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
-                !et_username.getText().toString().equals(dbhelper.get_tbl_username(8)))) {
+                TextUtils.isEmpty(et_password.getText().toString().trim())
+                        && !et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
+                TextUtils.isEmpty(et_password.getText().toString().trim())
+                        && !et_username.getText().toString().equals(dbhelper.get_tbl_username(8)))) {
             final SweetAlertDialog pDialog = new SweetAlertDialog(LoginActivity.this,
                     SweetAlertDialog.PROGRESS_TYPE);
             pDialog.setTitleText("Pengecekan Akun");
@@ -584,7 +584,6 @@ public class LoginActivity extends AppCompatActivity {
                             et_username.getText().toString() + "&password=" +
                             et_password.getText().toString();
                     RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                    JSONObject jsonBody = new JSONObject();
                     StringRequest stringRequest = new StringRequest(Request.Method.GET,
                             url_data, new Response.Listener<String>() {
                         @Override
@@ -752,7 +751,7 @@ public class LoginActivity extends AppCompatActivity {
                                         imgphoto.setImageDrawable(ContextCompat.getDrawable(
                                                 LoginActivity.this, R.drawable.username));
                                     }
-
+                                    pDialog.dismissWithAnimation();
                                     Intent intent = new Intent(LoginActivity.this,
                                             MainActivity.class);
                                     startActivity(intent);
@@ -803,8 +802,8 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             } else {
                                 return_koneksi = "";
-                                v_dlg_title = "Harap Periksa Jaringan Internet Anda";
-                                v_dlg_btn1 = "OK";
+                                DialogHelper.v_dlg_title = "Harap Periksa Jaringan Internet Anda";
+                                DialogHelper.v_dlg_btn1 = "OK";
                                 dialogHelper.showDialogInfo();
                             }
                         }
@@ -1003,21 +1002,21 @@ public class LoginActivity extends AppCompatActivity {
     //Function Tombol Back==========================================================================
     @Override
     public void onBackPressed() {
-        v_dlg_title = "Apakah anda yakin akan keluar?";
-        v_dlg_btn1 = "YA";
-        v_dlg_btn2 = "TIDAK";
+        DialogHelper.v_dlg_title = "Apakah anda yakin akan keluar?";
+        DialogHelper.v_dlg_btn1 = "YA";
+        DialogHelper.v_dlg_btn2 = "TIDAK";
         dialogHelper.showDialogYesNo();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 handler.postDelayed(this, 500);
-                if (v_rtn_dlg_string.equals("CANCEL") ||
-                        v_rtn_dlg_string.equals("NO")) {
-                    v_rtn_dlg_string = "";
+                if (DialogHelper.v_rtn_dlg_string.equals("CANCEL") ||
+                        DialogHelper.v_rtn_dlg_string.equals("NO")) {
+                    DialogHelper.v_rtn_dlg_string = "";
                     handler.removeCallbacks(this);
                 }
-                if (v_rtn_dlg_string.equals("OK")) {
-                    v_rtn_dlg_string = "";
+                if (DialogHelper.v_rtn_dlg_string.equals("OK")) {
+                    DialogHelper.v_rtn_dlg_string = "";
                     handler.removeCallbacks(this);
                     finish();
                 }
