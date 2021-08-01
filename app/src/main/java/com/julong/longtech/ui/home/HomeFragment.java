@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -60,6 +62,7 @@ import com.julong.longtech.R;
 import com.fxn.BubbleTabBar;
 import com.fxn.OnBubbleClickListener;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
+import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.MyAccount;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
@@ -87,6 +90,7 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     HashPassword hashPassword;
+    Handler handler = new Handler();
 
     DatabaseHelper dbhelper;
     public static TextView tvjabatanuser, tvnamauser;
@@ -417,6 +421,7 @@ public class HomeFragment extends Fragment {
                 windowQR.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
                 TextView tvEmpNameDialogQR = dialogMyQR.findViewById(R.id.tvEmpNameDialogQR);
                 ImageView imgQrEmployee = dialogMyQR.findViewById(R.id.imgQrEmployee);
+                Button btnRefreshQR = dialogMyQR.findViewById(R.id.btnRefreshQR);
                 Button btnBackDlgQR = dialogMyQR.findViewById(R.id.btnBackDlgQR);
                 tvEmpNameDialogQR.setText(dbhelper.get_tbl_username(10));
                 dialogMyQR.show();
@@ -441,6 +446,25 @@ public class HomeFragment extends Fragment {
                 } catch (WriterException e) {
                     e.printStackTrace();
                 }
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        btnRefreshQR.setVisibility(View.VISIBLE);
+                        imgQrEmployee.setAlpha(50);
+
+                        handler.removeCallbacks(this);
+                    }
+                }, 300000);
+
+                btnRefreshQR.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialogMyQR.dismiss();
+                        linearLayoutQR.performClick();
+                    }
+                });
 
             }
         });

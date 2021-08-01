@@ -52,11 +52,11 @@
                         android:id="@+id/acLoadTypeRincianRKH"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:imeOptions="actionNext"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:imeOptions="actionNext"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -73,12 +73,13 @@
                         android:id="@+id/etSatuanKerjaRincianRKH"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:editable="false"
                         android:imeOptions="actionNext"
-                        android:inputType="number"
+                        android:inputType="none"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -102,7 +103,7 @@
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:singleLine="true"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -125,7 +126,7 @@
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:singleLine="true"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -152,15 +153,15 @@
                         android:id="@+id/etWaktuKerjaRincianRKH"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:imeOptions="actionNext"
-                        android:focusableInTouchMode="false"
-                        android:inputType="time"
                         android:clickable="true"
+                        android:focusableInTouchMode="false"
                         android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:imeOptions="actionNext"
+                        android:inputType="time"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -177,12 +178,13 @@
                         android:id="@+id/etKMHMRincianRKH"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:digits="0123456789.,"
                         android:imeOptions="actionNext"
-                        android:inputType="number"
+                        android:inputType="numberDecimal"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -207,7 +209,7 @@
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:singleLine="true"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -232,7 +234,7 @@
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:singleLine="true"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>

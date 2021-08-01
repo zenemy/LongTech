@@ -34,7 +34,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="4dp"
         android:singleLine="false"
-        android:text="AWAL MAULANA MARYADI"
+        android:text="EMPLOYEE NAME"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -52,6 +52,7 @@
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tv_viewusername"
         app:layout_constraintTop_toBottomOf="@+id/tv_viewusername" />
 
@@ -61,25 +62,25 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:singleLine="true"
-        android:text="STAFF IT"
+        android:text="STAFF "
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_viewloccode"
-        app:layout_constraintTop_toBottomOf="@+id/tv_viewloccode" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDeptCode" />
 
     <TextView
         android:id="@+id/tvDeptCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="SMART AGRI DEPT"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="IT DEPARTMENT"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toTopOf="@+id/tv_viewloccode" />
+        app:layout_constraintStart_toEndOf="@+id/userPhotoNavHeader"
+        app:layout_constraintTop_toBottomOf="@+id/tv_viewusername" />
 
     <TextView
         android:id="@+id/textView8"
@@ -90,6 +91,7 @@
         android:textColor="@color/white"
         android:textSize="14dp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/tv_viewloccode"
         app:layout_constraintTop_toTopOf="@+id/tv_viewloccode" />
 

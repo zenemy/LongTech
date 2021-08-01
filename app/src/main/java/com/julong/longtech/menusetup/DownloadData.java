@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -131,7 +134,6 @@ public class DownloadData extends AppCompatActivity {
         if (!checkBoxGS.isChecked() && !checkBoxMD.isChecked()) {
             new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Data!").setConfirmText("OK").show();
         } else {
-            progressDialog.show();
             if (checkBoxGS.isChecked()) {
                 RequestQueue requestQueueDownloadDataGS = Volley.newRequestQueue(getApplicationContext());
                 String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/getmastermenu.php?tipedata=datageneralsetup";
@@ -178,8 +180,6 @@ public class DownloadData extends AppCompatActivity {
 
                             if (jsonPostDoneGS.getString("ALLDATAGS").equals("DONE")) {
                                 tvSubJudulDownloadGS.setText("Jumlah Data : " + dbhelper.count_datadownloadGS() + " Data");
-                                isDownloadGSDone = true;
-                                eventAfterDownload();
                             }
 
                         } catch (JSONException e) {
@@ -190,7 +190,6 @@ public class DownloadData extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        eventAfterDownload();
                         error.printStackTrace();
                         requestQueueDownloadDataGS.stop();
                     }
@@ -270,8 +269,9 @@ public class DownloadData extends AppCompatActivity {
 
                             if (jsonPostDoneMD.getString("ALLDATAMD").equals("DONE")) {
                                 tvSubJudulDownloadMD.setText("Jumlah Data : " + dbhelper.count_tablemd() + " Data");
-                                isDownloadMDDone = true;
-                                eventAfterDownload();
+                                progressDialog.dismiss();
+                                final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Download!").setConfirmText("OK");
+                                errorDlg.show();
                             }
 
                         } catch (JSONException e) {
@@ -282,34 +282,19 @@ public class DownloadData extends AppCompatActivity {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        eventAfterDownload();
                         error.printStackTrace();
+                        progressDialog.dismiss();
+                        final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Periksa Jaringan!").setConfirmText("OK");
+                        errorDlg.show();
                         requestQueueDownloadMD.stop();
                     }
                 });
                 requestQueueDownloadMD.add(jsonRequestMD);
+                progressDialog.show();
             }
         }
     }
 
-    void eventAfterDownload() {
-        final SweetAlertDialog successDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Download Data").setConfirmText("OK");
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (isDownloadMDDone && isDownloadGSDone) {
-                    progressDialog.dismiss();
-                    successDlg.show();
-                }
-                else {
-                    progressDialog.dismiss();
-                    final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Periksa Jaringan!").setConfirmText("OK");
-                    errorDlg.show();
-                }
-                handler.removeCallbacks(this);
-            }
-        }, 2000);
-    }
 
     //Function Tombol Back
     @Override

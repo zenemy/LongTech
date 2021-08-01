@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -39,10 +40,15 @@ public class InputRincianRKH extends AppCompatActivity {
     ListView lvRincianRKH;
 
     Dialog dlgInputRincianKerja, dlgSubmitRincianRKH;
-    String todayDateRincianRKH, nodocRKH, vehicleNameRKH, shiftRincianRKH, driverDetailRKH;
+    String todayDateRincianRKH, nodocRKH, vehicleNameRKH, shiftRincianRKH, driverDetailRKH,
+            selectedKegiatan, selectedLokasi;
 
-    private List<String> listMuatanRincianRKH;
-    ArrayAdapter<String> adapterMuatanRincianRKH;
+    private List<String> listMuatanRincianRKH, listKegiatanCode, listKegiatanName, listKegiatanSatuan,
+            listLokasiCode, listLokasiName;
+
+    private List<ListParamRincianRKH> listParamRincian;
+    AdapterRincianRKH adapterRincian;
+    ArrayAdapter<String> adapterMuatanRincianRKH, adapterKegiatan, adapterLokasi;
     DatabaseHelper dbhelper;
 
     @Override
@@ -50,6 +56,7 @@ public class InputRincianRKH extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_rincian_rkh);
 
+        // Declare design ID
         dbhelper = new DatabaseHelper(this);
         btnShowInputRincianKerja = findViewById(R.id.btnInputRincianRKH);
         etDriverRincianKegiatan = findViewById(R.id.etDriverRincianKegiatan);
@@ -70,6 +77,7 @@ public class InputRincianRKH extends AppCompatActivity {
         etDriverRincianKegiatan.setText(driverDetailRKH);
         etShiftRincianKegiatan.setText(shiftRincianRKH);
 
+        loadListViewRKH();
     }
 
     public void SubmitRincianRKH(View v) {
@@ -108,8 +116,40 @@ public class InputRincianRKH extends AppCompatActivity {
         dlgInputRincianKerja.show();
 
         listMuatanRincianRKH = dbhelper.get_loadtype(1);
+        listKegiatanSatuan = dbhelper.get_loadtype(0);
         adapterMuatanRincianRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listMuatanRincianRKH);
         acLoadTypeRincianRKH.setAdapter(adapterMuatanRincianRKH);
+
+        listKegiatanCode = dbhelper.get_activitylist(0);
+        listKegiatanName = dbhelper.get_activitylist(1);
+        adapterKegiatan = new ArrayAdapter<String>(InputRincianRKH.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanName);
+        acKegiatanKerjaRincianRKH.setAdapter(adapterKegiatan);
+
+        listLokasiCode = dbhelper.get_fieldcrop(0);
+        listLokasiName = dbhelper.get_fieldcrop(1);
+        adapterLokasi = new ArrayAdapter<String>(InputRincianRKH.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiName);
+        acWorkPlaceRincianRKH.setAdapter(adapterLokasi);
+
+        acKegiatanKerjaRincianRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedKegiatan = listKegiatanCode.get(position);
+            }
+        });
+
+        acLoadTypeRincianRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                etSatuanKerjaRincianRKH.setText(listKegiatanSatuan.get(position));
+            }
+        });
+
+        acWorkPlaceRincianRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedLokasi = listLokasiCode.get(position);
+            }
+        });
 
         etWaktuKerjaRincianRKH.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +193,26 @@ public class InputRincianRKH extends AppCompatActivity {
         String showTime = hourAsText + ":" + minuteAsText;
         etWaktuKerjaRincianRKH.setText(showTime);
 
+    }
+
+    private void loadListViewRKH() {
+
+        lvRincianRKH = findViewById(R.id.lvRincianRKH);
+        listParamRincian = new ArrayList<>();
+        listParamRincian.clear();
+        final Cursor cursor = dbhelper.listview_rincianrkh(nodocRKH);
+        if (cursor.moveToFirst()) {
+            do {
+                ListParamRincianRKH paramsRincian = new ListParamRincianRKH(
+                        cursor.getString(0), cursor.getString(1), cursor.getString(2),
+                        cursor.getString(3), cursor.getString(4), cursor.getString(5),
+                        cursor.getString(6)
+                );
+                listParamRincian.add(paramsRincian);
+            } while (cursor.moveToNext());
+        }
+        adapterRincian = new AdapterRincianRKH(this, R.layout.item_lvdetailrkh, listParamRincian);
+        lvRincianRKH.setAdapter(adapterRincian);
     }
 
 }

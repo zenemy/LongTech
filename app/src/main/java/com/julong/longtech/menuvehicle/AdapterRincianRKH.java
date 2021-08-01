@@ -28,8 +28,8 @@ public class AdapterRincianRKH extends ArrayAdapter<ListParamRincianRKH> {
     public static TextView data;
     DatabaseHelper dbhelper;
 
-    public AdapterRincianRKH(Activity context, List<ListParamRincianRKH> rincianRkhParams) {
-        super(context, R.layout.upload_list, rincianRkhParams);
+    public AdapterRincianRKH(Activity context, int list, List<ListParamRincianRKH> rincianRkhParams) {
+        super(context, R.layout.item_lvdetailrkh, rincianRkhParams);
         this.context = context;
         this.rincianRkhParams = rincianRkhParams;
     }
@@ -48,7 +48,7 @@ public class AdapterRincianRKH extends ArrayAdapter<ListParamRincianRKH> {
             convertView = inflator.inflate(R.layout.item_lvdetailrkh, null);
 
             ViewHolder viewHolder = new AdapterRincianRKH.ViewHolder();
-            viewHolder.layoutLvDetailRKH = (LinearLayout) convertView.findViewById(R.id.layoutLvDetailRKH);
+            viewHolder.layoutLvDetailRKH = (LinearLayout) convertView.findViewById(R.id.layoutItemLvRincianRKH);
             viewHolder.tvJenisMuatanRincianRKH = (TextView) convertView.findViewById(R.id.tvJenisMuatanRincianRKH);
             viewHolder.tvSatuanKerjaRincianRKH = (TextView) convertView.findViewById(R.id.tvSatuanKerjaRincianRKH);
             viewHolder.tvLokasiKerjaRincianRKH = (TextView) convertView.findViewById(R.id.tvLokasiKerjaRincianRKH);
@@ -70,6 +70,13 @@ public class AdapterRincianRKH extends ArrayAdapter<ListParamRincianRKH> {
 
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
+        viewHolder.tvJenisMuatanRincianRKH.setText(rincianRkhParams.get(position).getJenisMuatan());
+        viewHolder.tvSatuanKerjaRincianRKH.setText(rincianRkhParams.get(position).getSatuanMuatan());
+        viewHolder.tvLokasiKerjaRincianRKH.setText(rincianRkhParams.get(position).getLokasi());
+        viewHolder.tvKegiatanKerjaRincianRKH.setText(rincianRkhParams.get(position).getKegiatan());
+        viewHolder.tvWaktuKerjaRincianRKH.setText(rincianRkhParams.get(position).getWaktu());
+        viewHolder.tvKMHMKerjaRincianRKH.setText(rincianRkhParams.get(position).getKilometer());
+        viewHolder.tvPrestasiKerjaRincianRKH.setText(rincianRkhParams.get(position).getTargetKerja());
 
         return convertView;
     }

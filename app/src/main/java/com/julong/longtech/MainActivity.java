@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     View hView;
     ConstraintLayout clnavheader;
     public static ImageView imgUserNavHeader;
-    TextView tvUsernameNavHome, tvPositionNavHome;
+    TextView tvUsernameNavHome, tvPositionNavHome, tvDepartmentHome;
     DatabaseHelper dbhelper;
 
     @Override
@@ -112,8 +112,10 @@ public class MainActivity extends AppCompatActivity {
         clnavheader = hView.findViewById(R.id.clnavheader);
         tvUsernameNavHome = hView.findViewById(R.id.tv_viewusername);
         tvPositionNavHome = hView.findViewById(R.id.tv_viewposition);
+        tvDepartmentHome = hView.findViewById(R.id.tvDeptCode);
         tvUsernameNavHome.setText(dbhelper.get_tbl_username(10));
         tvPositionNavHome.setText(dbhelper.get_tbl_username(13));
+        tvDepartmentHome.setText(dbhelper.get_tbl_username(16) + " Department");
 
         try {
             clnavheader.getBackground().setColorFilter(Color.parseColor(dbhelper.get_tbl_username(26)), PorterDuff.Mode.SRC_ATOP);

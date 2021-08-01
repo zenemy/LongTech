@@ -2,39 +2,45 @@ package com.julong.longtech.menuvehicle;
 
 public class ListParamRincianRKH {
 
-    private String vehicleName;
-    private String shiftKerja;
-    private String driverName;
-    private String helper1Name;
-    private String helper2Name;
-    private String kebutuhanBBM;
+    private String jenisMuatan;
+    private String satuanMuatan;
+    private String lokasi;
+    private String kegiatan;
+    private String waktu;
+    private String kilometer;
+    private String targetKerja;
 
-    public ListParamRincianRKH(String vehicleName, String shiftKerja, String driverName, String helper1Name, String helper2Name, String kebutuhanBBM) {
-        this.vehicleName = vehicleName;
-        this.shiftKerja = shiftKerja;
-        this.driverName = driverName;
-        this.helper1Name = helper1Name;
-        this.helper2Name = helper2Name;
-        this.kebutuhanBBM = kebutuhanBBM;
+    public ListParamRincianRKH(String jenisMuatan, String satuanMuatan, String lokasi, String kegiatan,
+                               String waktu, String kilometer, String targetKerja) {
+        this.jenisMuatan = jenisMuatan;
+        this.satuanMuatan = satuanMuatan;
+        this.lokasi = lokasi;
+        this.kegiatan = kegiatan;
+        this.waktu = waktu;
+        this.kilometer = kilometer;
+        this.targetKerja = targetKerja;
     }
 
-    public String getVehiclename() {
-        return vehicleName;
+    public String getJenisMuatan() {
+        return jenisMuatan;
     }
-    public String getShiftkerja() {
-        return shiftKerja;
+    public String getSatuanMuatan() {
+        return satuanMuatan;
     }
-    public String getDrivername() {
-        return driverName;
+    public String getLokasi() {
+        return lokasi;
     }
-    public String getHelper1Name() {
-        return helper1Name;
+    public String getKegiatan() {
+        return kegiatan;
     }
-    public String getHelper2Name() {
-        return helper2Name;
+    public String getWaktu() {
+        return waktu;
     }
-    public String getKebutuhanBBM() {
-        return kebutuhanBBM;
+    public String getKilometer() {
+        return kilometer;
+    }
+    public String getTargetKerja() {
+        return targetKerja;
     }
 
 
