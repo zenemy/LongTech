@@ -11,9 +11,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/border_dialog"
         android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -92,12 +93,14 @@
                 android:insetBottom="0dp"
                 android:text="OK"
                 android:textColor="@color/colorTextButton"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDlgInfoTitle"
+                app:layout_constraintVertical_bias="0.0"
                 app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRounded" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -36,6 +36,10 @@ public class DialogHelper extends Dialog {
         dialogYesNo = new Dialog(getContext());
         dialogYesNo.setContentView(R.layout.dialog_yesno);
         dialogYesNo.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowPreviewGambar = dialogYesNo.getWindow();
+        windowPreviewGambar.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+
         btn_ok = dialogYesNo.findViewById(R.id.btn_dlg2_ok);
         btn_no = dialogYesNo.findViewById(R.id.btn_dlg2_no);
         tvtitle = dialogYesNo.findViewById(R.id.tv_dlg2_title);
@@ -48,6 +52,7 @@ public class DialogHelper extends Dialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        tvjuduldialog.setText(LoginActivity.namasystem);
 
 //        try {
 //            btn_ok.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));

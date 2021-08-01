@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
     //==============================================================================================
     //Deklarasi Variable
     //==============================================================================================
-
     //Public
     public static String return_koneksi, checkuser, namasystem;
     public static ImageView imgphoto, imagedialog;
@@ -133,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         et_username.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         //Object Button
         btnlogin = findViewById(R.id.btnlogin);
-        //Obejct Foto / Backgroud
+        //Obejct Image / Backgroud
         imgphoto = findViewById(R.id.myPict2);
         imglogo = findViewById(R.id.myPict);
         imgbackground = findViewById(R.id.imgBgLogin);
