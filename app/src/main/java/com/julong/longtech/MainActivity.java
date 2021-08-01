@@ -1,5 +1,6 @@
 package com.julong.longtech;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,6 +17,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -75,20 +79,34 @@ import java.util.Map;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MainActivity extends AppCompatActivity {
+
+    //==============================================================================================
+    //Deklarasi Variable
+    //==============================================================================================
+    //Public
+    public static ImageView imgUserNavHeader;
+
+    //Private
+    private AppBarConfiguration mAppBarConfiguration;
     List<String> listGroupMenu;
     HashMap<String, List<String>> listMenu;
-    ExpandableListAdapter expandableListAdapter;
-    ExpandableListView expandableListView;
-    private AppBarConfiguration mAppBarConfiguration;
+    //END===========================================================================================
 
+    //==============================================================================================
+    //Deklarasi Object
+    //==============================================================================================
+    //Class / package / Helper
+    DatabaseHelper dbhelper;
     ProgressDialog pDialog;
     Handler handler = new Handler();
 
+    //Object
+    TextView tvUsernameNavHome, tvPositionNavHome;
+    ExpandableListAdapter expandableListAdapter;
+    ExpandableListView expandableListView;
     View hView;
     ConstraintLayout clnavheader;
-    public static ImageView imgUserNavHeader;
-    TextView tvUsernameNavHome, tvPositionNavHome, tvDepartmentHome;
-    DatabaseHelper dbhelper;
+    //END===========================================================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +130,8 @@ public class MainActivity extends AppCompatActivity {
         clnavheader = hView.findViewById(R.id.clnavheader);
         tvUsernameNavHome = hView.findViewById(R.id.tv_viewusername);
         tvPositionNavHome = hView.findViewById(R.id.tv_viewposition);
-        tvDepartmentHome = hView.findViewById(R.id.tvDeptCode);
         tvUsernameNavHome.setText(dbhelper.get_tbl_username(10));
         tvPositionNavHome.setText(dbhelper.get_tbl_username(13));
-        tvDepartmentHome.setText(dbhelper.get_tbl_username(16) + " Department");
 
         try {
             clnavheader.getBackground().setColorFilter(Color.parseColor(dbhelper.get_tbl_username(26)), PorterDuff.Mode.SRC_ATOP);

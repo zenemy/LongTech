@@ -83,11 +83,11 @@
                             android:id="@+id/imgChangeLanguage"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:editable="false"
-                            android:textColor="#99000000"
-                            android:dropDownWidth="100dp"
                             android:layout_gravity="center_vertical"
-                            android:background="@drawable/ic_baseline_language_24" />
+                            android:background="@drawable/ic_baseline_language_24"
+                            android:dropDownWidth="100dp"
+                            android:editable="false"
+                            android:textColor="@color/colorText" />
 
                         <TextView
                             android:id="@+id/tvKeteranganPilihanBahasa"
@@ -118,7 +118,7 @@
                             android:gravity="center_horizontal"
                             android:text="LOGIN"
                             android:textAlignment="center"
-                            android:textColor="#2E5C30"
+                            android:textColor="@color/colorPrimary"
                             android:textSize="24dp"
                             android:textStyle="bold" />
 
@@ -133,9 +133,9 @@
                             <TextView
                                 android:layout_width="70dp"
                                 android:layout_height="wrap_content"
-                                android:text="User ID"
                                 android:layout_gravity="center_vertical"
-                                android:textColor="@color/black"
+                                android:text="User ID"
+                                android:textColor="@color/colorText"
                                 android:textStyle="bold" />
 
                             <com.google.android.material.textfield.TextInputLayout
@@ -165,7 +165,7 @@
                                     android:paddingEnd="8dp"
                                     android:paddingBottom="6dp"
                                     android:textAllCaps="true"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/colorText"
                                     android:textSize="14sp" />
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -182,7 +182,7 @@
                                 android:layout_width="70dp"
                                 android:layout_height="wrap_content"
                                 android:text="Password"
-                                android:textColor="@color/black"
+                                android:textColor="@color/colorText"
                                 android:textStyle="bold" />
 
                             <com.google.android.material.textfield.TextInputLayout
@@ -201,14 +201,14 @@
                                     android:id="@+id/et_password"
                                     android:layout_width="match_parent"
                                     android:layout_height="40dp"
+                                    android:background="@drawable/bg_minimalist"
                                     android:hint="Masukkan Password"
+                                    android:inputType="textPassword"
                                     android:paddingStart="12dp"
                                     android:paddingTop="4dp"
                                     android:paddingEnd="8dp"
-                                    android:background="@drawable/bg_minimalist"
                                     android:paddingBottom="6dp"
-                                    android:inputType="textPassword"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/colorText"
                                     android:textSize="14sp" />
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -225,7 +225,7 @@
                             android:insetBottom="0dp"
                             android:onClick="eventClickLogin"
                             android:text="LOGIN"
-                            android:textColor="#FFFFFF"
+                            android:textColor="@color/colorTextButton"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             app:cornerRadius="10dp" />
@@ -253,7 +253,7 @@
                             android:clickable="true"
                             android:text="Version"
                             android:textAlignment="center"
-                            android:textColor="#2E5C30"
+                            android:textColor="@color/colorPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold|italic"
                             android:visibility="visible" />

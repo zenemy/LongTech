@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +36,10 @@ public class DialogHelper extends Dialog {
         dialogYesNo = new Dialog(getContext());
         dialogYesNo.setContentView(R.layout.dialog_yesno);
         dialogYesNo.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowPreviewGambar = dialogYesNo.getWindow();
+        windowPreviewGambar.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+
         btn_ok = dialogYesNo.findViewById(R.id.btn_dlg2_ok);
         btn_no = dialogYesNo.findViewById(R.id.btn_dlg2_no);
         tvtitle = dialogYesNo.findViewById(R.id.tv_dlg2_title);
@@ -46,6 +52,7 @@ public class DialogHelper extends Dialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        tvjuduldialog.setText(LoginActivity.namasystem);
 
 //        try {
 //            btn_ok.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
@@ -115,6 +122,10 @@ public class DialogHelper extends Dialog {
         dialogInfo = new Dialog(getContext());
         dialogInfo.setContentView(R.layout.dialog_info);
         dialogInfo.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowPreviewGambar = dialogInfo.getWindow();
+        windowPreviewGambar.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+
         btn_ok = dialogInfo.findViewById(R.id.btnDialogInfo);
         tvtitle = dialogInfo.findViewById(R.id.tvDlgInfoTitle);
         tvjuduldialog = dialogInfo.findViewById(R.id.tvSystemNameDlgInfo);
@@ -122,27 +133,11 @@ public class DialogHelper extends Dialog {
 
         //Ubah logo di dialog
         try {
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0), 0, dbhelper.get_companyimg(0).length);
-            imgLogoDlgHelperInfo.setImageBitmap(compressedBitmap);
+            imgLogoDlgHelperInfo.setImageBitmap(LoginActivity.bitmaplogosystem);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        try {
-//            btn_ok.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
-//            tvjuduldialog.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
-//            tvjuduldialog.setText(dbhelper.get_tbl_username(25));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(1), 0, dbhelper.get_gambar_user(1).length);
-//            imgdialog.setImageBitmap(compressedBitmap);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        tvjuduldialog.setText(LoginActivity.namasystem);
 
         //Inisialisasi Object Title/Text
         tvtitle.setText(v_dlg_title);
