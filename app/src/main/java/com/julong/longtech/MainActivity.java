@@ -7,15 +7,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -44,6 +47,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.julong.longtech.menuhcm.AbsensiBekerjaUnit;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
@@ -65,15 +72,19 @@ import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuhcm.BiodataKaryawan;
 import com.julong.longtech.menusetup.MyAccount;
+import com.julong.longtech.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -85,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     //==============================================================================================
     //Public
     public static ImageView imgUserNavHeader;
+    HashPassword hashPassword;
 
     //Private
     private AppBarConfiguration mAppBarConfiguration;
@@ -101,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler();
 
     //Object
-    TextView tvUsernameNavHome, tvPositionNavHome;
+    TextView tvUsernameNavHome, tvPositionNavHome, tvDeptCode;
     ExpandableListAdapter expandableListAdapter;
     ExpandableListView expandableListView;
     View hView;
@@ -116,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         generate_inventorymenu();
         generate_vehiclemenu();
         generate_workshopmenu();
+        hashPassword = new HashPassword(11);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -130,8 +143,10 @@ public class MainActivity extends AppCompatActivity {
         clnavheader = hView.findViewById(R.id.clnavheader);
         tvUsernameNavHome = hView.findViewById(R.id.tv_viewusername);
         tvPositionNavHome = hView.findViewById(R.id.tv_viewposition);
+        tvDeptCode = hView.findViewById(R.id.tvDeptCode);
         tvUsernameNavHome.setText(dbhelper.get_tbl_username(10));
         tvPositionNavHome.setText(dbhelper.get_tbl_username(13));
+        tvDeptCode.setText(dbhelper.get_tbl_username(17));
 
         try {
             clnavheader.getBackground().setColorFilter(Color.parseColor(dbhelper.get_tbl_username(26)), PorterDuff.Mode.SRC_ATOP);
@@ -386,7 +401,104 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2000);
 
+    }
 
+    public void eventShowQR(View v) {
+        //Insert Password before show QR
+        Dialog dlgInsertPasswordQR = new Dialog(MainActivity.this);
+        dlgInsertPasswordQR.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dlgInsertPasswordQR.setContentView(R.layout.dialog_passwordqr);
+        dlgInsertPasswordQR.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        dlgInsertPasswordQR.setCanceledOnTouchOutside(false);
+        Window windowInsertPassowrd = dlgInsertPasswordQR.getWindow();
+        windowInsertPassowrd.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        EditText etPasswordDlgQR = dlgInsertPasswordQR.findViewById(R.id.etPasswordDlgQR);
+        Button btnOkPasswordQR = dlgInsertPasswordQR.findViewById(R.id.btnOkPasswordQR);
+        Button btnBackPasswordQR = dlgInsertPasswordQR.findViewById(R.id.btnBackPasswordQR);
+        btnBackPasswordQR.setOnClickListener(view12 -> dlgInsertPasswordQR.dismiss());
+        dlgInsertPasswordQR.show();
+
+        etPasswordDlgQR.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) ||
+                        (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    btnOkPasswordQR.performClick();
+                }
+                return false;
+            }
+        });
+
+        btnOkPasswordQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean checkPassword = hashPassword.CheckPassword(etPasswordDlgQR.getText().toString(), dbhelper.get_tbl_username(4));
+                if (checkPassword) {
+                    dlgInsertPasswordQR.dismiss();
+
+                    //Show QR if success
+                    Dialog dialogMyQR = new Dialog(MainActivity.this);
+                    dialogMyQR.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialogMyQR.setContentView(R.layout.dialog_myqr);
+                    dialogMyQR.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                    dialogMyQR.setCanceledOnTouchOutside(false);
+                    Window windowQR = dialogMyQR.getWindow();
+                    windowQR.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                    TextView tvEmpNameDialogQR = dialogMyQR.findViewById(R.id.tvEmpNameDialogQR);
+                    ImageView imgQrEmployee = dialogMyQR.findViewById(R.id.imgQrEmployee);
+                    Button btnRefreshQR = dialogMyQR.findViewById(R.id.btnRefreshQR);
+                    Button btnBackDlgQR = dialogMyQR.findViewById(R.id.btnBackDlgQR);
+                    tvEmpNameDialogQR.setText(dbhelper.get_tbl_username(10));
+                    dialogMyQR.show();
+
+                    btnBackDlgQR.setOnClickListener(view1 -> dialogMyQR.dismiss());
+                    QRCodeWriter writer = new QRCodeWriter();
+
+                    try {
+                        String hashedValue = hashPassword.HashPassword(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()) + dbhelper.get_tbl_username(8));
+                        String finalValueQR = hashedValue + "longtech" + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                        BitMatrix bitMatrix = writer.encode(finalValueQR, BarcodeFormat.QR_CODE, 512, 512);
+                        int width = bitMatrix.getWidth();
+                        int height = bitMatrix.getHeight();
+                        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                        for (int x = 0; x < width; x++) {
+                            for (int y = 0; y < height; y++) {
+                                bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                            }
+                        }
+                        imgQrEmployee.setImageBitmap(bmp);
+
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    }
+
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            btnRefreshQR.setVisibility(View.VISIBLE);
+                            imgQrEmployee.setAlpha(50);
+
+                            handler.removeCallbacks(this);
+                        }
+                    }, 300000);
+
+                    btnRefreshQR.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialogMyQR.dismiss();
+                            eventShowQR(v);
+                        }
+                    });
+                } else {
+                    dlgInsertPasswordQR.dismiss();
+                    new SweetAlertDialog(MainActivity.this,
+                            SweetAlertDialog.ERROR_TYPE)
+                            .setContentText("Password Salah")
+                            .setConfirmText("OK").show();
+                }
+            }
+        });
     }
 
     public void openDrawer() {
@@ -597,6 +709,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+
     }
 
     @Override

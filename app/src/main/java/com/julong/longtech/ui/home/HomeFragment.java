@@ -15,12 +15,14 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -409,65 +411,7 @@ public class HomeFragment extends Fragment {
 
     private void eventClickMenu() {
 
-        linearLayoutQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Dialog dialogMyQR = new Dialog(getActivity());
-                dialogMyQR.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialogMyQR.setContentView(R.layout.dialog_myqr);
-                dialogMyQR.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                dialogMyQR.setCanceledOnTouchOutside(false);
-                Window windowQR = dialogMyQR.getWindow();
-                windowQR.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                TextView tvEmpNameDialogQR = dialogMyQR.findViewById(R.id.tvEmpNameDialogQR);
-                ImageView imgQrEmployee = dialogMyQR.findViewById(R.id.imgQrEmployee);
-                Button btnRefreshQR = dialogMyQR.findViewById(R.id.btnRefreshQR);
-                Button btnBackDlgQR = dialogMyQR.findViewById(R.id.btnBackDlgQR);
-                tvEmpNameDialogQR.setText(dbhelper.get_tbl_username(10));
-                dialogMyQR.show();
-
-                btnBackDlgQR.setOnClickListener(view1 -> dialogMyQR.dismiss());
-                QRCodeWriter writer = new QRCodeWriter();
-
-                try {
-                    String hashedValue = hashPassword.HashPassword(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()) + dbhelper.get_tbl_username(8));
-                    String finalValueQR = hashedValue + "longtech" + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    BitMatrix bitMatrix = writer.encode(finalValueQR, BarcodeFormat.QR_CODE, 512, 512);
-                    int width = bitMatrix.getWidth();
-                    int height = bitMatrix.getHeight();
-                    Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-                    for (int x = 0; x < width; x++) {
-                        for (int y = 0; y < height; y++) {
-                            bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
-                        }
-                    }
-                    imgQrEmployee.setImageBitmap(bmp);
-
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        btnRefreshQR.setVisibility(View.VISIBLE);
-                        imgQrEmployee.setAlpha(50);
-
-                        handler.removeCallbacks(this);
-                    }
-                }, 300000);
-
-                btnRefreshQR.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialogMyQR.dismiss();
-                        linearLayoutQR.performClick();
-                    }
-                });
-
-            }
-        });
+        linearLayoutQR.setOnClickListener(view -> ((MainActivity) getActivity()).eventShowQR(view));
 
         linearLayoutAbsen.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AbsensiMandiri.class);
