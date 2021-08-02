@@ -126,7 +126,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@drawable/bottomborderonly"
-            android:clickable="true"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:paddingBottom="8dp">
 
@@ -163,6 +162,7 @@
                 android:id="@+id/checkBoxDataDownloadGS"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:clickable="false"
                 app:layout_constraintBottom_toBottomOf="@+id/tvSubJudulDataDownloadGS"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvJudulDataDownloadGS" />
@@ -174,7 +174,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bottomborderonly"
-            android:clickable="true"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:paddingBottom="8dp">
 
@@ -211,6 +210,7 @@
                 android:id="@+id/checkBoxDataDownloadMD"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:clickable="false"
                 app:layout_constraintBottom_toBottomOf="@+id/tvSubJudulDataDownloadMD"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvJudulDataDownloadMD" />

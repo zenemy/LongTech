@@ -46,6 +46,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:hint="Unit Kendaraan Kerja">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etVehicleRincianRKH"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:editable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="none"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +94,7 @@
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:text="ZISRON SINAGA"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -94,7 +117,7 @@
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:text="Shift 1"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -109,7 +132,7 @@
         android:layout_margin="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout11"
+        app:layout_constraintBottom_toTopOf="@+id/layoutBtnRincianRKH"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
@@ -122,11 +145,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp"
+                android:paddingTop="6dp"
                 android:background="@drawable/tbl_lr_top"
                 android:backgroundTint="@color/colorPrimary"
                 android:gravity="center_horizontal|top"
-                android:paddingBottom="8dp"
+                android:paddingBottom="6dp"
                 android:text="Rincian Kegiatan RKH"
                 android:textColor="@color/white"
                 android:textSize="16sp"
@@ -155,7 +178,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout11"
+        android:id="@+id/layoutBtnRincianRKH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -169,30 +192,28 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancelPenginputanRKH"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorPrimary"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="KEMBALI"
             android:textStyle="bold"
+            android:textSize="16sp"
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSimpanPenginputanRKH"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorPrimary"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:onClick="SubmitRincianRKH"
             android:text="SIMPAN"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
     </LinearLayout>

@@ -14,8 +14,8 @@
         android:background="@drawable/tbl_lr_top"
         android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:text="SUBMIT RINCIAN RKH"
         android:textColor="@color/white"
         android:textSize="18sp"
@@ -83,26 +83,34 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:gravity="end"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
+                    android:id="@+id/tvDriverNameDlgSubmitRincianRKH"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="end"
                     android:text="ZISRON SINAGA"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="16sp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
+                    android:id="@+id/tvShiftDlgSubmitRincianRKH"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:gravity="end"
                     android:text="Shift 1"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="16sp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
+                    android:id="@+id/tvTotalDlgSubmitRincianRKH"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -125,6 +133,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDismissDlgSubmitRincianRKH"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="1dp"
@@ -140,6 +149,7 @@
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDlgSubmitRincianRKH"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="0.5dp"

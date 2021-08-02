@@ -72,7 +72,6 @@ public class DownloadData extends AppCompatActivity {
         checkBoxGS = findViewById(R.id.checkBoxDataDownloadGS);
         checkBoxMD = findViewById(R.id.checkBoxDataDownloadMD);
         checkAllDownload = findViewById(R.id.checkAllDownload);
-        btnDownload = findViewById(R.id.btnOkDownload);
         tvSubJudulDownloadGS = findViewById(R.id.tvSubJudulDataDownloadGS);
         tvSubJudulDownloadMD = findViewById(R.id.tvSubJudulDataDownloadMD);
 
@@ -87,46 +86,46 @@ public class DownloadData extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        checkAllDownload.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (checkAllDownload.isChecked()) {
-                    checkBoxGS.setChecked(true);
-                    checkBoxMD.setChecked(true);
-                }
-                else {
-                    checkBoxGS.setChecked(false);
-                    checkBoxMD.setChecked(false);
-                }
-            }
-        });
-
-        layoutHeaderDownload2.setOnClickListener(v -> {
-            if (checkAllDownload.isChecked()) {
-                checkAllDownload.setChecked(false);
-            }
-            else {
-                checkAllDownload.setChecked(true);
-            }
-        });
-
-        layoutDownloadGS.setOnClickListener(v -> {
-            if (checkBoxGS.isChecked()) {
-                checkBoxGS.setChecked(false);
-            }
-            else {
-                checkBoxGS.setChecked(true);
-            }
-        });
-
-        layoutDownloadMD.setOnClickListener(v -> {
-            if (checkBoxMD.isChecked()) {
-                checkBoxMD.setChecked(false);
-            }
-            else {
-                checkBoxMD.setChecked(true);
-            }
-        });
+//        checkAllDownload.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (checkAllDownload.isChecked()) {
+//                    checkBoxGS.setChecked(true);
+//                    checkBoxMD.setChecked(true);
+//                }
+//                else {
+//                    checkBoxGS.setChecked(false);
+//                    checkBoxMD.setChecked(false);
+//                }
+//            }
+//        });
+//
+//        layoutHeaderDownload2.setOnClickListener(v -> {
+//            if (checkAllDownload.isChecked()) {
+//                checkAllDownload.setChecked(false);
+//            }
+//            else {
+//                checkAllDownload.setChecked(true);
+//            }
+//        });
+//
+//        layoutDownloadGS.setOnClickListener(v -> {
+//            if (checkBoxGS.isChecked()) {
+//                checkBoxGS.setChecked(false);
+//            }
+//            else {
+//                checkBoxGS.setChecked(true);
+//            }
+//        });
+//
+//        layoutDownloadMD.setOnClickListener(v -> {
+//            if (checkBoxMD.isChecked()) {
+//                checkBoxMD.setChecked(false);
+//            }
+//            else {
+//                checkBoxMD.setChecked(true);
+//            }
+//        });
 
     }
 

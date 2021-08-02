@@ -191,25 +191,25 @@ public class ApelPagi extends AppCompatActivity {
                 if (TextUtils.isEmpty(etLokasiApel.getText().toString().trim()) || gambarApelPagi == null) {
                     new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("OK").show();
                 }
-                final SweetAlertDialog warningExitDlg = new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.WARNING_TYPE);
-                warningExitDlg.setTitleText("Selesaikan apel pagi?");
-                warningExitDlg.setCancelText("KEMBALI");
-                warningExitDlg.setConfirmText("SELESAI");
-                warningExitDlg.showCancelButton(true);
-                warningExitDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog dlgExit) {
-                        dbhelper.updateselesai_apelpagi(nodocApel);
-                        lvAnggota.setEnabled(false);
-                        lvPimpinan.setEnabled(false);
-                        dlgExit.dismissWithAnimation();
-                        new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Apel Pagi selesai")
-                                .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
-                    }
-                });
-                warningExitDlg.show();
-
-
+                else {
+                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.WARNING_TYPE);
+                    warningExitDlg.setTitleText("Selesaikan apel pagi?");
+                    warningExitDlg.setCancelText("KEMBALI");
+                    warningExitDlg.setConfirmText("SELESAI");
+                    warningExitDlg.showCancelButton(true);
+                    warningExitDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog dlgExit) {
+                            dbhelper.updateselesai_apelpagi(nodocApel);
+                            lvAnggota.setEnabled(false);
+                            lvPimpinan.setEnabled(false);
+                            dlgExit.dismissWithAnimation();
+                            new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Apel Pagi selesai")
+                                    .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
+                        }
+                    });
+                    warningExitDlg.show();
+                }
             }
         });
     }
@@ -321,10 +321,10 @@ public class ApelPagi extends AppCompatActivity {
     public void prepateTeamData() throws SQLiteException {
         dbhelper = new DatabaseHelper(this);
 
-        if (dbhelper.get_statusapelpagi(0).equals("1")) {
+        if (dbhelper.get_statusapelpagi(0).equals("1") && dbhelper.get_statusapelpagi(5).equals("")) {
             try {
                 etLokasiApel.setText(dbhelper.get_statusapelpagi(2));
-                etDescApel.setText(dbhelper.get_apelpagiisdone(4));
+                etDescApel.setText(dbhelper.get_statusapelpagi(4));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -336,15 +336,16 @@ public class ApelPagi extends AppCompatActivity {
                 imgFotoApelPagi.setImageBitmap(compressedBitmap);
             }
         }
-        else if (dbhelper.get_apelpagiisdone(0).equals("1")) {
+        else if (dbhelper.get_statusapelpagi(0).equals("1") && (dbhelper.get_statusapelpagi(5).equals("0")
+                || dbhelper.get_statusapelpagi(5).equals("1"))) {
             layoutBtnApel.setVisibility(View.GONE);
             imgFotoApelPagi.setEnabled(false);
             etLokasiApel.setFocusable(false);
             etDescApel.setFocusable(false);
-            etLokasiApel.setText(dbhelper.get_apelpagiisdone(2));
-            etWaktuApelPagi.setText(dbhelper.get_apelpagiisdone(3));
-            etDescApel.setText(dbhelper.get_apelpagiisdone(4));
-            gambarApelPagi = dbhelper.get_fotoapelrame(dbhelper.get_apelpagiisdone(1));
+            etLokasiApel.setText(dbhelper.get_statusapelpagi(2));
+            etWaktuApelPagi.setText(dbhelper.get_statusapelpagi(3));
+            etDescApel.setText(dbhelper.get_statusapelpagi(4));
+            gambarApelPagi = dbhelper.get_fotoapelrame(dbhelper.get_statusapelpagi(1));
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarApelPagi, 0, gambarApelPagi.length);
             imgFotoApelPagi.setForeground(null);
             imgFotoApelPagi.setImageBitmap(compressedBitmap);

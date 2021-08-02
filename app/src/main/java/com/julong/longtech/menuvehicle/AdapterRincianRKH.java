@@ -71,7 +71,7 @@ public class AdapterRincianRKH extends ArrayAdapter<ListParamRincianRKH> {
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
         viewHolder.tvJenisMuatanRincianRKH.setText(rincianRkhParams.get(position).getJenisMuatan());
-        viewHolder.tvSatuanKerjaRincianRKH.setText(rincianRkhParams.get(position).getSatuanMuatan());
+        viewHolder.tvSatuanKerjaRincianRKH.setText("(" + rincianRkhParams.get(position).getSatuanMuatan() + ")");
         viewHolder.tvLokasiKerjaRincianRKH.setText(rincianRkhParams.get(position).getLokasi());
         viewHolder.tvKegiatanKerjaRincianRKH.setText(rincianRkhParams.get(position).getKegiatan());
         viewHolder.tvWaktuKerjaRincianRKH.setText(rincianRkhParams.get(position).getWaktu());

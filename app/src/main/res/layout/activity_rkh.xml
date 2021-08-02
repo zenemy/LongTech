@@ -147,7 +147,7 @@
         android:layout_margin="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout16"
+        app:layout_constraintBottom_toTopOf="@+id/layoutBtnRKH"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
@@ -182,18 +182,19 @@
             android:id="@+id/btnAddRKH"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
+            android:layout_alignParentEnd="true"
+            android:onClick="eventAddUnitRKH"
             app:maxImageSize="48dp"
             app:srcCompat="@android:drawable/ic_input_add" />
 
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout16"
+        android:id="@+id/layoutBtnRKH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"

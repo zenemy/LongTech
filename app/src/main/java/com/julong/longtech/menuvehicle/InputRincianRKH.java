@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -31,16 +32,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class InputRincianRKH extends AppCompatActivity {
 
     FloatingActionButton btnShowInputRincianKerja;
-    EditText etDriverRincianKegiatan, etShiftRincianKegiatan, etWaktuKerjaRincianRKH;
+    EditText etVehicleRincianKegiatan, etDriverRincianKegiatan, etShiftRincianKegiatan, etWaktuKerjaRincianRKH;
     Button btnSimpanPenginputanRKH, btnCancelPenginputanRKH;
     TextView tvUnitRincianRKH;
     ListView lvRincianRKH;
+    LinearLayout layoutBtnRincianRKH;
 
     Dialog dlgInputRincianKerja, dlgSubmitRincianRKH;
-    String todayDateRincianRKH, nodocRKH, vehicleNameRKH, shiftRincianRKH, driverDetailRKH,
+    String todayDateRincianRKH, nodocRKH, vehicleCodeRKH, vehicleNameRKH, shiftRincianRKH, driverDetailRKH,
             selectedKegiatan, selectedLokasi;
 
     private List<String> listMuatanRincianRKH, listKegiatanCode, listKegiatanName, listKegiatanSatuan,
@@ -59,8 +63,10 @@ public class InputRincianRKH extends AppCompatActivity {
         // Declare design ID
         dbhelper = new DatabaseHelper(this);
         btnShowInputRincianKerja = findViewById(R.id.btnInputRincianRKH);
+        etVehicleRincianKegiatan = findViewById(R.id.etVehicleRincianRKH);
         etDriverRincianKegiatan = findViewById(R.id.etDriverRincianKegiatan);
         etShiftRincianKegiatan = findViewById(R.id.etShiftRincianKegiatan);
+        layoutBtnRincianRKH = findViewById(R.id.layoutBtnRincianRKH);
         btnSimpanPenginputanRKH = findViewById(R.id.btnSimpanPenginputanRKH);
         btnCancelPenginputanRKH = findViewById(R.id.btnCancelPenginputanRKH);
         tvUnitRincianRKH = findViewById(R.id.tvUnitRincianRKH);
@@ -69,15 +75,22 @@ public class InputRincianRKH extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         todayDateRincianRKH = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         nodocRKH = bundle.getString("nodoc");
-        vehicleNameRKH = bundle.getString("vehicle");
+        vehicleCodeRKH = bundle.getString("vehiclecode");
+        vehicleNameRKH = bundle.getString("vehiclename");
         shiftRincianRKH = bundle.getString("shiftkerja");
         driverDetailRKH = bundle.getString("driver");
 
-        tvUnitRincianRKH.setText("Kegiatan RKH " + vehicleNameRKH);
+        tvUnitRincianRKH.setText("Kegiatan RKH " + vehicleCodeRKH);
+        etVehicleRincianKegiatan.setText(vehicleNameRKH);
         etDriverRincianKegiatan.setText(driverDetailRKH);
         etShiftRincianKegiatan.setText(shiftRincianRKH);
 
         loadListViewRKH();
+
+        if (dbhelper.get_statusrkh(4).equals("0") || dbhelper.get_statusrkh(4).equals("1")) {
+            layoutBtnRincianRKH.setVisibility(View.GONE);
+            btnShowInputRincianKerja.setEnabled(false);
+        }
     }
 
     public void SubmitRincianRKH(View v) {
@@ -88,6 +101,22 @@ public class InputRincianRKH extends AppCompatActivity {
         dlgSubmitRincianRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowDlgSubmitRKH = dlgSubmitRincianRKH.getWindow();
         windowDlgSubmitRKH.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        TextView tvDriverNameDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvDriverNameDlgSubmitRincianRKH);
+        TextView tvShiftDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvShiftDlgSubmitRincianRKH);
+        TextView tvTotalDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvTotalDlgSubmitRincianRKH);
+        Button btnDismissDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.btnDismissDlgSubmitRincianRKH);
+        Button btnSubmitDlg = dlgSubmitRincianRKH.findViewById(R.id.btnDlgSubmitRincianRKH);
+
+        btnDismissDlgSubmit.setOnClickListener(view -> dlgSubmitRincianRKH.dismiss());
+        btnSubmitDlg.setOnClickListener(view -> {
+            dlgSubmitRincianRKH.dismiss();
+            new SweetAlertDialog(InputRincianRKH.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Menyimpan")
+                    .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
+        });
+
+        tvDriverNameDlgSubmit.setText(driverDetailRKH);
+        tvShiftDlgSubmit.setText(shiftRincianRKH);
+        tvTotalDlgSubmit.setText(dbhelper.count_rincianrkh(nodocRKH, vehicleCodeRKH) + " Total Input");
 
         dlgSubmitRincianRKH.show();
 
@@ -154,7 +183,8 @@ public class InputRincianRKH extends AppCompatActivity {
         etWaktuKerjaRincianRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MaterialTimePicker timePickerJamRKH = new MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_24H).build();
+                MaterialTimePicker timePickerJamRKH = new MaterialTimePicker.Builder()
+                        .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD).setTimeFormat(TimeFormat.CLOCK_24H).build();
                 timePickerJamRKH.show(getSupportFragmentManager(), "TAG");
 
                 timePickerJamRKH.addOnPositiveButtonClickListener(selection -> {
@@ -167,9 +197,13 @@ public class InputRincianRKH extends AppCompatActivity {
         btnDlgSimpanInputRincianRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbhelper.insert_rkh_detail2(nodocRKH, dbhelper.get_vehiclecode(0, vehicleNameRKH), vehicleNameRKH, shiftRincianRKH,dbhelper.get_empcode(driverDetailRKH), acLoadTypeRincianRKH.getText().toString(),
-                        etSatuanKerjaRincianRKH.getText().toString(), acWorkPlaceRincianRKH.getText().toString(), acKegiatanKerjaRincianRKH.getText().toString(), etWaktuKerjaRincianRKH.getText().toString(),
-                        etKMHMRincianRKH.getText().toString(), acTargetRincianRKH.getText().toString(), etAdditionalNoteRincianRKH.getText().toString());
+                dbhelper.insert_rkh_detail2(nodocRKH, vehicleCodeRKH, shiftRincianRKH, dbhelper.get_empcode(driverDetailRKH),
+                        acLoadTypeRincianRKH.getText().toString(), etSatuanKerjaRincianRKH.getText().toString(),
+                        selectedLokasi, selectedKegiatan, etWaktuKerjaRincianRKH.getText().toString(),
+                        etKMHMRincianRKH.getText().toString(), acTargetRincianRKH.getText().toString(),
+                        etAdditionalNoteRincianRKH.getText().toString());
+                dlgInputRincianKerja.dismiss();
+                loadListViewRKH();
             }
         });
     }
@@ -200,7 +234,7 @@ public class InputRincianRKH extends AppCompatActivity {
         lvRincianRKH = findViewById(R.id.lvRincianRKH);
         listParamRincian = new ArrayList<>();
         listParamRincian.clear();
-        final Cursor cursor = dbhelper.listview_rincianrkh(nodocRKH);
+        final Cursor cursor = dbhelper.listview_rincianrkh(nodocRKH, vehicleCodeRKH);
         if (cursor.moveToFirst()) {
             do {
                 ListParamRincianRKH paramsRincian = new ListParamRincianRKH(

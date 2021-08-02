@@ -27,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static String url_api = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/";
     public static String systemCode = "LONGTECH01";
-    public static String systemName = "DSI SYSTEM";
+    public static String systemName = "LONG TECH";
     public static int versionNumber = 0;
     public static String versionName = "Version 0.1";
 
@@ -394,6 +394,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String count_rincianrkh(String documentno, String unitcode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE documentno = '"+documentno+"' AND itemdata = 'DETAIL2' AND subitemdata = '"+unitcode+"'", null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0);
+        } else {
+            return null;
+        }
+    }
+
 
     public byte[] get_companyimg(int index) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -516,6 +527,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String get_vehiclecode(int index, String vehiclename) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT text1, text30 FROM md_01 WHERE (text2 = '"+vehiclename+"' OR text1 = '"+vehiclename+"') AND datatype = 'VEHICLE'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(index).toString();
+        } else {
+            return "0";
+        }
+    }
+
+    public String get_vehiclename(int index, String vehiclecode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text2, text30 FROM md_01 WHERE text1 = '"+vehiclecode+"' AND datatype = 'VEHICLE'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -774,7 +797,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("text1", jabatancode);
         contentValues.put("text2", unitcode);
-        contentValues.put("text4", "N/A");
+        contentValues.put("text3", "N/A");
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -796,6 +819,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("text1", jabatancode);
         contentValues.put("text2", groupcode);
+        contentValues.put("text3", "N/A");
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -906,9 +930,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_rkh_header(String nodoc, String totalrkh, String desc, String status) {
+    public boolean insert_rkh_header(String nodoc, String totalrkh, String desc) {
 
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         Date tomorrow = calendar.getTime();
@@ -922,13 +945,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("subdatatype", get_tbl_username(0));
         contentValues.put("comp_id", get_tbl_username(14));
         contentValues.put("site_id", get_tbl_username(15));
-        contentValues.put("date1", savedate);
         contentValues.put("date2", tglPelaksanaan);
-        contentValues.put("text1", get_tbl_username(0));
-        contentValues.put("text2", totalrkh);
-        contentValues.put("text3", desc);
-        contentValues.put("text4", status);
-        contentValues.put("uploaded", 0);
+        contentValues.put("text1", get_tbl_username(18));
+        contentValues.put("text2", get_infokemandoranapel(1, get_tbl_username(18)));
+        contentValues.put("text3", get_tbl_username(0));
+        contentValues.put("text4", totalrkh);
+        contentValues.put("text5", desc);
 
         long insert = db.insert("tr_01", null, contentValues);
         if (insert == -1) {
@@ -938,7 +960,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_rkh_detail1(String nodoc, String vehiclecode, String vehiclename, String shiftkerja,
+    public boolean insert_rkh_detail1(String nodoc, String vehiclecode, String shiftkerja,
                                       String driver, String helper1, String helper2, String kebutuhanBBM) {
 
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -959,13 +981,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("date1", savedate);
         contentValues.put("date2", tglPelaksanaan);
-        contentValues.put("text1", vehiclename);
+        contentValues.put("text1", vehiclecode);
         contentValues.put("text2", shiftkerja);
         contentValues.put("text3", driver);
         contentValues.put("text4", helper1);
         contentValues.put("text5", helper2);
         contentValues.put("text6", kebutuhanBBM);
-        contentValues.put("uploaded", 0);
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -975,7 +996,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_rkh_detail2(String nodoc, String vehiclecode, String vehiclename, String shiftkerja, String driver, String loadtype, String satuankerja,
+    public boolean insert_rkh_detail2(String nodoc, String vehiclecode, String shiftkerja, String driver, String loadtype, String satuankerja,
                                       String lokasikerja, String kegiatanKerja,  String waktuKerja, String HMKM, String prestasiKerja, String desc) {
 
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -996,7 +1017,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("date1", savedate);
         contentValues.put("date2", tglPelaksanaan);
-        contentValues.put("text1", vehiclename);
+        contentValues.put("text1", vehiclecode);
         contentValues.put("text2", shiftkerja);
         contentValues.put("text3", driver);
         contentValues.put("text4", loadtype);
@@ -1007,7 +1028,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text9", HMKM);
         contentValues.put("text10", prestasiKerja);
         contentValues.put("text11", desc);
-        contentValues.put("uploaded", 0);
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -1038,13 +1058,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_rkh(String nodoc) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT text1, text2, text3, text4, text5, text6 FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH' AND itemdata = 'DETAIL1'", null);
+        Cursor cursor = db.rawQuery("SELECT subitemdata, text1, text2, text3, text4, text5, text6 FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH' AND itemdata = 'DETAIL1'", null);
         return cursor;
     }
 
-    public Cursor listview_rincianrkh(String nodoc) {
+    public Cursor listview_rincianrkh(String nodoc, String unitcode) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT text4, text5, text6, text7, text8, text9, text10, text11 FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH' AND itemdata = 'DETAIL2'", null);
+        Cursor cursor = db.rawQuery("SELECT text4, text5, text6, text7, text8, text9, text10, text11 FROM tr_02 WHERE documentno = '"+nodoc+"' AND itemdata = 'DETAIL2' and subitemdata = '"+unitcode+"'", null);
         return cursor;
     }
 
@@ -1082,12 +1102,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("comp_id", get_tbl_username(14));
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("date1", savedate);
-        contentValues.put("text1", get_tbl_username(0));
-        contentValues.put("text2", kategoriabsen);
-        contentValues.put("text3", jenisabsensi);
-        contentValues.put("text4", lokasiabsen);
-        contentValues.put("text5", latitude);
-        contentValues.put("text6", longitude);
+        contentValues.put("text1", get_tbl_username(18));
+        contentValues.put("text2", get_infokemandoranapel(1, get_tbl_username(18)));
+        contentValues.put("text3", get_tbl_username(0));
+        contentValues.put("text4", kategoriabsen);
+        contentValues.put("text5", jenisabsensi);
+        contentValues.put("text6", lokasiabsen);
+        contentValues.put("text7", latitude);
+        contentValues.put("text8", longitude);
         contentValues.put("uploaded", 0);
 
         ContentValues contentValuesPhoto = new ContentValues();
@@ -1177,7 +1199,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String get_count_totalrkh(String nodoc) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH'", null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE documentno = '"+nodoc+"' AND itemdata = 'DETAIL1'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -1459,9 +1481,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String get_statusrkh(int index) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*), documentno, date(date2) AS tglpelaksanaan, text5 AS catatan, IFNULL(uploaded, '') AS uploaded " +
+                "FROM tr_01 WHERE datatype = 'RKHVH' AND date(date1) = date('now', 'localtime')", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(index).toString();
+        } else {
+            return null;
+        }
+    }
+
     public String get_statusapelpagi(int index) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*), documentno, text6 AS location, time(date1) AS waktuabsen FROM tr_01 WHERE datatype = 'ABSAPL' AND date(date1) = date('now', 'localtime') AND uploaded IS NULL", null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*), documentno, text6 AS location, time(date1) AS waktuabsen, text7 AS catatan, " +
+                "IFNULL(uploaded, '') AS uploaded FROM tr_01 WHERE datatype = 'ABSAPL' AND date(date1) = date('now', 'localtime')", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -1473,19 +1509,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String get_statusverifikasigis(int index) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT COUNT(*), documentno, text1 AS kebun, text2 AS divisi, text3 AS lokasi, text4 AS kegiatan, text5 AS satuankerja, text6 AS hasilkerja, IFNULL('', uploaded) AS uploaded FROM tr_01 WHERE datatype = 'GISVH' AND date(date1) = date('now', 'localtime');", null);
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            cursor.moveToPosition(0);
-            return cursor.getString(index).toString();
-        } else {
-            return null;
-        }
-    }
-
-    public String get_apelpagiisdone(int index) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*), documentno, text6 AS location, time(date1) AS waktuabsen, text7 AS catatan FROM tr_01 WHERE datatype = 'ABSAPL' AND date(date1) = date('now', 'localtime') AND uploaded IN ('0', '1')", null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT COUNT(*), documentno, text1 AS kebun, text2 AS divisi, text3 AS lokasi, text4 AS kegiatan, text5 AS satuankerja, text6 AS hasilkerja, IFNULL(uploaded, '') AS uploaded FROM tr_01 WHERE datatype = 'GISVH' AND date(date1) = date('now', 'localtime');", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -2190,6 +2214,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Boolean updateselesai_rkh(String nodoc, String note) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
+        ContentValues contentValuesTR01 = new ContentValues();
+        contentValuesTR01.put("date1", savedate);
+        contentValuesTR01.put("text5", note);
+        contentValuesTR01.put("uploaded", 0);
+
+        ContentValues contentValuesTR02 = new ContentValues();
+        contentValuesTR02.put("uploaded", 0);
+
+        long updateTR01 = db.update("tr_01", contentValuesTR01, "documentno = '"+nodoc+"'", null);
+        long updateTR02 = db.update("tr_02", contentValuesTR02, "documentno = '"+nodoc+"'", null);
+        if (updateTR01 == -1 && updateTR02 == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public Boolean updateselesai_apelpagi(String nodoc) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -2238,7 +2283,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.putNull("date1");
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        contentValues.put("date1", savedate);
         contentValues.put("text3", "N/A");
         contentValues.put("text4", jenisTdkHadir);
         contentValues.put("text5", keteranganTdkHadir);

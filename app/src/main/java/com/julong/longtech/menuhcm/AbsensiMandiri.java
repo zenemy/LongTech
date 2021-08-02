@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.config.IConfigurationProvider;
@@ -45,6 +46,7 @@ public class AbsensiMandiri extends AppCompatActivity {
     String tipeKeteranganAbsen, nodocAbsensiMandiri, savedate, latAbsenMandiri, longAbsenMandiri;
     DatabaseHelper dbhelper;
 
+    TextView tvEmpName, tvEmpPosition;
     Button btnAbsensiMandiriMasuk, btnAbsensiMandiriPulang, btnSubmitAbsen;
     EditText etLokasiAbsensiMandiri;
     LinearLayout layoutAbsenMandiriCheckInOut, layoutLokasiAbsenMandiri, layoutMap;
@@ -65,6 +67,8 @@ public class AbsensiMandiri extends AppCompatActivity {
         savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
         //Declare design ID
+        tvEmpName = findViewById(R.id.tvEmpNameAbsensiMandiri);
+        tvEmpPosition = findViewById(R.id.tvEmpPositionAbsensiMandiri);
         layoutAbsenMandiriCheckInOut = findViewById(R.id.layoutAbsenMandiriCheckInOut);
         layoutLokasiAbsenMandiri = findViewById(R.id.layoutLokasiAbsensiMandiri);
         btnAbsensiMandiriMasuk = findViewById(R.id.btnAbsensiMandiriMasuk);
@@ -73,6 +77,9 @@ public class AbsensiMandiri extends AppCompatActivity {
         etLokasiAbsensiMandiri = findViewById(R.id.etLokasiAbsensiMandiri);
         mapAbsenLokasi = findViewById(R.id.mapViewAbsensiMandiri);
         layoutMap = findViewById(R.id.layoutMapAbsensiMandiri);
+
+        tvEmpName.setText(dbhelper.get_tbl_username(10));
+        tvEmpPosition.setText(dbhelper.get_tbl_username(13));
 
         mapAbsenLokasi.setTileSource(TileSourceFactory.MAPNIK);
 

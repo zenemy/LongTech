@@ -203,10 +203,21 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (groupPosition == 0 && childPosition == 4) {
-                    Intent intent = new Intent(MainActivity.this, ApelPagi.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
+                    final SweetAlertDialog warningStartApelDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                    warningStartApelDlg.setTitleText("Mulai apel pagi?");
+                    warningStartApelDlg.setCancelText("KEMBALI");
+                    warningStartApelDlg.setConfirmText("MULAI");
+                    warningStartApelDlg.showCancelButton(true);
+                    warningStartApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            onPause();
+                        }
+                    });
+                    warningStartApelDlg.show();
                 }
 
                 if (groupPosition == 1 && childPosition == 0) {

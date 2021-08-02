@@ -56,18 +56,6 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
             viewHolder.tvBensinLvRKH = (TextView) convertView.findViewById(R.id.tvKebutuhanBBM);
             viewHolder.tvShiftLvRKH = (TextView) convertView.findViewById(R.id.tvShiftLvRKH);
 
-            viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), InputRincianRKH.class);
-                    intent.putExtra("nodoc", RencanaKerjaHarian.nodocRKH);
-                    intent.putExtra("vehicle", viewHolder.tvVehicleNameLvRKH.getText().toString());
-                    intent.putExtra("shiftkerja", viewHolder.tvShiftLvRKH.getText().toString());
-                    intent.putExtra("driver", viewHolder.tvDriverNameLvRKH.getText().toString());
-                    context.startActivity(intent);
-                }
-            });
-
             convertView.setTag(viewHolder);
             convertView.setTag(R.id.tvVehicleNameLvRKH, viewHolder.tvVehicleNameLvRKH);
             convertView.setTag(R.id.tvDriverNameLvRKH, viewHolder.tvDriverNameLvRKH);
@@ -80,12 +68,25 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
-        viewHolder.tvVehicleNameLvRKH.setText(rkhParams.get(position).getVehiclename());
+        viewHolder.tvVehicleNameLvRKH.setText(dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
         viewHolder.tvShiftLvRKH.setText(rkhParams.get(position).getShiftkerja());
         viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getDrivername()));
         viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper1Name()));
         viewHolder.tvHelper2NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper2Name()));
         viewHolder.tvBensinLvRKH.setText("BBM " + rkhParams.get(position).getKebutuhanBBM() + " Liter");
+
+        viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), InputRincianRKH.class);
+                intent.putExtra("nodoc", RencanaKerjaHarian.nodocRKH);
+                intent.putExtra("vehiclecode", rkhParams.get(position).getVehicleCode());
+                intent.putExtra("vehiclename", dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
+                intent.putExtra("shiftkerja", viewHolder.tvShiftLvRKH.getText().toString());
+                intent.putExtra("driver", viewHolder.tvDriverNameLvRKH.getText().toString());
+                context.startActivity(intent);
+            }
+        });
 
         return convertView;
     }

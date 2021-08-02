@@ -877,9 +877,11 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         String kilometerAkhir = etKMHMAkhirDlgCarLog.getText().toString() + "," + etKMHMAkhirKomaDlgCarLog.getText().toString();
 
-                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), selectedHelper1, selectedHelper2, selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi,
-                                selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi, selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), kilometerAkhir, latCarLog, longCarLog, "Selesai", fotoKilometer);
+                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), selectedHelper1, selectedHelper2,
+                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi,
+                                selectedTujuanLokasi, selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(),
+                                etHasilKerjaLaterite.getText().toString(), etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(),
+                                kilometerAkhir, latCarLog, longCarLog, "Selesai", fotoKilometer);
                         dlgSelesaiCarLog.dismiss();
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
                                 .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();

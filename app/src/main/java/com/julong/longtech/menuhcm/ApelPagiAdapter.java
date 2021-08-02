@@ -105,7 +105,8 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
         listViewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (dbhelper.get_apelpagiisdone(0).equals("1")) {
+                if (dbhelper.get_statusapelpagi(0).equals("1") && (dbhelper.get_statusapelpagi(5).equals("0")
+                        || dbhelper.get_statusapelpagi(5).equals("1"))) {
 
                 }
                 else if (gambarApelPagi == null) {

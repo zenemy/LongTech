@@ -2,15 +2,15 @@ package com.julong.longtech.menuvehicle;
 
 public class ListParamRKH {
 
-    private String vehicleName;
+    private String vehicleCode;
     private String shiftKerja;
     private String driverName;
     private String helper1Name;
     private String helper2Name;
     private String kebutuhanBBM;
 
-    public ListParamRKH(String vehicleName, String shiftKerja, String driverName, String helper1Name, String helper2Name, String kebutuhanBBM) {
-        this.vehicleName = vehicleName;
+    public ListParamRKH(String vehicleCode, String shiftKerja, String driverName, String helper1Name, String helper2Name, String kebutuhanBBM) {
+        this.vehicleCode = vehicleCode;
         this.shiftKerja = shiftKerja;
         this.driverName = driverName;
         this.helper1Name = helper1Name;
@@ -18,9 +18,10 @@ public class ListParamRKH {
         this.kebutuhanBBM = kebutuhanBBM;
     }
 
-    public String getVehiclename() {
-        return vehicleName;
+    public String getVehicleCode() {
+        return vehicleCode;
     }
+
     public String getShiftkerja() {
         return shiftKerja;
     }
