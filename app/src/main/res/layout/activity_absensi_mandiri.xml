@@ -184,6 +184,46 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutMapAbsensiMandiri"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/tombol"
+                android:backgroundTint="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Lokasi Absen"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:textSize="16sp"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="10dp"
+                    app:cardCornerRadius="10dp">
+
+                    <org.osmdroid.views.MapView
+                        android:id="@+id/mapViewAbsensiMandiri"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/layoutLokasiAbsensiMandiri"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
