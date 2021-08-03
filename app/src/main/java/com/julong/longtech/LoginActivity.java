@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
+import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.RegistrasiKaryawan;
 import com.julong.longtech.menuvehicle.AdjustmentUnit;
 
@@ -98,7 +100,8 @@ public class LoginActivity extends AppCompatActivity {
     HashPassword hashPassword;
     DialogHelper dialogHelper;
     Handler handler = new Handler();
-    Dialog dialogregistrasi, dialoginfo, dialoggambar, dialoginsertpassword;
+    Dialog dialoginfo, dialoggambar, dialoginsertpassword;
+    SweetAlertDialog pDialog;
 
     //Object
     TextView tv_lupasandi, tvversion, tvnamasystem, tvLoginHeader, tvKeteranganBahasa,
@@ -152,6 +155,11 @@ public class LoginActivity extends AppCompatActivity {
         TextView tvJabatanDlgShowImg = dialoggambar.findViewById(R.id.tvJabatanDlgShowImg);
         TextView tvTelpDlgImg = dialoggambar.findViewById(R.id.tvTelpDlgImg);
         TextView tvDeptDlgImg = dialoggambar.findViewById(R.id.tvDeptDlgImg);
+
+        pDialog = new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.setTitleText("Pengecekan Akun");
+        pDialog.setCancelable(false);
+
 
         //Perijinan=================================================================================
         try {
@@ -367,10 +375,6 @@ public class LoginActivity extends AppCompatActivity {
                         && !et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
                 TextUtils.isEmpty(et_password.getText().toString().trim())
                         && !et_username.getText().toString().equals(dbhelper.get_tbl_username(8)))) {
-            final SweetAlertDialog pDialog = new SweetAlertDialog(LoginActivity.this,
-                    SweetAlertDialog.PROGRESS_TYPE);
-            pDialog.setTitleText("Pengecekan Akun");
-            pDialog.setCancelable(false);
             pDialog.show();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -531,11 +535,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }, 2000);
         } else {
-            final SweetAlertDialog pDialog = new SweetAlertDialog(LoginActivity.this,
-                    SweetAlertDialog.PROGRESS_TYPE);
-            pDialog.getProgressHelper().setBarColor(Color.parseColor("#305031"));
-            pDialog.setTitleText("Pengecekan Akun");
-            pDialog.setCancelable(false);
             pDialog.show();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -671,50 +670,7 @@ public class LoginActivity extends AppCompatActivity {
                                         checkuser.equals("CONFIRM")) {
                                     dbhelper.delete_data_username();
                                     et_password.setText(null);
-
-                                    dbhelper.insert_tblusername(
-                                            jsonPost.getString("USERID"),
-                                            jsonPost.getString("USERNAME"),
-                                            jsonPost.getString("USERTYPE"),
-                                            jsonPost.getString("POSITION_NAME"),
-                                            jsonPost.getString("COMP_ID"),
-                                            jsonPost.getString("SITE_ID"),
-                                            jsonPost.getString("DEPTCODE"),
-                                            jsonPost.getString("DIVCODE"),
-                                            jsonPost.getString("GANGCODE"),
-                                            jsonPost.getString("ANCAKCODE"),
-                                            jsonPost.getString("SHIFTCODE"),
-                                            jsonPost.getString("NO_TELP"),
-                                            jsonPost.getString("EMAILUSER"),
-                                            jsonPost.getString("EMPNAME"),
-                                            jsonPost.getString("EMPCODE"),
-                                            jsonPost.getString("USERPASSWORD"),
-                                            jsonPost.getString("USERLANGUAGE"));
-
-                                    if (!jsonPost.getString("BLOBUSERPHOTO").equals("")) {
-                                        byte[] decodedUserPhoto = Base64.decode(
-                                                jsonPost.getString("BLOBUSERPHOTO"),
-                                                Base64.DEFAULT);
-                                        dbhelper.update_userpphoto(decodedUserPhoto);
-                                    }
-
-                                    try {
-                                        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
-                                                dbhelper.get_gambar_user(), 0,
-                                                dbhelper.get_gambar_user().length);
-                                        imgphoto.setBackground(null);
-                                        imgphoto.setImageBitmap(compressedBitmap);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        imgphoto.setBackground(ContextCompat.getDrawable(
-                                                LoginActivity.this, R.drawable.border_dialog));
-                                        imgphoto.setImageDrawable(ContextCompat.getDrawable(
-                                                LoginActivity.this, R.drawable.username));
-                                    }
-                                    pDialog.dismissWithAnimation();
-                                    Intent intent = new Intent(LoginActivity.this,
-                                            MainActivity.class);
-                                    startActivity(intent);
+                                    new JsonAsyncLogin().execute(response, null, null);
 
                                 } else if (checkuser.equals("WRONGPASSWORD")) {
                                     pDialog.dismiss();
@@ -772,6 +728,64 @@ public class LoginActivity extends AppCompatActivity {
                     handler.removeCallbacks(this);
                 }
             }, 2000);
+        }
+    }
+
+    private class JsonAsyncLogin extends AsyncTask<String, Void, Integer> {
+
+        protected Integer doInBackground(String... jsonObjectsLogin) {
+
+            Integer insertedResult = -1;
+            try {
+                JSONObject jsonPost = new JSONObject(jsonObjectsLogin[0].toString());
+                dbhelper.insert_tblusername(
+                        jsonPost.getString("USERID"),
+                        jsonPost.getString("USERNAME"),
+                        jsonPost.getString("USERTYPE"),
+                        jsonPost.getString("POSITION_NAME"),
+                        jsonPost.getString("COMP_ID"),
+                        jsonPost.getString("SITE_ID"),
+                        jsonPost.getString("DEPTCODE"),
+                        jsonPost.getString("DIVCODE"),
+                        jsonPost.getString("GANGCODE"),
+                        jsonPost.getString("ANCAKCODE"),
+                        jsonPost.getString("SHIFTCODE"),
+                        jsonPost.getString("NO_TELP"),
+                        jsonPost.getString("EMAILUSER"),
+                        jsonPost.getString("EMPNAME"),
+                        jsonPost.getString("EMPCODE"),
+                        jsonPost.getString("USERPASSWORD"),
+                        jsonPost.getString("USERLANGUAGE"));
+
+                if (!jsonPost.getString("BLOBUSERPHOTO").equals("")) {
+                    byte[] decodedUserPhoto = Base64.decode(
+                            jsonPost.getString("BLOBUSERPHOTO"),
+                            Base64.DEFAULT);
+                    dbhelper.update_userpphoto(decodedUserPhoto);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return insertedResult;
+        }
+        @Override
+        protected void onPostExecute(Integer integer) {
+            try {
+                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
+                        dbhelper.get_gambar_user(), 0,
+                        dbhelper.get_gambar_user().length);
+                imgphoto.setBackground(null);
+                imgphoto.setImageBitmap(compressedBitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+                imgphoto.setBackground(ContextCompat.getDrawable(
+                        LoginActivity.this, R.drawable.border_dialog));
+                imgphoto.setImageDrawable(ContextCompat.getDrawable(
+                        LoginActivity.this, R.drawable.username));
+            }
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            pDialog.dismiss();
         }
     }
 

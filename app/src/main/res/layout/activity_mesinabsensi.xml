@@ -159,7 +159,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="AWAL MAULANA MARYADI"
+                            android:text="EMPLOYEE NAME"
                             android:textColor="@color/colorPrimary"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -170,7 +170,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:layout_weight="1"
-                            android:text="IT OFFICER"
+                            android:text="OFFICER"
                             android:textColor="@color/colorPrimary"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -299,10 +299,7 @@
                     android:background="@drawable/border_dialog"
                     android:backgroundTint="@color/colorPrimary"
                     android:orientation="vertical"
-                    android:weightSum="4"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/clSampleInput">
+                    android:weightSum="4">
 
                     <LinearLayout
                         android:layout_width="match_parent"
