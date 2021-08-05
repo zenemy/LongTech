@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#EFECEC"
+    android:focusableInTouchMode="true"
     tools:context=".menuvehicle.VerifikasiGIS">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -222,6 +223,8 @@
                         android:id="@+id/acIntervalGIS"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:editable="false"
+                        android:inputType="none"
                         android:paddingStart="10dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
@@ -270,8 +273,26 @@
                     android:paddingEnd="4dp"
                     android:text="MULAI"
                     android:textSize="16sp"
+                    android:visibility="visible"
                     android:textStyle="bold"
                     app:backgroundTint="#007042"
+                    app:cornerRadius="10dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnStopIntervalGIS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:insetTop="8dp"
+                    android:insetBottom="0dp"
+                    android:visibility="gone"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:text="STOP"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/red_A200"
+                    app:rippleColor="#DCDCDC"
                     app:cornerRadius="10dp" />
             </LinearLayout>
 
@@ -350,34 +371,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_above="@id/tvTagKoordinat"
+            android:layout_alignParentBottom="true"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="16dp"
             android:clickable="true"
+            android:visibility="gone"
             app:rippleColor="#DCDCDC"
             app:maxImageSize="32dp"
             app:srcCompat="@drawable/ic_baseline_location_24"
             app:backgroundTint="#007042"
             app:tint="@color/white"/>
 
-        <TextView
-            android:id="@+id/tvTagKoordinat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TAG"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="8dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
-
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/layoutBtnVerifikasi"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_margin="4dp"
         android:orientation="horizontal">
 
@@ -385,8 +395,8 @@
             android:id="@+id/btnBackGIS"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginEnd="4dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
@@ -398,10 +408,11 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitGIS"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginStart="4dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
+            android:onClick="eventSubmitVerifikasi"
             android:insetBottom="0dp"
             android:text="SIMPAN"
             android:textSize="16sp"

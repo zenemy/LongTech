@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#EFECEC"
+    android:focusableInTouchMode="true"
     tools:context=".menuvehicle.InspeksiHasilKerja">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,76 +45,73 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_marginStart="8dp"
+                android:hint="Kebun"
+                app:endIconMode="dropdown_menu">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acKebunInspeksiKerja"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1"
-                    android:hint="Kebun"
-                    app:endIconMode="dropdown_menu">
-
-                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                        android:id="@+id/acKebunInspeksiHasilKerja"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:hint="Divisi"
-                    app:endIconMode="dropdown_menu">
-
-                    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                        android:id="@+id/acDivisiHasilInspeksiKerja"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
+                    android:layout_height="40dp"
+                    android:paddingStart="8dp"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:hint="Divisi"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acDivisiInspeksiKerja"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:hint="Lokasi Inspeksi"
-                app:endIconMode="clear_text">
+                app:endIconMode="dropdown_menu">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLokasiHasilKerjaInspeksi"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acLokasiKerjaInspeksi"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -129,13 +127,15 @@
                 android:hint="Kegiatan Inspeksi"
                 app:endIconMode="dropdown_menu">
 
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acKegiatanInspeksiKerja"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -143,7 +143,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="6dp"
                 android:background="@drawable/topborderonly"
                 android:orientation="horizontal"
                 android:paddingStart="8dp"
@@ -164,20 +164,23 @@
                         android:hint="Satuan Kerja"
                         app:endIconMode="dropdown_menu">
 
-                        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                            android:id="@+id/acSatuanKerjaHasilInspeksi"
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/acSatuanInspeksiKerja"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
                             android:paddingBottom="8dp"
+                            android:editable="false"
+                            android:inputType="none"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:id="@+id/inputLayoutHasilInpeksi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -185,7 +188,7 @@
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etQtyHasilInspeksiKerja"
+                            android:id="@+id/etQtyInspeksiKerja"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:inputType="number"
@@ -201,7 +204,7 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:orientation="vertical">
 
@@ -211,17 +214,19 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:text="Foto Pekerjaan"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgTakeCameraInspeksiHasilKerja"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                    <ImageButton
+                        android:id="@+id/imgInspeksiKerja"
+                        android:layout_width="75dp"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/ic_menu_camera"
-                        android:backgroundTint="#555555"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_menu_camera"
+                        app:tint="#555555"
                         android:scaleType="fitXY" />
                 </LinearLayout>
 
@@ -239,14 +244,14 @@
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDescInspeksiHasilKerja"
+                    android:id="@+id/etDescInspeksiKerja"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="top"
                     android:paddingStart="8dp"
-                    android:paddingTop="8dp"
+                    android:paddingTop="10dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -265,26 +270,28 @@
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="KEMBALI"
             android:textStyle="bold"
+            android:textSize="16sp"
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="SIMPAN"
             android:textStyle="bold"
+            android:textSize="16sp"
             app:cornerRadius="10dp" />
     </LinearLayout>
 

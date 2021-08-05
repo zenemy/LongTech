@@ -849,8 +849,9 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     return_koneksi = null;
-                    tvDlgInfoTitle.setText("Anda Berada Pada Mode Offline");
-                    dialoginfo.show();
+                    DialogHelper.v_dlg_title = "Anda berada pada mode offline";
+                    DialogHelper.v_dlg_btn1 = "OK";
+                    dialogHelper.showDialogInfo();
                     String status_update;
                     status_update = "NO";
                     dbhelper.updatestatusversion(status_update);

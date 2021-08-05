@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -66,6 +67,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
+        // Declare design ID
         listViewRKH = findViewById(R.id.lvRKH);
         btnAddRKH = findViewById(R.id.btnAddRKH);
         etDescRKH = findViewById(R.id.etDescRKH);
@@ -150,15 +152,31 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         acHelper1InputRKH.setAdapter(adapterEmployeeDlgRKH);
         acHelper2InputRKH.setAdapter(adapterEmployeeDlgRKH);
 
-        //Selected code id
-        acUnitInputRKH.setOnItemClickListener((adapterView, view, position, l) -> selectedVehicle = listVehicleCodeDlg.get(position));
-        acDriverInputRKH.setOnItemClickListener((adapterView, view, position, l) -> selectedDriver = listDriverCodeDlg.get(position));
-        acHelper1InputRKH.setOnItemClickListener((adapterView, view, position, l) -> selectedHelper1 = listHelper1Dlg.get(position));
-        acHelper2InputRKH.setOnItemClickListener((adapterView, view, position, l) -> selectedHelper2 = listHelper2Dlg.get(position));
+        // Get selected code id
+        acUnitInputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
+            selectedVehicle = listVehicleCodeDlg.get(position);
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            keyboardMgr.hideSoftInputFromWindow(acUnitInputRKH.getWindowToken(), 0);
+        });
+        acDriverInputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
+            selectedDriver = listDriverCodeDlg.get(position);
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            keyboardMgr.hideSoftInputFromWindow(acDriverInputRKH.getWindowToken(), 0);
+        });
+        acHelper1InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
+            selectedHelper1 = listHelper1Dlg.get(position);
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            keyboardMgr.hideSoftInputFromWindow(acHelper1InputRKH.getWindowToken(), 0);
+        });
+        acHelper2InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
+            selectedHelper2 = listHelper2Dlg.get(position);
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            keyboardMgr.hideSoftInputFromWindow(acHelper2InputRKH.getWindowToken(), 0);
+        });
 
         btnDlgCancelPilihUnitInputKRH.setOnClickListener(v1 -> dlgAddUnit.dismiss());
 
-        //Simpan RKH
+        // Simpan RKH
         btnDlgSimpanPilihUnitInputKRH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

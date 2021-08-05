@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFECEC"
+    android:focusableInTouchMode="true"
     tools:context=".menuvehicle.InputRincianRKH">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -95,7 +96,7 @@
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
-                    android:text="ZISRON SINAGA"
+                    android:text="DRIVER NAME"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 

@@ -738,7 +738,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_verifikasigis_detail(String nodoc, String latitude, String longitude) {
+    public boolean insert_verifikasigis_detail(String nodoc, String latitude, String longitude, String jarakInterval, String statusPlay) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
@@ -752,6 +752,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("date1", savedate);
         contentValues.put("text1", latitude);
         contentValues.put("text2", longitude);
+        contentValues.put("text3", jarakInterval);
+        contentValues.put("text4", statusPlay);
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -1200,6 +1202,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String get_count_totalrkh(String nodoc) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE documentno = '"+nodoc+"' AND itemdata = 'DETAIL1'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return "0";
+        }
+    }
+
+    public String get_count_totalkoordinatgis(String nodoc) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE datatype = 'GISVH' AND itemdata = 'DETAIL1' AND documentno = '"+nodoc+"'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -2141,6 +2155,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
+    public Boolean updatestatus_verifikasigis(String nodoc, String hasilkerja) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValuesTR01 = new ContentValues();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        contentValuesTR01.put("date2", savedate);
+        contentValuesTR01.put("text6", hasilkerja);
+        contentValuesTR01.put("uploaded", 0);
+
+        ContentValues contentValuesTR02 = new ContentValues();
+        contentValuesTR02.put("uploaded", 0);
+
+        long update = db.update("tr_01", contentValuesTR01, "documentno = '"+nodoc+"'", null);
+        long updatePhoto = db.update("tr_02", contentValuesTR02, "documentno = '"+nodoc+"'", null);
+        if (update == -1 && updatePhoto == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     public Boolean changepassword_myaccount(String updatedpassword) {
         SQLiteDatabase db = this.getWritableDatabase();
