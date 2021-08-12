@@ -12,9 +12,7 @@ import com.julong.longtech.R;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -24,10 +22,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,8 +48,8 @@ public class VerifikasiGIS extends AppCompatActivity {
     AdapterKoordinatGIS adapterKoordinatGIS;
     ArrayAdapter<String> adapterInterval;
 
-    private List<String> listNamaKebunGIS, listKebunCodeGIS, listLokasiCodeGIS, listLokasiNameGIS,
-            listDivisiNameGIS, listDivisiCodeGIS, listKegiatanName, listKegiatanCode, listKegiatanSatuan;
+    private List<String> listNamaKebunGIS, listKebunCodeGIS, listLokasiCodeGIS, listLokasiNameGIS, listDivisiNameGIS,
+            listDivisiCodeGIS, listKegiatanName, listKegiatanCode, listKegiatanSatuanCode, listKegiatanSatuanName;
     ArrayAdapter<String> adapterKebunGIS, adapterDivisiGIS, adapterLokasiGIS, adapterKegiatanGIS;
 
     private boolean isRunning;
@@ -64,7 +60,6 @@ public class VerifikasiGIS extends AppCompatActivity {
 
     DatabaseHelper dbhelper;
     DialogHelper dialogHelper;
-    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,18 +97,20 @@ public class VerifikasiGIS extends AppCompatActivity {
                 ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanName;
                 ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiNameGIS;
 
-                if (lokasiOutput.indexOf(acLokasiGIS.getText().toString()) == -1
-                        || kegiatanOutput.indexOf(acKegiatanGIS.getText().toString()) == -1) {
-                    Toast.makeText(VerifikasiGIS.this, "Lokasi / Kegiatan tidak valid!", Toast.LENGTH_LONG).show();
-                }
-                else if (dbhelper.get_statusverifikasigis(0).equals("0")) {
-                    nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
-                    dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedKebunGIS, selectedDivisiGIS,
-                            selectedLokasiGIS, selectedKegiatanGIS, etSatuanKerjaGIS.getText().toString(),
-                            etHasilVerifikasi.getText().toString());
+                if (dbhelper.get_statusverifikasigis(0).equals("0")) {
+                    if (lokasiOutput.indexOf(acLokasiGIS.getText().toString()) == -1
+                            || kegiatanOutput.indexOf(acKegiatanGIS.getText().toString()) == -1) {
+                        Toast.makeText(VerifikasiGIS.this, "Lokasi / Kegiatan tidak valid!", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+                        dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedKebunGIS, selectedDivisiGIS,
+                                selectedLokasiGIS, selectedKegiatanGIS, etSatuanKerjaGIS.getText().toString(),
+                                etHasilVerifikasi.getText().toString());
 
-                    dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS, null, null);
-                    loadListViewKoordinat();
+                        dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS, null, null);
+                        loadListViewKoordinat();
+                    }
                 } else if (dbhelper.get_statusverifikasigis(0).equals("1")) {
                     nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
                     dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS, null, null);
@@ -131,23 +128,36 @@ public class VerifikasiGIS extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
                         || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())
-                        || TextUtils.isEmpty(etHasilVerifikasi.getText().toString().trim())
                         || TextUtils.isEmpty(acIntervalGIS.getText().toString().trim())) {
                     new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
                 }
-                else if (lokasiOutput.indexOf(acLokasiGIS.getText().toString()) == -1
-                        || kegiatanOutput.indexOf(acKegiatanGIS.getText().toString()) == -1) {
-                    Toast.makeText(VerifikasiGIS.this, "Lokasi / Kegiatan tidak valid!", Toast.LENGTH_LONG).show();
+                else if (dbhelper.get_statusverifikasigis(0).equals("1") && dbhelper.get_statusverifikasigis(8).equals("")) {
+                    if (acIntervalGIS.getText().toString().equals("2")) {
+                        isRunning = true;
+                        startIntervalGIS(2000);
+                    } else if (acIntervalGIS.getText().toString().equals("5")) {
+                        isRunning = true;
+                        startIntervalGIS(5000);
+                    } else if (acIntervalGIS.getText().toString().equals("10")) {
+                        isRunning = true;
+                        startIntervalGIS(10000);
+                    }
                 }
-                else if (acIntervalGIS.getText().toString().equals("2")) {
-                    isRunning = true;
-                    startIntervalGIS(2000);
-                } else if (acIntervalGIS.getText().toString().equals("5")) {
-                    isRunning = true;
-                    startIntervalGIS(5000);
-                } else if (acIntervalGIS.getText().toString().equals("10")) {
-                    isRunning = true;
-                    startIntervalGIS(10000);
+                else {
+                    if (lokasiOutput.indexOf(acLokasiGIS.getText().toString()) == -1
+                            || kegiatanOutput.indexOf(acKegiatanGIS.getText().toString()) == -1) {
+                        Toast.makeText(VerifikasiGIS.this, "Lokasi / Kegiatan tidak valid!", Toast.LENGTH_LONG).show();
+                    }
+                    else if (acIntervalGIS.getText().toString().equals("2")) {
+                        isRunning = true;
+                        startIntervalGIS(2000);
+                    } else if (acIntervalGIS.getText().toString().equals("5")) {
+                        isRunning = true;
+                        startIntervalGIS(5000);
+                    } else if (acIntervalGIS.getText().toString().equals("10")) {
+                        isRunning = true;
+                        startIntervalGIS(10000);
+                    }
                 }
             }
         });
@@ -158,10 +168,11 @@ public class VerifikasiGIS extends AppCompatActivity {
                 isRunning = false;
                 btnStopInterval.setVisibility(View.GONE);
                 btnStartInterval.setVisibility(View.VISIBLE);
+                nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
+                dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS, acIntervalGIS.getText().toString(), "STOP");
             }
         });
 
-        loadListViewKoordinat();
     }
 
     // Loop Interval Tag Location
@@ -171,7 +182,7 @@ public class VerifikasiGIS extends AppCompatActivity {
 
         getLocation();
         if (dbhelper.get_statusverifikasigis(0).equals("0")) {
-            nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
+            nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
             dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedKebunGIS, selectedDivisiGIS,
                     selectedLokasiGIS, selectedKegiatanGIS, etSatuanKerjaGIS.getText().toString(),
                     etHasilVerifikasi.getText().toString());
@@ -188,23 +199,16 @@ public class VerifikasiGIS extends AppCompatActivity {
                     post(new Runnable() {
                         @Override
                         public void run() {
-                            runOnUiThread(() -> getLocation());
-                            if (dbhelper.get_statusverifikasigis(0).equals("0") && latGIS != null) {
-                                nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
-                                dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedKebunGIS, selectedDivisiGIS,
-                                        selectedLokasiGIS, selectedKegiatanGIS, etSatuanKerjaGIS.getText().toString(),
-                                        etHasilVerifikasi.getText().toString());
-                                dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS,
-                                        acIntervalGIS.getText().toString(), null);
-                            } else if (dbhelper.get_statusverifikasigis(0).equals("1") && latGIS != null) {
-                                nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
-                                dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS,
-                                        acIntervalGIS.getText().toString(),null);
-                            }
                             try {
                                 Thread.sleep(selectedMillis);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
+                            }
+                            runOnUiThread(() -> getLocation());
+                            if (latGIS != null) {
+                                nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
+                                dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS,
+                                        acIntervalGIS.getText().toString(),null);
                             }
                             runOnUiThread(() -> loadListViewKoordinat());
                         }
@@ -221,8 +225,6 @@ public class VerifikasiGIS extends AppCompatActivity {
 
     private void prepareHeaderData() throws SQLiteException {
 
-        nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
-
         listNamaKebunGIS = dbhelper.get_itemkebun(1);
         listKebunCodeGIS = dbhelper.get_itemkebun(0);
         adapterKebunGIS = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listNamaKebunGIS);
@@ -233,7 +235,8 @@ public class VerifikasiGIS extends AppCompatActivity {
 
         listKegiatanCode = dbhelper.get_activitylist(0);
         listKegiatanName = dbhelper.get_activitylist(1);
-        listKegiatanSatuan = dbhelper.get_activitylist(3);
+        listKegiatanSatuanCode = dbhelper.get_activitylist(3);
+        listKegiatanSatuanName = dbhelper.get_activitylist(4);
         adapterKegiatanGIS = new ArrayAdapter<String>(VerifikasiGIS.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanName);
         acKegiatanGIS.setAdapter(adapterKegiatanGIS);
 
@@ -276,10 +279,10 @@ public class VerifikasiGIS extends AppCompatActivity {
         acKegiatanGIS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedSatuanKegiatan = listKegiatanSatuan.get(position);
+                selectedSatuanKegiatan = listKegiatanSatuanCode.get(position);
                 selectedKegiatanGIS = listKegiatanCode.get(position);
                 inputLayoutHasilGIS.setEnabled(true);
-                etSatuanKerjaGIS.setText(selectedSatuanKegiatan);
+                etSatuanKerjaGIS.setText(listKegiatanSatuanName.get(position));
                 inputLayoutHasilGIS.setSuffixText(selectedSatuanKegiatan);
 
                 btnTagLocation.setVisibility(View.VISIBLE);
@@ -302,11 +305,20 @@ public class VerifikasiGIS extends AppCompatActivity {
 
         // if the verification still on processs
         if (dbhelper.get_statusverifikasigis(0).equals("1") && dbhelper.get_statusverifikasigis(8).equals("")) {
+            nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
+
             selectedKebunGIS = dbhelper.get_statusverifikasigis(2);
             selectedDivisiGIS = dbhelper.get_statusverifikasigis(3);
             selectedLokasiGIS = dbhelper.get_statusverifikasigis(4);
             selectedKegiatanGIS = dbhelper.get_statusverifikasigis(5);
             selectedSatuanKegiatan = dbhelper.get_statusverifikasigis(6);
+
+            acKebunGIS.setDropDownHeight(0);
+            acDivisiGIS.setDropDownHeight(0);
+            acLokasiGIS.setDropDownHeight(0);
+            acLokasiGIS.setKeyListener(null);
+            acKegiatanGIS.setKeyListener(null);
+            acKegiatanGIS.setDropDownHeight(0);
 
             acKebunGIS.setText(dbhelper.get_singlekebun(selectedKebunGIS));
             acDivisiGIS.setText(dbhelper.get_singledivisi(selectedDivisiGIS));
@@ -315,25 +327,9 @@ public class VerifikasiGIS extends AppCompatActivity {
             etSatuanKerjaGIS.setText(selectedSatuanKegiatan);
             etHasilVerifikasi.setText(dbhelper.get_statusverifikasigis(7));
             inputLayoutHasilGIS.setEnabled(true);
-        }
-        else if (dbhelper.get_statusverifikasigis(8).equals("0") || dbhelper.get_statusverifikasigis(8).equals("1")) {
-            acKebunGIS.setText(dbhelper.get_singlekebun(selectedKebunGIS));
-            acDivisiGIS.setText(dbhelper.get_singledivisi(selectedDivisiGIS));
-            acLokasiGIS.setText(dbhelper.get_singlelokasi(selectedLokasiGIS));
-            acKegiatanGIS.setText(dbhelper.get_singlekegiatan(selectedKegiatanGIS));
-            etSatuanKerjaGIS.setText(selectedSatuanKegiatan);
-            etHasilVerifikasi.setText(dbhelper.get_statusverifikasigis(7));
+            btnTagLocation.setVisibility(View.VISIBLE);
 
-            acKebunGIS.setDropDownHeight(0);
-            acDivisiGIS.setDropDownHeight(0);
-            acLokasiGIS.setKeyListener(null);
-            acLokasiGIS.setDropDownHeight(0);
-            acKegiatanGIS.setKeyListener(null);
-            acKegiatanGIS.setDropDownHeight(0);
-            etHasilVerifikasi.setKeyListener(null);
-            btnTagLocation.setEnabled(false);
-            btnStartInterval.setEnabled(false);
-            layoutBtnVerifikasi.setVisibility(View.GONE);
+            loadListViewKoordinat();
         }
     }
 
@@ -354,7 +350,6 @@ public class VerifikasiGIS extends AppCompatActivity {
     }
 
     private void loadListViewKoordinat() {
-
         lvKoordinat = findViewById(R.id.lvKoordinatGIS);
         listParamGIS = new ArrayList<>();
         listParamGIS.clear();

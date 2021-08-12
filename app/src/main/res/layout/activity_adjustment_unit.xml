@@ -71,7 +71,7 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="12dp"
-                app:hintEnabled="false"
+                android:hint="Tanggal "
                 app:endIconDrawable="@drawable/ic_baseline_calendar_24"
                 app:endIconMode="custom">
 
@@ -79,12 +79,11 @@
                     android:id="@+id/todayDateAdjustmentUnit"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:hint="Tanggal"
                     android:focusableInTouchMode="false"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,23 +102,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:hintEnabled="false"
                     app:endIconMode="custom"
+                    android:hint="Tanggal Pelaksanaaan"
                     app:endIconDrawable="@drawable/ic_baseline_calendar_24">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPelaksanaanTglGantiDriver"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:inputType="none"
-                        android:focusable="false"
                         android:clickable="true"
+                        android:editable="false"
+                        android:focusable="false"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:inputType="none"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:hint="Tanggal Pelaksanaaan"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -127,7 +126,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:hint="Driver / Operator"
                     app:endIconMode="dropdown_menu">
 
@@ -139,6 +138,8 @@
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
+                        android:singleLine="true"
+                        android:imeOptions="actionDone"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,7 +147,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:hint="Kendaraan Kerja"
                     app:endIconMode="dropdown_menu">
 
@@ -158,14 +159,16 @@
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
+                        android:singleLine="true"
+                        android:imeOptions="actionDone"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:id="@+id/layoutKMHMVehicle"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="4dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -192,12 +195,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="4dp"
-                        android:text="—"/>
+                        android:text="—"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/inputLayoutAdjustmentDecimalKM"
@@ -205,17 +208,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        app:suffixText="1/10"
                         android:hint="KM / HM (0)">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etAdjustmentDecimalKMHM"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:inputType="numberDecimal"
+                            android:maxLength="1"
+                            android:inputType="number"
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:ems="8"
                             android:paddingBottom="4dp"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -227,9 +232,10 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:hint="Catatan Tambahan">
+                    android:hint="Catatan Tambahan"
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNoteAdjustmentUnit"
@@ -239,7 +245,7 @@
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 

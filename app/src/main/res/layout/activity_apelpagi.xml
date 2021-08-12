@@ -76,7 +76,6 @@
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
-                    android:text="05:00:39"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 

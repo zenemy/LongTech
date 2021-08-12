@@ -8,26 +8,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -38,13 +33,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.BarcodeFormat;
@@ -54,6 +46,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.julong.longtech.menuhcm.AbsensiBekerjaUnit;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
+import com.julong.longtech.menureport.HistoryActivity;
 import com.julong.longtech.menusetup.AppSetting;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.UpdateSystem;
@@ -72,7 +65,6 @@ import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuhcm.BiodataKaryawan;
 import com.julong.longtech.menusetup.MyAccount;
-import com.julong.longtech.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,7 +77,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -218,21 +209,31 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (groupPosition == 0 && childPosition == 4) {
-                    final SweetAlertDialog warningStartApelDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
-                    warningStartApelDlg.setTitleText("Mulai apel pagi?");
-                    warningStartApelDlg.setCancelText("KEMBALI");
-                    warningStartApelDlg.setConfirmText("MULAI");
-                    warningStartApelDlg.showCancelButton(true);
-                    warningStartApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                            Intent intent = new Intent(MainActivity.this, ApelPagi.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            onPause();
-                        }
-                    });
-                    warningStartApelDlg.show();
+                    if (dbhelper.get_statusapelpagi(0).equals("1")) {
+                        Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
+                    else {
+                        final SweetAlertDialog warningStartApelDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                        warningStartApelDlg.setTitleText("Mulai apel pagi?");
+                        warningStartApelDlg.setCancelText("KEMBALI");
+                        warningStartApelDlg.setConfirmText("MULAI");
+                        warningStartApelDlg.showCancelButton(true);
+                        warningStartApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.dismiss();
+                                Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                onPause();
+                            }
+                        });
+                        warningStartApelDlg.show();
+                    }
+
                 }
 
                 if (groupPosition == 1 && childPosition == 0) {
@@ -323,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (groupPosition == 4 && childPosition == 0) {
-                    Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                    Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     onPause();
@@ -554,7 +555,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void generate_hcmmenu() {
-        String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/get_menuhcm.php";
+        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_menuhcm.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
                 (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -589,7 +590,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void generate_workshopmenu() {
-        String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/get_workshopmenu.php";
+        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_workshopmenu.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
                 (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -623,7 +624,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void generate_vehiclemenu() {
-        String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/get_vehiclemenu.php";
+        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_vehiclemenu.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
                 (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -657,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void generate_inventorymenu() {
-        String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/get_inventorymenu.php";
+        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_inventorymenu.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
                 (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override

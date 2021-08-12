@@ -215,6 +215,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="KEMBALI"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
 
@@ -227,6 +228,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:textSize="16sp"
             android:text="SIMPAN"
             android:textStyle="bold"
             app:cornerRadius="10dp" />

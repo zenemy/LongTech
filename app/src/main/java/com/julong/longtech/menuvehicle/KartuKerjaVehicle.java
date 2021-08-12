@@ -28,8 +28,11 @@ import android.text.TextWatcher;
 import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -184,10 +187,66 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             }
         });
 
+        acHelper1CarLog.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text, int i, int i1, int i2) {
+                if( -1 != text.toString().indexOf("\n") ) {
+                    ViewGroup.LayoutParams paramsAc = acHelper1CarLog.getLayoutParams();
+                    paramsAc.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    paramsAc.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    acHelper1CarLog.setLayoutParams(paramsAc);
+
+                    ViewGroup.LayoutParams params = inputLayoutHelper1CarLog.getLayoutParams();
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    inputLayoutHelper1CarLog.setLayoutParams(params);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        acHelper2CarLog.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text, int i, int i1, int i2) {
+                if( -1 != text.toString().indexOf("\n") ) {
+                    ViewGroup.LayoutParams paramsAc = acHelper2CarLog.getLayoutParams();
+                    paramsAc.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    paramsAc.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    acHelper2CarLog.setLayoutParams(paramsAc);
+
+                    ViewGroup.LayoutParams params = inputLayoutHelper2CarLog.getLayoutParams();
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    inputLayoutHelper2CarLog.setLayoutParams(params);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         acHelper1CarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedHelper1 = listHelper1Code.get(position);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acHelper1CarLog.getWindowToken(), 0);
             }
         });
 
@@ -195,6 +254,9 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedHelper2 = listHelper2code.get(position);
+
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acHelper2CarLog.getWindowToken(), 0);
             }
         });
 
@@ -219,6 +281,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedAsalLokasi = listAsalLokasiCode.get(position);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acAsalLokasiCarLog.getWindowToken(), 0);
             }
         });
 
@@ -226,6 +290,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedTujuanLokasi = listTujuanLokasiCode.get(position);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acTujuanLokasiCarLog.getWindowToken(), 0);
             }
         });
 
@@ -644,19 +710,30 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             acLoadCategoryCarLog.setText(dbhelper.get_singlecategoryloadtype(dbhelper.get_transactionstatuscarlog(4)));
             acLoadTypeCarLog.setDropDownHeight(0);
             acLoadCategoryCarLog.setDropDownHeight(0);
+            inputLayoutHasilKerjaCarLog.setSuffixText(dbhelper.settingcarlog_satuanhasilkerja(acLoadCategoryCarLog.getText().toString()));
 
             btnSubmitCarlog.setText("SELESAI BEKERJA");
 
             if (dbhelper.get_transactionstatuscarlog(5).length() > 0) {
                 acHelper1CarLog.setText(dbhelper.get_empname(dbhelper.get_transactionstatuscarlog(5)));
+                acHelper1CarLog.setDropDownHeight(0);
+                acHelper1CarLog.setKeyListener(null);
                 layoutHelperCarlog.setVisibility(View.VISIBLE);
                 inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
+            }
+
+            if (dbhelper.get_transactionstatuscarlog(6).length() > 0) {
+                acHelper2CarLog.setText(dbhelper.get_empname(dbhelper.get_transactionstatuscarlog(6)));
+                acHelper2CarLog.setDropDownHeight(0);
+                acHelper2CarLog.setKeyListener(null);
+                inputLayoutHelper2CarLog.setVisibility(View.VISIBLE);
             }
 
             if (dbhelper.get_transactionstatuscarlog(7).length() > 0) {
                 layoutAsalCarLog.setVisibility(View.VISIBLE);
                 inputLayoutAsalKebun.setVisibility(View.VISIBLE);
                 acAsalKebunCarLog.setText(dbhelper.get_singlekebun(dbhelper.get_transactionstatuscarlog(7)));
+                acAsalKebunCarLog.setDropDownHeight(0);
                 selectedAsalKebun = dbhelper.get_transactionstatuscarlog(7);
             }
 
@@ -664,6 +741,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 layoutAsalCarLog.setVisibility(View.VISIBLE);
                 inputLayoutAsalDivisi.setVisibility(View.VISIBLE);
                 acAsalDivisiCarLog.setText(dbhelper.get_singledivisi(dbhelper.get_transactionstatuscarlog(8)));
+                acAsalDivisiCarLog.setDropDownHeight(0);
                 selectedAsalDivisi = dbhelper.get_transactionstatuscarlog(8);
             }
 
@@ -671,6 +749,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 layoutAsalCarLog.setVisibility(View.VISIBLE);
                 inputLayoutAsalLokasi.setVisibility(View.VISIBLE);
                 acAsalLokasiCarLog.setText(dbhelper.get_singlelokasi(dbhelper.get_transactionstatuscarlog(9)));
+                acAsalLokasiCarLog.setDropDownHeight(0);
+                acAsalLokasiCarLog.setKeyListener(null);
                 selectedAsalLokasi = dbhelper.get_transactionstatuscarlog(9);
             }
 
@@ -678,6 +758,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanKebun.setVisibility(View.VISIBLE);
                 acTujuanKebunCarLog.setText(dbhelper.get_singlekebun(dbhelper.get_transactionstatuscarlog(10)));
+                acTujuanKebunCarLog.setDropDownHeight(0);
                 selectedTujuanKebun = dbhelper.get_transactionstatuscarlog(10);
             }
 
@@ -685,6 +766,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanDivisi.setVisibility(View.VISIBLE);
                 acTujuanDivisiCarLog.setText(dbhelper.get_singledivisi(dbhelper.get_transactionstatuscarlog(11)));
+                acTujuanDivisiCarLog.setDropDownHeight(0);
                 selectedTujuanDivisi = dbhelper.get_transactionstatuscarlog(11);
             }
 
@@ -692,6 +774,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanLokasi.setVisibility(View.VISIBLE);
                 acTujuanLokasiCarLog.setText(dbhelper.get_singlelokasi(dbhelper.get_transactionstatuscarlog(12)));
+                acTujuanLokasiCarLog.setDropDownHeight(0);
+                acTujuanLokasiCarLog.setKeyListener(null);
                 selectedTujuanLokasi = dbhelper.get_transactionstatuscarlog(12);
             }
 
@@ -699,6 +783,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 layoutTujuanCarLog.setVisibility(View.VISIBLE);
                 inputLayoutTujuanKegiatan.setVisibility(View.VISIBLE);
                 acTujuanKegiatanCarLog.setText(dbhelper.get_transactionstatuscarlog(13));
+                acTujuanKegiatanCarLog.setDropDownHeight(0);
+                acTujuanKegiatanCarLog.setKeyListener(null);
                 selectedTujuanKegiatan = dbhelper.get_transactionstatuscarlog(13);
             }
 
@@ -779,6 +865,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             EditText etKMHMAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirDlgCarLog);
             EditText etKMHMAkhirKomaDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirKomaDlgCarLog);
             EditText etNoteDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etNoteDlgCarLog);
+            TextView tvJudulFotoKM = dlgSelesaiCarLog.findViewById(R.id.tvJudulFotoKM);
             TextInputLayout inputlayoutDlgKmAkhir = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhir);
             TextInputLayout inputlayoutDlgKmAkhirDecimal = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhirDecimal);
             btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
@@ -837,6 +924,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     dlgSelesaiCarLog.dismiss();
+                    fotoKilometer = null;
                     etKMHMAkhirDlgCarLog.setText(null);
                     etNoteDlgCarLog.setText(null);
                 }
@@ -871,17 +959,22 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                         inputlayoutDlgKmAkhirDecimal.setError(" ");
                         inputlayoutDlgKmAkhirDecimal.setErrorIconDrawable(null);
                     }
-                    else if (fotoKilometer.length == 0 ) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Foto Kilometer Akhir!").setConfirmText("OK").show();
+                    else if (fotoKilometer == null ) {
+                        btnFotoKilometer.startAnimation(AnimationUtils.loadAnimation(KartuKerjaVehicle.this, R.anim.errorshake));
+                        tvJudulFotoKM.startAnimation(AnimationUtils.loadAnimation(KartuKerjaVehicle.this, R.anim.errorshake));
                     }
                     else {
                         String kilometerAkhir = etKMHMAkhirDlgCarLog.getText().toString() + "," + etKMHMAkhirKomaDlgCarLog.getText().toString();
 
-                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi,
-                                selectedTujuanLokasi, selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(),
+//                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), selectedHelper1, selectedHelper2,
+//                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi,
+//                                selectedTujuanLokasi, selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(),
+//                                etHasilKerjaLaterite.getText().toString(), etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(),
+//                                kilometerAkhir, latCarLog, longCarLog, "Selesai", fotoKilometer);
+
+                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), etHasilSatuanMuat.getText().toString(),
                                 etHasilKerjaLaterite.getText().toString(), etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(),
-                                kilometerAkhir, latCarLog, longCarLog, "Selesai", fotoKilometer);
+                                kilometerAkhir, latCarLog, longCarLog, "Selesai", gambarCarLog, fotoKilometer);
                         dlgSelesaiCarLog.dismiss();
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
                                 .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
@@ -915,6 +1008,12 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acTujuanKebunCarLog.setDropDownHeight(0);
+                        acTujuanDivisiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setKeyListener(null);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -942,6 +1041,15 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acAsalKebunCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setKeyListener(null);
+                        acTujuanKebunCarLog.setDropDownHeight(0);
+                        acTujuanDivisiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setKeyListener(null);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -968,6 +1076,14 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acAsalKebunCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setKeyListener(null);
+                        acTujuanKebunCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setKeyListener(null);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -994,6 +1110,12 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acTujuanKebunCarLog.setDropDownHeight(0);
+                        acTujuanDivisiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setKeyListener(null);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -1020,6 +1142,12 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acAsalKebunCarLog.setDropDownHeight(0);
+                        acAsalDivisiCarLog.setDropDownHeight(0);
+                        acTujuanKebunCarLog.setDropDownHeight(0);
+                        acTujuanDivisiCarLog.setDropDownHeight(0);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -1045,6 +1173,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acAsalKebunCarLog.setDropDownHeight(0);
+                        acAsalDivisiCarLog.setDropDownHeight(0);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -1071,6 +1201,12 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acAsalKebunCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setDropDownHeight(0);
+                        acAsalDivisiCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setKeyListener(null);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -1099,6 +1235,16 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acAsalKebunCarLog.setDropDownHeight(0);
+                        acAsalDivisiCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setKeyListener(null);
+                        acTujuanKebunCarLog.setDropDownHeight(0);
+                        acTujuanDivisiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setKeyListener(null);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -1126,6 +1272,17 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     else {
                         acLoadTypeCarLog.setDropDownHeight(0);
                         acLoadCategoryCarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setDropDownHeight(0);
+                        acHelper1CarLog.setKeyListener(null);
+                        acAsalKebunCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setDropDownHeight(0);
+                        acAsalLokasiCarLog.setKeyListener(null);
+                        acTujuanKebunCarLog.setDropDownHeight(0);
+                        acTujuanDivisiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setDropDownHeight(0);
+                        acTujuanLokasiCarLog.setKeyListener(null);
+                        acTujuanKegiatanCarLog.setDropDownHeight(0);
+                        acTujuanKegiatanCarLog.setKeyListener(null);
                         btnSubmitCarlog.setText("Selesai Bekerja");
                         final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
                         dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
@@ -1164,15 +1321,14 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             }
         }
 
-
         if (dataProcess == 2) {
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                 fotoKilometer = stream.toByteArray();
-                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(fotoKilometer, 0, fotoKilometer.length);
-                btnFotoKilometer.setImageBitmap(compressedBitmap);
+                Bitmap bitmapKM = BitmapFactory.decodeByteArray(fotoKilometer, 0, fotoKilometer.length);
+                btnFotoKilometer.setImageBitmap(bitmapKM);
                 btnFotoKilometer.setBackground(null);
             }
         }

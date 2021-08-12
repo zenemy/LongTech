@@ -135,8 +135,8 @@ public class DownloadData extends AppCompatActivity {
         } else {
             if (checkBoxGS.isChecked()) {
                 dbhelper.delete_datags();
-                RequestQueue requestQueueDownloadDataGS = Volley.newRequestQueue(getApplicationContext());
-                String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/getmastermenu.php?tipedata=datageneralsetup";
+                RequestQueue requestQueueDownloadDataGS = Volley.newRequestQueue(this);
+                String url_data = DatabaseHelper.url_api + "fetchdata/get_generalsetup.php";
                 JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -155,8 +155,10 @@ public class DownloadData extends AppCompatActivity {
 
             if (checkBoxMD.isChecked()) {
                 dbhelper.delete_masterdata();
-                RequestQueue requestQueueDownloadMD = Volley.newRequestQueue(getApplicationContext());
-                String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/getmastermenu.php?tipedata=masterdata&userid="+dbhelper.get_tbl_username(0)+"&ancakcode="+dbhelper.get_tbl_username(19);
+                RequestQueue requestQueueDownloadMD = Volley.newRequestQueue(this);
+                String url_data = DatabaseHelper.url_api + "fetchdata/get_masterdata.php?userid="
+                        + dbhelper.get_tbl_username(0) + "&ancakcode="+dbhelper.get_tbl_username(19);
+
                 JsonObjectRequest jsonRequestMD = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -246,8 +248,7 @@ public class DownloadData extends AppCompatActivity {
                             jsonObjectMD.getString("TEXT16"), jsonObjectMD.getString("TEXT17"), jsonObjectMD.getString("TEXT18"), jsonObjectMD.getString("TEXT19"),
                             jsonObjectMD.getString("TEXT20"), jsonObjectMD.getString("TEXT21"), jsonObjectMD.getString("TEXT22"), jsonObjectMD.getString("TEXT23"),
                             jsonObjectMD.getString("TEXT24"), jsonObjectMD.getString("TEXT25"), jsonObjectMD.getString("TEXT26"), jsonObjectMD.getString("TEXT27"),
-                            jsonObjectMD.getString("TEXT28"), jsonObjectMD.getString("TEXT29"), jsonObjectMD.getString("TEXT30"), jsonObjectMD.getString("WEBID"),
-                            jsonObjectMD.getString("WEBPARENTID"), jsonObjectMD.getString("WEBPARENTITEMID"));
+                            jsonObjectMD.getString("TEXT28"), jsonObjectMD.getString("TEXT29"), jsonObjectMD.getString("TEXT30"));
                     intMD++;
                 }
 
@@ -255,7 +256,7 @@ public class DownloadData extends AppCompatActivity {
                 int intMD2 = 0;
                 while (intMD2 < jsonArrayMD2.length()) {
                     JSONObject jsonObjectMD2 = jsonArrayMD2.getJSONObject(intMD2);
-                    dbhelper.insert_tablemd2(jsonObjectMD2.getString("DOCUMENTNO"), jsonObjectMD2.getString("DATATYPE"), jsonObjectMD2.getString("SUBDATATYPE"),
+                    dbhelper.insert_tablemd2(jsonObjectMD2.getString("DATATYPE"), jsonObjectMD2.getString("SUBDATATYPE"),
                             jsonObjectMD2.getString("ITEMDATA"), jsonObjectMD2.getString("SUBITEMDATA"), jsonObjectMD2.getString("COMP_ID"),
                             jsonObjectMD2.getString("SITE_ID"), jsonObjectMD2.getString("DATE1"), jsonObjectMD2.getString("DATE2"),
                             jsonObjectMD2.getString("DATE3"), jsonObjectMD2.getString("DATE4"), jsonObjectMD2.getString("DATE5"), jsonObjectMD2.getString("TEXT1"),
@@ -266,7 +267,7 @@ public class DownloadData extends AppCompatActivity {
                             jsonObjectMD2.getString("TEXT18"), jsonObjectMD2.getString("TEXT19"), jsonObjectMD2.getString("TEXT20"), jsonObjectMD2.getString("TEXT21"),
                             jsonObjectMD2.getString("TEXT22"), jsonObjectMD2.getString("TEXT23"), jsonObjectMD2.getString("TEXT24"), jsonObjectMD2.getString("TEXT25"),
                             jsonObjectMD2.getString("TEXT26"), jsonObjectMD2.getString("TEXT27"), jsonObjectMD2.getString("TEXT28"), jsonObjectMD2.getString("TEXT29"),
-                            jsonObjectMD2.getString("TEXT30"), jsonObjectMD2.getString("WEBID"), jsonObjectMD2.getString("WEBPARENTID"), jsonObjectMD2.getString("WEBPARENTITEMID"));
+                            jsonObjectMD2.getString("TEXT30"));
                     intMD2++;
                 }
 
@@ -287,6 +288,7 @@ public class DownloadData extends AppCompatActivity {
                 int intOrgStructure = 0;
                 while (intOrgStructure < jsonArrayOrgStructure.length()) {
                     JSONObject jsonObjectOrgStructure = jsonArrayOrgStructure.getJSONObject(intOrgStructure);
+                    Log.d("ORGSTRUCUTREDATA", jsonObjectOrgStructure.getString("DATATYPE"));
                     dbhelper.insert_orgstructuremd(jsonObjectOrgStructure.getString("DATATYPE"), jsonObjectOrgStructure.getString("SUBDATATYPE"), jsonObjectOrgStructure.getString("COMP_ID"), jsonObjectOrgStructure.getString("SITE_ID"),
                             jsonObjectOrgStructure.getString("TEXT1"), jsonObjectOrgStructure.getString("TEXT2"), jsonObjectOrgStructure.getString("TEXT3"), jsonObjectOrgStructure.getString("TEXT4"),
                             jsonObjectOrgStructure.getString("TEXT5"), jsonObjectOrgStructure.getString("TEXT6"), jsonObjectOrgStructure.getString("TEXT7"), jsonObjectOrgStructure.getString("TEXT8"));

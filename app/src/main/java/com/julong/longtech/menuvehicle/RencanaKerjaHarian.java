@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -119,6 +120,11 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
     public void eventAddUnitRKH(View v) {
 
+        selectedDriver = null;
+        selectedHelper1 = null;
+        selectedHelper2 = null;
+        selectedVehicle = null;
+
         //Popup dialog rincian RKH
         dlgAddUnit = new Dialog(this);
         dlgAddUnit.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -182,11 +188,21 @@ public class RencanaKerjaHarian extends AppCompatActivity {
             public void onClick(View v) {
                 nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
 
+                ArrayList<String> employeeOutput = (ArrayList<String>) listEmployeeNameDlg;
+                ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleNameDlg;
+
                 if (TextUtils.isEmpty(acUnitInputRKH.getText().toString().trim()) || TextUtils.isEmpty(acShiftDriverRKH.getText().toString().trim())
                     || TextUtils.isEmpty(acDriverInputRKH.getText().toString().trim()) || TextUtils.isEmpty(acHelper1InputRKH.getText().toString().trim())
                     || TextUtils.isEmpty(acHelper2InputRKH.getText().toString().trim()) || TextUtils.isEmpty(etInputRKHBBM.getText().toString().trim())) {
-                    new SweetAlertDialog(RencanaKerjaHarian.this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText("Lengkapi Data!").setConfirmText("OK").show();
+                    Toast.makeText(RencanaKerjaHarian.this, "Lengkapi Data!", Toast.LENGTH_LONG).show();
+                }
+                else if (employeeOutput.indexOf(acDriverInputRKH.getText().toString()) == -1
+                        || employeeOutput.indexOf(acHelper1InputRKH.getText().toString()) == -1
+                        || employeeOutput.indexOf(acHelper2InputRKH.getText().toString()) == -1) {
+                    Toast.makeText(RencanaKerjaHarian.this, "Karyawan tidak valid!", Toast.LENGTH_LONG).show();
+                }
+                else if (vehicleOutput.indexOf(acUnitInputRKH.getText().toString()) == -1 ) {
+                    Toast.makeText(RencanaKerjaHarian.this, "Kendaraan tidak valid!", Toast.LENGTH_LONG).show();
                 }
                 else if (dbHelper.get_statusrkh(4).equals("")) {
                     dbHelper.insert_rkh_detail1(nodocRKH, selectedVehicle, acShiftDriverRKH.getText().toString(),

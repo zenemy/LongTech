@@ -150,17 +150,9 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
         etJamAwalP2H.setText(currentTime);
 
-        etJamAwalP2H.setOnClickListener(v -> {
-            MaterialTimePicker timePickerJamAwalP2H = new MaterialTimePicker.Builder().setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD).setTimeFormat(TimeFormat.CLOCK_24H).build();
-            timePickerJamAwalP2H.show(getSupportFragmentManager(), "TAG");
-
-            timePickerJamAwalP2H.addOnPositiveButtonClickListener(selection -> {
-                onTimeAwalSelected(timePickerJamAwalP2H.getHour(), timePickerJamAwalP2H.getMinute());
-            });
-        });
-
         etJamAkhirP2H.setOnClickListener(v -> {
-            MaterialTimePicker timePickerJamAkhirP2H = new MaterialTimePicker.Builder().setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD).setTimeFormat(TimeFormat.CLOCK_24H).build();
+            MaterialTimePicker timePickerJamAkhirP2H = new MaterialTimePicker.Builder()
+                    .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD).setTimeFormat(TimeFormat.CLOCK_24H).build();
             timePickerJamAkhirP2H.show(getSupportFragmentManager(), "TAG");
 
             timePickerJamAkhirP2H.addOnPositiveButtonClickListener(selection -> {
@@ -341,83 +333,92 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
         ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleName;
 
-        if (TextUtils.isEmpty(acKendaraanP2H.getText().toString().trim())
-                || TextUtils.isEmpty(etJamAkhirP2H.getText().toString().trim())) {
-            new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
-        }
-        else if (vehicleOutput.indexOf(acKendaraanP2H.getText().toString()) == -1) {
-            new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Kendaraan tidak valid!").show();
-        }
-        else {
-            dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecode(1, acKendaraanP2H.getText().toString()), selectedVehicleCode,
-                    etDescPengecekan.getText().toString(), latitudeP2H, longitudeP2H, byteImgP2H);
+        SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm");
 
-            if (checkKebocoranOli.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H01", "KEBOCORAN OLI, AIR, SOLAR DAN MINYAK REM", "CHECK", etKebocoranOli.getText().toString());
+        try {
+            if (TextUtils.isEmpty(acKendaraanP2H.getText().toString().trim())
+                    || TextUtils.isEmpty(etJamAkhirP2H.getText().toString().trim()) || byteImgP2H == null) {
+                new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
             }
-
-            if (checkBautMur.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H02", "BAUT DAN MUR", "CHECK", etBautMur.getText().toString());
+            else if (hourMinuteFormat.parse(etJamAkhirP2H.getText().toString()).compareTo(hourMinuteFormat.parse(etJamAwalP2H.getText().toString())) > 0) {
+                new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Jam pengecekan salah!").show();
             }
-
-            if (checkKonsidiOliMesin.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H03", "KETINGGIAN DAN KONDISI OLI MESIN", "CHECK", etKonsidiOliMesin.getText().toString());
+            else if (vehicleOutput.indexOf(acKendaraanP2H.getText().toString()) == -1) {
+                new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Kendaraan tidak valid!").show();
             }
+            else {
+                dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecode(1, acKendaraanP2H.getText().toString()), selectedVehicleCode,
+                        etDescPengecekan.getText().toString(), latitudeP2H, longitudeP2H, byteImgP2H);
 
-            if (checkKonsidiOliTransmisi.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H04", "KETINGGIAN DAN KONDISI OLI TRANSMISI", "CHECK", etKonsidiOliTransmisi.getText().toString());
+                if (checkKebocoranOli.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H01", "KEBOCORAN OLI, AIR, SOLAR DAN MINYAK REM", "CHECK", etKebocoranOli.getText().toString());
+                }
+
+                if (checkBautMur.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H02", "BAUT DAN MUR", "CHECK", etBautMur.getText().toString());
+                }
+
+                if (checkKonsidiOliMesin.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H03", "KETINGGIAN DAN KONDISI OLI MESIN", "CHECK", etKonsidiOliMesin.getText().toString());
+                }
+
+                if (checkKonsidiOliTransmisi.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H04", "KETINGGIAN DAN KONDISI OLI TRANSMISI", "CHECK", etKonsidiOliTransmisi.getText().toString());
+                }
+
+                if (checkKonsidiOliHidrolik.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H05", "KETINGGIAN DAN KONDISI OLI HIDROLIK", "CHECK", etKonsidiOliHidrolik.getText().toString());
+                }
+
+                if (checkKonsidiOliRem.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H06", "KETINGGIAN DAN KONDISI OLI REM", "CHECK", etKonsidiOliRem.getText().toString());
+                }
+
+                if (checkKonsisiOliRadiator.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H07", "KETINGGIAN DAN KONDISI OLI RADIATOR", "CHECK", etKonsisiOliRadiator.getText().toString());
+                }
+
+                if (checkKonsidiOliBBM.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H08", "KETINGGIAN DAN KONDISI OLI BAHAN BAKAR", "CHECK", etKonsidiOliBBM.getText().toString());
+                }
+
+                if (checkKonsidiAirflow.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H09", "KETINGGIAN DAN KONDISI SARINGAN UDARA", "CHECK", etKonsidiAirflow.getText().toString());
+                }
+
+                if (checkKonsidiRadiator.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H10", "KETINGGIAN DAN KONDISI RADIATOR", "CHECK", etKonsidiRadiator.getText().toString());
+                }
+
+                if (checkKondisiBan.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H11", "KETINGGIAN DAN KONDISI BAN", "CHECK", etKondisiBan.getText().toString());
+                }
+
+                if (checkKerusakan.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H12", "TERHADAP KERUSAKAN BENGKOK, PENYOK DAN PATAH", "CHECK", etKerusakan.getText().toString());
+                }
+
+                if (checkSabukKipas.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H13", "KEKENCANGAN SABUK KIPAS", "CHECK", etSabukKipas.getText().toString());
+                }
+
+                if (checkSuaraMesin.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H14", "KEHALUSAN SUARA MESIN", "CHECK", etSuaraMesin.getText().toString());
+                }
+
+                if (checkLampuKendaraan.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H15", "LAMPU DEPAN DAN LAMPU BELAKANG", "CHECK", etLampuKendaraan.getText().toString());
+                }
+
+                if (checkSpionKendaraan.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H16", "SPION KANAN DAN SPION KIRI", "CHECK", etSpionKendaraan.getText().toString());
+                }
+
+                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Menyelesaikan P2H")
+                        .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> finish()).show();
             }
-
-            if (checkKonsidiOliHidrolik.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H05", "KETINGGIAN DAN KONDISI OLI HIDROLIK", "CHECK", etKonsidiOliHidrolik.getText().toString());
-            }
-
-            if (checkKonsidiOliRem.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H06", "KETINGGIAN DAN KONDISI OLI REM", "CHECK", etKonsidiOliRem.getText().toString());
-            }
-
-            if (checkKonsisiOliRadiator.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H07", "KETINGGIAN DAN KONDISI OLI RADIATOR", "CHECK", etKonsisiOliRadiator.getText().toString());
-            }
-
-            if (checkKonsidiOliBBM.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H08", "KETINGGIAN DAN KONDISI OLI BAHAN BAKAR", "CHECK", etKonsidiOliBBM.getText().toString());
-            }
-
-            if (checkKonsidiAirflow.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H09", "KETINGGIAN DAN KONDISI SARINGAN UDARA", "CHECK", etKonsidiAirflow.getText().toString());
-            }
-
-            if (checkKonsidiRadiator.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H10", "KETINGGIAN DAN KONDISI RADIATOR", "CHECK", etKonsidiRadiator.getText().toString());
-            }
-
-            if (checkKondisiBan.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H11", "KETINGGIAN DAN KONDISI BAN", "CHECK", etKondisiBan.getText().toString());
-            }
-
-            if (checkKerusakan.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H12", "TERHADAP KERUSAKAN BENGKOK, PENYOK DAN PATAH", "CHECK", etKerusakan.getText().toString());
-            }
-
-            if (checkSabukKipas.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H13", "KEKENCANGAN SABUK KIPAS", "CHECK", etSabukKipas.getText().toString());
-            }
-
-            if (checkSuaraMesin.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H14", "KEHALUSAN SUARA MESIN", "CHECK", etSuaraMesin.getText().toString());
-            }
-
-            if (checkLampuKendaraan.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H15", "LAMPU DEPAN DAN LAMPU BELAKANG", "CHECK", etLampuKendaraan.getText().toString());
-            }
-
-            if (checkSpionKendaraan.isChecked()) {
-                dbHelper.insert_dataP2H_detail(nodocP2H, "P2H16", "SPION KANAN DAN SPION KIRI", "CHECK", etSpionKendaraan.getText().toString());
-            }
-
-            new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Menyelesaikan P2H")
-                    .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> finish()).show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

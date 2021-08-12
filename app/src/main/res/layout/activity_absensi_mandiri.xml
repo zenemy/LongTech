@@ -71,7 +71,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp">
 
         <LinearLayout
@@ -197,18 +197,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
                     android:text="Lokasi Absen"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
                     android:layout_marginBottom="10dp"
                     app:cardCornerRadius="10dp">
 
@@ -218,7 +218,6 @@
                         android:layout_height="match_parent" />
 
                 </com.google.android.material.card.MaterialCardView>
-
 
 
             </LinearLayout>
@@ -259,12 +258,12 @@
                         android:id="@+id/etLokasiAbsensiMandiri"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:singleLine="true"
                         android:hint="Masukkan Lokasi Absen"
                         android:paddingStart="16dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="16dp"
                         android:paddingBottom="8dp"
+                        android:singleLine="true"
                         android:textAlignment="center" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -278,7 +277,7 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="ABSEN"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:visibility="gone"
                 app:cornerRadius="10dp" />

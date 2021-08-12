@@ -5,106 +5,94 @@
     android:id="@+id/cldialoginfo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
-
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clDlgInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_dialog"
-        android:backgroundTint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/tbl_lr_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clDlgInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tvSystemNameDlgInfo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Nama System"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp"
-                android:textStyle="bold|italic"
-                app:layout_constraintBottom_toBottomOf="@+id/imgLogoDlgInfo"
-                app:layout_constraintStart_toEndOf="@+id/imgLogoDlgInfo"
-                app:layout_constraintTop_toTopOf="@+id/imgLogoDlgInfo" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imgLogoDlgInfo"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout10"
+        <TextView
+            android:id="@+id/tvSystemNameDlgInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/tbl_lr_bottom"
-            android:backgroundTint="@color/white"
+            android:layout_marginStart="8dp"
+            android:text="Nama System"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toBottomOf="@+id/imgLogoDlgInfo"
+            app:layout_constraintStart_toEndOf="@+id/imgLogoDlgInfo"
+            app:layout_constraintTop_toTopOf="@+id/imgLogoDlgInfo" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgLogoDlgInfo"
+            android:layout_width="70dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/julong1"
+            app:shapeAppearance="@style/roundedMiniCorner"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clDlgInfo">
-
-            <TextView
-                android:id="@+id/tvDlgInfoTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/topborderonly"
-                android:gravity="center"
-                android:paddingStart="16dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="16dp"
-                android:text="Title"
-                android:textColor="@color/colorText"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDialogInfo"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="1dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="1dp"
-                android:layout_marginBottom="1dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="OK"
-                android:textColor="@color/colorTextButton"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDlgInfoTitle"
-                app:layout_constraintVertical_bias="0.0"
-                app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRounded" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clDlgInfo">
+
+        <TextView
+            android:id="@+id/tvDlgInfoTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/topborderonly"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:text="Title"
+            android:textColor="@color/colorText"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogInfo"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="1dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="OK"
+            android:textColor="@color/colorTextButton"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDlgInfoTitle"
+            app:layout_constraintVertical_bias="0.0"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRounded" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

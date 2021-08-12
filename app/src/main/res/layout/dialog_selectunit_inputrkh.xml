@@ -14,11 +14,11 @@
         android:background="@drawable/tbl_lr_top"
         android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:text="UNIT KENDARAAN / ALAT KERJA"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -45,8 +45,7 @@
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="16dp"
-                android:nextFocusDown="@id/acShiftDriverRKH"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:paddingBottom="4dp"
                 android:singleLine="true"
                 android:textSize="14sp" />
@@ -142,15 +141,13 @@
             android:hint="Helper 2"
             app:endIconMode="dropdown_menu">
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/acHelper2InputRKH"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="16dp"
-                android:nextFocusDown="@id/etInputRKHBBM"
-                android:imeOptions="actionNext"
                 android:paddingBottom="4dp"
                 android:singleLine="true"
                 android:textSize="14sp" />
@@ -166,6 +163,8 @@
             android:hint="Kebutuhan BBM"
             android:paddingStart="8dp"
             android:paddingTop="4dp"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_baseline_gas_station_24"
             app:suffixText="Liter"
             android:paddingEnd="8dp">
 
@@ -179,6 +178,7 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="4dp"
                 android:singleLine="true"
+                android:imeOptions="actionDone"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -201,6 +201,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder"
             android:text="Cancel"
             android:textColor="@color/white"
@@ -216,6 +217,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded"
             android:text="Simpan"
             android:textColor="@color/white"

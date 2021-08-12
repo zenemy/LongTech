@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -50,7 +50,7 @@
                 android:layout_height="40dp"
                 android:editable="false"
                 android:inputType="none"
-                android:paddingStart="8dp"
+                android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
@@ -104,7 +104,7 @@
                     android:layout_height="40dp"
                     android:editable="false"
                     android:inputType="none"
-                    android:paddingStart="8dp"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
@@ -128,7 +128,7 @@
                     android:layout_height="40dp"
                     android:editable="false"
                     android:inputType="none"
-                    android:paddingStart="8dp"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
@@ -195,7 +195,7 @@
                     android:layout_height="40dp"
                     android:editable="false"
                     android:inputType="none"
-                    android:paddingStart="8dp"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
@@ -264,6 +264,7 @@
                         android:ems="3"
                         android:gravity="center"
                         android:hint="0"
+                        android:imeOptions="actionDone"
                         android:inputType="number"
                         android:maxLength="1"
                         android:paddingStart="8dp"
@@ -292,14 +293,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            app:endIconMode="clear_text"
             app:hintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNoteDlgCarLog"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="55dp"
                 android:gravity="top"
-                android:paddingStart="8dp"
+                android:hint="Catatan Keterangan (Opsional)"
+                android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
@@ -307,13 +310,26 @@
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textview.MaterialTextView
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:text="Foto Odometer"
-            android:textColor="@color/black" />
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvJudulFotoKM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Foto Odometer"
+                android:textColor="@color/black" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="*"
+                android:textColor="@color/red" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <ImageButton
             android:id="@+id/imgKilometerDlgCarLog"
@@ -322,8 +338,7 @@
             android:layout_marginTop="4dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_baseline_add_photo_100"
-            app:tint="@color/gray" />
+            android:src="@drawable/ic_baseline_add_photo_100" />
 
     </LinearLayout>
 
@@ -344,6 +359,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder"
             android:text="KEMBALI"
             android:textStyle="bold" />
@@ -358,6 +374,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded"
             android:text="SIMPAN"
             android:textStyle="bold" />

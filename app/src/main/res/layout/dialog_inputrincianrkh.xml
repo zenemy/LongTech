@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:orientation="vertical">
 
     <TextView
@@ -14,82 +14,24 @@
         android:background="@drawable/tbl_lr_top"
         android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:text="INPUT RENCANA KEGIATAN"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1"
-                    android:hint="Jenis Muatan"
-                    app:endIconMode="dropdown_menu">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/acLoadTypeRincianRKH"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionNext"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="4dp"
-                        android:singleLine="true"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:hint="Satuan Kerja">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etSatuanKerjaRincianRKH"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:editable="false"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="4dp"
-                        android:singleLine="true"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:hint="Lokasi Kerja"
@@ -134,6 +76,59 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:hint="Jenis Muatan">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/acLoadTypeRincianRKH"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:imeOptions="actionNext"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="4dp"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:hint="Satuan Kerja">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSatuanKerjaRincianRKH"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:editable="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="4dp"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:background="@drawable/topborderonly"
                 android:layout_marginTop="8dp"
                 android:paddingStart="8dp"
@@ -147,7 +142,9 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
-                    android:hint="Waktu Kerja (HH:MM)">
+                    android:hint="Waktu Kerja"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_baseline_accesstime_24">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etWaktuKerjaRincianRKH"
@@ -192,24 +189,25 @@
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:id="@+id/inputLayoutTargetRincianRKH"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="4dp"
-                android:hint="Target Prestasi Kerja"
-                app:endIconMode="dropdown_menu">
+                android:hint="Target Prestasi Kerja">
 
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/acTargetRincianRKH"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTargetRincianRKH"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:imeOptions="actionNext"
+                    android:inputType="number"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
+                    android:paddingEnd="16dp"
                     android:paddingBottom="4dp"
                     android:singleLine="true"
                     android:textSize="14sp" />
@@ -225,6 +223,7 @@
                 android:paddingTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/topborderonly"
+                app:endIconMode="clear_text"
                 android:hint="Deskripsi Pekerjaan (Optional)">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -241,7 +240,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
-    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -260,6 +258,7 @@
             android:layout_weight="1"
             android:insetBottom="0dp"
             android:insetTop="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder"
             android:text="Cancel"
             android:textColor="@color/white"
@@ -275,6 +274,7 @@
             android:layout_weight="1"
             android:insetBottom="0dp"
             android:insetTop="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded"
             android:text="Simpan"
             android:textColor="@color/white"

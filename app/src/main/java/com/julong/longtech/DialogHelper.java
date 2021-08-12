@@ -55,39 +55,6 @@ public class DialogHelper extends Dialog {
         tvjuduldialog = dialogYesNo.findViewById(R.id.textView43);
         imgLogoDlgYesNo = dialogYesNo.findViewById(R.id.imgDlgYesNo);
 
-        try {
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0), 0, dbhelper.get_companyimg(0).length);
-            imgLogoDlgYesNo.setImageBitmap(compressedBitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        tvjuduldialog.setText(LoginActivity.namasystem);
-
-//        try {
-//            btn_ok.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
-//            btn_no.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
-//            tvjuduldialog.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
-//            if (dbhelper.get_tbl_username(25).equals("0")){
-//                tvjuduldialog.setText("NAMA SYSTEM");
-//            }
-//            else {
-//                tvjuduldialog.setText(dbhelper.get_tbl_username(25));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            tvjuduldialog.setText("NAMA SYSTEM");
-//        }
-//
-//
-//        try {
-//            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(1), 0, dbhelper.get_gambar_user(1).length);
-//            imgdialog.setImageBitmap(compressedBitmap);
-//            //imgphoto.setForeground(null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-
         //Inisialisasi Variable Return
         v_rtn_dlg_string = "";
 
@@ -140,12 +107,6 @@ public class DialogHelper extends Dialog {
         tvjuduldialog = dialogInfo.findViewById(R.id.tvSystemNameDlgInfo);
         imgLogoDlgHelperInfo = dialogInfo.findViewById(R.id.imgLogoDlgInfo);
 
-        //Ubah logo di dialog
-        try {
-            imgLogoDlgHelperInfo.setImageBitmap(LoginActivity.bitmaplogosystem);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         tvjuduldialog.setText(LoginActivity.namasystem);
 
         //Inisialisasi Object Title/Text

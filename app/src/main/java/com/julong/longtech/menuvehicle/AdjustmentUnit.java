@@ -15,6 +15,7 @@ import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -166,14 +168,30 @@ public class AdjustmentUnit extends AppCompatActivity {
             }
         });
 
-        acVehicleAdjustmentUnit.setOnItemClickListener((adapterView, view, position, l) -> selectedVehicle = listVehicleCode.get(position));
-        acDriver.setOnItemClickListener((adapterView, view, position, l) -> selectedEmp = listEmployeeCode.get(position));
+        acVehicleAdjustmentUnit.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedVehicle = listVehicleCode.get(position);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(AdjustmentUnit.this.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acVehicleAdjustmentUnit.getWindowToken(), 0);
+            }
+        });
+
+        acDriver.setOnItemClickListener((adapterView, view, position, l) -> {
+            selectedEmp = listEmployeeCode.get(position);
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(AdjustmentUnit.this.INPUT_METHOD_SERVICE);
+            keyboardMgr.hideSoftInputFromWindow(acDriver.getWindowToken(), 0);
+        });
 
         btnBackAdjustment.setOnClickListener(view -> finish());
 
         btnSubmitAdjustment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleName;
+                ArrayList<String> driverOutput = (ArrayList<String>) listEmployeeName;
+
                 if (codeOptionMenu == null) {
                     final SweetAlertDialog dlgAlert = new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE);
                     dlgAlert.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -187,15 +205,23 @@ public class AdjustmentUnit extends AppCompatActivity {
                     dlgAlert.setTitleText("Pilih Menu!").setConfirmText("OK").show();
                 }
                 else if (selectedVehicle == null) {
-                    new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Unit!").setConfirmText("OK").show();
+                    new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Pilih Unit!").setConfirmText("OK").show();
                 }
                 else if (selectedEmp == null) {
-                    new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Karyawan!").setConfirmText("OK").show();
+                    new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Pilih Driver!").setConfirmText("OK").show();
+                }
+                else if (vehicleOutput.indexOf(acVehicleAdjustmentUnit.getText().toString()) == -1 || driverOutput.indexOf(acDriver.getText().toString()) == -1) {
+                    new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Data tidak valid!").setConfirmText("OK").show();
                 }
                 else {
-                    unitKm = etAdjustmentKMHM.getText().toString() + "," + etAdjustmentDecimalKMHM.getText().toString();
+                    if (inputLayoutDecimalKM.getVisibility() == View.VISIBLE) {
+                        unitKm = etAdjustmentKMHM.getText().toString() + "," + etAdjustmentDecimalKMHM.getText().toString();
+                    }
+
                     nodocAdjustment = dbHelper.get_tbl_username(0) + "/RUNVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-                    dbHelper.insert_adjustmentunit(nodocAdjustment, dateSaveDatabase, codeOptionMenu, selectedVehicle, selectedEmp, etNoteAdjustment.getText().toString(), unitKm);
+
+                    dbHelper.insert_adjustmentunit(nodocAdjustment, dateSaveDatabase, codeOptionMenu,
+                            selectedVehicle, selectedEmp, etNoteAdjustment.getText().toString(), unitKm);
 
                     new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Adjustment Unit")
                             .setConfirmClickListener(sweetAlertDialog -> {
@@ -207,6 +233,9 @@ public class AdjustmentUnit extends AppCompatActivity {
                                 codeOptionMenu = null;
                                 selectedEmp = null;
                                 selectedVehicle = null;
+
+                                sweetAlertDialog.dismiss();
+                                finish();
                             }).setConfirmText("OK").show();
                 }
             }

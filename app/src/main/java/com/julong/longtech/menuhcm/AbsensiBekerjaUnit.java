@@ -57,19 +57,22 @@ public class AbsensiBekerjaUnit extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        getLocation();
-        nodocAbsenUnit = dbhelper.get_tbl_username(0) + "/ABSVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-        Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-        imgAbsensiUnit = stream.toByteArray();
-        dbhelper.insert_absvh(nodocAbsenUnit, "CHECKOUT", "FOTO", etLokasiAbsensiUnit.getText().toString(), latAbsenUnit, longAbsenUnit, imgAbsensiUnit);
 
-        new SweetAlertDialog(AbsensiBekerjaUnit.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
-                .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            getLocation();
+            nodocAbsenUnit = dbhelper.get_tbl_username(0) + "/ABSVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+            Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+            imgAbsensiUnit = stream.toByteArray();
+            dbhelper.insert_absvh(nodocAbsenUnit, "CHECKOUT", "FOTO", etLokasiAbsensiUnit.getText().toString(), latAbsenUnit, longAbsenUnit, imgAbsensiUnit);
 
-        etLokasiAbsensiUnit.setText(null);
-        imgAbsensiUnit = null;
+            new SweetAlertDialog(AbsensiBekerjaUnit.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
+                    .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
+
+            etLokasiAbsensiUnit.setText(null);
+            imgAbsensiUnit = null;
+        }
 
     }
 

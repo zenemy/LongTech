@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 import com.julong.longtech.DatabaseHelper;
@@ -13,9 +14,11 @@ import android.app.Dialog;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -25,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,12 +51,12 @@ public class InputRincianRKH extends AppCompatActivity {
     String todayDateRincianRKH, nodocRKH, vehicleCodeRKH, vehicleNameRKH, shiftRincianRKH, driverDetailRKH,
             selectedKegiatan, selectedLokasi;
 
-    private List<String> listMuatanRincianRKH, listKegiatanCode, listKegiatanName, listKegiatanSatuan,
-            listLokasiCode, listLokasiName;
+    private List<String> listKegiatanCode, listKegiatanName, listKegiatanSatuanCode,
+            listKegiatanSatuanName, listLokasiCode, listLokasiName;
 
     private List<ListParamRincianRKH> listParamRincian;
     AdapterRincianRKH adapterRincian;
-    ArrayAdapter<String> adapterMuatanRincianRKH, adapterKegiatan, adapterLokasi;
+    ArrayAdapter<String> adapterKegiatan, adapterLokasi;
     DatabaseHelper dbhelper;
 
     @Override
@@ -71,6 +75,8 @@ public class InputRincianRKH extends AppCompatActivity {
         btnCancelPenginputanRKH = findViewById(R.id.btnCancelPenginputanRKH);
         tvUnitRincianRKH = findViewById(R.id.tvUnitRincianRKH);
         lvRincianRKH = findViewById(R.id.lvRincianRKH);
+
+        btnCancelPenginputanRKH.setOnClickListener(view -> finish());
 
         Bundle bundle = getIntent().getExtras();
         todayDateRincianRKH = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
@@ -101,7 +107,8 @@ public class InputRincianRKH extends AppCompatActivity {
         dlgSubmitRincianRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowDlgSubmitRKH = dlgSubmitRincianRKH.getWindow();
         windowDlgSubmitRKH.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        TextView tvDriverNameDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvDriverNameDlgSubmitRincianRKH);
+        TextView tvVehicleDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvVehicleDlgSubmitRincianRKH);
+        TextView tvDriverDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvDriverDlgSubmitRincianRKH);
         TextView tvShiftDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvShiftDlgSubmitRincianRKH);
         TextView tvTotalDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvTotalDlgSubmitRincianRKH);
         Button btnDismissDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.btnDismissDlgSubmitRincianRKH);
@@ -114,7 +121,8 @@ public class InputRincianRKH extends AppCompatActivity {
                     .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
         });
 
-        tvDriverNameDlgSubmit.setText(driverDetailRKH);
+        tvVehicleDlgSubmit.setText(vehicleCodeRKH);
+        tvDriverDlgSubmit.setText(driverDetailRKH);
         tvShiftDlgSubmit.setText(shiftRincianRKH);
         tvTotalDlgSubmit.setText(dbhelper.count_rincianrkh(nodocRKH, vehicleCodeRKH) + " Total Input");
 
@@ -132,44 +140,44 @@ public class InputRincianRKH extends AppCompatActivity {
         dlgInputRincianKerja.setCanceledOnTouchOutside(false);
         Window windowDlgInputRincianKerja = dlgInputRincianKerja.getWindow();
         windowDlgInputRincianKerja.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        AutoCompleteTextView acLoadTypeRincianRKH = dlgInputRincianKerja.findViewById(R.id.acLoadTypeRincianRKH);
+        EditText etLoadTypeRincianRKH = dlgInputRincianKerja.findViewById(R.id.acLoadTypeRincianRKH);
         EditText etSatuanKerjaRincianRKH = dlgInputRincianKerja.findViewById(R.id.etSatuanKerjaRincianRKH);
         AutoCompleteTextView acWorkPlaceRincianRKH = dlgInputRincianKerja.findViewById(R.id.acWorkPlaceRincianRKH);
-        AutoCompleteTextView acKegiatanKerjaRincianRKH = dlgInputRincianKerja.findViewById(R.id.acKegiatanKerjaRincianRKH);
-        AutoCompleteTextView acTargetRincianRKH = dlgInputRincianKerja.findViewById(R.id.acTargetRincianRKH);
+        AutoCompleteTextView acKegiatanRincianRKH = dlgInputRincianKerja.findViewById(R.id.acKegiatanKerjaRincianRKH);
+        EditText etTargetRincianRKH = dlgInputRincianKerja.findViewById(R.id.etTargetRincianRKH);
         etWaktuKerjaRincianRKH = dlgInputRincianKerja.findViewById(R.id.etWaktuKerjaRincianRKH);
         EditText etKMHMRincianRKH = dlgInputRincianKerja.findViewById(R.id.etKMHMRincianRKH);
         EditText etAdditionalNoteRincianRKH = dlgInputRincianKerja.findViewById(R.id.etAdditionalNoteRincianRKH);
         Button btnDlgCancelInputRincianRKH = dlgInputRincianKerja.findViewById(R.id.btnDlgCancelInputRincianRKH);
         Button btnDlgSimpanInputRincianRKH = dlgInputRincianKerja.findViewById(R.id.btnDlgSimpanInputRincianRKH);
+        TextInputLayout inputLayoutTargetKerja = dlgInputRincianKerja.findViewById(R.id.inputLayoutTargetRincianRKH);
         dlgInputRincianKerja.show();
-
-        listMuatanRincianRKH = dbhelper.get_loadtype(1);
-        listKegiatanSatuan = dbhelper.get_loadtype(0);
-        adapterMuatanRincianRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listMuatanRincianRKH);
-        acLoadTypeRincianRKH.setAdapter(adapterMuatanRincianRKH);
 
         listKegiatanCode = dbhelper.get_activitylist(0);
         listKegiatanName = dbhelper.get_activitylist(1);
+        listKegiatanSatuanCode = dbhelper.get_activitylist(3);
+        listKegiatanSatuanName = dbhelper.get_activitylist(4);
         adapterKegiatan = new ArrayAdapter<String>(InputRincianRKH.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanName);
-        acKegiatanKerjaRincianRKH.setAdapter(adapterKegiatan);
+        acKegiatanRincianRKH.setAdapter(adapterKegiatan);
 
         listLokasiCode = dbhelper.get_fieldcrop(0);
         listLokasiName = dbhelper.get_fieldcrop(1);
         adapterLokasi = new ArrayAdapter<String>(InputRincianRKH.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiName);
         acWorkPlaceRincianRKH.setAdapter(adapterLokasi);
 
-        acKegiatanKerjaRincianRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanName;
+        ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiName;
+
+        acKegiatanRincianRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedKegiatan = listKegiatanCode.get(position);
-            }
-        });
+                etLoadTypeRincianRKH.setText(listKegiatanSatuanName.get(position));
+                etSatuanKerjaRincianRKH.setText(listKegiatanSatuanCode.get(position));
+                inputLayoutTargetKerja.setSuffixText(listKegiatanSatuanCode.get(position));
 
-        acLoadTypeRincianRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                etSatuanKerjaRincianRKH.setText(listKegiatanSatuan.get(position));
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InputRincianRKH.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acKegiatanRincianRKH.getWindowToken(), 0);
             }
         });
 
@@ -177,6 +185,8 @@ public class InputRincianRKH extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedLokasi = listLokasiCode.get(position);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InputRincianRKH.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acWorkPlaceRincianRKH.getWindowToken(), 0);
             }
         });
 
@@ -194,16 +204,30 @@ public class InputRincianRKH extends AppCompatActivity {
         });
 
         btnDlgCancelInputRincianRKH.setOnClickListener(v1 -> dlgInputRincianKerja.dismiss());
+
         btnDlgSimpanInputRincianRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbhelper.insert_rkh_detail2(nodocRKH, vehicleCodeRKH, shiftRincianRKH, dbhelper.get_empcode(driverDetailRKH),
-                        acLoadTypeRincianRKH.getText().toString(), etSatuanKerjaRincianRKH.getText().toString(),
-                        selectedLokasi, selectedKegiatan, etWaktuKerjaRincianRKH.getText().toString(),
-                        etKMHMRincianRKH.getText().toString(), acTargetRincianRKH.getText().toString(),
-                        etAdditionalNoteRincianRKH.getText().toString());
-                dlgInputRincianKerja.dismiss();
-                loadListViewRKH();
+                if (selectedLokasi == null || selectedKegiatan == null
+                    || TextUtils.isEmpty(etWaktuKerjaRincianRKH.getText().toString().trim())
+                    || TextUtils.isEmpty(etKMHMRincianRKH.getText().toString().trim())
+                    || TextUtils.isEmpty(etTargetRincianRKH.getText().toString().trim())) {
+                    Toast.makeText(InputRincianRKH.this, "Lengkapi Data!", Toast.LENGTH_LONG).show();
+                }
+                else if (lokasiOutput.indexOf(acWorkPlaceRincianRKH.getText().toString()) == -1
+                        || kegiatanOutput.indexOf(acKegiatanRincianRKH.getText().toString()) == -1) {
+                    Toast.makeText(InputRincianRKH.this, "Lokasi / Kegiatan tidak valid!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    dbhelper.insert_rkh_detail2(nodocRKH, vehicleCodeRKH, shiftRincianRKH, dbhelper.get_empcode(driverDetailRKH),
+                            etLoadTypeRincianRKH.getText().toString(), etSatuanKerjaRincianRKH.getText().toString(),
+                            selectedLokasi, selectedKegiatan, etWaktuKerjaRincianRKH.getText().toString(),
+                            etKMHMRincianRKH.getText().toString(), etTargetRincianRKH.getText().toString(),
+                            etAdditionalNoteRincianRKH.getText().toString());
+                    dlgInputRincianKerja.dismiss();
+                    loadListViewRKH();
+                }
+
             }
         });
     }

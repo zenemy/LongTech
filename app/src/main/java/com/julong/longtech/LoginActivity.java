@@ -10,6 +10,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -36,10 +37,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -104,12 +107,13 @@ public class LoginActivity extends AppCompatActivity {
     SweetAlertDialog pDialog;
 
     //Object
-    TextView tv_lupasandi, tvversion, tvnamasystem, tvLoginHeader, tvKeteranganBahasa,
+    TextView tvversion, tvnamasystem, tvLoginHeader, tvKeteranganBahasa,
             tvDlgInfoTitle;
     EditText et_username, et_password;
     Button btnlogin, btnDialogInfo;
-    ImageView imglogo, imgbackground, imgtakephotoreg;
+    ImageView imglogo;
     AutoCompleteTextView imgChangeLanguage;
+    ConstraintLayout layoutBgLogin;
     //END===========================================================================================
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
@@ -125,7 +129,6 @@ public class LoginActivity extends AppCompatActivity {
         dialogHelper = new DialogHelper(this);
         //Object Text View
         tvLoginHeader = findViewById(R.id.tvHeaderLogin);
-        tv_lupasandi = findViewById(R.id.txt_lupasandi);
         tvversion = findViewById(R.id.tvversion);
         tvnamasystem = findViewById(R.id.textView2);
         tvKeteranganBahasa = findViewById(R.id.tvKeteranganPilihanBahasa);
@@ -138,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         //Obejct Image / Backgroud
         imgphoto = findViewById(R.id.myPict2);
         imglogo = findViewById(R.id.myPict);
-        imgbackground = findViewById(R.id.imgBgLogin);
+        layoutBgLogin = findViewById(R.id.layoutBgLogin);
         imgChangeLanguage = findViewById(R.id.imgChangeLanguage);
 
         // Dialog Gambar
@@ -188,7 +191,8 @@ public class LoginActivity extends AppCompatActivity {
             imglogo.setImageBitmap(bitmaplogosystem);
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
                     dbhelper.get_companyimg(1), 0, dbhelper.get_companyimg(1).length);
-            imgbackground.setImageBitmap(compressedBitmap);
+            BitmapDrawable backgroundLogin = new BitmapDrawable(compressedBitmap);
+            layoutBgLogin.setBackgroundDrawable(backgroundLogin);
 
             try {
                 Bitmap profileuser = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(),
@@ -203,7 +207,6 @@ public class LoginActivity extends AppCompatActivity {
             btnlogin.setBackgroundTintList(ColorStateList.valueOf(Color
                     .parseColor(dbhelper.get_tbl_username(26))));
             tvLoginHeader.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
-            tv_lupasandi.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 et_password.setCompoundDrawableTintList(ColorStateList.valueOf(Color
@@ -666,8 +669,7 @@ public class LoginActivity extends AppCompatActivity {
                                     });
                                     btnBackDlgPassword.setOnClickListener(v12 ->
                                             dialoginsertpassword.dismiss());
-                                } else if (checkuser.equals("SUCCESS") ||
-                                        checkuser.equals("CONFIRM")) {
+                                } else if (checkuser.equals("SUCCESS")) {
                                     dbhelper.delete_data_username();
                                     et_password.setText(null);
                                     new JsonAsyncLogin().execute(response, null, null);
@@ -680,12 +682,12 @@ public class LoginActivity extends AppCompatActivity {
                                             .setConfirmText("OK").show();
                                 } else {
                                     pDialog.dismiss();
-                                    tvDlgInfoTitle.setText("User ID tidak terdaftar, " +
-                                            "silahkan hubungi HRD dan silahkan ulangi.");
+                                    DialogHelper.v_dlg_title = "User ID tidak terdaftar, " +
+                                            "silahkan hubungi HRD dan silahkan ulangi.";
+                                    DialogHelper.v_dlg_btn1 = "OK";
+                                    dialogHelper.showDialogInfo();
                                     et_username.setText(null);
                                     et_password.setText(null);
-                                    dialoginfo.show();
-                                    btnDialogInfo.setOnClickListener(v1 -> dialoginfo.dismiss());
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -794,7 +796,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         return_koneksi = null;
         if (systemCode != null || systemCode.equals("")) {
-            url_data = url_api + "dsi_version.php?systemcode=" + systemCode;
+            url_data = url_api + "fetchdata/get_sysversion.php?systemcode=" + systemCode;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url_data,
                     new Response.Listener<String>() {
                 @Override
@@ -870,7 +872,7 @@ public class LoginActivity extends AppCompatActivity {
             String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                     Locale.getDefault()).format(new Date());
             dbhelper.get_companyinfo(13);
-            url_data = url_api + "fetchdata/getcompanyinfo.php?systemcode=" + systemCode
+            url_data = url_api + "fetchdata/get_companyinfo.php?systemcode=" + systemCode
                     + "&sysdate=" + currentDateTime;
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url_data,
                     new Response.Listener<String>() {
@@ -878,39 +880,48 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(String response) {
                     try {
                         JSONObject jsonPost = new JSONObject(response.toString());
-                        try {
-                            //Jika dapat perintah update, update table company: background logo dan nama system
-                            if (jsonPost.getString("RESPON").equals("UPDATECOMPANY")) {
-                                byte[] decodedLogoComp = Base64.decode(jsonPost
-                                        .getString("LOGOCOMP"), Base64.DEFAULT);
-                                byte[] decodedBgComp = Base64.decode(jsonPost
-                                        .getString("BACKGROUNDIMG"), Base64.DEFAULT);
-                                dbhelper.insert_companyinfo(jsonPost.getString("GROUPCOMPANYCODE"),
-                                        decodedLogoComp, decodedBgComp,
-                                        jsonPost.getString("SYSTEMNAME"),
-                                        jsonPost.getString("URLAPI"),
-                                        jsonPost.getString("PICNAME"),
-                                        jsonPost.getString("PICEMAIL"),
-                                        jsonPost.getString("PICNOTELP"),
-                                        jsonPost.getString("ADDRESS"));
-                                try {
-                                    bitmaplogosystem = BitmapFactory.decodeByteArray(
-                                            dbhelper.get_companyimg(0), 0,
-                                            dbhelper.get_companyimg(0).length);
-                                    imglogo.setImageBitmap(bitmaplogosystem);
-                                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
-                                            dbhelper.get_companyimg(1), 0,
-                                            dbhelper.get_companyimg(1).length);
-                                    imgbackground.setImageBitmap(compressedBitmap);
-                                    namasystem = dbhelper.get_companyinfo(3);
-                                    tvnamasystem.setText(namasystem);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
+
+                        //Jika dapat perintah update, update table company: background logo dan nama system
+                        if (jsonPost.getString("RESPON").equals("UPDATECOMPANY")) {
+                            byte[] decodedLogoComp = Base64.decode(jsonPost
+                                    .getString("LOGOCOMP"), Base64.DEFAULT);
+                            byte[] decodedBgComp = Base64.decode(jsonPost
+                                    .getString("BACKGROUNDIMG"), Base64.DEFAULT);
+                            dbhelper.insert_companyinfo(jsonPost.getString("GROUPCOMPANYCODE"),
+                                    decodedLogoComp, decodedBgComp,
+                                    jsonPost.getString("SYSTEMNAME"),
+                                    jsonPost.getString("URLAPI"),
+                                    jsonPost.getString("PICNAME"),
+                                    jsonPost.getString("PICEMAIL"),
+                                    jsonPost.getString("PICNOTELP"),
+                                    jsonPost.getString("ADDRESS"));
+                            try {
+                                bitmaplogosystem = BitmapFactory.decodeByteArray(
+                                        dbhelper.get_companyimg(0), 0,
+                                        dbhelper.get_companyimg(0).length);
+                                imglogo.setImageBitmap(bitmaplogosystem);
+                                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
+                                        dbhelper.get_companyimg(1), 0,
+                                        dbhelper.get_companyimg(1).length);
+                                BitmapDrawable backgroundLogin = new BitmapDrawable(compressedBitmap);
+                                layoutBgLogin.setBackgroundDrawable(backgroundLogin);
+                                namasystem = dbhelper.get_companyinfo(3);
+                                tvnamasystem.setText(namasystem);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } else {
+                            dbhelper.insert_companyinfo("JULONG",
+                                    null, null,
+                                    "LONG TECH",
+                                    "http://longtech.julongindonesia.com/longtech/mobilesync/",
+                                    "Pak Siswo",
+                                    "siswo@mail.com",
+                                    "0811",
+                                    "KEM Tower 3rd & 5th Floor Jalan Landasan Pacu Barat B10 Kemayoran");
+
+                            namasystem = dbhelper.get_companyinfo(3);
+                            tvnamasystem.setText(namasystem);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -919,7 +930,14 @@ public class LoginActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    dbhelper.insert_companyinfo("JULONG",
+                            null, null,
+                            "LONG TECH",
+                            "http://longtech.julongindonesia.com/longtech/mobilesync/",
+                            "Pak Siswo",
+                            "siswo@mail.com",
+                            "0811",
+                            "KEM Tower 3rd & 5th Floor Jalan Landasan Pacu Barat B10 Kemayoran");
                 }
             });
             queue.add(stringRequest);

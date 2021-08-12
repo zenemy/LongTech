@@ -247,7 +247,7 @@ public class MesinAbsensi extends AppCompatActivity {
                         tvEmpMesinAbsensi.setText(dbhelper.check_mesinabsensi(1, tvIdAbsensiEmp.getText().toString()));
                         tvJabatanMesinAbsensi.setText(dbhelper.check_mesinabsensi(2, tvIdAbsensiEmp.getText().toString()));
                         dbhelper.insert_absensimesin(nodocMesinAbsensi, tvIdAbsensiEmp.getText().toString(), dbhelper.check_mesinabsensi(0, tvIdAbsensiEmp.getText().toString()),
-                                statusTipeAbsen, "FINGER", "Home",latMesinAbsensi, longMesinAbsensi);
+                                statusTipeAbsen, "FINGER", latMesinAbsensi, longMesinAbsensi);
                         new SweetAlertDialog(MesinAbsensi.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen").setConfirmText("OK").show();
                     }
                     layoutInfoEmp.setVisibility(View.VISIBLE);

@@ -200,10 +200,10 @@ public class ApelPagi extends AppCompatActivity {
                     warningExitDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog dlgExit) {
-                            dbhelper.updateselesai_apelpagi(nodocApel);
+                            dbhelper.updateselesai_apelpagi(nodocApel, etLokasiApel.getText().toString());
                             lvAnggota.setEnabled(false);
                             lvPimpinan.setEnabled(false);
-                            dlgExit.dismissWithAnimation();
+                            dlgExit.dismiss();
                             new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Apel Pagi selesai")
                                     .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
                         }

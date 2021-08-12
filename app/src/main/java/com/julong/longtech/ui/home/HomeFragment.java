@@ -99,7 +99,6 @@ public class HomeFragment extends Fragment {
     BubbleTabBar bubbleTabBar;
     ListView lvfragment, lvhistory;
     byte[] gambar2, gambar, gambar1;
-    ImageView imageselesai, imgMiniProfile;
     AutoCompleteTextView ackendala;
     TextView tvSystemNameFragmentHome, filtertglhistory;
     EditText etdesckendala, etpanjangkendala, etlebarkendala, etluaskendala, aclokasikendala;
@@ -107,8 +106,9 @@ public class HomeFragment extends Fragment {
     ImageButton btnrefresh, openDrawerBtn, imgcamkendala;
     String lat_awal, long_awal, savedate;
     ScrollView scrollkendala;
-    ConstraintLayout clRiwayatFragment, clBgMainActivity;
-    LinearLayout linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H, linearLayoutCarLog, linearLayoutBBM, linearLayoutService, clreport;
+    ConstraintLayout clBgMainActivity;
+    LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
+            linearLayoutCarLog, linearLayoutBBM, linearLayoutService, clreport;
 
     private List<String> listKendala;
     ArrayAdapter<String> adapterKendala;
@@ -141,9 +141,9 @@ public class HomeFragment extends Fragment {
         etpanjangkendala = root.findViewById(R.id.etPanjangKendala);
         etlebarkendala = root.findViewById(R.id.etLebarKendala);
         etluaskendala = root.findViewById(R.id.etLuasKendala);
-        clRiwayatFragment = root.findViewById(R.id.clRiwayatFragment);
-        clreport = root.findViewById(R.id.cl_report);
-        filtertglhistory = root.findViewById(R.id.etFilterTglHistory);
+        layoutRiwayatFragment = root.findViewById(R.id.clRiwayatFragment);
+
+        filtertglhistory = root.findViewById(R.id.etDateHomeHistory);
         linearLayoutAbsen = root.findViewById(R.id.linearLayoutAbsen);
         linearLayoutRKH = root.findViewById(R.id.linearLayoutRKH);
         linearLayoutP2H = root.findViewById(R.id.linearLayoutP2H);
@@ -199,17 +199,15 @@ public class HomeFragment extends Fragment {
                 switch (id) {
                     case R.id.homefragment:
                         lvfragment.setVisibility(View.VISIBLE);
-                        clreport.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.GONE);
                         loadlvinfohome();
                         break;
                     case R.id.log:
-                        clreport.setVisibility(View.VISIBLE);
+
                         lvfragment.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.GONE);
                         break;
                     case R.id.feedback:
-                        clreport.setVisibility(View.GONE);
                         lvfragment.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.VISIBLE);
                         break;
@@ -336,7 +334,6 @@ public class HomeFragment extends Fragment {
     private void preparedUserAppData(String predefinedData) {
         if (predefinedData.equals("theme")) {
             try {
-                imgMiniProfile.setColorFilter(Color.parseColor(dbhelper.get_tbl_username(26)));
                 tvSystemNameFragmentHome.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
                 btnsimpankendala.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
                 btnrefresh.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));

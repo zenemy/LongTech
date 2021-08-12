@@ -158,20 +158,19 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Satuan Kerja"
-                        app:endIconMode="dropdown_menu">
+                        android:hint="Satuan Kerja">
 
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/acSatuanInspeksiKerja"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSatuanInspeksiKerja"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
+                            android:paddingBottom="4dp"
                             android:editable="false"
                             android:inputType="none"
                             android:textColor="@color/black"
@@ -184,18 +183,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:hint="Hasil Inspeksi"
-                        app:endIconMode="clear_text">
+                        android:hint="Hasil Inspeksi">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etQtyInspeksiKerja"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:inputType="number"
+                            android:inputType="numberDecimal"
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
+                            android:paddingBottom="4dp"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -269,6 +267,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackInspeksi"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -282,6 +281,7 @@
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitInspeksi"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

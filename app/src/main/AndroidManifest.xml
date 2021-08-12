@@ -36,7 +36,7 @@
         <activity android:name=".menuvehicle.KartuKerjaVehicle" />
         <activity android:name=".menusetup.AppSetting" />
         <activity android:name=".menuhcm.AbsensiMandiri" />
-        <activity android:name=".ReportActivity" />
+        <activity android:name=".menureport.HistoryActivity" />
         <activity android:name=".menusetup.MyAccount" />
         <activity android:name=".menusetup.UpdateSystem" />
         <activity android:name=".menusetup.UploadData" />

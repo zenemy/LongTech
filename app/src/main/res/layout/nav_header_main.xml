@@ -22,7 +22,7 @@
         android:backgroundTint="#E4E1E1"
         android:scaleType="fitXY"
         android:src="@drawable/user"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_viewposition"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDeptCode"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_viewusername"
         app:shapeAppearanceOverlay="@style/roundedCornersImageView" />
@@ -57,25 +57,25 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_viewusername" />
 
     <TextView
-        android:id="@+id/tv_viewposition"
+        android:id="@+id/tvDeptCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:singleLine="true"
-        android:text="STAFF "
+        android:text="DEPT "
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/tv_viewloccode"
-        app:layout_constraintTop_toBottomOf="@+id/tvDeptCode" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_viewposition" />
 
     <TextView
-        android:id="@+id/tvDeptCode"
+        android:id="@+id/tv_viewposition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="IT DEPARTMENT"
+        android:text="POSITION"
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         android:textStyle="bold"
