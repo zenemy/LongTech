@@ -54,6 +54,7 @@ public class AdjustmentUnit extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
 
+        //Declare design ID
         acPilihanMenu = findViewById(R.id.acMenuOptionAdjustmentUnit);
         todayDateAdjustmentUnit = findViewById(R.id.todayDateAdjustmentUnit);
         acVehicleAdjustmentUnit = findViewById(R.id.acKendaraanKerjaGantiDriver);
@@ -77,8 +78,8 @@ public class AdjustmentUnit extends AppCompatActivity {
         adapterVehicleAdjustmentUnit = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
         acVehicleAdjustmentUnit.setAdapter(adapterVehicleAdjustmentUnit);
 
+        // Select work date
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
-
         etPelaksanaanTgl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

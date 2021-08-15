@@ -156,6 +156,8 @@ public class AbsensiMandiri extends AppCompatActivity {
                         .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        Intent backIntent = new Intent();
+                        setResult(727, backIntent);
                         finish();
                     }
                 }).show();
@@ -165,6 +167,8 @@ public class AbsensiMandiri extends AppCompatActivity {
                         .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        Intent backIntent = new Intent();
+                        setResult(727, backIntent);
                         finish();
                     }
                 }).show();
@@ -216,6 +220,8 @@ public class AbsensiMandiri extends AppCompatActivity {
             btnSubmitAbsen.setVisibility(View.GONE);
         }
         else {
+            Intent backIntent = new Intent();
+            setResult(727, backIntent);
             finish();
         }
 

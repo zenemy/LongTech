@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -36,6 +38,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -51,6 +55,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -64,6 +69,10 @@ import com.julong.longtech.R;
 import com.fxn.BubbleTabBar;
 import com.fxn.OnBubbleClickListener;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
+import com.julong.longtech.menureport.HistoryApelAdapter;
+import com.julong.longtech.menureport.HistoryCarlogAdapter;
+import com.julong.longtech.menureport.ListHistoryApel;
+import com.julong.longtech.menureport.ListHistoryCarLog;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.MyAccount;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
@@ -85,6 +94,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -92,28 +102,28 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     HashPassword hashPassword;
-    Handler handler = new Handler();
 
     DatabaseHelper dbhelper;
     public static TextView tvjabatanuser, tvnamauser;
     BubbleTabBar bubbleTabBar;
-    ListView lvfragment, lvhistory;
+    public static ListView lvfragment, lvHistoryApel, lvHistoryCarLog;
     byte[] gambar2, gambar, gambar1;
-    AutoCompleteTextView ackendala;
-    TextView tvSystemNameFragmentHome, filtertglhistory;
-    EditText etdesckendala, etpanjangkendala, etlebarkendala, etluaskendala, aclokasikendala;
-    Button btnsimpankendala;
+    AutoCompleteTextView ackendala, acMenuRiwayatHome;
+    TextView tvSystemNameFragmentHome;
+    EditText etdesckendala, etpanjangkendala, etlebarkendala, etluaskendala, aclokasikendala, filtertglhistory;
+    Button btnsimpankendala, btnDateLvInfo;
     ImageButton btnrefresh, openDrawerBtn, imgcamkendala;
-    String lat_awal, long_awal, savedate;
+    String lat_awal, long_awal, todayDate, todayDateTime;
     ScrollView scrollkendala;
     ConstraintLayout clBgMainActivity;
-    LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
-            linearLayoutCarLog, linearLayoutBBM, linearLayoutService, clreport;
+    LinearLayout layoutRiwayatFragment, layoutInfoFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
+            linearLayoutCarLog, linearLayoutBBM, linearLayoutService;
+
+    String[] arrayMenuHistory = {"APEL PAGI", "CAR LOG"};
+    ArrayAdapter<String> adapterMenuHistory;
 
     private List<String> listKendala;
     ArrayAdapter<String> adapterKendala;
-    private List<ParamListHomeInfo> informationsHome;
-    private AdapterHomeInfo adapterHomeInfo;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -123,25 +133,28 @@ public class HomeFragment extends Fragment {
         hashPassword = new HashPassword(11);
 
         tvnamauser = root.findViewById(R.id.tvNamaUser);
-        //tvSystemNameFragmentHome = root.findViewById(R.id.systemNameFragmentHome);
+        layoutInfoFragment = root.findViewById(R.id.layoutInfoFragment);
+        btnDateLvInfo = root.findViewById(R.id.btnDateLvInfoHome);
         clBgMainActivity = root.findViewById(R.id.clBgMainActivity);
         tvjabatanuser = root.findViewById(R.id.tvJabatanUser);
         bubbleTabBar = root.findViewById(R.id.bubbleTabBar);
-        openDrawerBtn = (ImageButton) root.findViewById(R.id.openDrawerBtn);
+        openDrawerBtn =  root.findViewById(R.id.openDrawerBtn);
         scrollkendala = root.findViewById(R.id.scrollViewKendala);
-        lvfragment = root.findViewById(R.id.lvfragment);
+        lvfragment = root.findViewById(R.id.lvInfoFragment);
         btnrefresh = root.findViewById(R.id.btnRefreshHome);
-        lvhistory = root.findViewById(R.id.lvHistoryTransaksi);
+        lvHistoryApel = root.findViewById(R.id.lvHistoryHomeApel);
+        lvHistoryCarLog = root.findViewById(R.id.lvHistoryHomeCarLog);
         ackendala = root.findViewById(R.id.acKategoriKendala);
         etdesckendala = root.findViewById(R.id.etDescKendala);
         btnsimpankendala = root.findViewById(R.id.btnKnedalaOk);
         imgcamkendala = root.findViewById(R.id.imgKendala);
         aclokasikendala = root.findViewById(R.id.etLokasiKendala);
+        acMenuRiwayatHome = root.findViewById(R.id.acMenuRiwayatHome);
         aclokasikendala.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         etpanjangkendala = root.findViewById(R.id.etPanjangKendala);
         etlebarkendala = root.findViewById(R.id.etLebarKendala);
         etluaskendala = root.findViewById(R.id.etLuasKendala);
-        layoutRiwayatFragment = root.findViewById(R.id.clRiwayatFragment);
+        layoutRiwayatFragment = root.findViewById(R.id.layoutRiwayatFragment);
 
         filtertglhistory = root.findViewById(R.id.etDateHomeHistory);
         linearLayoutAbsen = root.findViewById(R.id.linearLayoutAbsen);
@@ -152,32 +165,105 @@ public class HomeFragment extends Fragment {
         linearLayoutService = root.findViewById(R.id.linearLayoutService);
         linearLayoutQR = root.findViewById(R.id.linearLayoutMyQR);
 
+        todayDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        filtertglhistory.setText(todayDate);
+        btnDateLvInfo.setText(todayDate);
+        lvHistoryApel.setFastScrollEnabled(true);
+
         generate_listkendala();
-
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
-        filtertglhistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                datePicker.show(getParentFragmentManager(), datePicker.toString());
-            }
-        });
-
         eventClickMenu();
 
-        filtertglhistory.setText(savedate);
 //        tvnamauser.setText(dbhelper.get_tbl_username(0));
 //        tvjabatanuser.setText(dbhelper.get_tbl_username(3));
 
-        savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
 
         preparedUserAppData("theme");
         preparedUserAppData("sysname");
         preparedUserAppData("bgcolor");
 
+        adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistory);
+        acMenuRiwayatHome.setAdapter(adapterMenuHistory);
+
         openDrawerBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 ((MainActivity) getActivity()).openDrawer();
+            }
+        });
+
+        acMenuRiwayatHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String selected = (String) adapterView.getItemAtPosition(position);
+
+                if (selected.equals("APEL PAGI")) {
+                    lvHistoryApel.setVisibility(View.VISIBLE);
+                    lvHistoryCarLog.setVisibility(View.GONE);
+                    lvHistoryApel.setAdapter(null);
+                }
+                else {
+                    lvHistoryApel.setVisibility(View.GONE);
+                    lvHistoryCarLog.setVisibility(View.VISIBLE);
+                    lvHistoryCarLog.setAdapter(null);
+                }
+
+                filtertglhistory.setText(null);
+            }
+        });
+
+        MaterialDatePicker<Long> datePickerLvHistory = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
+        MaterialDatePicker<Long> datePickerLvInfo = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
+
+        filtertglhistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerLvHistory.show(getParentFragmentManager(), "HISTORYHOME");
+            }
+        });
+
+        datePickerLvHistory.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                // Get the offset from our timezone and UTC.
+                TimeZone timeZoneUTC = TimeZone.getDefault();
+                // It will be negative, so that's the -1
+                int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
+                // Create a date format, then a date object with our offset
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date = new Date(selection + offsetFromUTC);
+
+                filtertglhistory.setText(simpleFormat.format(date));
+
+                if (acMenuRiwayatHome.getText().toString().equals("APEL PAGI")) {
+                    loadLvHistoryApel(simpleFormat.format(date));
+                } else {
+                    loadLvHistoryCarLog(simpleFormat.format(date));
+                }
+            }
+        });
+
+        btnDateLvInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerLvInfo.show(getParentFragmentManager(), "INFOHOMIE");
+            }
+        });
+
+        datePickerLvInfo.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                // Get the offset from our timezone and UTC.
+                TimeZone timeZoneUTC = TimeZone.getDefault();
+                // It will be negative, so that's the -1
+                int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
+                // Create a date format, then a date object with our offset
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date = new Date(selection + offsetFromUTC);
+
+                btnDateLvInfo.setText(simpleFormat.format(date));
+                loadlvinfohome(simpleFormat.format(date));
             }
         });
 
@@ -198,17 +284,18 @@ public class HomeFragment extends Fragment {
             public void onBubbleClick(int id) {
                 switch (id) {
                     case R.id.homefragment:
-                        lvfragment.setVisibility(View.VISIBLE);
+                        layoutInfoFragment.setVisibility(View.VISIBLE);
                         scrollkendala.setVisibility(View.GONE);
-                        loadlvinfohome();
+                        layoutRiwayatFragment.setVisibility(View.GONE);
                         break;
                     case R.id.log:
-
-                        lvfragment.setVisibility(View.GONE);
+                        layoutRiwayatFragment.setVisibility(View.VISIBLE);
+                        layoutInfoFragment.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.GONE);
                         break;
                     case R.id.feedback:
-                        lvfragment.setVisibility(View.GONE);
+                        layoutInfoFragment.setVisibility(View.GONE);
+                        layoutRiwayatFragment.setVisibility(View.GONE);
                         scrollkendala.setVisibility(View.VISIBLE);
                         break;
                 }
@@ -269,7 +356,7 @@ public class HomeFragment extends Fragment {
                             params.put("subdatatype", dbhelper.get_tbl_username(0));
                             params.put("compid", dbhelper.get_tbl_username(15));
                             params.put("siteid", dbhelper.get_tbl_username(16));
-                            params.put("date1", savedate);
+                            params.put("date1", todayDateTime);
                             params.put("text1", ackendala.getText().toString());
                             params.put("text2", aclokasikendala.getText().toString());
                             params.put("text3", etpanjangkendala.getText().toString());
@@ -298,24 +385,6 @@ public class HomeFragment extends Fragment {
         });
 
         return root;
-    }
-
-    void datepicker() {
-        Calendar newCalendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-                SimpleDateFormat nodocDateFormat = new SimpleDateFormat("ddMMyyyy", Locale.US);
-                filtertglhistory.setText(dateFormatter.format(newDate.getTime()));
-            }
-
-        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
     }
 
     @Override
@@ -396,9 +465,11 @@ public class HomeFragment extends Fragment {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listKendala = dbhelper.get_menukendala();
-                        adapterKendala = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listKendala);
-                        ackendala.setAdapter(adapterKendala);
+                        if (getContext() != null) {
+                            listKendala = dbhelper.get_menukendala();
+                            adapterKendala = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listKendala);
+                            ackendala.setAdapter(adapterKendala);
+                        }
                         error.printStackTrace();
                     }
                 });
@@ -410,43 +481,71 @@ public class HomeFragment extends Fragment {
 
         linearLayoutQR.setOnClickListener(view -> ((MainActivity) getActivity()).eventShowQR(view));
 
+        if (dbhelper.get_tbl_username(2).equals("USR")) {
+            linearLayoutRKH.setVisibility(View.GONE);
+        }
+
+        if (dbhelper.get_tbl_username(2).equals("SPV")) {
+            linearLayoutCarLog.setVisibility(View.GONE);
+        }
+
+        ActivityResultLauncher<Intent> intentLaunchActivity = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == 3) {
+                        loadlvinfohome(todayDate);
+                        loadLvHistoryCarLog(todayDate);
+                    }
+                    if (result.getResultCode() == 727) {
+                        loadlvinfohome(todayDate);
+                        Log.d("KODEA", "727");
+                    }
+                }
+        );
+
         linearLayoutAbsen.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AbsensiMandiri.class);
-            startActivity(intent);
+            intentLaunchActivity.launch(intent);
         });
 
         linearLayoutRKH.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), RencanaKerjaHarian.class);
-            startActivity(intent);
+            intentLaunchActivity.launch(intent);
         });
 
         linearLayoutCarLog.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), KartuKerjaVehicle.class);
-            startActivity(intent);
+            intentLaunchActivity.launch(intent);
         });
 
         linearLayoutP2H.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), PemeriksaanPengecekanHarian.class);
-            startActivity(intent);
+            intentLaunchActivity.launch(intent);
         });
 
         linearLayoutBBM.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), PermintaanBBM.class);
-            startActivity(intent);
+            intentLaunchActivity.launch(intent);
         });
 
         linearLayoutService.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
-            startActivity(intent);
+            intentLaunchActivity.launch(intent);
         });
 
-        loadlvinfohome();
+        loadlvinfohome(todayDate);
     }
 
-    public void loadlvinfohome() {
+    public static void loadlvinfohome(String selectedDate) {
+
+        List<ParamListHomeInfo> informationsHome;
+        AdapterHomeInfo adapterHomeInfo;
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(lvfragment.getContext());
+
         informationsHome = new ArrayList<>();
         informationsHome.clear();
-        Cursor cursor = dbhelper.listview_infohome();
+        Cursor cursor = dbhelper.listview_infohome(selectedDate);
         if (cursor.moveToFirst()) {
             do {
                 ParamListHomeInfo infoListFragment = new ParamListHomeInfo(
@@ -457,8 +556,70 @@ public class HomeFragment extends Fragment {
                 informationsHome.add(infoListFragment);
             } while (cursor.moveToNext());
         }
-        adapterHomeInfo = new AdapterHomeInfo(getContext(), R.layout.item_lvworkinfohome, informationsHome);
+        adapterHomeInfo = new AdapterHomeInfo(lvfragment.getContext(), R.layout.item_lvworkinfohome, informationsHome);
         lvfragment.setAdapter(adapterHomeInfo);
+    }
+
+    public static void loadLvHistoryApel(String selectedDate) {
+
+        List<ListHistoryHomeApel> listApelHistories;
+        HistoryHomeApelAdapter adapterLvHistory;
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(lvHistoryApel.getContext());
+
+        listApelHistories = new ArrayList<>();
+        listApelHistories.clear();
+        final Cursor cursor = dbhelper.listview_historyapel(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListHistoryHomeApel paramsApelHistory = new ListHistoryHomeApel(
+                        cursor.getString(cursor.getColumnIndex("documentno")),
+                        cursor.getString(cursor.getColumnIndex("tglapel")),
+                        cursor.getString(cursor.getColumnIndex("waktuapel")),
+                        cursor.getString(cursor.getColumnIndex("empname")),
+                        cursor.getString(cursor.getColumnIndex("jabatan")),
+                        cursor.getString(cursor.getColumnIndex("jeniskehadiran")),
+                        cursor.getString(cursor.getColumnIndex("absenmethod")),
+                        cursor.getBlob(cursor.getColumnIndex("fotoabsen")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+                );
+                listApelHistories.add(paramsApelHistory);
+            } while (cursor.moveToNext());
+        }
+        adapterLvHistory = new HistoryHomeApelAdapter(lvHistoryApel.getContext(), R.layout.fragment_apelhistory, listApelHistories);
+        lvHistoryApel.setAdapter(adapterLvHistory);
+    }
+
+    public static void loadLvHistoryCarLog(String selectedDate) {
+
+        List<ListHistoryHomeCarLog> listHistoryCarLogs;
+        HistoryHomeCarLogAdapter carlogAdapter;
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(lvHistoryCarLog.getContext());
+
+        listHistoryCarLogs = new ArrayList<>();
+        listHistoryCarLogs.clear();
+        final Cursor cursor = dbhelper.listview_historycarlog(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListHistoryHomeCarLog paramsCarLogHistory = new ListHistoryHomeCarLog(
+                        cursor.getString(cursor.getColumnIndex("documentno")),
+                        cursor.getString(cursor.getColumnIndex("tglawal")),
+                        cursor.getString(cursor.getColumnIndex("tglakhir")),
+                        cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("kmawal")),
+                        cursor.getString(cursor.getColumnIndex("kmakhir")),
+                        cursor.getString(cursor.getColumnIndex("kategorimuatan")),
+                        cursor.getString(cursor.getColumnIndex("jenismuatan")),
+                        cursor.getString(cursor.getColumnIndex("hasilkerja")),
+                        cursor.getString(cursor.getColumnIndex("satuankerja")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+                );
+                listHistoryCarLogs.add(paramsCarLogHistory);
+            } while (cursor.moveToNext());
+        }
+        carlogAdapter = new HistoryHomeCarLogAdapter(lvHistoryCarLog.getContext(), R.layout.fragment_carloghistory, listHistoryCarLogs);
+        lvHistoryCarLog.setAdapter(carlogAdapter);
     }
 
     private void getLocation() {

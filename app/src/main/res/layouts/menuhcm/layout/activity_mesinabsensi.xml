@@ -242,6 +242,7 @@
                         android:insetBottom="0dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
+                        android:visibility="gone"
                         android:text="SCAN QR"
                         android:textSize="18sp"
                         android:textStyle="bold"

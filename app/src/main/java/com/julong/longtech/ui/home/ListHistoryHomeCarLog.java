@@ -1,6 +1,6 @@
-package com.julong.longtech.menureport;
+package com.julong.longtech.ui.home;
 
-public class ListHistoryCarLog {
+public class ListHistoryHomeCarLog {
 
     private String documentNumber;
     private String waktuAwal;
@@ -14,7 +14,7 @@ public class ListHistoryCarLog {
     private String satuanPekerjaan;
     private int isUploaded;
 
-    public ListHistoryCarLog(String documentNumber, String waktuAwal, String waktuAkhir,
+    public ListHistoryHomeCarLog(String documentNumber, String waktuAwal, String waktuAkhir,
                              String unitCarLog, String kmAwal, String kmAkhir,
                              String kategoriMuatan, String jenisMuatan,
                              String hasilPekerjaan, String satuanPekerjaan, int isUploaded) {
@@ -43,6 +43,7 @@ public class ListHistoryCarLog {
     public String getWaktuAkhir() {
         return waktuAkhir;
     }
+
 
     public String getUnitCarLog() {
         return unitCarLog;

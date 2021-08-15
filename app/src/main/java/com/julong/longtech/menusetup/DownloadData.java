@@ -308,13 +308,4 @@ public class DownloadData extends AppCompatActivity {
         }
     }
 
-
-    //Function Tombol Back
-    @Override
-    public void onBackPressed() {
-        Intent backPressed = new Intent();
-        backPressed.putExtra("check", "download"); //pass intent extra here
-        setResult(RESULT_OK, backPressed);
-        finish();
-    }
 }

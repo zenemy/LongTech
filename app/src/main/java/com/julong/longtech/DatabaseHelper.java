@@ -176,6 +176,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void delete_datags() {
         SQLiteDatabase dbwrite = this.getWritableDatabase();
         dbwrite.execSQL("DELETE FROM gs_01");
+        dbwrite.execSQL("DELETE FROM gs_02");
         dbwrite.execSQL("DELETE FROM gs_06");
         dbwrite.execSQL("DELETE FROM gs_07");
     }
@@ -663,8 +664,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text4", kategoriabsen);
         contentValues.put("text5", jenisabsensi);
         contentValues.put("text6", lokasiabsen);
-        contentValues.put("text7", latitude);
-        contentValues.put("text8", longitude);
+        contentValues.put("text8", latitude);
+        contentValues.put("text9", longitude);
         contentValues.put("uploaded", 0);
 
         ContentValues contentValuesPhoto = new ContentValues();
@@ -705,6 +706,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text4", kegiatan);
         contentValues.put("text5", satuan);
         contentValues.put("text6", resultInspeksi);
+        contentValues.put("uploaded", 0);
 
         ContentValues contentValuesPhoto = new ContentValues();
         contentValuesPhoto.put("documentno", nodoc);
@@ -715,6 +717,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValuesPhoto.put("comp_id", get_tbl_username(14));
         contentValuesPhoto.put("site_id", get_tbl_username(15));
         contentValuesPhoto.put("blob1", fotoInspeksi);
+        contentValues.put("uploaded", 0);
 
         long insert = db.insert("tr_01", null, contentValues);
         long insertPhoto = db.insert("bl_01", null, contentValuesPhoto);
@@ -751,6 +754,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         } else {
             return true;
+        }
+    }
+
+    public String get_menucode(String moduledesc, String submoduledesc, int i) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT modulecode, submodulecode FROM gs_02 WHERE " +
+                "moduledesc = '" + moduledesc + "' AND submoduledesc = '" + submoduledesc + "';", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(i).toString();
+        } else {
+            return null;
         }
     }
 
@@ -1113,13 +1129,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor listview_reportapel(String date) {
+    public Cursor listview_historyapel(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT tr2.documentno, date(tr2.date1) AS tglapel, time(tr2.date1) AS waktuapel, md1.text2 AS empname, " +
-                "md1.text20 AS jabatan, gs1.parameterdesc AS jeniskehadiran, tr2.text3 AS absenmethod, bl1.blob1 AS fotoabsen FROM tr_02 tr2 " +
-                "LEFT JOIN md_01 md1 ON md1.text1 = tr2.subitemdata LEFT JOIN gs_01 gs1 ON gs1.parametercode = tr2.text4 LEFT JOIN bl_01 bl1 " +
+                "md1.text20 AS jabatan, gs1.parameterdesc AS jeniskehadiran, tr2.text3 AS absenmethod, bl1.blob1 AS fotoabsen, tr2.uploaded AS uploaded FROM tr_02 tr2 " +
+                "LEFT JOIN md_01 md1 ON md1.text1 = tr2.subitemdata LEFT JOIN gs_01 gs1 ON gs1.parametercode = tr2.text4 AND gs1.groupparamcode = 'GS14' LEFT JOIN bl_01 bl1 " +
                 "ON tr2.subitemdata = bl1.subitemdata WHERE md1.datatype = 'EMPLOYEE' AND tr2.datatype = 'ABSAPL' " +
                 "AND DATE(tr2.date1) = DATE('"+date+"') AND tr2.uploaded IS NOT NULL;", null);
+        return cursor;
+    }
+
+    public Cursor listview_historycarlog(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT tr.documentno, strftime('%d-%m-%Y %H:%M', tr.date1) AS tglawal, " +
+                "strftime('%d-%m-%Y %H:%M', tr.date2) AS tglakhir, tr.text1 AS unitcode, md.text4 AS jenismuatan, " +
+                "md.text6 AS kategorimuatan, tr.text2 AS kmawal, tr.text18 AS kmakhir, tr.text16 AS hasilkerja, " +
+                "md.text7 AS satuankerja, tr.uploaded AS uploaded FROM tr_01 tr LEFT JOIN md_01 md ON tr.text4 = md.text5 " +
+                "AND md.datatype = 'TRANSPORTRATE' WHERE tr.datatype = 'CARLOG' " +
+                "AND DATE(tr.date1) = DATE('"+date+"') AND tr.uploaded IS NOT NULL;", null);
         return cursor;
     }
 
@@ -1137,10 +1164,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor listview_infohome() {
+    public Cursor listview_infohome(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT gs.submoduledesc AS dataname, IFNULL(tr.uploaded, '0') AS statusupload, " +
-                "strftime('%d-%m-%Y', tr.date1) AS transactiondate FROM tr_01 tr INNER JOIN gs_02 gs ON tr.datatype = gs.doctypecode;", null);
+        Cursor cursor = db.rawQuery("SELECT gs.submoduledesc AS dataname, IFNULL(tr.uploaded, '') AS statusupload, " +
+                "IFNULL(strftime('%d-%m-%Y', tr.date1), '') AS transactiondate FROM tr_01 tr " +
+                "INNER JOIN gs_02 gs ON tr.datatype = gs.doctypecode " +
+                "WHERE DATE(date1) = DATE('"+date+"') OR date1 IS NULL;", null);
         return cursor;
     }
 

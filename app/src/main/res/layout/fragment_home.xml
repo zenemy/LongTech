@@ -286,8 +286,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:clickable="true"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
@@ -313,8 +313,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:clickable="true"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:paddingStart="12dp"
                 android:paddingEnd="16dp">
@@ -341,8 +341,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:clickable="true"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:paddingStart="8dp"
                 android:paddingEnd="16dp">
@@ -369,8 +369,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:clickable="true"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:paddingStart="10dp"
                 android:paddingEnd="14dp">
@@ -397,8 +397,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:clickable="true"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:paddingStart="8dp"
                 android:paddingEnd="16dp">
@@ -424,8 +424,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:clickable="true"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:paddingStart="8dp"
                 android:paddingEnd="16dp">
@@ -451,8 +451,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:clickable="true"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:paddingStart="8dp"
                 android:paddingEnd="16dp">
@@ -496,26 +496,55 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView2" />
 
-
-    <ListView
-        android:id="@+id/lvfragment"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/layoutInfoFragment"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/tombol"
-        android:backgroundTint="#FFFFFF"
-        android:visibility="visible"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bubbleTabBar" />
+        app:layout_constraintTop_toBottomOf="@+id/bubbleTabBar">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDateLvInfoHome"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:drawableEnd="@drawable/ic_baseline_calendar_24"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:hint="Filter Tanggal"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:letterSpacing="@null"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            app:backgroundTint="@color/white"
+            app:rippleColor="#878787"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.TopRounded" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1.5dp"
+            android:background="?android:attr/listDivider" />
+
+        <ListView
+            android:id="@+id/lvInfoFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/tbl_lr_bottom"
+            android:backgroundTint="@color/white"/>
+    </LinearLayout>
+
 
 
     <LinearLayout
-        android:id="@+id/clRiwayatFragment"
+        android:id="@+id/layoutRiwayatFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
@@ -524,8 +553,8 @@
         android:layout_marginBottom="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="#FFFFFF"
-        android:visibility="visible"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -538,32 +567,31 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:paddingBottom="10dp"
-            android:background="@drawable/bottomborderonly"
             android:weightSum="2">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 app:boxCornerRadiusTopStart="10dp"
-                android:layout_marginEnd="4dp"
-                app:hintEnabled="false"
-                app:endIconMode="dropdown_menu">
+                app:endIconMode="dropdown_menu"
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/acMenuRiwayatHome"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:dropDownWidth="200dp"
+                    android:editable="false"
+                    android:hint="Menu Riwayat"
+                    android:inputType="none"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
-                    android:dropDownWidth="200dp"
-                    android:hint="Menu Riwayat"
-                    android:textColorHint="#808080"
-                    android:editable="false"
-                    android:inputType="none"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
+                    android:textColorHint="#808080"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -571,38 +599,48 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="4dp"
+                android:layout_weight="1"
                 app:boxCornerRadiusTopEnd="10dp"
-                app:hintEnabled="false"
+                app:endIconDrawable="@drawable/ic_baseline_calendar_24"
                 app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_baseline_calendar_24">
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/etDateHomeHistory"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:paddingStart="12dp"
-                    android:paddingTop="8dp"
-                    android:focusableInTouchMode="false"
-                    android:inputType="time"
                     android:clickable="true"
+                    android:focusableInTouchMode="false"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:hint="Filter Tanggal"
-                    android:textColorHint="#808080"
+                    android:inputType="time"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
+                    android:textColorHint="#808080"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <ListView
-            android:id="@+id/lvHistoryTransaksi"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/topborderonly" />
+            android:layout_height="1.5dp"
+            android:background="?android:attr/listDivider" />
+
+        <ListView
+            android:id="@+id/lvHistoryHomeApel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/lvHistoryHomeCarLog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
 
     <ScrollView

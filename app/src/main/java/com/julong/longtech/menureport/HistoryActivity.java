@@ -34,6 +34,9 @@ public class HistoryActivity extends AppCompatActivity {
     private List<ListHistoryApel> listApelHistories;
     HistoryApelAdapter adapterLvHistory;
 
+    private List<ListHistoryCarLog> listHistoryCarLogs;
+    HistoryCarlogAdapter carlogAdapter;
+
     String[] arrayMenuHistory = {"APEL PAGI", "CAR LOG"};
     ArrayAdapter<String> adapterMenuHistory;
 
@@ -79,26 +82,62 @@ public class HistoryActivity extends AppCompatActivity {
 
                 etDatepicker.setText(simpleFormat.format(date));
 
-                loadListViewReportApel();
+                if (acMenuRiwayat.getText().toString().equals("APEL PAGI")) {
+                    lvHistoryApel.setVisibility(View.VISIBLE);
+                    lvHistoryCarLog.setVisibility(View.GONE);
+                    loadListViewHistoryApel(simpleFormat.format(date));
+                }
+                else {
+                    lvHistoryApel.setVisibility(View.GONE);
+                    lvHistoryCarLog.setVisibility(View.VISIBLE);
+                    loadListViewHistoryCarLog(simpleFormat.format(date));
+                }
             }
         });
 
         acMenuRiwayat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 lvHistoryApel.setVisibility(View.GONE);
                 lvHistoryCarLog.setVisibility(View.GONE);
+                etDatepicker.setText(null);
             }
         });
 
-        loadListViewReportApel();
     }
 
-    private void loadListViewReportApel() {
+    private void loadListViewHistoryCarLog(String selectedDate) {
+        lvHistoryCarLog = findViewById(R.id.lvHistoryCarLog);
+        listHistoryCarLogs = new ArrayList<>();
+        listHistoryCarLogs.clear();
+        final Cursor cursor = dbhelper.listview_historycarlog(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListHistoryCarLog paramsCarLogHistory = new ListHistoryCarLog(
+                        cursor.getString(cursor.getColumnIndex("documentno")),
+                        cursor.getString(cursor.getColumnIndex("tglawal")),
+                        cursor.getString(cursor.getColumnIndex("tglakhir")),
+                        cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("kmawal")),
+                        cursor.getString(cursor.getColumnIndex("kmakhir")),
+                        cursor.getString(cursor.getColumnIndex("kategorimuatan")),
+                        cursor.getString(cursor.getColumnIndex("jenismuatan")),
+                        cursor.getString(cursor.getColumnIndex("hasilkerja")),
+                        cursor.getString(cursor.getColumnIndex("satuankerja")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+                );
+                listHistoryCarLogs.add(paramsCarLogHistory);
+            } while (cursor.moveToNext());
+        }
+        carlogAdapter = new HistoryCarlogAdapter(this, R.layout.listview_historycarlog, listHistoryCarLogs);
+        lvHistoryCarLog.setAdapter(carlogAdapter);
+    }
+
+    private void loadListViewHistoryApel(String selectedDate) {
         lvHistoryApel = findViewById(R.id.lvHistoryApel);
         listApelHistories = new ArrayList<>();
         listApelHistories.clear();
-        final Cursor cursor = dbhelper.listview_reportapel(etDatepicker.getText().toString());
+        final Cursor cursor = dbhelper.listview_historyapel(selectedDate);
         if (cursor.moveToFirst()) {
             do {
                 ListHistoryApel paramsApelHistory = new ListHistoryApel(
@@ -109,7 +148,8 @@ public class HistoryActivity extends AppCompatActivity {
                         cursor.getString(cursor.getColumnIndex("jabatan")),
                         cursor.getString(cursor.getColumnIndex("jeniskehadiran")),
                         cursor.getString(cursor.getColumnIndex("absenmethod")),
-                        cursor.getBlob(cursor.getColumnIndex("fotoabsen"))
+                        cursor.getBlob(cursor.getColumnIndex("fotoabsen")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
                 );
                 listApelHistories.add(paramsApelHistory);
             } while (cursor.moveToNext());

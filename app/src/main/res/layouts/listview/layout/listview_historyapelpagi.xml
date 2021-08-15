@@ -20,7 +20,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imgReportApelPagi"
+                android:id="@+id/imgHistoryApelPagi"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvNodocReportApel"
+                android:id="@+id/tvNodocHistoryApel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -41,11 +41,11 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/imgReportApelPagi"
-                app:layout_constraintTop_toTopOf="@id/imgReportApelPagi" />
+                app:layout_constraintStart_toEndOf="@id/imgHistoryApelPagi"
+                app:layout_constraintTop_toTopOf="@id/imgHistoryApelPagi" />
 
             <TextView
-                android:id="@+id/tvReportDateApel"
+                android:id="@+id/tvHistoryDateApel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -55,11 +55,11 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imgReportApelPagi"
-                app:layout_constraintStart_toEndOf="@id/imgReportApelPagi" />
+                app:layout_constraintBottom_toBottomOf="@+id/imgHistoryApelPagi"
+                app:layout_constraintStart_toEndOf="@id/imgHistoryApelPagi" />
 
             <TextView
-                android:id="@+id/tvReportTimeApel"
+                android:id="@+id/tvHistoryTimeApel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -69,8 +69,8 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/tvReportDateApel"
-                app:layout_constraintStart_toEndOf="@id/tvReportDateApel" />
+                app:layout_constraintBottom_toBottomOf="@id/tvHistoryDateApel"
+                app:layout_constraintStart_toEndOf="@id/tvHistoryDateApel" />
 
         <LinearLayout
             android:id="@+id/layoutEmpNameReportApel"
@@ -79,12 +79,12 @@
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintTop_toBottomOf="@id/imgReportApelPagi"
+            app:layout_constraintTop_toBottomOf="@id/imgHistoryApelPagi"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/tvEmpNameApelReport"
+                android:id="@+id/tvEmpApelHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -100,7 +100,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tvPositionNameApelReport"
+                android:id="@+id/tvPositionApelHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -117,14 +117,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintTop_toBottomOf="@id/layoutEmpNameReportApel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
@@ -143,7 +142,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tvKehadiranEmpApelReport"
+                android:id="@+id/tvKehadiranApelHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -152,7 +151,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tvMetodeAbsenApelReport"
+                android:id="@+id/tvMetodeAbsenApelHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -161,6 +160,16 @@
                 android:textColor="@color/black" />
 
         </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imgUploadHistoryApel"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/bluetick"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

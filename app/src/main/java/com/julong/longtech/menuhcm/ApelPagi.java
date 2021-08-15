@@ -105,6 +105,7 @@ public class ApelPagi extends AppCompatActivity {
         nodocApel = dbhelper.get_tbl_username(0) + "/ABSAPL/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
         hashFunction = new HashPassword(11);
 
+        // Declare design ID
         tvHeaderApel = findViewById(R.id.tvHeaderApelPagi);
         etWaktuApelPagi = findViewById(R.id.etWaktuApelPagi);
         imgFotoApelPagi = findViewById(R.id.imgCaptureApel);
@@ -220,6 +221,7 @@ public class ApelPagi extends AppCompatActivity {
         final IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Apel foto rame
         if (dataProcess == 1) {
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 getLocation();
@@ -235,6 +237,7 @@ public class ApelPagi extends AppCompatActivity {
             }
         }
 
+        // Apel foto per person
         if (dataProcess == 2) {
             gambarAnggota = null;
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -260,6 +263,8 @@ public class ApelPagi extends AppCompatActivity {
                 loadlvpimpinan();
             }
         }
+
+        // Scan QR code employee
         if (dataProcess == 3) {
             if (result != null) {
                 if (result.getContents() == null) {
@@ -288,6 +293,7 @@ public class ApelPagi extends AppCompatActivity {
                     long calcDifferences = currentDate.getTime() - dateResult.getTime();
                     long diffMinute = calcDifferences / (60 * 1000) % 60;
 
+                    // Checkin does the QR code match the selected employee
                     boolean checkPassword = hashFunction.CheckPassword(originalContent, hashedResult);
                     if (checkPassword) {
                         if (diffMinute <= 5) {
@@ -353,6 +359,7 @@ public class ApelPagi extends AppCompatActivity {
         else {
             dbhelper.insert_apelpagi_header(nodocApel);
 
+            // Insertin team data into transaction
             Cursor cursorAnggota = dbhelper.view_prepareanggota_apelpagi();
             if (cursorAnggota.moveToFirst()) {
                 do {

@@ -158,6 +158,8 @@ public class DialogHelper extends Dialog {
                 new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
                         .setConfirmClickListener(sweetAlertDialog -> {
                             sweetAlertDialog.dismiss();
+                            Intent backIntent = new Intent();
+                            ((Activity) activityContext).setResult(727, backIntent);
                             ((Activity) activityContext).finish();
                         }).setConfirmText("SELESAI").show();
             }

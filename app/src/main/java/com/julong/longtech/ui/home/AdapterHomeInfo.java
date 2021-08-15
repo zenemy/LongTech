@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,19 +51,24 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
         final View listViewItem = inflater.inflate(R.layout.item_lvworkinfohome, null, true);
         final TextView tvWorkType = (TextView) listViewItem.findViewById(R.id.tvWorkTypeInfoHome);
         final TextView tvWorkStatus = (TextView) listViewItem.findViewById(R.id.tvWorkStatusInfoHome);
-        final TextView tvTransactionDate = (TextView) listViewItem.findViewById(R.id.tvTransactionDateInfoHome);
+        final ImageView imgUploaded = (ImageView) listViewItem.findViewById(R.id.imgUploadInfoHome);
         final ParamListHomeInfo listInfo = listHomeInfos.get(position);
 
         tvWorkType.setText(listInfo.getDatatype());
 
         if (listInfo.getWorkstatus().equals("0")) {
             tvWorkStatus.setText("Pekerjaan belum diupload");
+            imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
+        }
+        else if (listInfo.getTransactiondate().equals("") && listInfo.getWorkstatus().equals("")) {
+            tvWorkStatus.setText("Pekerjaan belum selesai");
+            tvWorkStatus.setTextColor(Color.RED);
+            imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
         }
         else {
             tvWorkStatus.setText("Pekerjaan sudah diupload");
+            imgUploaded.setImageResource(R.drawable.bluetick);
         }
-
-        tvTransactionDate.setText(listInfo.getTransactiondate());
 
         return listViewItem;
     }

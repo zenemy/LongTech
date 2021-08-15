@@ -113,6 +113,8 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                     new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE).setTitleText("Foto apel dahulu").setConfirmText("OK").show();
                 }
                 else {
+
+                    //Show method dialog
                     dlgMetodeAbsen = new Dialog(getContext());
                     dlgMetodeAbsen.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dlgMetodeAbsen.setContentView(R.layout.dialog_metodeabsen);
@@ -164,6 +166,7 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                         public void onClick(View view) {
                             dlgMetodeAbsen.dismiss();
 
+                            // Show dialog tidak hadir
                             dlgTidakHadir = new Dialog(getContext());
                             dlgTidakHadir.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             dlgTidakHadir.setContentView(R.layout.dialog_apeltdkhadir);

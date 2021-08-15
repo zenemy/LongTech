@@ -1,5 +1,7 @@
 package com.julong.longtech.menuvehicle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -18,6 +20,7 @@ import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -81,6 +84,22 @@ public class InspeksiHasilKerja extends AppCompatActivity {
 
         prepareHeaderData();
 
+        btnBackInspeksi.setOnClickListener(view -> finish());
+
+        ActivityResultLauncher<Intent> intentLaunchCamera = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Bundle bundle = result.getData().getExtras();
+                        Bitmap bitmap = (Bitmap) bundle.get("data");
+                        imgFotoInspeksi.setImageBitmap(bitmap);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                        byteImgInspeksi = stream.toByteArray();
+                    }
+                }
+        );
+
         imgFotoInspeksi.setOnClickListener(v -> {
 
             ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanName;
@@ -95,7 +114,7 @@ public class InspeksiHasilKerja extends AppCompatActivity {
             else {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 try {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    intentLaunchCamera.launch(takePictureIntent);
                 } catch (ActivityNotFoundException e) {
                     // display error state to the user
                 }
@@ -105,10 +124,12 @@ public class InspeksiHasilKerja extends AppCompatActivity {
 
         btnSubmitInspeksi.setOnClickListener(v -> {
 
+            nodocInspeksi = dbHelper.get_tbl_username(0) + "/IHKVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+
             ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanName;
             ArrayList<String> locOutput = (ArrayList<String>) listLokasiName;
 
-            if (TextUtils.isEmpty(acLokasiInspeksi.getText().toString().trim()) && TextUtils.isEmpty(acKegiatanInspeksi.getText().toString().trim())) {
+            if (TextUtils.isEmpty(acLokasiInspeksi.getText().toString().trim()) || TextUtils.isEmpty(acKegiatanInspeksi.getText().toString().trim())) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
             }
             else if (activityOutput.indexOf(acKegiatanInspeksi.getText().toString()) == -1 || locOutput.indexOf(acLokasiInspeksi.getText().toString()) == -1) {
@@ -118,26 +139,19 @@ public class InspeksiHasilKerja extends AppCompatActivity {
                 dbHelper.insert_kegiataninspeksi(nodocInspeksi, selectedKebunInspeksi, selectedDivisiInspeksi,
                         selectedLokasiInspeksi, selectedKegiatanInspeksi, selectedSatuanInspeksi,
                         etHasilInspeksi.getText().toString(), byteImgInspeksi);
+
+                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Inspeksi")
+                        .setConfirmText("SIMPAN").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        Intent backIntent = new Intent();
+                        setResult(727, backIntent);
+                        finish();
+                    }
+                }).show();
             }
 
         });
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            getLocation();
-            nodocInspeksi = dbHelper.get_tbl_username(0) + "/IHKVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-            Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            byteImgInspeksi = stream.toByteArray();
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteImgInspeksi, 0, byteImgInspeksi.length);
-            imgFotoInspeksi.setImageBitmap(compressedBitmap);
-        }
 
     }
 

@@ -49,8 +49,6 @@ public class AdapterRincianRKH extends ArrayAdapter<ListParamRincianRKH> {
 
             ViewHolder viewHolder = new AdapterRincianRKH.ViewHolder();
             viewHolder.layoutLvDetailRKH = (LinearLayout) convertView.findViewById(R.id.layoutItemLvRincianRKH);
-            viewHolder.tvJenisMuatanRincianRKH = (TextView) convertView.findViewById(R.id.tvJenisMuatanRincianRKH);
-            viewHolder.tvSatuanKerjaRincianRKH = (TextView) convertView.findViewById(R.id.tvSatuanKerjaRincianRKH);
             viewHolder.tvLokasiKerjaRincianRKH = (TextView) convertView.findViewById(R.id.tvLokasiKerjaRincianRKH);
             viewHolder.tvKegiatanKerjaRincianRKH = (TextView) convertView.findViewById(R.id.tvKegiatanKerjaRincianRKH);
             viewHolder.tvWaktuKerjaRincianRKH = (TextView) convertView.findViewById(R.id.tvWaktuKerjaRincianRKH);
@@ -58,8 +56,6 @@ public class AdapterRincianRKH extends ArrayAdapter<ListParamRincianRKH> {
             viewHolder.tvPrestasiKerjaRincianRKH = (TextView) convertView.findViewById(R.id.tvPrestasiKerjaRincianRKH);
 
             convertView.setTag(viewHolder);
-            convertView.setTag(R.id.tvJenisMuatanRincianRKH, viewHolder.tvJenisMuatanRincianRKH);
-            convertView.setTag(R.id.tvSatuanKerjaRincianRKH, viewHolder.tvSatuanKerjaRincianRKH);
             convertView.setTag(R.id.tvLokasiKerjaRincianRKH, viewHolder.tvLokasiKerjaRincianRKH);
             convertView.setTag(R.id.tvKegiatanKerjaRincianRKH, viewHolder.tvKegiatanKerjaRincianRKH);
             convertView.setTag(R.id.tvWaktuKerjaRincianRKH, viewHolder.tvWaktuKerjaRincianRKH);
@@ -70,13 +66,11 @@ public class AdapterRincianRKH extends ArrayAdapter<ListParamRincianRKH> {
 
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
-        viewHolder.tvJenisMuatanRincianRKH.setText(rincianRkhParams.get(position).getJenisMuatan());
-        viewHolder.tvSatuanKerjaRincianRKH.setText("(" + rincianRkhParams.get(position).getSatuanMuatan() + ")");
-        viewHolder.tvLokasiKerjaRincianRKH.setText(rincianRkhParams.get(position).getLokasi());
-        viewHolder.tvKegiatanKerjaRincianRKH.setText(rincianRkhParams.get(position).getKegiatan());
+        viewHolder.tvLokasiKerjaRincianRKH.setText(dbhelper.get_singlelokasi(rincianRkhParams.get(position).getLokasi()));
+        viewHolder.tvKegiatanKerjaRincianRKH.setText(dbhelper.get_singlekegiatan(rincianRkhParams.get(position).getKegiatan()));
         viewHolder.tvWaktuKerjaRincianRKH.setText(rincianRkhParams.get(position).getWaktu());
         viewHolder.tvKMHMKerjaRincianRKH.setText(rincianRkhParams.get(position).getKilometer());
-        viewHolder.tvPrestasiKerjaRincianRKH.setText(rincianRkhParams.get(position).getTargetKerja());
+        viewHolder.tvPrestasiKerjaRincianRKH.setText(rincianRkhParams.get(position).getTargetKerja() + "  " + rincianRkhParams.get(position).getSatuanMuatan());
 
         return convertView;
     }

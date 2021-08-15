@@ -56,7 +56,6 @@ public class VerifikasiGIS extends AppCompatActivity {
     String selectedKebunGIS, selectedDivisiGIS, selectedLokasiGIS, selectedKegiatanGIS,
             selectedSatuanKegiatan, latGIS, longGIS;
     public static String nodocVerifikasiGIS;
-    private long intervalInMillis;
 
     DatabaseHelper dbhelper;
     DialogHelper dialogHelper;
@@ -119,6 +118,7 @@ public class VerifikasiGIS extends AppCompatActivity {
             }
         });
 
+        // Start loop location tagging
         btnStartInterval.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -199,17 +199,21 @@ public class VerifikasiGIS extends AppCompatActivity {
                     post(new Runnable() {
                         @Override
                         public void run() {
+
                             try {
                                 Thread.sleep(selectedMillis);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
+
                             runOnUiThread(() -> getLocation());
+
                             if (latGIS != null) {
                                 nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
                                 dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS,
                                         acIntervalGIS.getText().toString(),null);
                             }
+
                             runOnUiThread(() -> loadListViewKoordinat());
                         }
                     });
@@ -333,6 +337,7 @@ public class VerifikasiGIS extends AppCompatActivity {
         }
     }
 
+    // Finish verification work
     public void eventSubmitVerifikasi(View v) {
         if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
                 || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())

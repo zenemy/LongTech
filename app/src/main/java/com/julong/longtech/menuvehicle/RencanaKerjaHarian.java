@@ -96,14 +96,16 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 dbHelper.updateselesai_rkh(nodocRKH, etDescRKH.getText().toString());
 
                 SweetAlertDialog finishRkhDlg = new SweetAlertDialog(RencanaKerjaHarian.this, SweetAlertDialog.SUCCESS_TYPE);
+                finishRkhDlg.setCancelable(false);
+                finishRkhDlg.setTitleText("Berhasil Menyimpan!");
                 finishRkhDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        Intent backIntent = new Intent();
+                        setResult(727, backIntent);
                         finish();
                     }
                 });
-                finishRkhDlg.setCancelable(false);
-                finishRkhDlg.setTitleText("Berhasil Menyimpan!");
             }
         });
 
@@ -113,7 +115,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         else if (dbHelper.get_statusrkh(4).equals("0") || dbHelper.get_statusrkh(4).equals("1")) {
             listViewRKH.setEnabled(false);
             layoutBtnRKH.setVisibility(View.GONE);
-            btnAddRKH.setEnabled(false);
+            btnAddRKH.setVisibility(View.GONE);
         }
 
     }
@@ -144,11 +146,13 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         adapterMenuShift = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuShift);
         acShiftDriverRKH.setAdapter(adapterMenuShift);
 
+        // List adapter vehicle
         listVehicleCodeDlg = dbHelper.get_vehiclemasterdata(0);
         listVehicleNameDlg = dbHelper.get_vehiclemasterdata(1);
         adapterVehicleDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleNameDlg);
         acUnitInputRKH.setAdapter(adapterVehicleDlgRKH);
 
+        // List adapter emp
         listEmployeeNameDlg = dbHelper.get_employee(1);
         listDriverCodeDlg = dbHelper.get_employee(0);
         listHelper1Dlg = dbHelper.get_employee(0);
@@ -164,16 +168,19 @@ public class RencanaKerjaHarian extends AppCompatActivity {
             InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acUnitInputRKH.getWindowToken(), 0);
         });
+
         acDriverInputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
             selectedDriver = listDriverCodeDlg.get(position);
             InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acDriverInputRKH.getWindowToken(), 0);
         });
+
         acHelper1InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
             selectedHelper1 = listHelper1Dlg.get(position);
             InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acHelper1InputRKH.getWindowToken(), 0);
         });
+
         acHelper2InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
             selectedHelper2 = listHelper2Dlg.get(position);
             InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
@@ -191,11 +198,13 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 ArrayList<String> employeeOutput = (ArrayList<String>) listEmployeeNameDlg;
                 ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleNameDlg;
 
+                // Checking empty fields
                 if (TextUtils.isEmpty(acUnitInputRKH.getText().toString().trim()) || TextUtils.isEmpty(acShiftDriverRKH.getText().toString().trim())
                     || TextUtils.isEmpty(acDriverInputRKH.getText().toString().trim()) || TextUtils.isEmpty(acHelper1InputRKH.getText().toString().trim())
                     || TextUtils.isEmpty(acHelper2InputRKH.getText().toString().trim()) || TextUtils.isEmpty(etInputRKHBBM.getText().toString().trim())) {
                     Toast.makeText(RencanaKerjaHarian.this, "Lengkapi Data!", Toast.LENGTH_LONG).show();
                 }
+                // Restrict user from input data other than autocompletion list
                 else if (employeeOutput.indexOf(acDriverInputRKH.getText().toString()) == -1
                         || employeeOutput.indexOf(acHelper1InputRKH.getText().toString()) == -1
                         || employeeOutput.indexOf(acHelper2InputRKH.getText().toString()) == -1) {
@@ -223,11 +232,9 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         });
 
         dlgAddUnit.show();
-
     }
 
     private void loadListViewRKH() {
-
         listViewRKH = findViewById(R.id.lvRKH);
         listParamRKH = new ArrayList<>();
         listParamRKH.clear();

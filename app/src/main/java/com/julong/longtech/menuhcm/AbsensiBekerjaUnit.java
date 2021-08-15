@@ -68,7 +68,11 @@ public class AbsensiBekerjaUnit extends AppCompatActivity {
             dbhelper.insert_absvh(nodocAbsenUnit, "CHECKOUT", "FOTO", etLokasiAbsensiUnit.getText().toString(), latAbsenUnit, longAbsenUnit, imgAbsensiUnit);
 
             new SweetAlertDialog(AbsensiBekerjaUnit.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
-                    .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
+                    .setConfirmClickListener(sweetAlertDialog -> {
+                        Intent backIntent = new Intent();
+                        setResult(727, backIntent);
+                        finish();
+                    }).show();
 
             etLokasiAbsensiUnit.setText(null);
             imgAbsensiUnit = null;

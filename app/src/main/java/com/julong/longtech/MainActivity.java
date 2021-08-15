@@ -1,5 +1,6 @@
 package com.julong.longtech;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,6 +26,10 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -65,6 +71,7 @@ import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuhcm.BiodataKaryawan;
 import com.julong.longtech.menusetup.MyAccount;
+import com.julong.longtech.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +87,10 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryApel;
+import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryCarLog;
+import static com.julong.longtech.ui.home.HomeFragment.loadlvinfohome;
+
 public class MainActivity extends AppCompatActivity {
 
     //==============================================================================================
@@ -93,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     List<String> listGroupMenu;
     HashMap<String, List<String>> listMenu;
+    String todayDate;
     //END===========================================================================================
 
     //==============================================================================================
@@ -114,12 +126,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         dbhelper = new DatabaseHelper(this);
+        hashPassword = new HashPassword(11);
+
+        //Generating menu based on USERROLE / USERTYPE
         generate_hcmmenu();
         generate_inventorymenu();
         generate_vehiclemenu();
         generate_workshopmenu();
-        hashPassword = new HashPassword(11);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -139,17 +154,7 @@ public class MainActivity extends AppCompatActivity {
         tvPositionNavHome.setText(dbhelper.get_tbl_username(13));
         tvDeptCode.setText(dbhelper.get_tbl_username(17));
 
-        try {
-            clnavheader.getBackground().setColorFilter(Color.parseColor(dbhelper.get_tbl_username(26)), PorterDuff.Mode.SRC_ATOP);
-            if (Build.VERSION.SDK_INT >= 21) {
-                Window statusbar = getWindow();
-                statusbar.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                statusbar.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                statusbar.setStatusBarColor(Color.parseColor(dbhelper.get_tbl_username(26)));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         try {
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(), 0, dbhelper.get_gambar_user().length);
@@ -158,6 +163,16 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        ActivityResultLauncher<Intent> intentLaunchActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == 727) {
+                        loadlvinfohome(todayDate);
+                    }
+                }
+        );
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -180,147 +195,156 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 
-                if (groupPosition == 0 && childPosition == 0) {
-                    Intent intent = new Intent(MainActivity.this, BiodataKaryawan.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                try {
+                    String menuGroupCode = dbhelper.get_menucode(listGroupMenu.get(groupPosition),
+                            listMenu.get(listGroupMenu.get(groupPosition)).get(childPosition), 0);
+                    String menuSubCode = dbhelper.get_menucode(listGroupMenu.get(groupPosition),
+                            listMenu.get(listGroupMenu.get(groupPosition)).get(childPosition), 1);
 
-                if (groupPosition == 0 && childPosition == 1) {
-                    Intent intent = new Intent(MainActivity.this, MesinAbsensi.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
-
-                if (groupPosition == 0 && childPosition == 2) {
-                    Intent intent = new Intent(MainActivity.this, AbsensiBekerjaUnit.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
-
-                if (groupPosition == 0 && childPosition == 3) {
-                    Intent intent = new Intent(MainActivity.this, AbsensiMandiri.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
-
-                if (groupPosition == 0 && childPosition == 4) {
-                    if (dbhelper.get_statusapelpagi(0).equals("1")) {
-                        Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010101")) {
+                        Intent intent = new Intent(MainActivity.this, BiodataKaryawan.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         onPause();
                     }
-                    else {
-                        final SweetAlertDialog warningStartApelDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
-                        warningStartApelDlg.setTitleText("Mulai apel pagi?");
-                        warningStartApelDlg.setCancelText("KEMBALI");
-                        warningStartApelDlg.setConfirmText("MULAI");
-                        warningStartApelDlg.showCancelButton(true);
-                        warningStartApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismiss();
-                                Intent intent = new Intent(MainActivity.this, ApelPagi.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                                onPause();
-                            }
-                        });
-                        warningStartApelDlg.show();
+
+                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010102")) {
+                        Intent intent = new Intent(MainActivity.this, MesinAbsensi.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
                     }
 
-                }
+                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010103")) {
+                        Intent intent = new Intent(MainActivity.this, AbsensiBekerjaUnit.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentLaunchActivity.launch(intent);
+                        onPause();
+                    }
 
-                if (groupPosition == 1 && childPosition == 0) {
-                    Intent intent = new Intent(MainActivity.this, PermintaanPerbaikan.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010104")) {
+                        Intent intent = new Intent(MainActivity.this, AbsensiMandiri.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentLaunchActivity.launch(intent);
+                        onPause();
+                    }
 
-                if (groupPosition == 1 && childPosition == 1) {
-                    Intent intent = new Intent(MainActivity.this, PerintahPerbaikan.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010105")) {
+                        if (dbhelper.get_statusapelpagi(0).equals("1")) {
+                            Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivityForResult(intent, 4);
+                            onPause();
+                        } else {
+                            final SweetAlertDialog warningStartApelDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                            warningStartApelDlg.setTitleText("Mulai apel pagi?");
+                            warningStartApelDlg.setCancelText("KEMBALI");
+                            warningStartApelDlg.setConfirmText("MULAI");
+                            warningStartApelDlg.showCancelButton(true);
+                            warningStartApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.dismiss();
+                                    Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivityForResult(intent, 4);
+                                    onPause();
+                                }
+                            });
+                            warningStartApelDlg.show();
+                        }
 
-                if (groupPosition == 1 && childPosition == 2) {
-                    Intent intent = new Intent(MainActivity.this, SelesaiPerbaikanBA.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    }
 
-                // Vehicle Menu
-                if (groupPosition == 2 && childPosition == 0) {
-                    Intent intent = new Intent(MainActivity.this, RencanaKerjaHarian.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    if (menuGroupCode.equals("0201") && menuSubCode.equals("020101")) {
+                        Intent intent = new Intent(MainActivity.this, PermintaanPerbaikan.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
 
-                if (groupPosition == 2 && childPosition == 1) {
-                    Intent intent = new Intent(MainActivity.this, PemeriksaanPengecekanHarian.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    if (menuGroupCode.equals("0201") && menuSubCode.equals("020102")) {
+                        Intent intent = new Intent(MainActivity.this, PerintahPerbaikan.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
 
-                if (groupPosition == 2 && childPosition == 2) {
-                    Intent intent = new Intent(MainActivity.this, KartuKerjaVehicle.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    if (menuGroupCode.equals("0201") && menuSubCode.equals("020103")) {
+                        Intent intent = new Intent(MainActivity.this, SelesaiPerbaikanBA.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
 
-                if (groupPosition == 2 && childPosition == 3) {
+                    // Vehicle Menu
+                    if (menuGroupCode.equals("0202") && menuSubCode.equals("020201")) {
+                        Intent intent = new Intent(MainActivity.this, RencanaKerjaHarian.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
 
-                }
+                    if (menuGroupCode.equals("0202") && menuSubCode.equals("020202")) {
+                        Intent intent = new Intent(MainActivity.this, PemeriksaanPengecekanHarian.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
 
-                if (groupPosition == 2 && childPosition == 4) {
+                    if (menuGroupCode.equals("0202") && menuSubCode.equals("020203")) {
+                        Intent intent = new Intent(MainActivity.this, KartuKerjaVehicle.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivityForResult(intent, 3);
+                        onPause();
+                    }
 
-                }
+                    if (groupPosition == 2 && childPosition == 3) {
 
-                if (groupPosition == 2 && childPosition == 5) {
-                    Intent intent = new Intent(MainActivity.this, AdjustmentUnit.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    }
 
-                if (groupPosition == 2 && childPosition == 6) {
-                    Intent intent = new Intent(MainActivity.this, VerifikasiGIS.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    if (groupPosition == 2 && childPosition == 4) {
 
-                if (groupPosition == 2 && childPosition == 7) {
-                    Intent intent = new Intent(MainActivity.this, InspeksiHasilKerja.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    }
 
-                // INVENTORY MENU
-                if (groupPosition == 3 && childPosition == 0) {
-                    Intent intent = new Intent(MainActivity.this, PermintaanBBM.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
+                    if (menuGroupCode.equals("0202") && menuSubCode.equals("020206")) {
+                        Intent intent = new Intent(MainActivity.this, AdjustmentUnit.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
 
-                if (groupPosition == 3 && childPosition == 1) {
-                    Intent intent = new Intent(MainActivity.this, PengeluaranBBM.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
+                    if (menuGroupCode.equals("0202") && menuSubCode.equals("020207")) {
+                        Intent intent = new Intent(MainActivity.this, VerifikasiGIS.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
+
+                    if (menuGroupCode.equals("0202") && menuSubCode.equals("020208")) {
+                        Intent intent = new Intent(MainActivity.this, InspeksiHasilKerja.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentLaunchActivity.launch(intent);
+                        onPause();
+                    }
+
+                    // INVENTORY MENU
+                    if (menuGroupCode.equals("0301") && menuSubCode.equals("030101")) {
+                        Intent intent = new Intent(MainActivity.this, PermintaanBBM.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
+
+                    if (menuGroupCode.equals("0301") && menuSubCode.equals("030102")) {
+                        Intent intent = new Intent(MainActivity.this, PengeluaranBBM.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        onPause();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 if (groupPosition == 4 && childPosition == 0) {
@@ -333,14 +357,14 @@ public class MainActivity extends AppCompatActivity {
                 if (groupPosition == 5 && childPosition == 0) {
                     Intent intent = new Intent(MainActivity.this, DownloadData.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
                     onPause();
                 }
 
                 if (groupPosition == 5 && childPosition == 1) {
                     Intent intent = new Intent(MainActivity.this, UploadData.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    startActivityForResult(intent, 2);
                     onPause();
                 }
 
@@ -369,7 +393,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         final SweetAlertDialog proDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         proDialog.getProgressHelper().setBarColor(Color.parseColor("#305031"));
         proDialog.setTitleText("Loading Data");
@@ -384,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
                 expandableListView.setAdapter(expandableListAdapter);
                 proDialog.dismiss();
 
-                if (dbhelper.count_tablemd().equals("0") && dbhelper.count_datadownloadGS().equals("0")) {
+                if (dbhelper.count_tablemd().equals("0")) {
                     final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
                     warningExitDlg.setContentText("Download data dahulu!");
                     warningExitDlg.setConfirmText("YA");
@@ -493,10 +516,8 @@ public class MainActivity extends AppCompatActivity {
                     });
                 } else {
                     dlgInsertPasswordQR.dismiss();
-                    new SweetAlertDialog(MainActivity.this,
-                            SweetAlertDialog.ERROR_TYPE)
-                            .setContentText("Password Salah")
-                            .setConfirmText("OK").show();
+                    new SweetAlertDialog(MainActivity.this, SweetAlertDialog.ERROR_TYPE)
+                            .setContentText("Password Salah").setConfirmText("OK").show();
                 }
             }
         });
@@ -535,7 +556,7 @@ public class MainActivity extends AppCompatActivity {
         listMenu.put(listGroupMenu.get(3), MENUINVENTORY);
 
         listGroupMenu.add("LAPORAN");
-        List<String> REPORT = Arrays.asList("LAPORAN");
+        List<String> REPORT = Arrays.asList("RIWAYAT PEKERJAAN", "LAPORAN PEKERJAAN");
         listMenu.put(listGroupMenu.get(4), REPORT);
 
         listGroupMenu.add("UPLOAD & DOWNLOAD");
@@ -624,7 +645,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void generate_vehiclemenu() {
-        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_vehiclemenu.php";
+        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_vehiclemenu.php?rolecode=" + dbhelper.get_tbl_username(2);
         JsonObjectRequest jsonRequest = new JsonObjectRequest
                 (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -694,8 +715,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==1) {
-            if (dbhelper.count_tablemd().equals("0") && dbhelper.count_datadownloadGS().equals("0")) {
+        if (requestCode == 1 ) {
+            if (dbhelper.count_tablemd().equals("0")) {
                 final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
                 warningExitDlg.setContentText("Download data dahulu!");
                 warningExitDlg.setConfirmText("YA");
@@ -708,9 +729,23 @@ public class MainActivity extends AppCompatActivity {
                 });
                 warningExitDlg.show();
             }
-
         }
 
+        if (requestCode == 2) {
+            loadlvinfohome(todayDate);
+            loadLvHistoryCarLog(todayDate);
+            loadLvHistoryApel(todayDate);
+        }
+
+        if (requestCode == 3) {
+            loadlvinfohome(todayDate);
+            loadLvHistoryCarLog(todayDate);
+        }
+
+        if (requestCode == 4) {
+            loadlvinfohome(todayDate);
+            loadLvHistoryApel(todayDate);
+        }
     }
 
     @Override

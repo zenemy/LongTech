@@ -192,7 +192,7 @@
                             android:inputType="numberDecimal"
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
+                            android:paddingEnd="12dp"
                             android:paddingBottom="4dp"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
@@ -224,7 +224,6 @@
                         android:layout_gravity="center"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_menu_camera"
-                        app:tint="#555555"
                         android:scaleType="fitXY" />
                 </LinearLayout>
 
@@ -238,6 +237,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
                 android:hint="Catatan Inspeksi (Optional)"
                 app:endIconMode="clear_text">
 

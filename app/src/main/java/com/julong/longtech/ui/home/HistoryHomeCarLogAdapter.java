@@ -1,4 +1,4 @@
-package com.julong.longtech.menureport;
+package com.julong.longtech.ui.home;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,16 +15,16 @@ import com.julong.longtech.R;
 
 import java.util.List;
 
-public class HistoryCarlogAdapter extends ArrayAdapter<ListHistoryCarLog> {
+public class HistoryHomeCarLogAdapter extends ArrayAdapter<ListHistoryHomeCarLog> {
 
     //storing all the names in the list
-    private List<ListHistoryCarLog> listHistoryCarLogs;
+    private List<ListHistoryHomeCarLog> listHistoryCarLogs;
     DatabaseHelper dbhelper;
 
     private Context context;
 
     //constructor
-    public HistoryCarlogAdapter(Context context, int resource, List<ListHistoryCarLog> listHistoryCarLogs) {
+    public HistoryHomeCarLogAdapter(Context context, int resource, List<ListHistoryHomeCarLog> listHistoryCarLogs) {
         super(context, resource, listHistoryCarLogs);
         this.context = context;
         this.listHistoryCarLogs = listHistoryCarLogs;
@@ -37,16 +37,16 @@ public class HistoryCarlogAdapter extends ArrayAdapter<ListHistoryCarLog> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         //getting listview itmes
-        final View listViewItem = inflater.inflate(R.layout.listview_historycarlog, null, true);
-        final TextView tvNoDoc = (TextView) listViewItem.findViewById(R.id.tvNodocHistoryCarLog);
-        final TextView tvTglHistory = (TextView) listViewItem.findViewById(R.id.tvHistoryDateCarLog);
-        final TextView tvUnitCarLog = (TextView) listViewItem.findViewById(R.id.tvHistoryVehicleCarLog);
-        final TextView tvKmCarLog = (TextView) listViewItem.findViewById(R.id.tvHistoryKMHMCarLog);
-        final TextView tvLoadType = (TextView) listViewItem.findViewById(R.id.tvHistoryMuatanCarLog);
-        final TextView tvHasilHistory = (TextView) listViewItem.findViewById(R.id.tvHasilHistoryCarLog);
-        final TextView tvSatuanHasil = (TextView) listViewItem.findViewById(R.id.tvSatuanHistoryCarLog);
-        final ImageView imgUploaded = (ImageView) listViewItem.findViewById(R.id.imgUploadHistoryCarLog);
-        final ListHistoryCarLog historyCarLog = listHistoryCarLogs.get(position);
+        final View listViewItem = inflater.inflate(R.layout.fragment_carloghistory, null, true);
+        final TextView tvNoDoc = (TextView) listViewItem.findViewById(R.id.tvNodocHistoryHomeCarLog);
+        final TextView tvTglHistory = (TextView) listViewItem.findViewById(R.id.tvHistoryHomeDateCarLog);
+        final TextView tvUnitCarLog = (TextView) listViewItem.findViewById(R.id.tvHistoryHomeVehicleCarLog);
+        final TextView tvKmCarLog = (TextView) listViewItem.findViewById(R.id.tvHistoryHomeKMHMCarLog);
+        final TextView tvLoadType = (TextView) listViewItem.findViewById(R.id.tvHistoryHomeMuatanCarLog);
+        final TextView tvHasilHistory = (TextView) listViewItem.findViewById(R.id.tvHasilHistoryHomeCarLog);
+        final TextView tvSatuanHasil = (TextView) listViewItem.findViewById(R.id.tvSatuanHistoryHomeCarLog);
+        final ImageView imgUploaded = (ImageView) listViewItem.findViewById(R.id.imgUploadHistoryHomeCarLog);
+        final ListHistoryHomeCarLog historyCarLog = listHistoryCarLogs.get(position);
 
         tvNoDoc.setText(historyCarLog.getDocumentNumber());
         tvTglHistory.setText(historyCarLog.getWaktuAwal() + " — " + historyCarLog.getWaktuAkhir());

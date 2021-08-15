@@ -1,6 +1,6 @@
-package com.julong.longtech.menureport;
+package com.julong.longtech.ui.home;
 
-public class ListHistoryApel {
+public class ListHistoryHomeApel {
 
     private String documentNumber;
     private String tglApel;
@@ -12,9 +12,9 @@ public class ListHistoryApel {
     private byte[] fotoApel;
     private int isUploaded;
 
-    public ListHistoryApel(String documentNumber, String tglApel, String waktuApel, String employeeName,
-                           String employeePosition, String kehadiranEmp, String metodeAbsen,
-                           byte[] fotoApel, int isUploaded) {
+    public ListHistoryHomeApel(String documentNumber, String tglApel, String waktuApel, String employeeName,
+                           String employeePosition, String kehadiranEmp, String metodeAbsen, byte[] fotoApel,
+                            int isUploaded) {
 
         this.documentNumber = documentNumber;
         this.tglApel = tglApel;

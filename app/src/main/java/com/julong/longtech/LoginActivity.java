@@ -25,6 +25,7 @@ import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -184,8 +185,6 @@ public class LoginActivity extends AppCompatActivity {
 
         //Setup Profile System======================================================================
         try {
-            namasystem = dbhelper.get_companyinfo(3);
-            tvnamasystem.setText(namasystem);
             bitmaplogosystem = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
                     0, dbhelper.get_companyimg(0).length);
             imglogo.setImageBitmap(bitmaplogosystem);
@@ -248,16 +247,6 @@ public class LoginActivity extends AppCompatActivity {
                 tvKeteranganBahasa.setText("CN");
             }
         }
-
-        //Event OnClick untuk Test Menu=============================================================
-        imglogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.v_dlg_title = "TEST DIALOG";
-                DialogHelper.v_dlg_btn1 = "OK";
-                dialogHelper.showDialogInfo();
-            }
-        });
 
         //Event OnClick Tampilkan User Profile======================================================
         imgphoto.setOnClickListener(new View.OnClickListener() {
@@ -333,23 +322,15 @@ public class LoginActivity extends AppCompatActivity {
         dialoginsertpassword.setContentView(R.layout.dialog_insertpassword);
         dialoginsertpassword.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowInsertPassword = dialoginsertpassword.getWindow();
-        windowInsertPassword.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
-        TextInputLayout layoutDlgInsertPassword = (TextInputLayout) dialoginsertpassword
-                .findViewById(R.id.layoutDlgInsertPassword);
-        TextInputLayout layoutDlgConfirmPassword = (TextInputLayout) dialoginsertpassword
-                .findViewById(R.id.layoutDlgConfirmPassword);
-        TextInputLayout layoutDlgRegistKey = (TextInputLayout) dialoginsertpassword
-                .findViewById(R.id.layoutDlgRegistKey);
-        EditText etDlgInsertPassword = (EditText) dialoginsertpassword
-                .findViewById(R.id.etDlgInsertPassword);
-        EditText etDlgConfirmPassword = (EditText) dialoginsertpassword
-                .findViewById(R.id.etDlgConfirmPassword);
+        windowInsertPassword.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        TextInputLayout layoutDlgInsertPassword = (TextInputLayout) dialoginsertpassword.findViewById(R.id.layoutDlgInsertPassword);
+        TextInputLayout layoutDlgConfirmPassword = (TextInputLayout) dialoginsertpassword.findViewById(R.id.layoutDlgConfirmPassword);
+        TextInputLayout layoutDlgRegistKey = (TextInputLayout) dialoginsertpassword.findViewById(R.id.layoutDlgRegistKey);
+        EditText etDlgInsertPassword = (EditText) dialoginsertpassword.findViewById(R.id.etDlgInsertPassword);
+        EditText etDlgConfirmPassword = (EditText) dialoginsertpassword.findViewById(R.id.etDlgConfirmPassword);
         EditText etDlgRegistKey = (EditText) dialoginsertpassword.findViewById(R.id.etDlgRegistKey);
-        Button btnSubmitDlgPassword = (Button) dialoginsertpassword
-                .findViewById(R.id.btnSubmitDlgChangePassword);
-        Button btnBackDlgPassword = (Button) dialoginsertpassword
-                .findViewById(R.id.btnBackDlgChangePassword);
+        Button btnSubmitDlgPassword = (Button) dialoginsertpassword.findViewById(R.id.btnSubmitDlgChangePassword);
+        Button btnBackDlgPassword = (Button) dialoginsertpassword.findViewById(R.id.btnBackDlgChangePassword);
 
         btnBackDlgPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,7 +343,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         if (TextUtils.isEmpty(et_username.getText().toString().trim())) {
-            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
+            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Masukkan User ID").setConfirmText("OK").show();
         } else if (TextUtils.isEmpty(et_password.getText().toString().trim())
                 && (et_username.getText().toString().equals(dbhelper.get_tbl_username(0)) ||
@@ -370,14 +351,10 @@ public class LoginActivity extends AppCompatActivity {
                         && et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
                 TextUtils.isEmpty(et_password.getText().toString().trim())
                         && et_username.getText().toString().equals(dbhelper.get_tbl_username(8)))) {
-            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.ERROR_TYPE)
+            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Masukkan Password").setConfirmText("OK").show();
-        } else if (TextUtils.isEmpty(et_password.getText().toString().trim())
-                && (!et_username.getText().toString().equals(dbhelper.get_tbl_username(0)) ||
-                TextUtils.isEmpty(et_password.getText().toString().trim())
-                        && !et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
-                TextUtils.isEmpty(et_password.getText().toString().trim())
-                        && !et_username.getText().toString().equals(dbhelper.get_tbl_username(8)))) {
+        } else if (TextUtils.isEmpty(et_password.getText().toString().trim()) && !et_username.getText().toString().equals(dbhelper.get_tbl_username(1)) ||
+                TextUtils.isEmpty(et_password.getText().toString().trim()) && !et_username.getText().toString().equals(dbhelper.get_tbl_username(8))) {
             pDialog.show();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -393,16 +370,13 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject jsonPost = new JSONObject(response.toString());
                                 checkuser = jsonPost.getString("LOGIN");
                                 if (checkuser.equals("INACTIVEUSER")) {
-                                    tvDlgInfoTitle.setText("User ID tidak aktif, silahkan " +
-                                            "hubungi HRD dan silahkan ulangi.");
+                                    tvDlgInfoTitle.setText("User ID tidak aktif, silahkan hubungi HRD dan silahkan ulangi.");
                                     dbhelper.delete_data_username();
                                     et_username.setText(null);
                                     et_password.setText(null);
-                                    imgphoto.setBackground(ContextCompat.getDrawable(
-                                            LoginActivity.this, R.drawable.border_dialog));
-                                    imgphoto.setImageDrawable(ContextCompat.getDrawable(
-                                            LoginActivity.this, R.drawable.username));
-                                    pDialog.dismissWithAnimation();
+                                    imgphoto.setBackground(ContextCompat.getDrawable(LoginActivity.this, R.drawable.border_dialog));
+                                    imgphoto.setImageDrawable(ContextCompat.getDrawable(LoginActivity.this, R.drawable.username));
+                                    pDialog.dismiss();
                                     dialoginfo.show();
                                     btnDialogInfo.setOnClickListener(v13 -> dialoginfo.dismiss());
                                 } else if (checkuser.equals("CHANGEPASSWORD")) {
@@ -411,16 +385,12 @@ public class LoginActivity extends AppCompatActivity {
                                     btnSubmitDlgPassword.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if (TextUtils.isEmpty(etDlgInsertPassword
-                                                    .getText().toString().trim())) {
-                                                layoutDlgInsertPassword.setError(
-                                                        "Input Password Pribadi");
+                                            if (TextUtils.isEmpty(etDlgInsertPassword.getText().toString().trim())) {
+                                                layoutDlgInsertPassword.setError("Input Password Pribadi");
                                                 layoutDlgConfirmPassword.setError(null);
                                                 layoutDlgRegistKey.setError(null);
-                                            } else if (TextUtils.isEmpty(etDlgConfirmPassword
-                                                    .getText().toString().trim())) {
-                                                layoutDlgConfirmPassword.setError(
-                                                        "Masukkan Kembali Password Pribadi");
+                                            } else if (TextUtils.isEmpty(etDlgConfirmPassword.getText().toString().trim())) {
+                                                layoutDlgConfirmPassword.setError("Masukkan Kembali Password Pribadi");
                                                 layoutDlgInsertPassword.setError(null);
                                                 layoutDlgRegistKey.setError(null);
                                             } else if (TextUtils.isEmpty(etDlgRegistKey
@@ -429,52 +399,41 @@ public class LoginActivity extends AppCompatActivity {
                                                         "Masukkan Kunci Registrasi");
                                                 layoutDlgInsertPassword.setError(null);
                                                 layoutDlgConfirmPassword.setError(null);
-                                            } else if (!etDlgInsertPassword.getText().toString()
-                                                    .equals(etDlgConfirmPassword.getText()
-                                                            .toString())) {
-                                                layoutDlgInsertPassword.setError(
-                                                        "Password does not match");
-                                                layoutDlgConfirmPassword.setError(
-                                                        "Password does not match");
+                                            } else if (!etDlgInsertPassword.getText().toString().equals(etDlgConfirmPassword.getText().toString())) {
+                                                layoutDlgInsertPassword.setError("Password does not match");
+                                                layoutDlgConfirmPassword.setError("Password does not match");
                                                 layoutDlgRegistKey.setError(null);
                                             } else {
                                                 layoutDlgInsertPassword.setError(null);
                                                 layoutDlgConfirmPassword.setError(null);
                                                 layoutDlgRegistKey.setError(null);
-                                                RequestQueue requestQueueChangePassword =
-                                                        Volley.newRequestQueue(
-                                                                getApplicationContext());
+                                                RequestQueue requestQueueChangePassword = Volley.newRequestQueue(getApplicationContext());
                                                 url_data = url_api + "dlgchangepassword.php";
-                                                StringRequest stringRequest = new StringRequest(
-                                                        Request.Method.POST, url_data,
-                                                        new Response.Listener<String>() {
-                                                    @Override
-                                                    public void onResponse(String response) {
-                                                        try {
-                                                            JSONObject jsonPostChangePassword =
-                                                                    new JSONObject(response.toString());
-                                                            if (jsonPostChangePassword
-                                                                    .getString("CHANGEPASSWORD")
-                                                                    .equals("SUCCESS")) {
-                                                                et_password.setText(null);
-                                                                dialoginsertpassword.dismiss();
-                                                                new SweetAlertDialog(LoginActivity
-                                                                        .this, SweetAlertDialog
-                                                                        .SUCCESS_TYPE)
-                                                                        .setTitleText(
-                                                                                "Berhasil Merubah Password")
-                                                                        .setContentText(
-                                                                                "Silahkan Login Kembali")
-                                                                        .setConfirmText("OK").show();
-                                                            } else {
-                                                                layoutDlgRegistKey.setError(
-                                                                        "Kunci Registrasi tidak sesuai");
-                                                            }
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
+                                                StringRequest stringRequest = new StringRequest(Request.Method.POST, url_data, responsePW -> {
+                                                    try {
+                                                        JSONObject jsonPostChangePassword =
+                                                                new JSONObject(responsePW.toString());
+                                                        if (jsonPostChangePassword
+                                                                .getString("CHANGEPASSWORD")
+                                                                .equals("SUCCESS")) {
+                                                            et_password.setText(null);
+                                                            dialoginsertpassword.dismiss();
+                                                            new SweetAlertDialog(LoginActivity
+                                                                    .this, SweetAlertDialog
+                                                                    .SUCCESS_TYPE)
+                                                                    .setTitleText(
+                                                                            "Berhasil Merubah Password")
+                                                                    .setContentText(
+                                                                            "Silahkan Login Kembali")
+                                                                    .setConfirmText("OK").show();
+                                                        } else {
+                                                            layoutDlgRegistKey.setError(
+                                                                    "Kunci Registrasi tidak sesuai");
                                                         }
-                                                        requestQueueChangePassword.stop();
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
                                                     }
+                                                    requestQueueChangePassword.stop();
                                                 }, new Response.ErrorListener() {
                                                     @Override
                                                     public void onErrorResponse(VolleyError error) {
@@ -488,14 +447,10 @@ public class LoginActivity extends AppCompatActivity {
                                                     @Override
                                                     protected Map<String, String> getParams()
                                                             throws AuthFailureError {
-                                                        Map<String, String> params =
-                                                                new HashMap<String, String>();
-                                                        params.put("userid", et_username
-                                                                .getText().toString());
-                                                        params.put("password", etDlgConfirmPassword
-                                                                .getText().toString());
-                                                        params.put("registkey", etDlgRegistKey
-                                                                .getText().toString());
+                                                        Map<String, String> params = new HashMap<String, String>();
+                                                        params.put("userid", et_username.getText().toString());
+                                                        params.put("password", etDlgConfirmPassword.getText().toString());
+                                                        params.put("registkey", etDlgRegistKey.getText().toString());
                                                         return params;
                                                     }
                                                 };
@@ -503,8 +458,7 @@ public class LoginActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    btnBackDlgPassword.setOnClickListener(v14 ->
-                                            dialoginsertpassword.dismiss());
+                                    btnBackDlgPassword.setOnClickListener(v14 -> dialoginsertpassword.dismiss());
                                 } else if (checkuser.equals("INSERTPASSWORD")) {
                                     pDialog.dismissWithAnimation();
                                     new SweetAlertDialog(LoginActivity.this,
@@ -513,12 +467,12 @@ public class LoginActivity extends AppCompatActivity {
                                             .setConfirmText("OK").show();
                                 } else if (checkuser.equals("NOUSER")) {
                                     pDialog.dismissWithAnimation();
-                                    tvDlgInfoTitle.setText("User ID tidak terdaftar, " +
-                                            "silahkan hubungi HRD dan silahkan ulangi.");
+                                    DialogHelper.v_dlg_title = "User ID tidak terdaftar, " +
+                                            "silahkan hubungi HRD dan silahkan ulangi.";
+                                    DialogHelper.v_dlg_btn1 = "OK";
+                                    dialogHelper.showDialogInfo();
                                     et_username.setText(null);
                                     et_password.setText(null);
-                                    dialoginfo.show();
-                                    btnDialogInfo.setOnClickListener(v1 -> dialoginfo.dismiss());
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -574,29 +528,23 @@ public class LoginActivity extends AppCompatActivity {
                                         public void onClick(View v) {
                                             if (TextUtils.isEmpty(etDlgInsertPassword.getText()
                                                     .toString().trim())) {
-                                                layoutDlgInsertPassword.setError(
-                                                        "Input Password Pribadi");
+                                                layoutDlgInsertPassword.setError("Input Password Pribadi");
                                                 layoutDlgConfirmPassword.setError(null);
                                                 layoutDlgRegistKey.setError(null);
                                             } else if (TextUtils.isEmpty(etDlgConfirmPassword
                                                     .getText().toString().trim())) {
-                                                layoutDlgConfirmPassword.setError(
-                                                        "Masukkan Kembali Password Pribadi");
+                                                layoutDlgConfirmPassword.setError("Masukkan Kembali Password Pribadi");
                                                 layoutDlgInsertPassword.setError(null);
                                                 layoutDlgRegistKey.setError(null);
-                                            } else if (TextUtils.isEmpty(etDlgRegistKey.getText()
-                                                    .toString().trim())) {
-                                                layoutDlgRegistKey.setError(
-                                                        "Masukkan Kunci Registrasi");
+                                            } else if (TextUtils.isEmpty(etDlgRegistKey.getText().toString().trim())) {
+                                                layoutDlgRegistKey.setError("Masukkan Kunci Registrasi");
                                                 layoutDlgInsertPassword.setError(null);
                                                 layoutDlgConfirmPassword.setError(null);
                                             } else if (!etDlgInsertPassword.getText().toString()
                                                     .equals(etDlgConfirmPassword.getText()
                                                             .toString())) {
-                                                layoutDlgInsertPassword.setError(
-                                                        "Password does not match");
-                                                layoutDlgConfirmPassword.setError(
-                                                        "Password does not match");
+                                                layoutDlgInsertPassword.setError("Password does not match");
+                                                layoutDlgConfirmPassword.setError("Password does not match");
                                                 layoutDlgRegistKey.setError(null);
                                             } else {
                                                 layoutDlgInsertPassword.setError(null);
@@ -623,16 +571,12 @@ public class LoginActivity extends AppCompatActivity {
                                                                 dialoginsertpassword.dismiss();
                                                                 new SweetAlertDialog(
                                                                         LoginActivity.this,
-                                                                        SweetAlertDialog.SUCCESS_TYPE)
-                                                                        .setTitleText("" +
-                                                                                "Berhasil Merubah Password")
-                                                                        .setContentText(
-                                                                                "Silahkan Login Kembali")
+                                                                        SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Merubah Password")
+                                                                        .setContentText("Silahkan Login Kembali")
                                                                         .setConfirmText("OK")
                                                                         .show();
                                                             } else {
-                                                                layoutDlgRegistKey.setError(
-                                                                        "Kunci Registrasi tidak sesuai");
+                                                                layoutDlgRegistKey.setError("Kunci Registrasi tidak sesuai");
                                                             }
                                                         } catch (JSONException e) {
                                                             e.printStackTrace();
@@ -652,14 +596,10 @@ public class LoginActivity extends AppCompatActivity {
                                                     @Override
                                                     protected Map<String, String> getParams()
                                                             throws AuthFailureError {
-                                                        Map<String, String> params =
-                                                                new HashMap<String, String>();
-                                                        params.put("userid", et_username
-                                                                .getText().toString());
-                                                        params.put("password", etDlgConfirmPassword
-                                                                .getText().toString());
-                                                        params.put("registkey", etDlgRegistKey
-                                                                .getText().toString());
+                                                        Map<String, String> params = new HashMap<String, String>();
+                                                        params.put("userid", et_username.getText().toString());
+                                                        params.put("password", etDlgConfirmPassword.getText().toString());
+                                                        params.put("registkey", etDlgRegistKey.getText().toString());
                                                         return params;
                                                     }
                                                 };
@@ -670,7 +610,6 @@ public class LoginActivity extends AppCompatActivity {
                                     btnBackDlgPassword.setOnClickListener(v12 ->
                                             dialoginsertpassword.dismiss());
                                 } else if (checkuser.equals("SUCCESS")) {
-                                    dbhelper.delete_data_username();
                                     et_password.setText(null);
                                     new JsonAsyncLogin().execute(response, null, null);
 
@@ -705,11 +644,10 @@ public class LoginActivity extends AppCompatActivity {
                                 boolean checkPassword = hashPassword.CheckPassword(
                                         et_password.getText().toString(),
                                         dbhelper.get_tbl_username(4));
-                                if (checkPassword == true) {
+                                if (checkPassword) {
                                     pDialog.dismiss();
                                     et_password.setText(null);
-                                    Intent intent = new Intent(LoginActivity.this,
-                                            MainActivity.class);
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                 } else {
                                     pDialog.dismiss();
@@ -736,10 +674,20 @@ public class LoginActivity extends AppCompatActivity {
     private class JsonAsyncLogin extends AsyncTask<String, Void, Integer> {
 
         protected Integer doInBackground(String... jsonObjectsLogin) {
-
             Integer insertedResult = -1;
             try {
                 JSONObject jsonPost = new JSONObject(jsonObjectsLogin[0].toString());
+
+                if (!jsonPost.getString("EMPCODE").equals(dbhelper.get_tbl_username(8))) {
+                    dbhelper.delete_data_username();
+                    dbhelper.delete_datags();
+                    dbhelper.delete_masterdata();
+                    dbhelper.delete_alltrasanction();
+                }
+                else {
+                    dbhelper.delete_data_username();
+                }
+
                 dbhelper.insert_tblusername(
                         jsonPost.getString("USERID"),
                         jsonPost.getString("USERNAME"),
@@ -770,6 +718,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             return insertedResult;
         }
+
         @Override
         protected void onPostExecute(Integer integer) {
             try {
@@ -895,6 +844,8 @@ public class LoginActivity extends AppCompatActivity {
                                     jsonPost.getString("PICEMAIL"),
                                     jsonPost.getString("PICNOTELP"),
                                     jsonPost.getString("ADDRESS"));
+                            namasystem = dbhelper.get_companyinfo(3);
+                            tvnamasystem.setText(jsonPost.getString("SYSTEMNAME"));
                             try {
                                 bitmaplogosystem = BitmapFactory.decodeByteArray(
                                         dbhelper.get_companyimg(0), 0,
@@ -905,8 +856,6 @@ public class LoginActivity extends AppCompatActivity {
                                         dbhelper.get_companyimg(1).length);
                                 BitmapDrawable backgroundLogin = new BitmapDrawable(compressedBitmap);
                                 layoutBgLogin.setBackgroundDrawable(backgroundLogin);
-                                namasystem = dbhelper.get_companyinfo(3);
-                                tvnamasystem.setText(namasystem);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -938,6 +887,7 @@ public class LoginActivity extends AppCompatActivity {
                             "siswo@mail.com",
                             "0811",
                             "KEM Tower 3rd & 5th Floor Jalan Landasan Pacu Barat B10 Kemayoran");
+                    namasystem = dbhelper.get_companyinfo(3);
                 }
             });
             queue.add(stringRequest);
@@ -946,7 +896,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //Function Bahasa===============================================================================
     void generate_language() {
-        url_data = url_api + "dsi_language.php";
+        url_data = url_api + "fetchdata/get_language.php";
         JsonObjectRequest jsonRequest = new JsonObjectRequest
                 (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override

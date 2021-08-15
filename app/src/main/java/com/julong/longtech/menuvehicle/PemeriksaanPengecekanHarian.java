@@ -142,6 +142,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
         btnCancelP2H.setOnClickListener(v -> finish());
 
+        // Vehicle list adapter for acVehicle
         listVehicleCode = dbHelper.get_vehiclemasterdata(0);
         listVehicleName = dbHelper.get_vehiclemasterdata(1);
         adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
@@ -336,13 +337,15 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm");
 
         try {
-            if (TextUtils.isEmpty(acKendaraanP2H.getText().toString().trim())
+            if (TextUtils.isEmpty(acKendaraanP2H.getText().toString().trim()) // Checking empty fields
                     || TextUtils.isEmpty(etJamAkhirP2H.getText().toString().trim()) || byteImgP2H == null) {
                 new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
             }
-            else if (hourMinuteFormat.parse(etJamAkhirP2H.getText().toString()).compareTo(hourMinuteFormat.parse(etJamAwalP2H.getText().toString())) > 0) {
+            // Jam akhir harus lebih besar
+            else if (hourMinuteFormat.parse(etJamAwalP2H.getText().toString()).compareTo(hourMinuteFormat.parse(etJamAkhirP2H.getText().toString())) > 0) {
                 new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Jam pengecekan salah!").show();
             }
+            // Restrict user from input data other than autocompletion list
             else if (vehicleOutput.indexOf(acKendaraanP2H.getText().toString()) == -1) {
                 new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Kendaraan tidak valid!").show();
             }
@@ -415,7 +418,11 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                 }
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Menyelesaikan P2H")
-                        .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> finish()).show();
+                        .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> {
+                            Intent backIntent = new Intent();
+                            setResult(727, backIntent);
+                            finish();
+                        }).show();
             }
         } catch (Exception e) {
             e.printStackTrace();

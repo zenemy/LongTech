@@ -78,6 +78,7 @@ public class InputRincianRKH extends AppCompatActivity {
 
         btnCancelPenginputanRKH.setOnClickListener(view -> finish());
 
+        // Get data intent from RKH
         Bundle bundle = getIntent().getExtras();
         todayDateRincianRKH = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         nodocRKH = bundle.getString("nodoc");
@@ -95,7 +96,7 @@ public class InputRincianRKH extends AppCompatActivity {
 
         if (dbhelper.get_statusrkh(4).equals("0") || dbhelper.get_statusrkh(4).equals("1")) {
             layoutBtnRincianRKH.setVisibility(View.GONE);
-            btnShowInputRincianKerja.setEnabled(false);
+            btnShowInputRincianKerja.setVisibility(View.GONE);
         }
     }
 
