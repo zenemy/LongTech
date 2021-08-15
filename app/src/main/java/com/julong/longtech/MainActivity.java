@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -87,6 +88,7 @@ import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.julong.longtech.DatabaseHelper.url_api;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryApel;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryCarLog;
 import static com.julong.longtech.ui.home.HomeFragment.loadlvinfohome;
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     //==============================================================================================
     //Class / package / Helper
     DatabaseHelper dbhelper;
-    ProgressDialog pDialog;
+    SweetAlertDialog proDialog;
     Handler handler = new Handler();
 
     //Object
@@ -129,12 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
         dbhelper = new DatabaseHelper(this);
         hashPassword = new HashPassword(11);
-
-        //Generating menu based on USERROLE / USERTYPE
-        generate_hcmmenu();
-        generate_inventorymenu();
-        generate_vehiclemenu();
-        generate_workshopmenu();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -393,38 +389,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final SweetAlertDialog proDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        proDialog.getProgressHelper().setBarColor(Color.parseColor("#305031"));
-        proDialog.setTitleText("Loading Data");
-        proDialog.setCancelable(false);
-        proDialog.show();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                prepareListData();
-                expandableListAdapter = new com.julong.longtech.ExpandableListAdapter(MainActivity.this, listGroupMenu, listMenu, 1);
-                expandableListView.setAdapter(expandableListAdapter);
-                proDialog.dismiss();
-
-                if (dbhelper.count_tablemd().equals("0")) {
-                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
-                    warningExitDlg.setContentText("Download data dahulu!");
-                    warningExitDlg.setConfirmText("YA");
-                    warningExitDlg.showCancelButton(false);
-                    warningExitDlg.setCancelable(false);
-                    warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
-                        warningExitDlg.dismiss();
-                        Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
-                        startActivityForResult(intentDownload, 1);
-                    });
-                    warningExitDlg.show();
-                }
-
-                handler.removeCallbacks(this);
-            }
-        }, 2000);
-
+        generate_gs02menu();
     }
 
     public void eventShowQR(View v) {
@@ -575,141 +540,121 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void generate_hcmmenu() {
-        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_menuhcm.php";
+    private void generate_gs02menu() {
+        proDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        proDialog.setTitleText("Loading Data");
+        proDialog.setCancelable(false);
+        proDialog.show();
+
+        String url_data = url_api + "fetchdata/get_menugs02.php?rolecode=" + dbhelper.get_tbl_username(2);
         JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("DATAHCM");
+            (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    new AsyncJsonMenuGS().execute(response, null, null);
+                }
+            }, new Response.ErrorListener() {
 
-                            int i = 0;
-                            dbhelper.delete_menuGS02("HCM");
-                            while (i < jsonArray.length()) {
-                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                i++;
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
 
         Volley.newRequestQueue(this).add(jsonRequest);
     }
 
-    void generate_workshopmenu() {
-        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_workshopmenu.php";
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("DATAWORKSHOP");
-                            int i = 0;
-                            dbhelper.delete_menuGS02("WORKSHOP");
-                            while (i < jsonArray.length()) {
-                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                i++;
-                            }
+    private class AsyncJsonMenuGS extends AsyncTask<JSONObject, Void, Integer> {
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        @Override
+        protected  void onPreExecute() {
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
+            dbhelper.delete_menuGS02("HCM");
+            dbhelper.delete_menuGS02("WORKSHOP");
+            dbhelper.delete_menuGS02("VEHICLE");
+            dbhelper.delete_menuGS02("INVENTORY");
+
+        }
+
+        protected Integer doInBackground(JSONObject... jsonObjectsGS) {
+            try {
+                JSONObject responseGS = jsonObjectsGS[0];
+
+                // Generate Menu HCM
+                JSONArray jsonArrayHCM = responseGS.getJSONArray("DATAHCM");
+                int iHCM = 0;
+                while (iHCM < jsonArrayHCM.length()) {
+                    JSONObject jsonObjectHCM = jsonArrayHCM.getJSONObject(iHCM);
+                    dbhelper.insert_menuGS02(jsonObjectHCM.getString("GROUPCODE"), jsonObjectHCM.getString("GROUPPARAMDESC"), jsonObjectHCM.getString("MODULECODE"),
+                            jsonObjectHCM.getString("MODULEDESC"), jsonObjectHCM.getString("CONTROLSYSTEM"), jsonObjectHCM.getString("DOCTYPECODE"),
+                            jsonObjectHCM.getString("SUBMODULECODE"), jsonObjectHCM.getString("SUBMODULEDESC"), jsonObjectHCM.getString("SUBMODULETYPE"),
+                            jsonObjectHCM.getString("SEQ"), jsonObjectHCM.getString("MENUVIEW"), jsonObjectHCM.getString("MENUDEFAULT"));
+                    iHCM++;
+                }
+
+                // Generate Menu Workshop
+                JSONArray jsonArrayWS = responseGS.getJSONArray("DATAWORKSHOP");
+                int iWS = 0;
+                while (iWS < jsonArrayWS.length()) {
+                    JSONObject jsonObjectWS = jsonArrayWS.getJSONObject(iWS);
+                    dbhelper.insert_menuGS02(jsonObjectWS.getString("GROUPCODE"), jsonObjectWS.getString("GROUPPARAMDESC"), jsonObjectWS.getString("MODULECODE"),
+                            jsonObjectWS.getString("MODULEDESC"), jsonObjectWS.getString("CONTROLSYSTEM"), jsonObjectWS.getString("DOCTYPECODE"),
+                            jsonObjectWS.getString("SUBMODULECODE"), jsonObjectWS.getString("SUBMODULEDESC"), jsonObjectWS.getString("SUBMODULETYPE"),
+                            jsonObjectWS.getString("SEQ"), jsonObjectWS.getString("MENUVIEW"), jsonObjectWS.getString("MENUDEFAULT"));
+                    iWS++;
+                }
+
+                // Generate Menu Vehicle
+                JSONArray jsonArrayVH = responseGS.getJSONArray("DATAVEHICLE");
+                int iVH = 0;
+                while (iVH < jsonArrayVH.length()) {
+                    JSONObject jsonObjectVH = jsonArrayVH.getJSONObject(iVH);
+                    dbhelper.insert_menuGS02(jsonObjectVH.getString("GROUPCODE"), jsonObjectVH.getString("GROUPPARAMDESC"), jsonObjectVH.getString("MODULECODE"),
+                            jsonObjectVH.getString("MODULEDESC"), jsonObjectVH.getString("CONTROLSYSTEM"), jsonObjectVH.getString("DOCTYPECODE"),
+                            jsonObjectVH.getString("SUBMODULECODE"), jsonObjectVH.getString("SUBMODULEDESC"), jsonObjectVH.getString("SUBMODULETYPE"),
+                            jsonObjectVH.getString("SEQ"), jsonObjectVH.getString("MENUVIEW"), jsonObjectVH.getString("MENUDEFAULT"));
+                    iVH++;
+                }
+
+                // Generate Menu Inventory
+                JSONArray jsonArrayINV = responseGS.getJSONArray("DATAINVENTORY");
+                int iNV = 0;
+                while (iNV < jsonArrayINV.length()) {
+                    JSONObject jsonObjectINV = jsonArrayINV.getJSONObject(iNV);
+                    dbhelper.insert_menuGS02(jsonObjectINV.getString("GROUPCODE"), jsonObjectINV.getString("GROUPPARAMDESC"), jsonObjectINV.getString("MODULECODE"),
+                            jsonObjectINV.getString("MODULEDESC"), jsonObjectINV.getString("CONTROLSYSTEM"), jsonObjectINV.getString("DOCTYPECODE"),
+                            jsonObjectINV.getString("SUBMODULECODE"), jsonObjectINV.getString("SUBMODULEDESC"), jsonObjectINV.getString("SUBMODULETYPE"),
+                            jsonObjectINV.getString("SEQ"), jsonObjectINV.getString("MENUVIEW"), jsonObjectINV.getString("MENUDEFAULT"));
+                    iNV++;
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return 1;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            prepareListData();
+            expandableListAdapter = new com.julong.longtech.ExpandableListAdapter(MainActivity.this, listGroupMenu, listMenu, 1);
+            expandableListView.setAdapter(expandableListAdapter);
+            proDialog.dismiss();
+
+            if (dbhelper.count_tablemd().equals("0")) {
+                final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                warningExitDlg.setContentText("Download data dahulu!");
+                warningExitDlg.setConfirmText("YA");
+                warningExitDlg.showCancelButton(false);
+                warningExitDlg.setCancelable(false);
+                warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                    warningExitDlg.dismiss();
+                    Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
+                    startActivityForResult(intentDownload, 1);
                 });
-
-        Volley.newRequestQueue(this).add(jsonRequest);
-    }
-
-    void generate_vehiclemenu() {
-        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_vehiclemenu.php?rolecode=" + dbhelper.get_tbl_username(2);
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("DATAVEHICLE");
-                            int i = 0;
-                            dbhelper.delete_menuGS02("VEHICLE");
-                            while (i < jsonArray.length()) {
-                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                i++;
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-
-        Volley.newRequestQueue(this).add(jsonRequest);
-    }
-
-    void generate_inventorymenu() {
-        String url_data = "http://longtech.julongindonesia.com/longtech/mobilesync/fetchdata/get_inventorymenu.php";
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("DATAINVENTORY");
-                            int i = 0;
-                            dbhelper.delete_menuGS02("INVENTORY");
-                            while (i < jsonArray.length()) {
-                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                dbhelper.insert_menuGS02(jsonObject1.getString("GROUPCODE"), jsonObject1.getString("GROUPPARAMDESC"), jsonObject1.getString("MODULECODE"),
-                                        jsonObject1.getString("MODULEDESC"), jsonObject1.getString("CONTROLSYSTEM"), jsonObject1.getString("DOCTYPECODE"),
-                                        jsonObject1.getString("SUBMODULECODE"), jsonObject1.getString("SUBMODULEDESC"), jsonObject1.getString("SUBMODULETYPE"),
-                                        jsonObject1.getString("SEQ"), jsonObject1.getString("MENUVIEW"), jsonObject1.getString("MENUDEFAULT"));
-                                i++;
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-
-        Volley.newRequestQueue(this).add(jsonRequest);
+                warningExitDlg.show();
+            }
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

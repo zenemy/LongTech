@@ -176,7 +176,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void delete_datags() {
         SQLiteDatabase dbwrite = this.getWritableDatabase();
         dbwrite.execSQL("DELETE FROM gs_01");
-        dbwrite.execSQL("DELETE FROM gs_02");
         dbwrite.execSQL("DELETE FROM gs_06");
         dbwrite.execSQL("DELETE FROM gs_07");
     }

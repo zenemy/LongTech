@@ -8,6 +8,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.LoginActivity;
 import com.julong.longtech.R;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.KeyListener;
@@ -218,6 +220,9 @@ public class AdjustmentUnit extends AppCompatActivity {
                     if (inputLayoutDecimalKM.getVisibility() == View.VISIBLE) {
                         unitKm = etAdjustmentKMHM.getText().toString() + "," + etAdjustmentDecimalKMHM.getText().toString();
                     }
+                    else {
+                        unitKm = "";
+                    }
 
                     nodocAdjustment = dbHelper.get_tbl_username(0) + "/RUNVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
 
@@ -225,19 +230,21 @@ public class AdjustmentUnit extends AppCompatActivity {
                             selectedVehicle, selectedEmp, etNoteAdjustment.getText().toString(), unitKm);
 
                     new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Adjustment Unit")
-                            .setConfirmClickListener(sweetAlertDialog -> {
-                                acPilihanMenu.setText(null);
-                                etPelaksanaanTgl.setText(null);
-                                acDriver.setText(null);
-                                acVehicleAdjustmentUnit.setText(null);
-                                etNoteAdjustment.setText(null);
-                                codeOptionMenu = null;
-                                selectedEmp = null;
-                                selectedVehicle = null;
+                        .setConfirmClickListener(sweetAlertDialog -> {
+                            acPilihanMenu.setText(null);
+                            etPelaksanaanTgl.setText(null);
+                            acDriver.setText(null);
+                            acVehicleAdjustmentUnit.setText(null);
+                            etNoteAdjustment.setText(null);
+                            codeOptionMenu = null;
+                            selectedEmp = null;
+                            selectedVehicle = null;
 
-                                sweetAlertDialog.dismiss();
-                                finish();
-                            }).setConfirmText("OK").show();
+                            sweetAlertDialog.dismiss();
+                            Intent backIntent = new Intent();
+                            setResult(727, backIntent);
+                            finish();
+                        }).setConfirmText("OK").show();
                 }
             }
         });
