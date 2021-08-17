@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+    android:foreground="?android:attr/selectableItemBackground"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
     android:paddingBottom="8dp"
@@ -127,6 +127,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutHelper1LvRKH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp">
@@ -158,6 +159,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutHelper2LvRKH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp">

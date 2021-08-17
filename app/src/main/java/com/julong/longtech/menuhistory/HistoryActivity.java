@@ -1,4 +1,4 @@
-package com.julong.longtech.menureport;
+package com.julong.longtech.menuhistory;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -14,8 +14,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.R;
+import com.julong.longtech.menusetup.UploadData;
+import com.julong.longtech.menuvehicle.InputRincianRKH;
+import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 
 import org.w3c.dom.Text;
 
@@ -49,6 +54,7 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
 
         //getting listview itmes
         final View listViewItem = inflater.inflate(R.layout.item_lvworkinfohome, null, true);
+        final ConstraintLayout layoutLvInfo = (ConstraintLayout) listViewItem.findViewById(R.id.layoutLvInfo);
         final TextView tvWorkType = (TextView) listViewItem.findViewById(R.id.tvWorkTypeInfoHome);
         final TextView tvWorkStatus = (TextView) listViewItem.findViewById(R.id.tvWorkStatusInfoHome);
         final ImageView imgUploaded = (ImageView) listViewItem.findViewById(R.id.imgUploadInfoHome);
@@ -59,8 +65,20 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
         if (listInfo.getWorkstatus().equals("0")) {
             tvWorkStatus.setText("Pekerjaan belum diupload");
             imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
+            layoutLvInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, UploadData.class);
+                    context.startActivity(intent);
+                }
+            });
         }
         else if (listInfo.getTransactiondate().equals("") && listInfo.getWorkstatus().equals("")) {
+            tvWorkStatus.setText("Pekerjaan belum selesai");
+            tvWorkStatus.setTextColor(Color.RED);
+            imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
+        }
+        else if (listInfo.getTransactiondate().length() > 0 && listInfo.getWorkstatus().equals("")) {
             tvWorkStatus.setText("Pekerjaan belum selesai");
             tvWorkStatus.setTextColor(Color.RED);
             imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);

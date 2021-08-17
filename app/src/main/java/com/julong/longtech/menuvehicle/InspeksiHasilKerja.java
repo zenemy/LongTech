@@ -53,9 +53,8 @@ public class InspeksiHasilKerja extends AppCompatActivity {
    ImageButton imgFotoInspeksi;
    Button btnSubmitInspeksi, btnBackInspeksi;
 
-    private List<String> listNamaKebun, listKebunCode, listLokasiCode, listLokasiName,
-            listDivisiName, listDivisiCode, listKegiatanName, listKegiatanCode,
-            listKegiatanSatuanCode, listKegiatanSatuanName;
+    private List<String> listNamaKebun, listKebunCode, listLokasiInspeksi, listDivisiName,
+            listDivisiCode, listKegiatanInspeksi, listKegiatanSatuanCode, listKegiatanSatuanName;
     ArrayAdapter<String> adapterKebun, adapterDivisi, adapterLokasi, adapterKegiatan;
 
     String nodocInspeksi, selectedKebunInspeksi, selectedDivisiInspeksi, selectedLokasiInspeksi,
@@ -102,9 +101,10 @@ public class InspeksiHasilKerja extends AppCompatActivity {
 
         imgFotoInspeksi.setOnClickListener(v -> {
 
-            ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanName;
-            ArrayList<String> locOutput = (ArrayList<String>) listLokasiName;
+            ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanInspeksi;
+            ArrayList<String> locOutput = (ArrayList<String>) listLokasiInspeksi;
 
+            // Checking empty fields and restrict user from selecting other than autocompletion list
             if (TextUtils.isEmpty(acLokasiInspeksi.getText().toString().trim()) && TextUtils.isEmpty(acKegiatanInspeksi.getText().toString().trim())) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
             }
@@ -126,8 +126,8 @@ public class InspeksiHasilKerja extends AppCompatActivity {
 
             nodocInspeksi = dbHelper.get_tbl_username(0) + "/IHKVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
 
-            ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanName;
-            ArrayList<String> locOutput = (ArrayList<String>) listLokasiName;
+            ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanInspeksi;
+            ArrayList<String> locOutput = (ArrayList<String>) listLokasiInspeksi;
 
             if (TextUtils.isEmpty(acLokasiInspeksi.getText().toString().trim()) || TextUtils.isEmpty(acKegiatanInspeksi.getText().toString().trim())) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
@@ -136,9 +136,10 @@ public class InspeksiHasilKerja extends AppCompatActivity {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Data tidak valid!").show();
             }
             else {
+                getLocation();
                 dbHelper.insert_kegiataninspeksi(nodocInspeksi, selectedKebunInspeksi, selectedDivisiInspeksi,
                         selectedLokasiInspeksi, selectedKegiatanInspeksi, selectedSatuanInspeksi,
-                        etHasilInspeksi.getText().toString(), byteImgInspeksi);
+                        etHasilInspeksi.getText().toString(), latInspeksi, longInspeksi, byteImgInspeksi);
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Inspeksi")
                         .setConfirmText("SIMPAN").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -161,11 +162,10 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         adapterKebun = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listNamaKebun);
         acKebunInspeksi.setAdapter(adapterKebun);
 
-        listKegiatanCode = dbHelper.get_activitylist(0);
-        listKegiatanName = dbHelper.get_activitylist(1);
+        listKegiatanInspeksi = dbHelper.get_activitylist(1);
         listKegiatanSatuanCode = dbHelper.get_activitylist(3);
         listKegiatanSatuanName = dbHelper.get_activitylist(4);
-        adapterKegiatan = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanName);
+        adapterKegiatan = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanInspeksi);
         acKegiatanInspeksi.setAdapter(adapterKegiatan);
 
         acKebunInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -189,9 +189,8 @@ public class InspeksiHasilKerja extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedDivisiInspeksi = listDivisiCode.get(position);
 
-                listLokasiCode = dbHelper.get_fieldcrop_filtered(selectedKebunInspeksi, selectedDivisiInspeksi, 0);
-                listLokasiName = dbHelper.get_fieldcrop_filtered(selectedKebunInspeksi, selectedDivisiInspeksi, 1);
-                adapterLokasi = new ArrayAdapter<String>(InspeksiHasilKerja.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiName);
+                listLokasiInspeksi = dbHelper.get_fieldcrop_filtered(selectedKebunInspeksi, selectedDivisiInspeksi, 1);
+                adapterLokasi = new ArrayAdapter<String>(InspeksiHasilKerja.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiInspeksi);
                 acLokasiInspeksi.setAdapter(adapterLokasi);
             }
         });
@@ -199,8 +198,8 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         acLokasiInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedLokasiInspeksi = listLokasiCode.get(position);
-                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.this.INPUT_METHOD_SERVICE);
+                selectedLokasiInspeksi = dbHelper.get_singlelokasiCode(adapterLokasi.getItem(position));
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acLokasiInspeksi.getWindowToken(), 0);
             }
         });
@@ -208,12 +207,12 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         acKegiatanInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedSatuanInspeksi = listKegiatanSatuanCode.get(position);
-                selectedKegiatanInspeksi = listKegiatanCode.get(position);
-                etSatuanKerjaInspeksi.setText(listKegiatanSatuanName.get(position));
-                inputLayoutHasilInspeksi.setSuffixText(listKegiatanSatuanCode.get(position));
+                selectedKegiatanInspeksi = dbHelper.get_singlekegiatancode(adapterKegiatan.getItem(position));
+                selectedSatuanInspeksi = dbHelper.get_singlekegiatanname(selectedKegiatanInspeksi, 1);
+                etSatuanKerjaInspeksi.setText(dbHelper.get_singlekegiatanname(selectedKegiatanInspeksi, 2));
+                inputLayoutHasilInspeksi.setSuffixText(selectedSatuanInspeksi);
 
-                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.this.INPUT_METHOD_SERVICE);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKegiatanInspeksi.getWindowToken(), 0);
             }
         });

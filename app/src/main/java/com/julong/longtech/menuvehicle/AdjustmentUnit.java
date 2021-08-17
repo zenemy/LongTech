@@ -38,7 +38,7 @@ public class AdjustmentUnit extends AppCompatActivity {
 
     String[] arrayPilihanMenu = {"Perintah Operasi Unit", "Ganti Driver / Operator", "Status Standby Unit", "Adjusment KM/HM", "Status Unit Breakdown"};
     String codeOptionMenu, selectedVehicle, selectedEmp, nodocAdjustment, dateSaveDatabase, unitKm;
-    private List<String> listVehicleName, listVehicleCode, listEmployeeName, listEmployeeCode;
+    private List<String> listVehicleAdj, listEmployeeAdj;
     ArrayAdapter<String> adapterMenuOption, adapterVehicleAdjustmentUnit, adapterEmployeeAdjustmentUnit;
     DatabaseHelper dbHelper;
     private KeyListener keyListenerAcDriver;
@@ -47,7 +47,7 @@ public class AdjustmentUnit extends AppCompatActivity {
     LinearLayout layoutKMHMVehicle;
     Button btnSubmitAdjustment, btnBackAdjustment;
     AutoCompleteTextView acPilihanMenu, acVehicleAdjustmentUnit, acDriver;
-    EditText todayDateAdjustmentUnit, etPelaksanaanTgl, etNoteAdjustment, etAdjustmentKMHM, etAdjustmentDecimalKMHM;
+    EditText etPelaksanaanTgl, etNoteAdjustment, etAdjustmentKMHM, etAdjustmentDecimalKMHM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,6 @@ public class AdjustmentUnit extends AppCompatActivity {
 
         //Declare design ID
         acPilihanMenu = findViewById(R.id.acMenuOptionAdjustmentUnit);
-        todayDateAdjustmentUnit = findViewById(R.id.todayDateAdjustmentUnit);
         acVehicleAdjustmentUnit = findViewById(R.id.acKendaraanKerjaGantiDriver);
         layoutKMHMVehicle = findViewById(R.id.layoutKMHMVehicle);
         inputLayoutDecimalKM = findViewById(R.id.inputLayoutAdjustmentDecimalKM);
@@ -71,13 +70,11 @@ public class AdjustmentUnit extends AppCompatActivity {
         etAdjustmentDecimalKMHM = findViewById(R.id.etAdjustmentDecimalKMHM);
         keyListenerAcDriver = acDriver.getKeyListener();
 
-        todayDateAdjustmentUnit.setText(new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date()));
         adapterMenuOption = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, arrayPilihanMenu);
         acPilihanMenu.setAdapter(adapterMenuOption);
 
-        listVehicleCode = dbHelper.get_vehiclemasterdata(0);
-        listVehicleName = dbHelper.get_vehiclemasterdata(1);
-        adapterVehicleAdjustmentUnit = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
+        listVehicleAdj = dbHelper.get_vehiclemasterdata();
+        adapterVehicleAdjustmentUnit = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleAdj);
         acVehicleAdjustmentUnit.setAdapter(adapterVehicleAdjustmentUnit);
 
         // Select work date
@@ -114,18 +111,16 @@ public class AdjustmentUnit extends AppCompatActivity {
                 if (selection.equals("Ganti Driver / Operator")) {
                     codeOptionMenu = "CHANGE";
                     layoutKMHMVehicle.setVisibility(View.GONE);
-                    listEmployeeCode = dbHelper.get_employee(0);
-                    listEmployeeName = dbHelper.get_employee(1);
-                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeName);
+                    listEmployeeAdj = dbHelper.get_employee();
+                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
 //                    acDriver.setKeyListener(keyListenerAcDriver);
                 }
                 else if (selection.equals("Perintah Operasi Unit")) {
                     codeOptionMenu = "RUN";
                     layoutKMHMVehicle.setVisibility(View.GONE);
-                    listEmployeeCode = dbHelper.get_employee(0);
-                    listEmployeeName = dbHelper.get_employee(1);
-                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeName);
+                    listEmployeeAdj = dbHelper.get_employee();
+                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
 //                    acDriver.setKeyListener(keyListenerAcDriver);
 //                    acDriver.setKeyListener(null);
@@ -135,9 +130,8 @@ public class AdjustmentUnit extends AppCompatActivity {
                 else if (selection.equals("Adjusment KM/HM")) {
                     codeOptionMenu = "KM/HM";
                     layoutKMHMVehicle.setVisibility(View.VISIBLE);
-                    listEmployeeCode = dbHelper.get_employee(0);
-                    listEmployeeName = dbHelper.get_employee(1);
-                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeName);
+                    listEmployeeAdj = dbHelper.get_employee();
+                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
 //                    acDriver.setKeyListener(keyListenerAcDriver);
 //                    acDriver.setKeyListener(null);
@@ -147,9 +141,8 @@ public class AdjustmentUnit extends AppCompatActivity {
                 else if (selection.equals("Status Unit Breakdown")) {
                     codeOptionMenu = "BREAKDOWN";
                     layoutKMHMVehicle.setVisibility(View.GONE);
-                    listEmployeeCode = dbHelper.get_employee(0);
-                    listEmployeeName = dbHelper.get_employee(1);
-                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeName);
+                    listEmployeeAdj = dbHelper.get_employee();
+                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
 //                    acDriver.setKeyListener(keyListenerAcDriver);
 //                    acDriver.setKeyListener(null);
@@ -159,9 +152,8 @@ public class AdjustmentUnit extends AppCompatActivity {
                 else {
                     codeOptionMenu = "STANDBY";
                     layoutKMHMVehicle.setVisibility(View.GONE);
-                    listEmployeeCode = dbHelper.get_employee(0);
-                    listEmployeeName = dbHelper.get_employee(1);
-                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeName);
+                    listEmployeeAdj = dbHelper.get_employee();
+                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
 //                    acDriver.setKeyListener(keyListenerAcDriver);
 //                    acDriver.setKeyListener(null);
@@ -174,14 +166,14 @@ public class AdjustmentUnit extends AppCompatActivity {
         acVehicleAdjustmentUnit.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedVehicle = listVehicleCode.get(position);
+                selectedVehicle = dbHelper.get_vehiclecodeonly((String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(AdjustmentUnit.this.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acVehicleAdjustmentUnit.getWindowToken(), 0);
             }
         });
 
         acDriver.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedEmp = listEmployeeCode.get(position);
+            selectedEmp = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
             InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(AdjustmentUnit.this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acDriver.getWindowToken(), 0);
         });
@@ -192,8 +184,8 @@ public class AdjustmentUnit extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleName;
-                ArrayList<String> driverOutput = (ArrayList<String>) listEmployeeName;
+                ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleAdj;
+                ArrayList<String> driverOutput = (ArrayList<String>) listEmployeeAdj;
 
                 if (codeOptionMenu == null) {
                     final SweetAlertDialog dlgAlert = new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE);

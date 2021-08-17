@@ -2,7 +2,6 @@ package com.julong.longtech.menuvehicle;
 
 public class ListParamRincianRKH {
 
-    private String jenisMuatan;
     private String satuanMuatan;
     private String lokasi;
     private String kegiatan;
@@ -10,9 +9,9 @@ public class ListParamRincianRKH {
     private String kilometer;
     private String targetKerja;
 
-    public ListParamRincianRKH(String jenisMuatan, String satuanMuatan, String lokasi, String kegiatan,
+    public ListParamRincianRKH(String satuanMuatan, String lokasi, String kegiatan,
                                String waktu, String kilometer, String targetKerja) {
-        this.jenisMuatan = jenisMuatan;
+
         this.satuanMuatan = satuanMuatan;
         this.lokasi = lokasi;
         this.kegiatan = kegiatan;
@@ -21,9 +20,6 @@ public class ListParamRincianRKH {
         this.targetKerja = targetKerja;
     }
 
-    public String getJenisMuatan() {
-        return jenisMuatan;
-    }
     public String getSatuanMuatan() {
         return satuanMuatan;
     }

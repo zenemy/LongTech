@@ -9,6 +9,7 @@ import com.julong.longtech.DialogHelper;
 import com.julong.longtech.GPSTracker;
 import com.julong.longtech.R;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
@@ -48,13 +49,12 @@ public class VerifikasiGIS extends AppCompatActivity {
     AdapterKoordinatGIS adapterKoordinatGIS;
     ArrayAdapter<String> adapterInterval;
 
-    private List<String> listNamaKebunGIS, listKebunCodeGIS, listLokasiCodeGIS, listLokasiNameGIS, listDivisiNameGIS,
-            listDivisiCodeGIS, listKegiatanName, listKegiatanCode, listKegiatanSatuanCode, listKegiatanSatuanName;
+    private List<String> listNamaKebunGIS, listKebunCodeGIS, listLokasiGIS, listDivisiNameGIS,
+            listDivisiCodeGIS, listKegiatanGIS;
     ArrayAdapter<String> adapterKebunGIS, adapterDivisiGIS, adapterLokasiGIS, adapterKegiatanGIS;
 
     private boolean isRunning;
-    String selectedKebunGIS, selectedDivisiGIS, selectedLokasiGIS, selectedKegiatanGIS,
-            selectedSatuanKegiatan, latGIS, longGIS;
+    String selectedKebunGIS, selectedDivisiGIS, selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan, latGIS, longGIS;
     public static String nodocVerifikasiGIS;
 
     DatabaseHelper dbhelper;
@@ -93,8 +93,8 @@ public class VerifikasiGIS extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getLocation();
-                ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanName;
-                ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiNameGIS;
+                ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanGIS;
+                ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiGIS;
 
                 if (dbhelper.get_statusverifikasigis(0).equals("0")) {
                     if (lokasiOutput.indexOf(acLokasiGIS.getText().toString()) == -1
@@ -123,8 +123,8 @@ public class VerifikasiGIS extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanName;
-                ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiNameGIS;
+                ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanGIS;
+                ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiGIS;
 
                 if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
                         || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())
@@ -237,11 +237,8 @@ public class VerifikasiGIS extends AppCompatActivity {
         adapterInterval = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayIntervalOption);
         acIntervalGIS.setAdapter(adapterInterval);
 
-        listKegiatanCode = dbhelper.get_activitylist(0);
-        listKegiatanName = dbhelper.get_activitylist(1);
-        listKegiatanSatuanCode = dbhelper.get_activitylist(3);
-        listKegiatanSatuanName = dbhelper.get_activitylist(4);
-        adapterKegiatanGIS = new ArrayAdapter<String>(VerifikasiGIS.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanName);
+        listKegiatanGIS = dbhelper.get_activitylist(1);
+        adapterKegiatanGIS = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanGIS);
         acKegiatanGIS.setAdapter(adapterKegiatanGIS);
 
         acKebunGIS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -264,9 +261,8 @@ public class VerifikasiGIS extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedDivisiGIS = listDivisiCodeGIS.get(position);
 
-                listLokasiCodeGIS = dbhelper.get_fieldcrop_filtered(selectedKebunGIS, selectedDivisiGIS, 0);
-                listLokasiNameGIS = dbhelper.get_fieldcrop_filtered(selectedKebunGIS, selectedDivisiGIS, 1);
-                adapterLokasiGIS = new ArrayAdapter<String>(VerifikasiGIS.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiNameGIS);
+                listLokasiGIS = dbhelper.get_fieldcrop_filtered(selectedKebunGIS, selectedDivisiGIS, 1);
+                adapterLokasiGIS = new ArrayAdapter<String>(VerifikasiGIS.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiGIS);
                 acLokasiGIS.setAdapter(adapterLokasiGIS);
             }
         });
@@ -274,8 +270,8 @@ public class VerifikasiGIS extends AppCompatActivity {
         acLokasiGIS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedLokasiGIS = listLokasiCodeGIS.get(position);
-                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.this.INPUT_METHOD_SERVICE);
+                selectedLokasiGIS = dbhelper.get_singlelokasiCode(adapterLokasiGIS.getItem(position));
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acLokasiGIS.getWindowToken(), 0);
             }
         });
@@ -283,15 +279,15 @@ public class VerifikasiGIS extends AppCompatActivity {
         acKegiatanGIS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedSatuanKegiatan = listKegiatanSatuanCode.get(position);
-                selectedKegiatanGIS = listKegiatanCode.get(position);
-                inputLayoutHasilGIS.setEnabled(true);
-                etSatuanKerjaGIS.setText(listKegiatanSatuanName.get(position));
+                selectedKegiatanGIS = dbhelper.get_singlekegiatancode(adapterKegiatanGIS.getItem(position));
+                selectedSatuanKegiatan = dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 1);
+                etSatuanKerjaGIS.setText(dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 2));
                 inputLayoutHasilGIS.setSuffixText(selectedSatuanKegiatan);
 
+                inputLayoutHasilGIS.setEnabled(true);
                 btnTagLocation.setVisibility(View.VISIBLE);
 
-                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.this.INPUT_METHOD_SERVICE);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKegiatanGIS.getWindowToken(), 0);
             }
         });
@@ -305,7 +301,7 @@ public class VerifikasiGIS extends AppCompatActivity {
             }
         });
 
-        btnBackGIS.setOnClickListener(view -> finish());
+        btnBackGIS.setOnClickListener(view -> onBackPressed());
 
         // if the verification still on processs
         if (dbhelper.get_statusverifikasigis(0).equals("1") && dbhelper.get_statusverifikasigis(8).equals("")) {
@@ -327,7 +323,7 @@ public class VerifikasiGIS extends AppCompatActivity {
             acKebunGIS.setText(dbhelper.get_singlekebun(selectedKebunGIS));
             acDivisiGIS.setText(dbhelper.get_singledivisi(selectedDivisiGIS));
             acLokasiGIS.setText(dbhelper.get_singlelokasi(selectedLokasiGIS));
-            acKegiatanGIS.setText(dbhelper.get_singlekegiatan(selectedKegiatanGIS));
+            acKegiatanGIS.setText(dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 0));
             etSatuanKerjaGIS.setText(selectedSatuanKegiatan);
             etHasilVerifikasi.setText(dbhelper.get_statusverifikasigis(7));
             inputLayoutHasilGIS.setEnabled(true);
@@ -342,11 +338,11 @@ public class VerifikasiGIS extends AppCompatActivity {
         if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
                 || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())
                 || TextUtils.isEmpty(etHasilVerifikasi.getText().toString().trim())) {
-            new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.ERROR_TYPE)
+            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Lengkapi Data!").show();
         }
         else if (isRunning) {
-            new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.ERROR_TYPE)
+            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Hentikan location tagging!").show();
         }
         else {
@@ -372,10 +368,17 @@ public class VerifikasiGIS extends AppCompatActivity {
     }
 
     private void getLocation() {
-        GPSTracker gps = new GPSTracker(VerifikasiGIS.this);
+        GPSTracker gps = new GPSTracker(this);
         double latitude = gps.getLatitude();
         double longitude = gps.getLongitude();
         latGIS = String.valueOf(latitude);
         longGIS = String.valueOf(longitude);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(727, backIntent);
+        finish();
     }
 }

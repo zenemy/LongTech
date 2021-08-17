@@ -2,6 +2,11 @@ package com.julong.longtech.menuvehicle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.CompositeDateValidator;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.LoginActivity;
@@ -30,13 +35,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -45,8 +54,8 @@ public class RencanaKerjaHarian extends AppCompatActivity {
     public static String nodocRKH;
     String[] arrayMenuShift = {"Shift 1", "Shift 2", "Shift 3"};
     ArrayAdapter<String> adapterMenuShift;
-    private List<String> listVehicleCodeDlg, listVehicleNameDlg, listEmployeeNameDlg, listDriverCodeDlg, listHelper1Dlg, listHelper2Dlg;
-    ArrayAdapter<String> adapterVehicleDlgRKH, adapterEmployeeDlgRKH;
+    private List<String> listVehicleDlg, listEmployeeDlg;
+    ArrayAdapter<String> adapterVehicleDlgRkh, adapterEmployeeDlgRKH;
 
     LinearLayout layoutBtnRKH;
     FloatingActionButton btnAddRKH;
@@ -57,6 +66,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
     private List<ListParamRKH> listParamRKH;
     AdapterRKH adapterRKH;
     String selectedHelper1, selectedHelper2, selectedDriver, selectedVehicle;
+    public static String selectedDateRKH;
 
     Dialog dlgAddUnit;
     DatabaseHelper dbHelper;
@@ -77,16 +87,49 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         btnSubmitRKH = findViewById(R.id.btnSubmitRKH);
         etPelaksanaanTglRKH = findViewById(R.id.etPelaksanaanTglRKH);
 
+        nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
+
         // Set tanggal pelaksanaan
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         Date tomorrow = calendar.getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
         String tomorrowAsString = dateFormat.format(tomorrow);
-        nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
         etPelaksanaanTglRKH.setText(tomorrowAsString);
+        selectedDateRKH = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        btnBackRKH.setOnClickListener(v -> finish());
+        // Setting min date
+        MaterialDatePicker.Builder<Long> materialDatePickerBuilder = MaterialDatePicker.Builder.datePicker();
+        CalendarConstraints.Builder constraintsBuilderRange = new CalendarConstraints.Builder();
+        CalendarConstraints.DateValidator dateValidatorMin = DateValidatorPointForward.from(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1));
+        ArrayList<CalendarConstraints.DateValidator> listValidators = new ArrayList<>();
+        listValidators.add(dateValidatorMin);
+        CalendarConstraints.DateValidator validators = CompositeDateValidator.allOf(listValidators);
+        constraintsBuilderRange.setValidator(validators);
+        materialDatePickerBuilder.setCalendarConstraints(constraintsBuilderRange.build());
+
+        //Datepicker tgl pelaksanaan
+        MaterialDatePicker<Long> datePickerRKH = materialDatePickerBuilder.setTitleText("Select Date").build();
+
+        etPelaksanaanTglRKH.setOnClickListener(v -> datePickerRKH.show(getSupportFragmentManager(), "TGLRKH"));
+
+        datePickerRKH.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                // Get the offset from our timezone and UTC.
+                TimeZone timeZoneUTC = TimeZone.getDefault();
+                // It will be negative, so that's the -1
+                int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
+                // Create a date format, then a date object with our offset
+                SimpleDateFormat simpleFormatView = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
+                SimpleDateFormat formatSave = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+                Date date = new Date(selection + offsetFromUTC);
+                selectedDateRKH = formatSave.format(date);
+                etPelaksanaanTglRKH.setText(simpleFormatView.format(date));
+
+            }
+        });
 
         loadListViewRKH();
 
@@ -98,25 +141,27 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 SweetAlertDialog finishRkhDlg = new SweetAlertDialog(RencanaKerjaHarian.this, SweetAlertDialog.SUCCESS_TYPE);
                 finishRkhDlg.setCancelable(false);
                 finishRkhDlg.setTitleText("Berhasil Menyimpan!");
-                finishRkhDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        Intent backIntent = new Intent();
-                        setResult(727, backIntent);
-                        finish();
-                    }
-                });
+                finishRkhDlg.setConfirmClickListener(sweetAlertDialog -> onBackPressed());
+                finishRkhDlg.show();
             }
         });
 
         if (dbHelper.get_statusrkh(0).equals("1") && dbHelper.get_statusrkh(4).equals("")) {
-            etPelaksanaanTglRKH.setText(dbHelper.get_statusrkh(2));
+            try {
+                DateFormat formatShow = new SimpleDateFormat("yyyy-MM-dd");
+                Date newDate = formatShow.parse(dbHelper.get_statusrkh(2));
+                formatShow = new SimpleDateFormat("dd MMMM yyyy");
+                String dateShow = formatShow.format(newDate);
+                etPelaksanaanTglRKH.setText(dateShow);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            nodocRKH = dbHelper.get_statusrkh(1);
+            selectedDateRKH = dbHelper.get_statusrkh(2);
+            etPelaksanaanTglRKH.setOnClickListener(view -> Toast.makeText(this, "Selesaikan RKH saat ini dahulu!", Toast.LENGTH_LONG).show());
         }
-        else if (dbHelper.get_statusrkh(4).equals("0") || dbHelper.get_statusrkh(4).equals("1")) {
-            listViewRKH.setEnabled(false);
-            layoutBtnRKH.setVisibility(View.GONE);
-            btnAddRKH.setVisibility(View.GONE);
-        }
+
+        btnBackRKH.setOnClickListener(view -> onBackPressed());
 
     }
 
@@ -143,47 +188,43 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         AutoCompleteTextView acHelper1InputRKH = dlgAddUnit.findViewById(R.id.acHelper1InputRKH);
         AutoCompleteTextView acHelper2InputRKH = dlgAddUnit.findViewById(R.id.acHelper2InputRKH);
         EditText etInputRKHBBM = dlgAddUnit.findViewById(R.id.etInputRKHBBM);
-        adapterMenuShift = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuShift);
+        adapterMenuShift = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuShift);
         acShiftDriverRKH.setAdapter(adapterMenuShift);
 
         // List adapter vehicle
-        listVehicleCodeDlg = dbHelper.get_vehiclemasterdata(0);
-        listVehicleNameDlg = dbHelper.get_vehiclemasterdata(1);
-        adapterVehicleDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleNameDlg);
-        acUnitInputRKH.setAdapter(adapterVehicleDlgRKH);
+        listVehicleDlg = dbHelper.get_vehiclemasterdata();
+        adapterVehicleDlgRkh = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleDlg);
+        acUnitInputRKH.setAdapter(adapterVehicleDlgRkh);
 
         // List adapter emp
-        listEmployeeNameDlg = dbHelper.get_employee(1);
-        listDriverCodeDlg = dbHelper.get_employee(0);
-        listHelper1Dlg = dbHelper.get_employee(0);
-        listHelper2Dlg = dbHelper.get_employee(0);
-        adapterEmployeeDlgRKH = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeNameDlg);
+        listEmployeeDlg = dbHelper.get_employee();
+        adapterEmployeeDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeDlg);
         acDriverInputRKH.setAdapter(adapterEmployeeDlgRKH);
         acHelper1InputRKH.setAdapter(adapterEmployeeDlgRKH);
         acHelper2InputRKH.setAdapter(adapterEmployeeDlgRKH);
 
         // Get selected code id
         acUnitInputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedVehicle = listVehicleCodeDlg.get(position);
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            selectedVehicle = dbHelper.get_vehiclecodeonly((String) adapterView.getItemAtPosition(position));
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acUnitInputRKH.getWindowToken(), 0);
         });
 
         acDriverInputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedDriver = listDriverCodeDlg.get(position);
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            selectedDriver = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acDriverInputRKH.getWindowToken(), 0);
         });
 
         acHelper1InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedHelper1 = listHelper1Dlg.get(position);
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            selectedHelper1 = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acHelper1InputRKH.getWindowToken(), 0);
         });
 
         acHelper2InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedHelper2 = listHelper2Dlg.get(position);
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(RencanaKerjaHarian.this.INPUT_METHOD_SERVICE);
+            selectedHelper2 = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
+            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acHelper2InputRKH.getWindowToken(), 0);
         });
 
@@ -193,32 +234,32 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         btnDlgSimpanPilihUnitInputKRH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
 
-                ArrayList<String> employeeOutput = (ArrayList<String>) listEmployeeNameDlg;
-                ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleNameDlg;
+                ArrayList<String> employeeOutput = (ArrayList<String>) listEmployeeDlg;
+                ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleDlg;
 
                 // Checking empty fields
                 if (TextUtils.isEmpty(acUnitInputRKH.getText().toString().trim()) || TextUtils.isEmpty(acShiftDriverRKH.getText().toString().trim())
-                    || TextUtils.isEmpty(acDriverInputRKH.getText().toString().trim()) || TextUtils.isEmpty(acHelper1InputRKH.getText().toString().trim())
-                    || TextUtils.isEmpty(acHelper2InputRKH.getText().toString().trim()) || TextUtils.isEmpty(etInputRKHBBM.getText().toString().trim())) {
+                    || TextUtils.isEmpty(acDriverInputRKH.getText().toString().trim()) || TextUtils.isEmpty(etInputRKHBBM.getText().toString().trim())) {
                     Toast.makeText(RencanaKerjaHarian.this, "Lengkapi Data!", Toast.LENGTH_LONG).show();
                 }
                 // Restrict user from input data other than autocompletion list
                 else if (employeeOutput.indexOf(acDriverInputRKH.getText().toString()) == -1
-                        || employeeOutput.indexOf(acHelper1InputRKH.getText().toString()) == -1
-                        || employeeOutput.indexOf(acHelper2InputRKH.getText().toString()) == -1) {
+                        || (!TextUtils.isEmpty(acHelper1InputRKH.getText().toString().trim())
+                        && employeeOutput.indexOf(acHelper1InputRKH.getText().toString()) == -1)
+                        || (!TextUtils.isEmpty(acHelper2InputRKH.getText().toString().trim())
+                        && employeeOutput.indexOf(acHelper2InputRKH.getText().toString()) == -1)) {
                     Toast.makeText(RencanaKerjaHarian.this, "Karyawan tidak valid!", Toast.LENGTH_LONG).show();
                 }
                 else if (vehicleOutput.indexOf(acUnitInputRKH.getText().toString()) == -1 ) {
                     Toast.makeText(RencanaKerjaHarian.this, "Kendaraan tidak valid!", Toast.LENGTH_LONG).show();
                 }
                 else if (dbHelper.get_statusrkh(4).equals("")) {
-                    dbHelper.insert_rkh_detail1(nodocRKH, selectedVehicle, acShiftDriverRKH.getText().toString(),
+                    dbHelper.insert_rkh_detail1(nodocRKH, selectedVehicle, selectedDateRKH, acShiftDriverRKH.getText().toString(),
                             selectedDriver, selectedHelper1, selectedHelper2, etInputRKHBBM.getText().toString());
 
                     dbHelper.delete_rkh_header(nodocRKH);
-                    dbHelper.insert_rkh_header(nodocRKH, dbHelper.get_count_totalrkh(nodocRKH), etDescRKH.getText().toString());
+                    dbHelper.insert_rkh_header(nodocRKH, selectedDateRKH, dbHelper.get_count_totalrkh(nodocRKH), etDescRKH.getText().toString());
                     dlgAddUnit.dismiss();
                     acUnitInputRKH.setText("");
                     acShiftDriverRKH.setText("");
@@ -227,6 +268,11 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                     acHelper2InputRKH.setText("");
                     etInputRKHBBM.setText(null);
                     loadListViewRKH();
+
+                    if (listViewRKH.getAdapter().getCount() > 0) {
+                        etPelaksanaanTglRKH.setOnClickListener(view -> Toast.makeText(RencanaKerjaHarian.this,
+                                "Selesaikan RKH saat ini dahulu!", Toast.LENGTH_LONG).show());
+                    }
                 }
             }
         });
@@ -250,5 +296,12 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         }
         adapterRKH = new AdapterRKH(this, R.layout.item_lvrkh, listParamRKH);
         listViewRKH.setAdapter(adapterRKH);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(727, backIntent);
+        finish();
     }
 }

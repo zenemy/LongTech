@@ -35,7 +35,7 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
     }
 
     static class ViewHolder {
-        protected LinearLayout layoutItemLvRKH;
+        protected LinearLayout layoutItemLvRKH, layoutHelper1LvRKH, layoutHelper2LvRKH;
         protected TextView tvVehicleNameLvRKH, tvShiftLvRKH, tvDriverNameLvRKH, tvHelper1NameLvRKH, tvHelper2NameLvRKH, tvBensinLvRKH;
     }
 
@@ -49,6 +49,8 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
             ViewHolder viewHolder = new AdapterRKH.ViewHolder();
             viewHolder.layoutItemLvRKH = (LinearLayout) convertView.findViewById(R.id.layoutItemLvRKH);
+            viewHolder.layoutHelper1LvRKH = (LinearLayout) convertView.findViewById(R.id.layoutHelper1LvRKH);
+            viewHolder.layoutHelper2LvRKH = (LinearLayout) convertView.findViewById(R.id.layoutHelper2LvRKH);
             viewHolder.tvVehicleNameLvRKH = (TextView) convertView.findViewById(R.id.tvVehicleNameLvRKH);
             viewHolder.tvDriverNameLvRKH = (TextView) convertView.findViewById(R.id.tvDriverNameLvRKH);
             viewHolder.tvHelper1NameLvRKH = (TextView) convertView.findViewById(R.id.tvHelper1NameLvRKH);
@@ -71,9 +73,23 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
         viewHolder.tvVehicleNameLvRKH.setText(dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
         viewHolder.tvShiftLvRKH.setText(rkhParams.get(position).getShiftkerja());
         viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getDrivername()));
-        viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper1Name()));
-        viewHolder.tvHelper2NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper2Name()));
         viewHolder.tvBensinLvRKH.setText("BBM " + rkhParams.get(position).getKebutuhanBBM() + " Liter");
+
+        if (rkhParams.get(position).getHelper1Name() == null || rkhParams.get(position).getHelper1Name().equals("")) {
+            viewHolder.layoutHelper1LvRKH.setVisibility(View.GONE);
+
+        }
+        else {
+            viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper1Name()));
+        }
+
+        if (rkhParams.get(position).getHelper2Name() == null || rkhParams.get(position).getHelper2Name().equals("")) {
+            viewHolder.layoutHelper2LvRKH.setVisibility(View.GONE);
+
+        }
+        else {
+            viewHolder.tvHelper2NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper2Name()));
+        }
 
         viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +99,8 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
                 intent.putExtra("vehiclecode", rkhParams.get(position).getVehicleCode());
                 intent.putExtra("vehiclename", dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
                 intent.putExtra("shiftkerja", viewHolder.tvShiftLvRKH.getText().toString());
-                intent.putExtra("driver", viewHolder.tvDriverNameLvRKH.getText().toString());
+                intent.putExtra("drivercode", rkhParams.get(position).getDrivername());
+                intent.putExtra("drivername", viewHolder.tvDriverNameLvRKH.getText().toString());
                 context.startActivity(intent);
             }
         });

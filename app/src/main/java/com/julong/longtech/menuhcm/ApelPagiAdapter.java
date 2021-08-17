@@ -50,6 +50,7 @@ import static com.julong.longtech.menuhcm.ApelPagi.scanBarcode;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedEmp;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedItemData;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedJabatan;
+import static com.julong.longtech.menuhcm.ApelPagi.selectedShift;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedUnit;
 
 public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
@@ -105,8 +106,8 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
         listViewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (dbhelper.get_statusapelpagi(0).equals("1") && (dbhelper.get_statusapelpagi(5).equals("0")
-                        || dbhelper.get_statusapelpagi(5).equals("1"))) {
+                if (dbhelper.check_existingapel(0, selectedShift).equals("1") && (dbhelper.check_existingapel(5, selectedShift).equals("0")
+                        || dbhelper.check_existingapel(5, selectedShift).equals("1"))) {
 
                 }
                 else if (gambarApelPagi == null) {
@@ -174,7 +175,15 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                             Window windowTdkHadir = dlgTidakHadir.getWindow();
                             windowTdkHadir.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
                             TextView tvHeaderDlgMetode = dlgTidakHadir.findViewById(R.id.tvHeaderDlgTdkHadirApel);
-                            RadioGroup radioGroupDlgApel = dlgTidakHadir.findViewById(R.id.radioGroupDlgApel);
+
+                            // Radio selection tdk hadir
+                            RadioButton radioApelCuti = dlgTidakHadir.findViewById(R.id.radioApelCuti);
+                            RadioButton radioApelP1 = dlgTidakHadir.findViewById(R.id.radioApelP1);
+                            RadioButton radioApelTK = dlgTidakHadir.findViewById(R.id.radioApelTK);
+                            RadioButton radioApelSakit = dlgTidakHadir.findViewById(R.id.radioApelSakit);
+                            RadioButton radioApelP2 = dlgTidakHadir.findViewById(R.id.radioApelP2);
+                            RadioButton radioApelMangkir = dlgTidakHadir.findViewById(R.id.radioApelMangkir);
+
                             EditText etNoteDlgTdkHadir = dlgTidakHadir.findViewById(R.id.etNoteDlgTdkHadir);
                             Button btnKonfirmTdkHadir = dlgTidakHadir.findViewById(R.id.btnApelConfirmTdkHadir);
                             Button btnBackTdkHadir = dlgTidakHadir.findViewById(R.id.btnBackDlgApelTdkHadir);
@@ -184,19 +193,81 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                             selectedEmp = listApel.getEmployeeCode();
                             selectedItemData = listApel.getItemData();
 
-                            radioGroupDlgApel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                                    switch(checkedId){
-                                        case R.id.radioApelCuti:
-                                            tipeTidakHadir = "CT";
-                                            break;
-                                        case R.id.radioApelSakit:
-                                            tipeTidakHadir = "S1";
-                                            break;
-                                        case R.id.radioApelMangkir:
-                                            tipeTidakHadir = "MK";
-                                            break;
-                                    }
+                            radioApelCuti.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    tipeTidakHadir = "CT";
+                                    radioApelCuti.setChecked(true);
+                                    radioApelP1.setChecked(false);
+                                    radioApelMangkir.setChecked(false);
+                                    radioApelTK.setChecked(false);
+                                    radioApelP2.setChecked(false);
+                                    radioApelSakit.setChecked(false);
+                                }
+                            });
+
+                            radioApelP1.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    tipeTidakHadir = "P1";
+                                    radioApelP1.setChecked(true);
+                                    radioApelCuti.setChecked(false);
+                                    radioApelMangkir.setChecked(false);
+                                    radioApelTK.setChecked(false);
+                                    radioApelP2.setChecked(false);
+                                    radioApelSakit.setChecked(false);
+                                }
+                            });
+
+                            radioApelP2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    tipeTidakHadir = "P2";
+                                    radioApelP2.setChecked(true);
+                                    radioApelP1.setChecked(false);
+                                    radioApelMangkir.setChecked(false);
+                                    radioApelTK.setChecked(false);
+                                    radioApelCuti.setChecked(false);
+                                    radioApelSakit.setChecked(false);
+                                }
+                            });
+
+                            radioApelSakit.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    tipeTidakHadir = "S1";
+                                    radioApelSakit.setChecked(true);
+                                    radioApelP1.setChecked(false);
+                                    radioApelMangkir.setChecked(false);
+                                    radioApelTK.setChecked(false);
+                                    radioApelP2.setChecked(false);
+                                    radioApelCuti.setChecked(false);
+                                }
+                            });
+
+                            radioApelMangkir.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    tipeTidakHadir = "MK";
+                                    radioApelMangkir.setChecked(true);
+                                    radioApelP1.setChecked(false);
+                                    radioApelCuti.setChecked(false);
+                                    radioApelTK.setChecked(false);
+                                    radioApelP2.setChecked(false);
+                                    radioApelSakit.setChecked(false);
+                                }
+                            });
+
+                            radioApelTK.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    tipeTidakHadir = "TK";
+                                    radioApelTK.setChecked(true);
+                                    radioApelP1.setChecked(false);
+                                    radioApelMangkir.setChecked(false);
+                                    radioApelCuti.setChecked(false);
+                                    radioApelP2.setChecked(false);
+                                    radioApelSakit.setChecked(false);
                                 }
                             });
 

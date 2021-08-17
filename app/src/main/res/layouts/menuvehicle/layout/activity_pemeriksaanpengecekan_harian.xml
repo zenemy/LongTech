@@ -59,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                app:boxCornerRadiusTopStart="10dp"
                 android:hint="Kendaraan Kerja"
                 app:endIconMode="dropdown_menu">
 
@@ -66,20 +67,22 @@
                     android:id="@+id/acKendaraanKerjaP2H"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:paddingStart="8dp"
+                    android:dropDownWidth="match_parent"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageView
+            <ImageButton
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/ic_barcode"
-                android:backgroundTint="@color/indianred" />
+                android:foreground="@drawable/ic_barcode"
+                android:foregroundTint="@color/indianred"
+                android:background="?attr/selectableItemBackgroundBorderless" />
 
         </LinearLayout>
 
@@ -105,14 +108,14 @@
                     android:id="@+id/etJamAwalP2h"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:focusableInTouchMode="false"
-                    android:inputType="time"
                     android:clickable="true"
+                    android:focusableInTouchMode="false"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:paddingStart="8dp"
+                    android:inputType="time"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,14 +133,14 @@
                     android:id="@+id/etJamAkhirP2H"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:focusableInTouchMode="false"
-                    android:inputType="time"
                     android:clickable="true"
+                    android:focusableInTouchMode="false"
                     android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                    android:paddingStart="8dp"
+                    android:inputType="time"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,24 +152,25 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
+                app:boxCornerRadiusBottomStart="10dp"
                 app:endIconMode="clear_text"
                 android:hint="Deskripsi P2H (Optional)">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNoteP2H"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="match_parent"
                     android:gravity="top"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="12dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
                     android:textSize="14sp" />
@@ -1056,26 +1060,28 @@
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/btnCancelP2H"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
             android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             app:cornerRadius="10dp"
+            android:textSize="16sp"
             android:text="KEMBALI"
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSimpanP2H"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
             android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:onClick="eventSubmitP2H"
             android:insetBottom="0dp"
             app:cornerRadius="10dp"
+            android:textSize="16sp"
             android:text="SIMPAN"
             android:textStyle="bold" />
     </LinearLayout>

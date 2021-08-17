@@ -1,25 +1,22 @@
 package com.julong.longtech;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListAdapter;
@@ -27,8 +24,6 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +48,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.julong.longtech.menuhcm.AbsensiBekerjaUnit;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
-import com.julong.longtech.menureport.HistoryActivity;
+import com.julong.longtech.menuhistory.HistoryActivity;
 import com.julong.longtech.menusetup.AppSetting;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.UpdateSystem;
@@ -72,7 +67,6 @@ import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuhcm.BiodataKaryawan;
 import com.julong.longtech.menusetup.MyAccount;
-import com.julong.longtech.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -163,6 +157,10 @@ public class MainActivity extends AppCompatActivity {
         ActivityResultLauncher<Intent> intentLaunchActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (result.getResultCode() == 4) {
+                        loadlvinfohome(todayDate);
+                        loadLvHistoryApel(todayDate);
+                    }
                     if (result.getResultCode() == 727) {
                         loadlvinfohome(todayDate);
                     }
@@ -228,26 +226,40 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0101") && menuSubCode.equals("010105")) {
                         if (dbhelper.get_statusapelpagi(0).equals("1")) {
                             Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                            intent.putExtra("shiftapel", dbhelper.get_statusapelpagi(2));
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivityForResult(intent, 4);
+                            intentLaunchActivity.launch(intent);
                             onPause();
                         } else {
-                            final SweetAlertDialog warningStartApelDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
-                            warningStartApelDlg.setTitleText("Mulai apel pagi?");
-                            warningStartApelDlg.setCancelText("KEMBALI");
-                            warningStartApelDlg.setConfirmText("MULAI");
-                            warningStartApelDlg.showCancelButton(true);
-                            warningStartApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            String[] arrayShiftApel = {"Shift 1", "Shift 2", "Shift 3"};
+                            ArrayAdapter<String> adapterShiftApel;
+
+                            Dialog dlgStartApel = new Dialog(MainActivity.this);
+                            dlgStartApel.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dlgStartApel.setContentView(R.layout.dialog_startapel);
+                            dlgStartApel.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                            Window windowStartApel = dlgStartApel.getWindow();
+                            windowStartApel.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                            AutoCompleteTextView acShiftStartApel = dlgStartApel.findViewById(R.id.acShiftStartApel);
+                            Button btnOkStartApel = dlgStartApel.findViewById(R.id.btnOkDlgShiftApel);
+                            Button btnBackStartApel = dlgStartApel.findViewById(R.id.btnBackDlgShiftApel);
+
+                            btnBackStartApel.setOnClickListener(view12 -> dlgStartApel.dismiss());
+                            adapterShiftApel = new ArrayAdapter<>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, arrayShiftApel);
+                            acShiftStartApel.setAdapter(adapterShiftApel);
+
+                            btnOkStartApel.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    sweetAlertDialog.dismiss();
+                                public void onClick(View view) {
+                                    dlgStartApel.dismiss();
                                     Intent intent = new Intent(MainActivity.this, ApelPagi.class);
+                                    intent.putExtra("shiftapel", acShiftStartApel.getText().toString());
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivityForResult(intent, 4);
+                                    intentLaunchActivity.launch(intent);
                                     onPause();
                                 }
                             });
-                            warningStartApelDlg.show();
+                            dlgStartApel.show();
                         }
 
                     }
@@ -277,14 +289,14 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020201")) {
                         Intent intent = new Intent(MainActivity.this, RencanaKerjaHarian.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchActivity.launch(intent);
                         onPause();
                     }
 
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020202")) {
                         Intent intent = new Intent(MainActivity.this, PemeriksaanPengecekanHarian.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchActivity.launch(intent);
                         onPause();
                     }
 
@@ -306,14 +318,14 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020206")) {
                         Intent intent = new Intent(MainActivity.this, AdjustmentUnit.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchActivity.launch(intent);
                         onPause();
                     }
 
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020207")) {
                         Intent intent = new Intent(MainActivity.this, VerifikasiGIS.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchActivity.launch(intent);
                         onPause();
                     }
 
@@ -546,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
         proDialog.setCancelable(false);
         proDialog.show();
 
-        String url_data = url_api + "fetchdata/get_menugs02.php?rolecode=" + dbhelper.get_tbl_username(2);
+        String url_data = url_api + "fetchdata/get_menugs02.php?rolecode=" + dbhelper.get_tbl_username(3);
         JsonObjectRequest jsonRequest = new JsonObjectRequest
             (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                 @Override
@@ -687,10 +699,6 @@ public class MainActivity extends AppCompatActivity {
             loadLvHistoryCarLog(todayDate);
         }
 
-        if (requestCode == 4) {
-            loadlvinfohome(todayDate);
-            loadLvHistoryApel(todayDate);
-        }
     }
 
     @Override

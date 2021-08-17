@@ -71,7 +71,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
     Button btnSubmitP2H, btnCancelP2H;
 
     String nodocP2H, latitudeP2H, longitudeP2H, selectedVehicleCode;
-    private List<String> listVehicleCode, listVehicleName;
+    private List<String> listVehicleP2H;
     ArrayAdapter<String> adapterVehicleP2H;
 
     @Override
@@ -143,9 +143,8 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         btnCancelP2H.setOnClickListener(v -> finish());
 
         // Vehicle list adapter for acVehicle
-        listVehicleCode = dbHelper.get_vehiclemasterdata(0);
-        listVehicleName = dbHelper.get_vehiclemasterdata(1);
-        adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
+        listVehicleP2H = dbHelper.get_vehiclemasterdata();
+        adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleP2H);
         acKendaraanP2H.setAdapter(adapterVehicleP2H);
 
         String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -172,7 +171,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         acKendaraanP2H.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedVehicleCode = listVehicleCode.get(position);
+                selectedVehicleCode = dbHelper.get_vehiclecodeonly((String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(PemeriksaanPengecekanHarian.this.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKendaraanP2H.getWindowToken(), 0);
             }
@@ -332,7 +331,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         getLocation();
         nodocP2H = dbHelper.get_tbl_username(0) + "/P2HVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
 
-        ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleName;
+        ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleP2H;
 
         SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm");
 
@@ -350,7 +349,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                 new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Kendaraan tidak valid!").show();
             }
             else {
-                dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecode(1, acKendaraanP2H.getText().toString()), selectedVehicleCode,
+                dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecodegroup(1, selectedVehicleCode), selectedVehicleCode,
                         etDescPengecekan.getText().toString(), latitudeP2H, longitudeP2H, byteImgP2H);
 
                 if (checkKebocoranOli.isChecked()) {

@@ -93,7 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Awal Maulana Maryadi"
+                    android:text="Employee Name"
                     android:textColor="#000000" />
             </LinearLayout>
 
@@ -116,7 +116,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="0621060305"
+                    android:text="000000"
                     android:textColor="#000000" />
             </LinearLayout>
         </LinearLayout>
@@ -176,7 +176,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Smart Agriculture | HO"
+                    android:text="Smart Agriculture"
                     android:textColor="#000000" />
             </LinearLayout>
         </LinearLayout>
@@ -263,7 +263,7 @@
                     android:layout_height="0dp"
                     android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
-                    android:text="awal_maulana@rocketmail.com"
+                    android:text="user@mail.com"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/textView24"
@@ -303,7 +303,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
                     android:lineSpacingExtra="2dp"
-                    android:text="Taman Bumyagara Blok F8 No. 26 RT 03/RW 22 Kec. MustikaJaya"
+                    android:text="Alamat User"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/cardView4"

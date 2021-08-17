@@ -1,37 +1,25 @@
 package com.julong.longtech.ui.home;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -45,50 +33,39 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.GPSTracker;
 import com.julong.longtech.HashPassword;
-import com.julong.longtech.LoginActivity;
 import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
 import com.fxn.BubbleTabBar;
 import com.fxn.OnBubbleClickListener;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
-import com.julong.longtech.menureport.HistoryApelAdapter;
-import com.julong.longtech.menureport.HistoryCarlogAdapter;
-import com.julong.longtech.menureport.ListHistoryApel;
-import com.julong.longtech.menureport.ListHistoryCarLog;
-import com.julong.longtech.menusetup.DownloadData;
-import com.julong.longtech.menusetup.MyAccount;
+import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +75,8 @@ import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.julong.longtech.DatabaseHelper.url_api;
+
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
@@ -106,14 +85,15 @@ public class HomeFragment extends Fragment {
     DatabaseHelper dbhelper;
     public static TextView tvjabatanuser, tvnamauser;
     BubbleTabBar bubbleTabBar;
-    public static ListView lvfragment, lvHistoryApel, lvHistoryCarLog;
-    byte[] gambar2, gambar, gambar1;
+    public static ListView lvfragment;
+    public static RecyclerView lvHistoryApel, lvHistoryCarLog;
+    byte[] gambar1;
     AutoCompleteTextView ackendala, acMenuRiwayatHome;
     TextView tvSystemNameFragmentHome;
     EditText etdesckendala, etpanjangkendala, etlebarkendala, etluaskendala, aclokasikendala, filtertglhistory;
     Button btnsimpankendala, btnDateLvInfo;
     ImageButton btnrefresh, openDrawerBtn, imgcamkendala;
-    String lat_awal, long_awal, todayDate, todayDateTime;
+    String lat_awal, long_awal, todayDate, todayDateTime, selectedKendala;
     ScrollView scrollkendala;
     ConstraintLayout clBgMainActivity;
     LinearLayout layoutRiwayatFragment, layoutInfoFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
@@ -122,7 +102,7 @@ public class HomeFragment extends Fragment {
     String[] arrayMenuHistory = {"APEL PAGI", "CAR LOG"};
     ArrayAdapter<String> adapterMenuHistory;
 
-    private List<String> listKendala;
+    private List<String> listKendalaCode, listKendalaName;
     ArrayAdapter<String> adapterKendala;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -169,15 +149,11 @@ public class HomeFragment extends Fragment {
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         filtertglhistory.setText(todayDate);
         btnDateLvInfo.setText(todayDate);
-        lvHistoryApel.setFastScrollEnabled(true);
 
-        generate_listkendala();
         eventClickMenu();
 
 //        tvnamauser.setText(dbhelper.get_tbl_username(0));
 //        tvjabatanuser.setText(dbhelper.get_tbl_username(3));
-
-
 
         preparedUserAppData("theme");
         preparedUserAppData("sysname");
@@ -185,6 +161,13 @@ public class HomeFragment extends Fragment {
 
         adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistory);
         acMenuRiwayatHome.setAdapter(adapterMenuHistory);
+
+        listKendalaCode = dbhelper.get_menukendala(0);
+        listKendalaName = dbhelper.get_menukendala(1);
+        adapterKendala = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listKendalaName);
+        ackendala.setAdapter(adapterKendala);
+
+        ackendala.setOnItemClickListener((adapterView, view, position, l) -> selectedKendala = listKendalaCode.get(position));
 
         openDrawerBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -219,7 +202,13 @@ public class HomeFragment extends Fragment {
         filtertglhistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerLvHistory.show(getParentFragmentManager(), "HISTORYHOME");
+                if (TextUtils.isEmpty(acMenuRiwayatHome.getText().toString().trim())) {
+                    Toast.makeText(getContext(), "Pilih menu dahulu!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    datePickerLvHistory.show(getParentFragmentManager(), "HISTORYHOME");
+                }
+
             }
         });
 
@@ -270,8 +259,7 @@ public class HomeFragment extends Fragment {
         imgcamkendala.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gambar = null;
-                gambar2 = null;
+                gambar1 = null;
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, 1);
@@ -320,19 +308,27 @@ public class HomeFragment extends Fragment {
                 }
                 else {
                     getLocation();
-                    String nodoc = dbhelper.get_tbl_username(0) + "/KDL/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-                    dbhelper.insert_kendala(nodoc, ackendala.getText().toString(), aclokasikendala.getText().toString(), etpanjangkendala.getText().toString(), etlebarkendala.getText().toString(),
-                            etluaskendala.getText().toString(), etdesckendala.getText().toString(), lat_awal, long_awal, gambar1);
+                    String nodocKendala = dbhelper.get_tbl_username(0) + "/KDL/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+
                     String base64Kendala = android.util.Base64.encodeToString(gambar1,  android.util.Base64.DEFAULT);
 
                     RequestQueue requestQueueKendala = Volley.newRequestQueue(getActivity());
-                    String server_url = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/uploaddata/uploadkendala.php";
+                    String server_url = url_api + "dataupload/uploadkendala.php";
                     StringRequest stringRequestKendala = new StringRequest(Request.Method.POST, server_url, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             try {
                                 JSONObject jsonPostKendala = new JSONObject(response.toString());
                                 if (jsonPostKendala.getString("UPLOADKENDALA").equals("SUCCESS")) {
+                                    gambar1 = null;
+                                    aclokasikendala.setText(null);
+                                    selectedKendala = null;
+                                    ackendala.setText(null);
+                                    etlebarkendala.setText(null);
+                                    etpanjangkendala.setText(null);
+                                    etluaskendala.setText(null);
+                                    etdesckendala.setText(null);
+                                    imgcamkendala.setImageResource(R.drawable.ic_menu_camera);
                                     new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Submit Kendala").setConfirmText("OK").show();
                                 }
                             } catch (JSONException e) {
@@ -343,7 +339,9 @@ public class HomeFragment extends Fragment {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getActivity(), "Error ...", Toast.LENGTH_LONG).show();
+                            dbhelper.insert_kendala(nodocKendala, ackendala.getText().toString(), aclokasikendala.getText().toString(),
+                                    etpanjangkendala.getText().toString(), etlebarkendala.getText().toString(), etluaskendala.getText().toString(),
+                                    etdesckendala.getText().toString(), lat_awal, long_awal, gambar1, 0);
                             error.printStackTrace();
                             requestQueueKendala.stop();
                         }
@@ -351,13 +349,15 @@ public class HomeFragment extends Fragment {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new HashMap<String, String>();
-                            params.put("nodoc", nodoc);
+                            params.put("nodoc", nodocKendala);
                             params.put("datatype", "KDL");
                             params.put("subdatatype", dbhelper.get_tbl_username(0));
-                            params.put("compid", dbhelper.get_tbl_username(15));
-                            params.put("siteid", dbhelper.get_tbl_username(16));
+                            params.put("itemdata", "HEADER");
+                            params.put("subitemdata", "HEADER");
+                            params.put("compid", dbhelper.get_tbl_username(14));
+                            params.put("siteid", dbhelper.get_tbl_username(15));
                             params.put("date1", todayDateTime);
-                            params.put("text1", ackendala.getText().toString());
+                            params.put("text1", selectedKendala);
                             params.put("text2", aclokasikendala.getText().toString());
                             params.put("text3", etpanjangkendala.getText().toString());
                             params.put("text4", etlebarkendala.getText().toString());
@@ -371,15 +371,6 @@ public class HomeFragment extends Fragment {
                         }
                     };
                     requestQueueKendala.add(stringRequestKendala);
-
-                    gambar1 = null;
-                    aclokasikendala.setText(null);
-                    ackendala.setText(null);
-                    etlebarkendala.setText(null);
-                    etpanjangkendala.setText(null);
-                    etlebarkendala.setText(null);
-                    etdesckendala.setText(null);
-                    imgcamkendala.setImageResource(R.drawable.ic_menu_camera);
                 }
             }
         });
@@ -429,63 +420,15 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    void generate_listkendala() {
-        String url_data = "http://longtech.julongindonesia.com:8889/longtech/mobilesync/fetchdata/getmastermenu.php?tipedata=datakendala";
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("DATAKENDALA");
-
-                            int i = 0;
-                            if (dbhelper.count_dataGS01("GS12", "KENDALA").equals("0")) {
-                                while (i < jsonArray.length()) {
-                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                    dbhelper.insert_dataGS01(jsonObject1.getString("GROUPPARAMCODE"), jsonObject1.getString("GROUPPARAMDESC"),
-                                            jsonObject1.getString("PARAMETERCODE"), jsonObject1.getString("PARAMETERDESC"), jsonObject1.getString("SEQ_NO"));
-                                    i++;
-                                }
-                                listKendala = dbhelper.get_menukendala();
-                                adapterKendala = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listKendala);
-                                ackendala.setAdapter(adapterKendala);
-
-                            }
-                            else {
-                                listKendala = dbhelper.get_menukendala();
-                                adapterKendala = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listKendala);
-                                ackendala.setAdapter(adapterKendala);
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (getContext() != null) {
-                            listKendala = dbhelper.get_menukendala();
-                            adapterKendala = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listKendala);
-                            ackendala.setAdapter(adapterKendala);
-                        }
-                        error.printStackTrace();
-                    }
-                });
-
-        Volley.newRequestQueue(getActivity()).add(jsonRequest);
-    }
-
     private void eventClickMenu() {
 
         linearLayoutQR.setOnClickListener(view -> ((MainActivity) getActivity()).eventShowQR(view));
 
-        if (dbhelper.get_tbl_username(2).equals("USR")) {
+        if (dbhelper.get_tbl_username(3).equals("USR")) {
             linearLayoutRKH.setVisibility(View.GONE);
         }
 
-        if (dbhelper.get_tbl_username(2).equals("SPV")) {
+        if (dbhelper.get_tbl_username(3).equals("SPV")) {
             linearLayoutCarLog.setVisibility(View.GONE);
         }
 
@@ -493,12 +436,12 @@ public class HomeFragment extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == 3) {
+                        acMenuRiwayatHome.setText(adapterMenuHistory.getItem(1), false);
                         loadlvinfohome(todayDate);
                         loadLvHistoryCarLog(todayDate);
                     }
                     if (result.getResultCode() == 727) {
                         loadlvinfohome(todayDate);
-                        Log.d("KODEA", "727");
                     }
                 }
         );
@@ -567,6 +510,11 @@ public class HomeFragment extends Fragment {
         DatabaseHelper dbhelper;
         dbhelper = new DatabaseHelper(lvHistoryApel.getContext());
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(lvHistoryApel.getContext());
+        lvHistoryApel.setLayoutManager(layoutManager);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(lvHistoryApel.getContext(), R.drawable.divider));
+        lvHistoryApel.addItemDecoration(dividerItemDecoration);
+
         listApelHistories = new ArrayList<>();
         listApelHistories.clear();
         final Cursor cursor = dbhelper.listview_historyapel(selectedDate);
@@ -586,7 +534,7 @@ public class HomeFragment extends Fragment {
                 listApelHistories.add(paramsApelHistory);
             } while (cursor.moveToNext());
         }
-        adapterLvHistory = new HistoryHomeApelAdapter(lvHistoryApel.getContext(), R.layout.fragment_apelhistory, listApelHistories);
+        adapterLvHistory = new HistoryHomeApelAdapter(listApelHistories, lvHistoryApel.getContext());
         lvHistoryApel.setAdapter(adapterLvHistory);
     }
 
@@ -596,6 +544,11 @@ public class HomeFragment extends Fragment {
         HistoryHomeCarLogAdapter carlogAdapter;
         DatabaseHelper dbhelper;
         dbhelper = new DatabaseHelper(lvHistoryCarLog.getContext());
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(lvHistoryCarLog.getContext());
+        lvHistoryCarLog.setLayoutManager(layoutManager);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(lvHistoryCarLog.getContext(), R.drawable.divider));
+        lvHistoryCarLog.addItemDecoration(dividerItemDecoration);
 
         listHistoryCarLogs = new ArrayList<>();
         listHistoryCarLogs.clear();
@@ -618,7 +571,7 @@ public class HomeFragment extends Fragment {
                 listHistoryCarLogs.add(paramsCarLogHistory);
             } while (cursor.moveToNext());
         }
-        carlogAdapter = new HistoryHomeCarLogAdapter(lvHistoryCarLog.getContext(), R.layout.fragment_carloghistory, listHistoryCarLogs);
+        carlogAdapter = new HistoryHomeCarLogAdapter(listHistoryCarLogs, lvHistoryCarLog.getContext());
         lvHistoryCarLog.setAdapter(carlogAdapter);
     }
 

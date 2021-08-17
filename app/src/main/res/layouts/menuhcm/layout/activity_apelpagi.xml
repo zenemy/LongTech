@@ -52,7 +52,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:orientation="horizontal"
             android:weightSum="2">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -104,31 +103,62 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:hint="Kelompok Kerja"
-            app:endIconDrawable="@drawable/ic_baseline_group_24"
-            app:endIconMode="custom">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etKemandoranApel"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:editable="false"
-                android:focusableInTouchMode="false"
-                android:inputType="none"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp"
-                android:text="KEMANDORAN"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:hint="Kelompok Kerja">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etKemandoranApel"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:editable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="none"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="KEMANDORAN"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:hint="Shift Kerja">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etShiftApel"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:editable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="none"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="SHIFT"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -293,6 +323,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:text="TAMBAH PEKERJA"
+            android:visibility="gone"
             android:singleLine="true"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -302,7 +333,7 @@
             android:id="@+id/btnSimpanApelPagi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="2dp"
+            android:layout_marginStart="0dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"

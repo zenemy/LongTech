@@ -107,7 +107,7 @@ public class DialogHelper extends Dialog {
         tvjuduldialog = dialogInfo.findViewById(R.id.tvSystemNameDlgInfo);
         imgLogoDlgHelperInfo = dialogInfo.findViewById(R.id.imgLogoDlgInfo);
 
-        tvjuduldialog.setText(LoginActivity.namasystem);
+        tvjuduldialog.setText("LONG TECH");
 
         //Inisialisasi Object Title/Text
         tvtitle.setText(v_dlg_title);
@@ -155,13 +155,17 @@ public class DialogHelper extends Dialog {
             public void onClick(View view) {
                 dlgSelesaiVerifikasi.dismiss();
                 dbhelper.updatestatus_verifikasigis(VerifikasiGIS.nodocVerifikasiGIS, VerifikasiGIS.etHasilVerifikasi.getText().toString());
-                new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
-                        .setConfirmClickListener(sweetAlertDialog -> {
-                            sweetAlertDialog.dismiss();
-                            Intent backIntent = new Intent();
-                            ((Activity) activityContext).setResult(727, backIntent);
-                            ((Activity) activityContext).finish();
-                        }).setConfirmText("SELESAI").show();
+                SweetAlertDialog sweetDlgVerifikasiDone = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
+                sweetDlgVerifikasiDone.setTitleText("Verifikasi Selesai");
+                sweetDlgVerifikasiDone.setConfirmText("SELESAI");
+                sweetDlgVerifikasiDone.setCancelable(false);
+                sweetDlgVerifikasiDone.setConfirmClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismiss();
+                    Intent backIntent = new Intent();
+                    ((Activity) activityContext).setResult(727, backIntent);
+                    ((Activity) activityContext).finish();
+                });
+                sweetDlgVerifikasiDone.show();
             }
         });
     }

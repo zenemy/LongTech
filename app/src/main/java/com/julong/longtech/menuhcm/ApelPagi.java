@@ -74,13 +74,13 @@ public class ApelPagi extends AppCompatActivity {
 
     public static int dataProcess, REQUEST_IMAGE_CAPTURE = 1;
     public static byte[] gambarApelPagi, gambarAnggota;
-    public static String selectedEmp, selectedJabatan, selectedUnit, selectedItemData, nodocApel, latApel, longApel;
+    public static String selectedEmp, selectedJabatan, selectedUnit, selectedItemData, selectedShift, nodocApel, latApel, longApel;
     Handler handler = new Handler();
     DatabaseHelper dbhelper;
     HashPassword hashFunction;
 
     LinearLayout layoutBtnApel;
-    EditText etWaktuApelPagi, etPimpinanApel, etKemandoranApel, etLokasiApel, etDescApel;
+    EditText etWaktuApelPagi, etPimpinanApel, etKemandoranApel, etLokasiApel, etDescApel, etShiftApel;
     TextView tvHeaderApel;
     ImageButton imgFotoApelPagi;
     ListView lvPimpinan, lvAnggota;
@@ -113,6 +113,7 @@ public class ApelPagi extends AppCompatActivity {
         etKemandoranApel = findViewById(R.id.etKemandoranApel);
         etLokasiApel = findViewById(R.id.etLokasiApel);
         etDescApel = findViewById(R.id.etNoteApel);
+        etShiftApel = findViewById(R.id.etShiftApel);
         lvPimpinan = findViewById(R.id.lvPimpinanApelPagi);
         lvAnggota = findViewById(R.id.lvAnggotaApelPagi);
         btnSubmitApel = findViewById(R.id.btnSimpanApelPagi);
@@ -126,9 +127,27 @@ public class ApelPagi extends AppCompatActivity {
         tvHeaderApel.setText("APEL PAGI " + apelDate);
         etWaktuApelPagi.setText(apelTime);
 
+        Bundle bundle = getIntent().getExtras();
+        selectedShift = bundle.getString("shiftapel");
+        etShiftApel.setText(selectedShift);
+
         prepateTeamData();
         loadlvpimpinan();
         loadlvanggota();
+
+        if (lvPimpinan.getAdapter().getCount() == 0) {
+            Cursor cursorPimpinan = dbhelper.view_preparepimpinan_apelpagi();
+            if (cursorPimpinan.moveToFirst()) {
+                do {
+                    dbhelper.insert_apelpagi_pimpinan(nodocApel, cursorPimpinan.getString(cursorPimpinan.getColumnIndex("empcode")),
+                            cursorPimpinan.getString(cursorPimpinan.getColumnIndex("positioncode")),
+                            cursorPimpinan.getString(cursorPimpinan.getColumnIndex("groupcode")));
+                } while (cursorPimpinan.moveToNext());
+            }
+            loadlvpimpinan();
+        } else {
+            loadlvpimpinan();
+        }
 
         imgFotoApelPagi.setOnClickListener(v -> {
             dataProcess = 1;
@@ -201,12 +220,15 @@ public class ApelPagi extends AppCompatActivity {
                     warningExitDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog dlgExit) {
-                            dbhelper.updateselesai_apelpagi(nodocApel, etLokasiApel.getText().toString());
+                            dbhelper.updateselesai_apelpagi(nodocApel, etLokasiApel.getText().toString(), etDescApel.getText().toString());
                             lvAnggota.setEnabled(false);
                             lvPimpinan.setEnabled(false);
                             dlgExit.dismiss();
-                            new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Apel Pagi selesai")
-                                    .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
+                            SweetAlertDialog dlgFinishApel = new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE);
+                            dlgFinishApel.setCancelable(false);
+                            dlgFinishApel.setTitleText("Apel Pagi selesai");
+                            dlgFinishApel.setConfirmClickListener(sweetAlertDialog -> onBackPressed());
+                            dlgFinishApel.setConfirmText("OK").show();
                         }
                     });
                     warningExitDlg.show();
@@ -233,7 +255,7 @@ public class ApelPagi extends AppCompatActivity {
                 imgFotoApelPagi.setImageBitmap(compressedBitmap);
                 imgFotoApelPagi.setForeground(null);
 
-                dbhelper.update_fotorame_apel(dbhelper.get_statusapelpagi(1), latApel, longApel, gambarApelPagi);
+                dbhelper.update_fotorame_apel(dbhelper.check_existingapel(1, selectedShift), latApel, longApel, gambarApelPagi);
             }
         }
 
@@ -327,40 +349,41 @@ public class ApelPagi extends AppCompatActivity {
     public void prepateTeamData() throws SQLiteException {
         dbhelper = new DatabaseHelper(this);
 
-        if (dbhelper.get_statusapelpagi(0).equals("1") && dbhelper.get_statusapelpagi(5).equals("")) {
+        if (dbhelper.check_existingapel(0, selectedShift).equals("1") && dbhelper.check_existingapel(5, selectedShift).equals("")) {
             try {
-                etLokasiApel.setText(dbhelper.get_statusapelpagi(2));
-                etDescApel.setText(dbhelper.get_statusapelpagi(4));
+                etLokasiApel.setText(dbhelper.check_existingapel(2, selectedShift));
+                etDescApel.setText(dbhelper.check_existingapel(4, selectedShift));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (dbhelper.count_fotoapel(dbhelper.get_statusapelpagi(1)).equals("1")) {
-                etWaktuApelPagi.setText(dbhelper.get_statusapelpagi(3));
-                gambarApelPagi = dbhelper.get_fotoapelrame(dbhelper.get_statusapelpagi(1));
+            if (dbhelper.count_fotoapel(dbhelper.check_existingapel(1, selectedShift)).equals("1")) {
+                etWaktuApelPagi.setText(dbhelper.check_existingapel(3, selectedShift));
+                gambarApelPagi = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1, selectedShift));
                 Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarApelPagi, 0, gambarApelPagi.length);
                 imgFotoApelPagi.setForeground(null);
                 imgFotoApelPagi.setImageBitmap(compressedBitmap);
             }
         }
-        else if (dbhelper.get_statusapelpagi(0).equals("1") && (dbhelper.get_statusapelpagi(5).equals("0")
-                || dbhelper.get_statusapelpagi(5).equals("1"))) {
+        else if (dbhelper.check_existingapel(5, selectedShift).equals("0")
+                || dbhelper.check_existingapel(5, selectedShift).equals("1")) {
             layoutBtnApel.setVisibility(View.GONE);
             imgFotoApelPagi.setEnabled(false);
             etLokasiApel.setFocusable(false);
             etDescApel.setFocusable(false);
-            etLokasiApel.setText(dbhelper.get_statusapelpagi(2));
-            etWaktuApelPagi.setText(dbhelper.get_statusapelpagi(3));
-            etDescApel.setText(dbhelper.get_statusapelpagi(4));
-            gambarApelPagi = dbhelper.get_fotoapelrame(dbhelper.get_statusapelpagi(1));
+            etLokasiApel.setText(dbhelper.check_existingapel(2, selectedShift));
+            etWaktuApelPagi.setText(dbhelper.check_existingapel(3, selectedShift));
+            etDescApel.setText(dbhelper.check_existingapel(4, selectedShift));
+            gambarApelPagi = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1, selectedShift));
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarApelPagi, 0, gambarApelPagi.length);
             imgFotoApelPagi.setForeground(null);
             imgFotoApelPagi.setImageBitmap(compressedBitmap);
         }
         else {
-            dbhelper.insert_apelpagi_header(nodocApel);
+
+            dbhelper.insert_apelpagi_header(nodocApel, selectedShift);
 
             // Insertin team data into transaction
-            Cursor cursorAnggota = dbhelper.view_prepareanggota_apelpagi();
+            Cursor cursorAnggota = dbhelper.view_prepareanggota_apelpagi(selectedShift);
             if (cursorAnggota.moveToFirst()) {
                 do {
                     dbhelper.insert_apelpagi_anggota(nodocApel, cursorAnggota.getString(cursorAnggota.getColumnIndex("empcode")),
@@ -369,14 +392,6 @@ public class ApelPagi extends AppCompatActivity {
                 } while (cursorAnggota.moveToNext());
             }
 
-            Cursor cursorPimpinan = dbhelper.view_preparepimpinan_apelpagi();
-            if (cursorPimpinan.moveToFirst()) {
-                do {
-                    dbhelper.insert_apelpagi_pimpinan(nodocApel, cursorPimpinan.getString(cursorPimpinan.getColumnIndex("empcode")),
-                            cursorPimpinan.getString(cursorPimpinan.getColumnIndex("positioncode")),
-                            cursorPimpinan.getString(cursorPimpinan.getColumnIndex("groupcode")));
-                } while (cursorPimpinan.moveToNext());
-            }
         }
 
     }
@@ -404,6 +419,7 @@ public class ApelPagi extends AppCompatActivity {
         }
         apelAdapter = new ApelPagiAdapter(ApelPagi.this, R.layout.apelpagi_adapter, listsPimpinan);
         lvPimpinan.setAdapter(apelAdapter);
+
     }
 
     public void loadlvanggota() {
@@ -445,5 +461,12 @@ public class ApelPagi extends AppCompatActivity {
         double longitude = gps.getLongitude();
         latApel = String.valueOf(latitude);
         longApel = String.valueOf(longitude);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(4, backIntent);
+        finish();
     }
 }

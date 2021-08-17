@@ -79,13 +79,14 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     Dialog dlgSelesaiCarLog;
 
     // The Code
-    private List<String> listTypeLoadCode, listCategoryLoadCode, listHelper1Code, listHelper2code, listAsalKebunCode, listAsalDivisiCode, listAsalLokasiCode, listTujuanKebunCode, listTujuanDivisiCode,
-    listTujuanLokasiCode, listTujuanKegiatanCode, listTujuanKegiatanName;
+    private List<String> listTypeLoadCode, listCategoryLoadCode, listAsalKebunCode, listAsalDivisiCode,
+            listAsalLokasi, listTujuanLokasi, listTujuanKebunCode, listTujuanDivisiCode, listTujuanKegiatan;
     String savedate, nodocCarLog, selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2, selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi,
             selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi, selectedTujuanKegiatan, latCarLog, longCarLog;
 
     //The Name
-    private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan, listAsalKebunCarLog, listAsalDivisiCarLog, listTujuanKebunCarLog, listTujuanDivisiCarLog, listLokasiAsalCarLog, listLokasiTujuanCarLog;
+    private List<String> listMuatanCarLog, listEmployee, listCategoryMuatan, listAsalKebunCarLog, listAsalDivisiCarLog,
+            listTujuanKebunCarLog, listTujuanDivisiCarLog;
     ArrayAdapter<String> adapterMuatanCarLog, adapterEmployee, adapterCategoryMuatan, adapterAsalKebunCarLog, adapterAsalDivisiCarLog, adapterTujuanKebunCarLog,
             adapterTujuanDivisiCarLog, adapterLokasiAsalCarLog, adapterLokasiTujuanCarLog, adapterKegiatanTujuan;
     DatabaseHelper dbhelper;
@@ -139,8 +140,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         keyListenerEtHasilKerja = etHasilKerjaCarLog.getKeyListener();
         keyListenerJumlahRitase= etHasilKerjaLaterite.getKeyListener();
 
-        btnBackCarLog.setOnClickListener(v -> finish());
-
         todayDate();
         prepareCarLogData();
 
@@ -163,9 +162,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 acAsalDivisiCarLog.setAdapter(adapterAsalDivisiCarLog);
                 acAsalDivisiCarLog.setText("");
 
-                listAsalLokasiCode = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 0);
-                listLokasiAsalCarLog = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 1);
-                adapterLokasiAsalCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiAsalCarLog);
+                listAsalLokasi = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 1);
+                adapterLokasiAsalCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listAsalLokasi);
                 acAsalLokasiCarLog.setAdapter(adapterLokasiAsalCarLog);
             }
         });
@@ -173,7 +171,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acTujuanKegiatanCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedTujuanKegiatan = listTujuanKegiatanCode.get(position);
+                selectedTujuanKegiatan = dbhelper.get_singlekegiatanCarLog((String) adapterView.getItemAtPosition(position));
+                Log.d("tujuankegiatan", selectedTujuanKegiatan);
             }
         });
 
@@ -181,9 +180,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedAsalDivisi = listAsalDivisiCode.get(position);
-                listAsalLokasiCode = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 0);
-                listLokasiAsalCarLog = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 1);
-                adapterLokasiAsalCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiAsalCarLog);
+                listAsalLokasi = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 1);
+                adapterLokasiAsalCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listAsalLokasi);
                 acAsalLokasiCarLog.setAdapter(adapterLokasiAsalCarLog);
             }
         });
@@ -245,7 +243,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acHelper1CarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedHelper1 = listHelper1Code.get(position);
+                selectedHelper1 = dbhelper.get_empcode((String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acHelper1CarLog.getWindowToken(), 0);
             }
@@ -254,8 +252,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acHelper2CarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedHelper2 = listHelper2code.get(position);
-
+                selectedHelper2 = dbhelper.get_empcode((String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acHelper2CarLog.getWindowToken(), 0);
             }
@@ -271,9 +268,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 acTujuanDivisiCarLog.setAdapter(adapterTujuanDivisiCarLog);
                 acTujuanDivisiCarLog.setText("");
 
-                listTujuanLokasiCode = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 0);
-                listLokasiTujuanCarLog = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 1);
-                adapterLokasiTujuanCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiTujuanCarLog);
+                listTujuanLokasi = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 1);
+                adapterLokasiTujuanCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanLokasi);
                 acTujuanLokasiCarLog.setAdapter(adapterLokasiTujuanCarLog);
             }
         });
@@ -281,7 +277,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acAsalLokasiCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedAsalLokasi = listAsalLokasiCode.get(position);
+                selectedAsalLokasi = dbhelper.get_singlelokasiCode((String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acAsalLokasiCarLog.getWindowToken(), 0);
             }
@@ -290,7 +286,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acTujuanLokasiCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedTujuanLokasi = listTujuanLokasiCode.get(position);
+                selectedTujuanLokasi = dbhelper.get_singlelokasiCode((String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acTujuanLokasiCarLog.getWindowToken(), 0);
             }
@@ -300,9 +296,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedTujuanDivisi = listTujuanDivisiCode.get(position);
-                listTujuanLokasiCode = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 0);
-                listLokasiTujuanCarLog = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 1);
-                adapterLokasiTujuanCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiTujuanCarLog);
+                listTujuanLokasi = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 1);
+                adapterLokasiTujuanCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanLokasi);
                 acTujuanLokasiCarLog.setAdapter(adapterLokasiTujuanCarLog);
             }
         });
@@ -690,6 +685,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             }
         });
 
+        btnBackCarLog.setOnClickListener(v -> onBackPressed());
     }
 
     void prepareCarLogData() {
@@ -834,14 +830,11 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         adapterTujuanKebunCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanKebunCarLog);
         acTujuanKebunCarLog.setAdapter(adapterTujuanKebunCarLog);
 
-        listTujuanKegiatanCode = dbhelper.get_tujuankegiatancarlog(0);
-        listTujuanKegiatanName = dbhelper.get_tujuankegiatancarlog(1);
-        adapterKegiatanTujuan = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanKegiatanName);
+        listTujuanKegiatan = dbhelper.get_tujuankegiatancarlog(1);
+        adapterKegiatanTujuan = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanKegiatan);
         acTujuanKegiatanCarLog.setAdapter(adapterKegiatanTujuan);
 
-        listEmployee = dbhelper.get_employee(1);
-        listHelper1Code = dbhelper.get_employee(0);
-        listHelper2code = dbhelper.get_employee(0);
+        listEmployee = dbhelper.get_employee();
         adapterEmployee = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listEmployee);
         acHelper1CarLog.setAdapter(adapterEmployee);
         acHelper2CarLog.setAdapter(adapterEmployee);
@@ -979,7 +972,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                                 kilometerAkhir, latCarLog, longCarLog, "Selesai", gambarCarLog, fotoKilometer);
                         dlgSelesaiCarLog.dismiss();
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
-                                .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
+                                .setConfirmClickListener(sweetAlertDialog -> onBackPressed()).setConfirmText("OK").show();
                     }
 
                 }
@@ -1002,9 +995,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Kategori Muatan").setConfirmText("OK").show();
             } else {
                 if (selectedCategoryLoad.equals("ARL01")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    if (TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
+                        || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1034,10 +1026,9 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     }
                 }
                 else if (selectedCategoryLoad.equals("BBT01")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1070,9 +1061,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     }
                 }
                 else if (selectedCategoryLoad.equals("BBT02")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1103,10 +1095,9 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                                 etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
                     }
                 }
-                else if (selectedCategoryLoad.equals("DDL01") || selectedCategoryLoad.equals("JAL01") || selectedCategoryLoad.equals("JJK01")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                else if (selectedCategoryLoad.equals("DLL01") || selectedCategoryLoad.equals("JAL01") || selectedCategoryLoad.equals("JJK01")) {
+                    if (TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1135,10 +1126,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                                 etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
                     }
                 }
-                else if (selectedCategoryLoad.equals("DDL02") || selectedCategoryLoad.equals("DDL03") || selectedCategoryLoad.equals("DDL04") || selectedCategoryLoad.equals("DDL05")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                else if (selectedCategoryLoad.equals("DLL02") || selectedCategoryLoad.equals("DLL03") || selectedCategoryLoad.equals("DLL04") || selectedCategoryLoad.equals("DLL05")) {
+                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1195,9 +1186,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     }
                 }
                 else if (selectedCategoryLoad.equals("KRY05")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1227,11 +1217,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     }
                 }
                 else if (selectedCategoryLoad.equals("LTR01")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaLaterite.getText().toString().trim())) {
+                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaLaterite.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1265,10 +1254,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     }
                 }
                 else if (selectedCategoryLoad.equals("PPK01")) {
-                    if (TextUtils.isEmpty(acHelper1CarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanKegiatanCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKegiatanCarLog.getText().toString().trim())
+                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
                     }
                     else {
@@ -1375,5 +1364,13 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         double longitude = gps.getLongitude();
         latCarLog = String.valueOf(latitude);
         longCarLog = String.valueOf(longitude);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(3, backIntent);
+        finish();
+
     }
 }

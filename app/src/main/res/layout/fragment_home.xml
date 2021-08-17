@@ -505,6 +505,7 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
         android:orientation="vertical"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -538,9 +539,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/tbl_lr_bottom"
-            android:backgroundTint="@color/white"/>
+            android:backgroundTint="@color/white" />
     </LinearLayout>
-
 
 
     <LinearLayout
@@ -630,16 +630,20 @@
             android:layout_height="1.5dp"
             android:background="?android:attr/listDivider" />
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lvHistoryHomeApel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:background="@drawable/tbl_lr_bottom"
+            android:backgroundTint="@color/white"
+            android:visibility="gone" />
 
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lvHistoryHomeCarLog"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@drawable/tbl_lr_bottom"
+            android:backgroundTint="@color/white" />
 
     </LinearLayout>
 
@@ -661,38 +665,98 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/tombol"
-            android:backgroundTint="@color/white"
             android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tbl_lr_top"
+                android:hint="Kategori Kendala"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acKategoriKendala"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:editable="false"
+                    android:nextFocusForward="@id/etLokasiKendala"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Lokasi Kendala"
+                android:paddingStart="8dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLokasiKendala"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:nextFocusDown="@id/etPanjangKendala"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/topborderonly"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:text="Informasi Tambahan"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/tombol"
-                android:backgroundTint="#FFFFFF"
-                android:orientation="vertical"
-                android:paddingTop="4dp">
+                android:background="@color/white"
+                android:paddingStart="8dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="6dp"
+                android:weightSum="3">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:hint="Kategori Kendala"
-                    app:endIconMode="dropdown_menu">
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:hint="Panjang (M)"
+                    app:suffixText="M">
 
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/acKategoriKendala"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPanjangKendala"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:editable="false"
-                        android:nextFocusForward="@id/etLokasiKendala"
-                        android:paddingStart="8dp"
+                        android:inputType="numberDecimal"
+                        android:nextFocusRight="@id/etLebarKendala"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -700,157 +764,89 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:hint="Lokasi Kendala">
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:hint="Lebar (M)"
+                    app:suffixText="M">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLokasiKendala"
+                        android:id="@+id/etLebarKendala"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:nextFocusDown="@id/etPanjangKendala"
-                        android:paddingStart="8dp"
+                        android:inputType="numberDecimal"
+                        android:nextFocusRight="@id/etLuasKendala"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.appcompat.widget.AppCompatEditText
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/topborderonly"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:text="Informasi Tambahan"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:weightSum="3">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:hint="Panjang (M)"
-                        app:suffixText="M">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etPanjangKendala"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:inputType="numberDecimal"
-                            android:nextFocusRight="@id/etLebarKendala"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
-                            android:singleLine="true"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:layout_weight="1"
-                        android:hint="Lebar (M)"
-                        app:suffixText="M">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etLebarKendala"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:inputType="numberDecimal"
-                            android:nextFocusRight="@id/etLuasKendala"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
-                            android:singleLine="true"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:layout_weight="1"
-                        android:hint="Luas (M2)"
-                        app:suffixText="M2">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etLuasKendala"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:inputType="numberDecimal"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
-                            android:singleLine="true"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1"
-                    android:background="@drawable/topborderonly"
-                    android:paddingStart="8dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="8dp">
+                    android:hint="Luas (M2)"
+                    app:suffixText="M2">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLuasKendala"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:inputType="numberDecimal"
+                        android:paddingStart="12dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="4dp"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/tbl_lr_bottom"
+                android:backgroundTint="@color/white"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:hint="Deskripsi Kendala"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDescKendala"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:hint="Deskripsi Kendala"
-                        app:endIconMode="clear_text">
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:paddingStart="12dp"
+                        android:paddingTop="12dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etDescKendala"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="top"
-                            android:inputType="textMultiLine"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <ImageButton
-                        android:id="@+id/imgKendala"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_baseline_add_photo_100" />
-
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/imgKendala"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_add_photo_100" />
 
             </LinearLayout>
 
@@ -862,8 +858,8 @@
                 android:layout_marginTop="4dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="SIMPAN KENDALA"
-                android:textSize="14sp"
+                android:text="SUBMIT KENDALA"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp" />
 

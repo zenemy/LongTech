@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="KEGIATAN RKH DT-99"
+            android:text="KEGIATAN RKH UNIT"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -159,7 +159,8 @@
             <ListView
                 android:id="@+id/lvRincianRKH"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 
@@ -195,7 +196,7 @@
             android:id="@+id/btnCancelPenginputanRKH"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
@@ -208,7 +209,7 @@
             android:id="@+id/btnSimpanPenginputanRKH"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"

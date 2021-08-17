@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnlogin, btnDialogInfo;
     ImageView imglogo;
     AutoCompleteTextView imgChangeLanguage;
-    ConstraintLayout layoutBgLogin;
+    LinearLayout layoutBgLogin;
     //END===========================================================================================
 
     @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
@@ -692,6 +692,7 @@ public class LoginActivity extends AppCompatActivity {
                         jsonPost.getString("USERID"),
                         jsonPost.getString("USERNAME"),
                         jsonPost.getString("USERTYPE"),
+                        jsonPost.getString("USERROLE"),
                         jsonPost.getString("POSITION_NAME"),
                         jsonPost.getString("COMP_ID"),
                         jsonPost.getString("SITE_ID"),
@@ -707,9 +708,9 @@ public class LoginActivity extends AppCompatActivity {
                         jsonPost.getString("USERPASSWORD"),
                         jsonPost.getString("USERLANGUAGE"));
 
-                if (!jsonPost.getString("BLOBUSERPHOTO").equals("")) {
+                if (!jsonPost.getString("USERPHOTO").equals("")) {
                     byte[] decodedUserPhoto = Base64.decode(
-                            jsonPost.getString("BLOBUSERPHOTO"),
+                            jsonPost.getString("USERPHOTO"),
                             Base64.DEFAULT);
                     dbhelper.update_userpphoto(decodedUserPhoto);
                 }
