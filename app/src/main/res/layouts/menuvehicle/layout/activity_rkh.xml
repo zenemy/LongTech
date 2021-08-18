@@ -166,6 +166,7 @@
             android:layout_alignParentEnd="true"
             android:onClick="eventAddUnitRKH"
             app:maxImageSize="48dp"
+            android:visibility="gone"
             app:srcCompat="@android:drawable/ic_input_add" />
 
     </RelativeLayout>

@@ -178,7 +178,7 @@ public class AdjustmentUnit extends AppCompatActivity {
             keyboardMgr.hideSoftInputFromWindow(acDriver.getWindowToken(), 0);
         });
 
-        btnBackAdjustment.setOnClickListener(view -> finish());
+        btnBackAdjustment.setOnClickListener(view -> onBackPressed());
 
         btnSubmitAdjustment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,13 +233,18 @@ public class AdjustmentUnit extends AppCompatActivity {
                             selectedVehicle = null;
 
                             sweetAlertDialog.dismiss();
-                            Intent backIntent = new Intent();
-                            setResult(727, backIntent);
-                            finish();
+                            onBackPressed();
                         }).setConfirmText("OK").show();
                 }
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(727, backIntent);
+        finish();
     }
 }

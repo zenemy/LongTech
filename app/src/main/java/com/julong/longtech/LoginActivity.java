@@ -914,7 +914,7 @@ public class LoginActivity extends AppCompatActivity {
                                             jsonObject1.getString("GROUPPARAMDESC"),
                                             jsonObject1.getString("PARAMETERCODE"),
                                             jsonObject1.getString("PARAMETERDESC"),
-                                            jsonObject1.getString("SEQ_NO"));
+                                            jsonObject1.getString("SEQ_NO"), "0");
                                     i++;
                                 }
                                 languages = dbhelper.get_loginlanguage();

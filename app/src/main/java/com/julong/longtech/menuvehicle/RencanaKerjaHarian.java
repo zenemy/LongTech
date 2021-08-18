@@ -15,9 +15,11 @@ import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.UploadAdapter;
 import com.julong.longtech.menusetup.UploadParam;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -61,7 +63,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
     FloatingActionButton btnAddRKH;
     EditText etPelaksanaanTglRKH, etDescRKH;
     Button btnSubmitRKH, btnBackRKH;
-    ListView listViewRKH;
+    public static ListView listViewRKH;
 
     private List<ListParamRKH> listParamRKH;
     AdapterRKH adapterRKH;
@@ -90,18 +92,13 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
 
         // Set tanggal pelaksanaan
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date tomorrow = calendar.getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
-        String tomorrowAsString = dateFormat.format(tomorrow);
-        etPelaksanaanTglRKH.setText(tomorrowAsString);
+        etPelaksanaanTglRKH.setText(new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date()));
         selectedDateRKH = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         // Setting min date
         MaterialDatePicker.Builder<Long> materialDatePickerBuilder = MaterialDatePicker.Builder.datePicker();
         CalendarConstraints.Builder constraintsBuilderRange = new CalendarConstraints.Builder();
-        CalendarConstraints.DateValidator dateValidatorMin = DateValidatorPointForward.from(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1));
+        CalendarConstraints.DateValidator dateValidatorMin = DateValidatorPointForward.from(System.currentTimeMillis());
         ArrayList<CalendarConstraints.DateValidator> listValidators = new ArrayList<>();
         listValidators.add(dateValidatorMin);
         CalendarConstraints.DateValidator validators = CompositeDateValidator.allOf(listValidators);
@@ -127,6 +124,26 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 Date date = new Date(selection + offsetFromUTC);
                 selectedDateRKH = formatSave.format(date);
                 etPelaksanaanTglRKH.setText(simpleFormatView.format(date));
+
+                Cursor cursorUnit = dbHelper.view_prepareunit_rkh();
+                if (cursorUnit.moveToFirst()) {
+                    do {
+                        dbHelper.insert_rkh_detail1(nodocRKH,
+                                cursorUnit.getString(cursorUnit.getColumnIndex("unitcode")),
+                                selectedDateRKH,
+                                cursorUnit.getString(cursorUnit.getColumnIndex("shiftcode")),
+                                cursorUnit.getString(cursorUnit.getColumnIndex("drivercode")),
+                                null, null, "0");
+                    } while (cursorUnit.moveToNext());
+                }
+
+                loadListViewRKH();
+                dbHelper.insert_rkh_header(nodocRKH, selectedDateRKH, listViewRKH.getAdapter().getCount());
+                if (listViewRKH.getAdapter().getCount() > 0) {
+                    btnAddRKH.setVisibility(View.VISIBLE);
+                    etPelaksanaanTglRKH.setOnClickListener(view -> Toast.makeText(RencanaKerjaHarian.this,
+                            "Selesaikan RKH saat ini dahulu!", Toast.LENGTH_LONG).show());
+                }
 
             }
         });
@@ -162,6 +179,10 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         }
 
         btnBackRKH.setOnClickListener(view -> onBackPressed());
+
+    }
+
+    public void prepateTeamData() throws SQLiteException {
 
     }
 
@@ -259,7 +280,6 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                             selectedDriver, selectedHelper1, selectedHelper2, etInputRKHBBM.getText().toString());
 
                     dbHelper.delete_rkh_header(nodocRKH);
-                    dbHelper.insert_rkh_header(nodocRKH, selectedDateRKH, dbHelper.get_count_totalrkh(nodocRKH), etDescRKH.getText().toString());
                     dlgAddUnit.dismiss();
                     acUnitInputRKH.setText("");
                     acShiftDriverRKH.setText("");
@@ -280,21 +300,26 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         dlgAddUnit.show();
     }
 
-    private void loadListViewRKH() {
-        listViewRKH = findViewById(R.id.lvRKH);
+    public static void loadListViewRKH() {
+
+        List<ListParamRKH> listParamRKH;
+        AdapterRKH adapterRKH;
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(listViewRKH.getContext());
+
         listParamRKH = new ArrayList<>();
         listParamRKH.clear();
-        final Cursor cursor = dbHelper.listview_rkh(nodocRKH);
+        final Cursor cursor = dbhelper.listview_rkh(nodocRKH);
         if (cursor.moveToFirst()) {
             do {
                 ListParamRKH listParamRKHS = new ListParamRKH(cursor.getString(0),
                         cursor.getString(2), cursor.getString(3), cursor.getString(4),
-                        cursor.getString(5), cursor.getString(6)
+                        cursor.getString(5), cursor.getInt(6)
                 );
                 listParamRKH.add(listParamRKHS);
             } while (cursor.moveToNext());
         }
-        adapterRKH = new AdapterRKH(this, R.layout.item_lvrkh, listParamRKH);
+        adapterRKH = new AdapterRKH(listViewRKH.getContext(), R.layout.item_lvrkh, listParamRKH);
         listViewRKH.setAdapter(adapterRKH);
     }
 

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp">
+
+    <TextView
+        android:id="@+id/tvHeaderFuelDlgRKH"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tbl_lr_top"
+        android:backgroundTint="@color/colorPrimary"
+        android:gravity="center"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:text="MASUKKAN BBM"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@color/white"
+        app:hintEnabled="false"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/ic_baseline_gas_station_24"
+        app:suffixText="Liter">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFuelDlgRKH"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Input BBM"
+            android:textColorHint="#808080"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="@color/white">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackDlgFuelRKH"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="0.5dp"
+            android:layout_marginBottom="1dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder"
+            android:text="KEMBALI"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOkDlgFuelRKH"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginStart="0.5dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded"
+            android:text="SIMPAN"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+</LinearLayout>

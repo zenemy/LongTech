@@ -172,7 +172,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedTujuanKegiatan = dbhelper.get_singlekegiatanCarLog((String) adapterView.getItemAtPosition(position));
-                Log.d("tujuankegiatan", selectedTujuanKegiatan);
             }
         });
 

@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Kegiatan Kerja"
-        android:gravity="center_horizontal"
         android:textStyle="bold"
         android:textSize="14sp"
         android:textColor="@color/black" />
@@ -19,105 +18,60 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:weightSum="2">
+        android:layout_marginTop="8dp">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="Lokasi Kerja"
             android:textColor="@color/black"
-            android:layout_marginEnd="4dp"
-            android:textStyle="bold"/>
+            android:layout_marginEnd="4dp" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:text=":"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvLokasiKerjaRincianRKH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="Target Prestasi"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:weightSum="2">
+        android:layout_marginTop="4dp">
 
         <TextView
-            android:id="@+id/tvLokasiKerjaRincianRKH"
-            android:layout_width="match_parent"
+            android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="4dp"
-            android:text="Lokasi"
+            android:text="Target Kerja"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text=":"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tvPrestasiKerjaRincianRKH"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_weight="1"
             android:text="Target"
             android:textColor="@color/black"
-             />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:weightSum="2">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Waktu Kerja"
-            android:textColor="@color/black"
-            android:layout_marginEnd="4dp"
             android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:text="KM / HM Kerja"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:weightSum="2">
-
-        <TextView
-            android:id="@+id/tvWaktuKerjaRincianRKH"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="Waktu"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/tvKMHMKerjaRincianRKH"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:text="Kilometer"
-            android:textColor="@color/black" />
-
     </LinearLayout>
 
 </LinearLayout>

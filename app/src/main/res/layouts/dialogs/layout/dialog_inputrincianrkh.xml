@@ -31,7 +31,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:hint="Lokasi Kerja"
@@ -50,55 +50,34 @@
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Kegiatan Kerja"
-                app:endIconMode="dropdown_menu">
-
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/acKegiatanKerjaRincianRKH"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:imeOptions="actionNext"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:singleLine="true"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
+                android:paddingEnd="8dp"
+                android:weightSum="3"
                 android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
-                    android:hint="Jenis Muatan">
+                    android:hint="Jenis Muatan"
+                    app:endIconMode="dropdown_menu">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acLoadTypeRincianRKH"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:imeOptions="actionNext"
-                        android:editable="false"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
+                        android:editable="false"
+                        android:inputType="none"
                         android:singleLine="true"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -106,9 +85,9 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:layout_marginStart="4dp"
-                    android:layout_weight="1"
                     android:hint="Satuan Kerja">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -116,7 +95,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:editable="false"
-                        android:imeOptions="actionNext"
                         android:inputType="none"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
@@ -127,67 +105,31 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/topborderonly"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
                 android:paddingStart="8dp"
+                android:layout_marginTop="4dp"
                 android:paddingEnd="8dp"
-                android:paddingTop="4dp"
-                android:orientation="horizontal">
+                android:paddingBottom="14dp"
+                android:background="@drawable/bottomborderonly"
+                android:hint="Kegiatan Kerja"
+                app:endIconMode="dropdown_menu">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acKegiatanKerjaRincianRKH"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1"
-                    android:hint="Waktu Kerja"
-                    app:endIconMode="custom"
-                    app:endIconDrawable="@drawable/ic_baseline_accesstime_24">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etWaktuKerjaRincianRKH"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:clickable="true"
-                        android:focusableInTouchMode="false"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                        android:imeOptions="actionNext"
-                        android:inputType="time"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="4dp"
-                        android:singleLine="true"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:hint="KM / HM Kerja">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etKMHMRincianRKH"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:digits="0123456789,"
-                        android:imeOptions="actionNext"
-                        android:maxLength="8"
-                        android:inputType="number"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="4dp"
-                        android:singleLine="true"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                    android:layout_height="40dp"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputLayoutTargetRincianRKH"
@@ -197,7 +139,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:hint="Target Prestasi Kerja">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -219,11 +161,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:paddingEnd="8dp"
-                android:paddingTop="4dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/topborderonly"
                 app:endIconMode="clear_text"
                 android:hint="Deskripsi Pekerjaan (Optional)">
 

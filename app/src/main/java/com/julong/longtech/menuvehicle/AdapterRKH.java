@@ -2,12 +2,17 @@ package com.julong.longtech.menuvehicle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,22 +26,24 @@ import com.julong.longtech.DatabaseHelper;
 import java.util.Date;
 import java.util.List;
 
+import static com.julong.longtech.menuvehicle.RencanaKerjaHarian.loadListViewRKH;
+
 public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
     private List<ListParamRKH> rkhParams;
-    private final Activity context;
-    public static TextView data;
+    private final Context context;
+    public static Dialog dlgFuelRKH;
     DatabaseHelper dbhelper;
 
-    public AdapterRKH(Activity context, int list, List<ListParamRKH> rkhParams) {
+    public AdapterRKH(Context context, int list, List<ListParamRKH> rkhParams) {
         super(context, R.layout.item_lvrkh, rkhParams);
         this.context = context;
         this.rkhParams = rkhParams;
     }
 
     static class ViewHolder {
-        protected LinearLayout layoutItemLvRKH, layoutHelper1LvRKH, layoutHelper2LvRKH;
-        protected TextView tvVehicleNameLvRKH, tvShiftLvRKH, tvDriverNameLvRKH, tvHelper1NameLvRKH, tvHelper2NameLvRKH, tvBensinLvRKH;
+        protected LinearLayout layoutItemLvRKH, layoutHelper1LvRKH;
+        protected TextView tvVehicleCodeLvRKH, tvShiftLvRKH, tvDriverNameLvRKH, tvHelper1NameLvRKH, tvBensinLvRKH;
     }
 
     @SuppressLint("SetTextI18n")
@@ -44,25 +51,22 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         dbhelper = new DatabaseHelper(getContext());
         if (convertView == null) {
-            LayoutInflater inflator = context.getLayoutInflater();
+            LayoutInflater inflator = LayoutInflater.from(context);
             convertView = inflator.inflate(R.layout.item_lvrkh, null);
 
-            ViewHolder viewHolder = new AdapterRKH.ViewHolder();
+            ViewHolder viewHolder = new ViewHolder();
             viewHolder.layoutItemLvRKH = (LinearLayout) convertView.findViewById(R.id.layoutItemLvRKH);
             viewHolder.layoutHelper1LvRKH = (LinearLayout) convertView.findViewById(R.id.layoutHelper1LvRKH);
-            viewHolder.layoutHelper2LvRKH = (LinearLayout) convertView.findViewById(R.id.layoutHelper2LvRKH);
-            viewHolder.tvVehicleNameLvRKH = (TextView) convertView.findViewById(R.id.tvVehicleNameLvRKH);
+            viewHolder.tvVehicleCodeLvRKH = (TextView) convertView.findViewById(R.id.tvVehicleCodeLvRKH);
             viewHolder.tvDriverNameLvRKH = (TextView) convertView.findViewById(R.id.tvDriverNameLvRKH);
             viewHolder.tvHelper1NameLvRKH = (TextView) convertView.findViewById(R.id.tvHelper1NameLvRKH);
-            viewHolder.tvHelper2NameLvRKH = (TextView) convertView.findViewById(R.id.tvHelper2NameLvRKH);
             viewHolder.tvBensinLvRKH = (TextView) convertView.findViewById(R.id.tvKebutuhanBBM);
             viewHolder.tvShiftLvRKH = (TextView) convertView.findViewById(R.id.tvShiftLvRKH);
 
             convertView.setTag(viewHolder);
-            convertView.setTag(R.id.tvVehicleNameLvRKH, viewHolder.tvVehicleNameLvRKH);
+            convertView.setTag(R.id.tvVehicleCodeLvRKH, viewHolder.tvVehicleCodeLvRKH);
             convertView.setTag(R.id.tvDriverNameLvRKH, viewHolder.tvDriverNameLvRKH);
             convertView.setTag(R.id.tvHelper1NameLvRKH, viewHolder.tvHelper1NameLvRKH);
-            convertView.setTag(R.id.tvHelper2NameLvRKH, viewHolder.tvHelper2NameLvRKH);
             convertView.setTag(R.id.tvKebutuhanBBM, viewHolder.tvBensinLvRKH);
             convertView.setTag(R.id.tvShiftLvRKH, viewHolder.tvShiftLvRKH);
 
@@ -70,10 +74,10 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
         ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 
-        viewHolder.tvVehicleNameLvRKH.setText(dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
+        viewHolder.tvVehicleCodeLvRKH.setText(rkhParams.get(position).getVehicleCode());
         viewHolder.tvShiftLvRKH.setText(rkhParams.get(position).getShiftkerja());
         viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getDrivername()));
-        viewHolder.tvBensinLvRKH.setText("BBM " + rkhParams.get(position).getKebutuhanBBM() + " Liter");
+        viewHolder.tvBensinLvRKH.setText(String.valueOf(rkhParams.get(position).getKebutuhanBBM()));
 
         if (rkhParams.get(position).getHelper1Name() == null || rkhParams.get(position).getHelper1Name().equals("")) {
             viewHolder.layoutHelper1LvRKH.setVisibility(View.GONE);
@@ -83,27 +87,54 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
             viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper1Name()));
         }
 
-        if (rkhParams.get(position).getHelper2Name() == null || rkhParams.get(position).getHelper2Name().equals("")) {
-            viewHolder.layoutHelper2LvRKH.setVisibility(View.GONE);
+        if (rkhParams.get(position).getKebutuhanBBM() == 0) {
+            viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dlgFuelRKH = new Dialog(getContext());
+                    dlgFuelRKH.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dlgFuelRKH.setContentView(R.layout.dialog_insertbbm_rkh);
+                    dlgFuelRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                    Window windowFuelRKH = dlgFuelRKH.getWindow();
+                    dlgFuelRKH.setCanceledOnTouchOutside(false);
+                    windowFuelRKH.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                    TextView tvHeaderFuelDlgRKH = dlgFuelRKH.findViewById(R.id.tvHeaderFuelDlgRKH);
+                    Button btnBackDlgFuelRKH = dlgFuelRKH.findViewById(R.id.btnBackDlgFuelRKH);
+                    Button btnOkDlgFuelRKH = dlgFuelRKH.findViewById(R.id.btnOkDlgFuelRKH);
+                    EditText etFuelDlgRKH = dlgFuelRKH.findViewById(R.id.etFuelDlgRKH);
 
-        }
-        else {
-            viewHolder.tvHelper2NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper2Name()));
+                    tvHeaderFuelDlgRKH.setText("INPUT BBM " + rkhParams.get(position).getVehicleCode());
+                    btnBackDlgFuelRKH.setOnClickListener(view1 -> dlgFuelRKH.dismiss());
+                    btnOkDlgFuelRKH.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dbhelper.update_fueldlg_rkh(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                                    RencanaKerjaHarian.selectedDateRKH, rkhParams.get(position).getShiftkerja(), etFuelDlgRKH.getText().toString());
+                            dlgFuelRKH.dismiss();
+                            loadListViewRKH();
+                        }
+                    });
+                    dlgFuelRKH.show();
+                }
+            });
+
+        } else {
+            viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), InputRincianRKH.class);
+                    intent.putExtra("nodoc", RencanaKerjaHarian.nodocRKH);
+                    intent.putExtra("vehiclecode", rkhParams.get(position).getVehicleCode());
+                    intent.putExtra("vehiclename", dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
+                    intent.putExtra("shiftkerja", viewHolder.tvShiftLvRKH.getText().toString());
+                    intent.putExtra("drivercode", rkhParams.get(position).getDrivername());
+                    intent.putExtra("drivername", viewHolder.tvDriverNameLvRKH.getText().toString());
+                    context.startActivity(intent);
+                }
+            });
         }
 
-        viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), InputRincianRKH.class);
-                intent.putExtra("nodoc", RencanaKerjaHarian.nodocRKH);
-                intent.putExtra("vehiclecode", rkhParams.get(position).getVehicleCode());
-                intent.putExtra("vehiclename", dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
-                intent.putExtra("shiftkerja", viewHolder.tvShiftLvRKH.getText().toString());
-                intent.putExtra("drivercode", rkhParams.get(position).getDrivername());
-                intent.putExtra("drivername", viewHolder.tvDriverNameLvRKH.getText().toString());
-                context.startActivity(intent);
-            }
-        });
+
 
         return convertView;
     }

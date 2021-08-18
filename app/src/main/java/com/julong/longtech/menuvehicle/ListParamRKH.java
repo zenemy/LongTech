@@ -7,9 +7,9 @@ public class ListParamRKH {
     private String driverName;
     private String helper1Name;
     private String helper2Name;
-    private String kebutuhanBBM;
+    private int kebutuhanBBM;
 
-    public ListParamRKH(String vehicleCode, String shiftKerja, String driverName, String helper1Name, String helper2Name, String kebutuhanBBM) {
+    public ListParamRKH(String vehicleCode, String shiftKerja, String driverName, String helper1Name, String helper2Name, int kebutuhanBBM) {
         this.vehicleCode = vehicleCode;
         this.shiftKerja = shiftKerja;
         this.driverName = driverName;
@@ -34,7 +34,7 @@ public class ListParamRKH {
     public String getHelper2Name() {
         return helper2Name;
     }
-    public String getKebutuhanBBM() {
+    public int getKebutuhanBBM() {
         return kebutuhanBBM;
     }
 

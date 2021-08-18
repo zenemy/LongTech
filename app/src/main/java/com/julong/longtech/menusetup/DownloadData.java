@@ -191,7 +191,8 @@ public class DownloadData extends AppCompatActivity {
                 while (igs01 < jsonArrayGS01.length()) {
                     JSONObject jsonObject1 = jsonArrayGS01.getJSONObject(igs01);
                     dbhelper.insert_dataGS01(jsonObject1.getString("GROUPPARAMCODE"), jsonObject1.getString("GROUPPARAMDESC"),
-                            jsonObject1.getString("PARAMETERCODE"), jsonObject1.getString("PARAMETERDESC"), jsonObject1.getString("SEQ_NO"));
+                            jsonObject1.getString("PARAMETERCODE"), jsonObject1.getString("PARAMETERDESC"),
+                            jsonObject1.getString("SEQ_NO"),  jsonObject1.getString("INACTIVE"));
                     igs01++;
                 }
 

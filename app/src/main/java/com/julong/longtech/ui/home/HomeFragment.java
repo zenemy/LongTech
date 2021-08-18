@@ -1,12 +1,14 @@
 package com.julong.longtech.ui.home;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
@@ -14,6 +16,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -53,10 +57,12 @@ import com.julong.longtech.R;
 import com.fxn.BubbleTabBar;
 import com.fxn.OnBubbleClickListener;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
+import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
+import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 
@@ -97,7 +103,7 @@ public class HomeFragment extends Fragment {
     ScrollView scrollkendala;
     ConstraintLayout clBgMainActivity;
     LinearLayout layoutRiwayatFragment, layoutInfoFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
-            linearLayoutCarLog, linearLayoutBBM, linearLayoutService;
+            linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel;
 
     String[] arrayMenuHistory = {"APEL PAGI", "CAR LOG"};
     ArrayAdapter<String> adapterMenuHistory;
@@ -137,6 +143,7 @@ public class HomeFragment extends Fragment {
         layoutRiwayatFragment = root.findViewById(R.id.layoutRiwayatFragment);
 
         filtertglhistory = root.findViewById(R.id.etDateHomeHistory);
+        linearLayoutApel = root.findViewById(R.id.linearLayoutApel);
         linearLayoutAbsen = root.findViewById(R.id.linearLayoutAbsen);
         linearLayoutRKH = root.findViewById(R.id.linearLayoutRKH);
         linearLayoutP2H = root.findViewById(R.id.linearLayoutP2H);
@@ -424,27 +431,84 @@ public class HomeFragment extends Fragment {
 
         linearLayoutQR.setOnClickListener(view -> ((MainActivity) getActivity()).eventShowQR(view));
 
+        ActivityResultLauncher<Intent> intentLaunchActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == 3) {
+                    acMenuRiwayatHome.setText(adapterMenuHistory.getItem(1), false);
+                    loadlvinfohome(todayDate);
+                    loadLvHistoryCarLog(todayDate);
+                }
+                if (result.getResultCode() == 727) {
+                    loadlvinfohome(todayDate);
+                }
+            }
+        );
+
         if (dbhelper.get_tbl_username(3).equals("USR")) {
             linearLayoutRKH.setVisibility(View.GONE);
+            linearLayoutApel.setVisibility(View.GONE);
+
+            linearLayoutBBM.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), PermintaanBBM.class);
+                intentLaunchActivity.launch(intent);
+            });
+            linearLayoutService.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
+                intentLaunchActivity.launch(intent);
+            });
+
         }
 
         if (dbhelper.get_tbl_username(3).equals("SPV")) {
             linearLayoutCarLog.setVisibility(View.GONE);
+            linearLayoutP2H.setVisibility(View.GONE);
+            linearLayoutBBM.setVisibility(View.GONE);
+
+            linearLayoutService.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), PerintahPerbaikan.class);
+                intentLaunchActivity.launch(intent);
+            });
         }
 
-        ActivityResultLauncher<Intent> intentLaunchActivity = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == 3) {
-                        acMenuRiwayatHome.setText(adapterMenuHistory.getItem(1), false);
-                        loadlvinfohome(todayDate);
-                        loadLvHistoryCarLog(todayDate);
+        linearLayoutApel.setOnClickListener(v -> {
+            if (dbhelper.get_statusapelpagi(0).equals("1")) {
+                Intent intent = new Intent(getActivity(), ApelPagi.class);
+                intent.putExtra("shiftapel", dbhelper.get_statusapelpagi(2));
+                intentLaunchActivity.launch(intent);
+                onPause();
+            } else {
+                String[] arrayShiftApel = {"Shift 1", "Shift 2", "Shift 3"};
+                ArrayAdapter<String> adapterShiftApel;
+
+                Dialog dlgStartApel = new Dialog(getContext());
+                dlgStartApel.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dlgStartApel.setContentView(R.layout.dialog_startapel);
+                dlgStartApel.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                Window windowStartApel = dlgStartApel.getWindow();
+                windowStartApel.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                AutoCompleteTextView acShiftStartApel = dlgStartApel.findViewById(R.id.acShiftStartApel);
+                Button btnOkStartApel = dlgStartApel.findViewById(R.id.btnOkDlgShiftApel);
+                Button btnBackStartApel = dlgStartApel.findViewById(R.id.btnBackDlgShiftApel);
+
+                btnBackStartApel.setOnClickListener(view12 -> dlgStartApel.dismiss());
+                adapterShiftApel = new ArrayAdapter<>(getActivity(), R.layout.spinnerlist, R.id.spinnerItem, arrayShiftApel);
+                acShiftStartApel.setAdapter(adapterShiftApel);
+
+                btnOkStartApel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dlgStartApel.dismiss();
+                        Intent intent = new Intent(getActivity(), ApelPagi.class);
+                        intent.putExtra("shiftapel", acShiftStartApel.getText().toString());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentLaunchActivity.launch(intent);
+                        onPause();
                     }
-                    if (result.getResultCode() == 727) {
-                        loadlvinfohome(todayDate);
-                    }
-                }
-        );
+                });
+                dlgStartApel.show();
+            }
+        });
 
         linearLayoutAbsen.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AbsensiMandiri.class);
@@ -463,16 +527,6 @@ public class HomeFragment extends Fragment {
 
         linearLayoutP2H.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), PemeriksaanPengecekanHarian.class);
-            intentLaunchActivity.launch(intent);
-        });
-
-        linearLayoutBBM.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), PermintaanBBM.class);
-            intentLaunchActivity.launch(intent);
-        });
-
-        linearLayoutService.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
             intentLaunchActivity.launch(intent);
         });
 

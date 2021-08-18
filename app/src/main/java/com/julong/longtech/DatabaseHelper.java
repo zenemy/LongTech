@@ -1024,7 +1024,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_rkh_header(String nodoc, String tglPelaksanaan, String totalrkh, String desc) {
+    public boolean insert_rkh_header(String nodoc, String tglPelaksanaan, int totalrkh) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -1038,7 +1038,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text2", get_infokemandoranapel(1, get_tbl_username(18)));
         contentValues.put("text3", get_tbl_username(0));
         contentValues.put("text4", totalrkh);
-        contentValues.put("text5", desc);
 
         long insert = db.insert("tr_01", null, contentValues);
         if (insert == -1) {
@@ -1157,14 +1156,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor listview_rkh(String nodoc) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT subitemdata, text1, text2, text3, text4, text5, text6 FROM tr_02 " +
-                "WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH' AND itemdata = 'DETAIL1' AND uploaded IS NULL", null);
+                "WHERE documentno = '"+nodoc+"' AND datatype = 'RKHVH' AND itemdata = 'DETAIL1' " +
+                "AND uploaded IS NULL ORDER BY subitemdata, text2", null);
         return cursor;
     }
 
-    public Cursor listview_rincianrkh(String nodoc, String unitcode) {
+    public Cursor listview_rincianrkh(String nodoc, String unitcode, String shiftcode) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT text4, text5, text6, text7, text8, text9 FROM tr_02 " +
-                "WHERE documentno = '"+nodoc+"' AND itemdata = 'DETAIL2' and subitemdata = '"+unitcode+"' AND uploaded IS NULL", null);
+                "WHERE documentno = '"+nodoc+"' AND itemdata = 'DETAIL2' and subitemdata = '"+unitcode+"' " +
+                "AND text2 = '"+shiftcode+"' AND uploaded IS NULL", null);
         return cursor;
     }
 
@@ -1188,12 +1189,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor listview_apelpagi_anggota() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT md1.text2 AS empname, tr2.text1 AS positioncode, md1.text20 AS positionname, " +
-                "tr2.subitemdata AS empcode, tr2.text2 AS unitcode,  ' (' || md2.text2 || ')' AS shiftcode, tr2.date1 AS waktuabsen, " +
+                "tr2.subitemdata AS empcode, tr2.text2 AS unitcode,  ' (' || md2.text2 || ')' AS shiftcode, TIME(tr2.date1) AS waktuabsen, " +
                 "tr2.text3 AS metodeabsen, tr2.itemdata, bl.blob1 AS fotoabsen FROM tr_02 tr2 INNER JOIN md_02 md2 " +
                 "ON md2.subitemdata = tr2.subitemdata AND md2.subdatatype = '"+get_tbl_username(18)+"' " +
                 "INNER JOIN md_01 md1 ON md1.text1 = tr2.subitemdata AND md1.datatype = 'EMPLOYEE' " +
                 "LEFT JOIN bl_01 bl ON bl.documentno = tr2.documentno AND bl.subitemdata = tr2.subitemdata " +
-                "WHERE tr2.datatype = 'ABSAPL' AND tr2.itemdata = 'DETAIL2' AND tr2.text8 = '"+ApelPagi.selectedShift+"'", null);
+                "WHERE tr2.datatype = 'ABSAPL' AND tr2.itemdata = 'DETAIL2' AND (DATE(tr2.date1) = DATE('NOW', 'localtime') OR tr2.date1 IS NULL) " +
+                "AND tr2.text8 = '"+ApelPagi.selectedShift+"'", null);
         return cursor;
     }
 
@@ -1417,6 +1419,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dataList;
     }
 
+    public Cursor view_prepareunit_rkh() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT md2.text1 AS unitcode, md2.text2 AS shiftcode, md2.subitemdata AS drivercode " +
+                "FROM md_02 md2 WHERE md2.subdatatype = '"+get_tbl_username(18)+"'", null);
+        return cursor;
+    }
+
     public Cursor view_prepareanggota_apelpagi(String shiftcode) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT md1emp.text2 AS empname, md1emp.text19 AS positioncode, md1post.text1 AS positionname, " +
@@ -1500,6 +1509,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //Get Name based on its code
+    public String get_single_satuanmuatan_activitysap(String jenisKegiatan, int index) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT subdatatype, text3 FROM md_01 WHERE datatype = 'ACTIVITYSAP' " +
+                "AND text1 = '"+jenisKegiatan+"'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(index).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String get_single_activitysap(String activityCode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT text1 FROM md_01 WHERE datatype = 'ACTIVITYSAP' " +
+                "AND subdatatype = '"+activityCode+"'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String get_single_gsloadtype(String selectedMuatan) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT parametercode FROM gs_01 WHERE groupparamcode = 'GS05' " +
+                "AND parameterdesc = '"+selectedMuatan+"'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
+
     public String get_singleloadtype(String loadtypecode) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT text4 FROM md_01 WHERE datatype = 'TRANSPORTRATE' AND text3 = '"+loadtypecode+"'", null);
@@ -1702,6 +1750,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+
+    public List<String> get_gs_loadtype_filtered(String vehiclegrouo) {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT gs.parameterdesc FROM gs_01 gs " +
+                "LEFT JOIN md_01 md ON md.text2 = gs.parametercode " +
+                "WHERE gs.groupparamcode = 'GS05' AND gs.inactive = 0 AND md.text4 = '"+vehiclegrouo+"'";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(0));
+            }
+
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
     public List<String> get_loadtype(int index) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1779,6 +1847,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (!cursor.isAfterLast()) {
             do {
                 dataList.add(cursor.getString(index));
+            }
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
+    public List<String> get_activitysap_filtered(String satuanMuatan, String vehiclegroup) {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT DISTINCT md.text1 FROM md_01 md LEFT JOIN gs_01 gs ON md.text2 = gs.parametercode " +
+                "AND gs.groupparamcode = 'GS05' WHERE datatype = 'ACTIVITYSAP' " +
+                "AND text2 = '"+satuanMuatan+"' AND text4 = '"+vehiclegroup+"';";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(0));
             }
             while (cursor.moveToNext());
             cursor.close();
@@ -1913,7 +1999,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dataList;
     }
 
-    public boolean insert_dataGS01(String groupparamcode, String groupparamdesc, String parametercode, String parameterdesc, String seq_no) {
+    public boolean insert_dataGS01(String groupparamcode, String groupparamdesc, String parametercode, String parameterdesc, String seq_no, String inactive) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("groupparamcode", groupparamcode);
@@ -1921,6 +2007,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("parametercode", parametercode);
         contentValues.put("parameterdesc", parameterdesc);
         contentValues.put("seq_no", seq_no);
+        contentValues.put("inactive", inactive);
 
         long insert = db.insert("gs_01", null, contentValues);
         if (insert == -1) {
@@ -2303,6 +2390,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Boolean update_fueldlg_rkh(String nodoc, String vehiclecode, String rkhDate, String shiftcode, String unitFuel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("text6", unitFuel);
+
+        long update = db.update("tr_02", contentValues, "documentno = '"+nodoc+"' " +
+                "AND subitemdata = '"+vehiclecode+"' AND date2 = '"+rkhDate+"' AND text2 = '"+shiftcode+"'", null);
+        if (update == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     public Boolean changepassword_myaccount(String updatedpassword) {
         SQLiteDatabase db = this.getWritableDatabase();

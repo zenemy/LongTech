@@ -139,6 +139,7 @@ public class AbsensiMandiri extends AppCompatActivity {
                     etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
 
             //Show map location of user
+            layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
             layoutMap.setVisibility(View.VISIBLE);
             GeoPoint absenPoint = new GeoPoint(Double.parseDouble(latAbsenMandiri), Double.parseDouble(longAbsenMandiri));
             Marker titikAbsen = new Marker(mapAbsenLokasi);
