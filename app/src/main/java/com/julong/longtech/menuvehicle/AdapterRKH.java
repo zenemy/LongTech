@@ -20,6 +20,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.julong.longtech.R;
 import com.julong.longtech.DatabaseHelper;
 
@@ -32,18 +34,19 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
     private List<ListParamRKH> rkhParams;
     private final Context context;
-    public static Dialog dlgFuelRKH;
+    private String checkedRKH;
     DatabaseHelper dbhelper;
 
-    public AdapterRKH(Context context, int list, List<ListParamRKH> rkhParams) {
+    public AdapterRKH(Context context, List<ListParamRKH> rkhParams) {
         super(context, R.layout.item_lvrkh, rkhParams);
         this.context = context;
         this.rkhParams = rkhParams;
     }
 
     static class ViewHolder {
-        protected LinearLayout layoutItemLvRKH, layoutHelper1LvRKH;
-        protected TextView tvVehicleCodeLvRKH, tvShiftLvRKH, tvDriverNameLvRKH, tvHelper1NameLvRKH, tvBensinLvRKH;
+        protected LinearLayout layoutItemLvRKH;
+        protected TextView tvVehicleCodeLvRKH, tvShiftLvRKH, tvDriverNameLvRKH, tvDriverCodeLvRKH;
+        protected CheckBox checkBoxLvRKH;
     }
 
     @SuppressLint("SetTextI18n")
@@ -55,20 +58,19 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
             convertView = inflator.inflate(R.layout.item_lvrkh, null);
 
             ViewHolder viewHolder = new ViewHolder();
-            viewHolder.layoutItemLvRKH = (LinearLayout) convertView.findViewById(R.id.layoutItemLvRKH);
-            viewHolder.layoutHelper1LvRKH = (LinearLayout) convertView.findViewById(R.id.layoutHelper1LvRKH);
-            viewHolder.tvVehicleCodeLvRKH = (TextView) convertView.findViewById(R.id.tvVehicleCodeLvRKH);
-            viewHolder.tvDriverNameLvRKH = (TextView) convertView.findViewById(R.id.tvDriverNameLvRKH);
-            viewHolder.tvHelper1NameLvRKH = (TextView) convertView.findViewById(R.id.tvHelper1NameLvRKH);
-            viewHolder.tvBensinLvRKH = (TextView) convertView.findViewById(R.id.tvKebutuhanBBM);
-            viewHolder.tvShiftLvRKH = (TextView) convertView.findViewById(R.id.tvShiftLvRKH);
+            viewHolder.layoutItemLvRKH = convertView.findViewById(R.id.layoutItemLvRKH);
+            viewHolder.tvVehicleCodeLvRKH = convertView.findViewById(R.id.tvVehicleCodeLvRKH);
+            viewHolder.tvDriverNameLvRKH = convertView.findViewById(R.id.tvDriverNameLvRKH);
+            viewHolder.tvShiftLvRKH = convertView.findViewById(R.id.tvShiftLvRKH);
+            viewHolder.tvDriverCodeLvRKH = convertView.findViewById(R.id.tvDriverCodeLvRKH);
+            viewHolder.checkBoxLvRKH = convertView.findViewById(R.id.checkBoxLvRKH);
 
             convertView.setTag(viewHolder);
             convertView.setTag(R.id.tvVehicleCodeLvRKH, viewHolder.tvVehicleCodeLvRKH);
             convertView.setTag(R.id.tvDriverNameLvRKH, viewHolder.tvDriverNameLvRKH);
-            convertView.setTag(R.id.tvHelper1NameLvRKH, viewHolder.tvHelper1NameLvRKH);
-            convertView.setTag(R.id.tvKebutuhanBBM, viewHolder.tvBensinLvRKH);
             convertView.setTag(R.id.tvShiftLvRKH, viewHolder.tvShiftLvRKH);
+            convertView.setTag(R.id.tvDriverCodeLvRKH, viewHolder.tvDriverCodeLvRKH);
+            convertView.setTag(R.id.checkBoxLvRKH, viewHolder.checkBoxLvRKH);
 
         }
 
@@ -77,64 +79,68 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
         viewHolder.tvVehicleCodeLvRKH.setText(rkhParams.get(position).getVehicleCode());
         viewHolder.tvShiftLvRKH.setText(rkhParams.get(position).getShiftkerja());
         viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getDrivername()));
-        viewHolder.tvBensinLvRKH.setText(String.valueOf(rkhParams.get(position).getKebutuhanBBM()));
+        viewHolder.tvDriverCodeLvRKH.setText(rkhParams.get(position).getDrivername());
 
-        if (rkhParams.get(position).getHelper1Name() == null || rkhParams.get(position).getHelper1Name().equals("")) {
-            viewHolder.layoutHelper1LvRKH.setVisibility(View.GONE);
+        viewHolder.checkBoxLvRKH.setTag(position);
+        viewHolder.checkBoxLvRKH.setChecked(rkhParams.get(position).isChecked());
 
-        }
-        else {
-            viewHolder.tvHelper1NameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getHelper1Name()));
-        }
-
-        if (rkhParams.get(position).getKebutuhanBBM() == 0) {
-            viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dlgFuelRKH = new Dialog(getContext());
-                    dlgFuelRKH.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    dlgFuelRKH.setContentView(R.layout.dialog_insertbbm_rkh);
-                    dlgFuelRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                    Window windowFuelRKH = dlgFuelRKH.getWindow();
-                    dlgFuelRKH.setCanceledOnTouchOutside(false);
-                    windowFuelRKH.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                    TextView tvHeaderFuelDlgRKH = dlgFuelRKH.findViewById(R.id.tvHeaderFuelDlgRKH);
-                    Button btnBackDlgFuelRKH = dlgFuelRKH.findViewById(R.id.btnBackDlgFuelRKH);
-                    Button btnOkDlgFuelRKH = dlgFuelRKH.findViewById(R.id.btnOkDlgFuelRKH);
-                    EditText etFuelDlgRKH = dlgFuelRKH.findViewById(R.id.etFuelDlgRKH);
-
-                    tvHeaderFuelDlgRKH.setText("INPUT BBM " + rkhParams.get(position).getVehicleCode());
-                    btnBackDlgFuelRKH.setOnClickListener(view1 -> dlgFuelRKH.dismiss());
-                    btnOkDlgFuelRKH.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dbhelper.update_fueldlg_rkh(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                                    RencanaKerjaHarian.selectedDateRKH, rkhParams.get(position).getShiftkerja(), etFuelDlgRKH.getText().toString());
-                            dlgFuelRKH.dismiss();
-                            loadListViewRKH();
-                        }
-                    });
-                    dlgFuelRKH.show();
+        viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewHolder.checkBoxLvRKH.isChecked()) {
+                    viewHolder.checkBoxLvRKH.setChecked(false);
+                    checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
+                    RencanaKerjaHarian.btnRefreshRKH.performClick();
+                    if (checkedRKH != null) {
+                        dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"");
+                        viewHolder.checkBoxLvRKH.setChecked(false);
+                        RencanaKerjaHarian.btnRefreshRKH.performClick();
+                    }
                 }
-            });
-
-        } else {
-            viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), InputRincianRKH.class);
-                    intent.putExtra("nodoc", RencanaKerjaHarian.nodocRKH);
-                    intent.putExtra("vehiclecode", rkhParams.get(position).getVehicleCode());
-                    intent.putExtra("vehiclename", dbhelper.get_vehiclename(0, rkhParams.get(position).getVehicleCode()));
-                    intent.putExtra("shiftkerja", viewHolder.tvShiftLvRKH.getText().toString());
-                    intent.putExtra("drivercode", rkhParams.get(position).getDrivername());
-                    intent.putExtra("drivername", viewHolder.tvDriverNameLvRKH.getText().toString());
-                    context.startActivity(intent);
+                else {
+                    viewHolder.checkBoxLvRKH.setChecked(true);
+                    dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"Checked");
+                    RencanaKerjaHarian.btnRefreshRKH.performClick();
                 }
-            });
+            }
+        });
+
+        viewHolder.checkBoxLvRKH.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (viewHolder.checkBoxLvRKH.isChecked()) {
+                    dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"Checked");
+                    RencanaKerjaHarian.btnRefreshRKH.performClick();
+                } else {
+                    checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
+                    RencanaKerjaHarian.btnRefreshRKH.performClick();
+                    if (checkedRKH != null) {
+                        dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"");
+                        viewHolder.checkBoxLvRKH.setChecked(false);
+                        RencanaKerjaHarian.btnRefreshRKH.performClick();
+                    }
+                }
+            }
+        });
+
+
+        String checkRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
+
+        if (checkRKH.equals("Checked")) {
+            viewHolder.checkBoxLvRKH.setChecked(true);
         }
+        else  {
+            viewHolder.checkBoxLvRKH.setChecked(false);
 
-
+        }
 
         return convertView;
     }

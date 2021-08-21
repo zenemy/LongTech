@@ -1,5 +1,7 @@
 package com.julong.longtech.menuhcm;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -32,6 +34,7 @@ import org.osmdroid.views.overlay.Marker;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -46,12 +49,14 @@ public class AbsensiMandiri extends AppCompatActivity {
     String tipeKeteranganAbsen, nodocAbsensiMandiri, savedate, latAbsenMandiri, longAbsenMandiri;
     DatabaseHelper dbhelper;
 
-    TextView tvEmpName, tvEmpPosition;
+    TextView tvEmpName, tvEmpPosition, tvTodayDate;
     Button btnAbsensiMandiriMasuk, btnAbsensiMandiriPulang, btnSubmitAbsen;
     EditText etLokasiAbsensiMandiri;
     LinearLayout layoutAbsenMandiriCheckInOut, layoutLokasiAbsenMandiri, layoutMap;
     MapView mapAbsenLokasi;
     byte[] imgAbsensiMandiri;
+
+    ActivityResultLauncher<Intent> intentLaunchCamera;
 
 
     @Override
@@ -77,9 +82,11 @@ public class AbsensiMandiri extends AppCompatActivity {
         etLokasiAbsensiMandiri = findViewById(R.id.etLokasiAbsensiMandiri);
         mapAbsenLokasi = findViewById(R.id.mapViewAbsensiMandiri);
         layoutMap = findViewById(R.id.layoutMapAbsensiMandiri);
+        tvTodayDate = findViewById(R.id.tvTodayDateAbsensiMandiri);
 
         tvEmpName.setText(dbhelper.get_tbl_username(10));
         tvEmpPosition.setText(dbhelper.get_tbl_username(13));
+        todayDate();
 
         mapAbsenLokasi.setTileSource(TileSourceFactory.MAPNIK);
 
@@ -103,6 +110,85 @@ public class AbsensiMandiri extends AppCompatActivity {
             }
         });
 
+        intentLaunchCamera = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Bundle bundle = result.getData().getExtras();
+                        getLocation();
+                        nodocAbsensiMandiri = dbhelper.get_tbl_username(0) + "/ABSMDR/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+                        Bitmap photoCamera = (Bitmap) bundle.get("data");
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                        imgAbsensiMandiri = stream.toByteArray();
+                        dbhelper.insert_absmdr(nodocAbsensiMandiri, tipeKeteranganAbsen, "FOTO",
+                                etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
+
+                        //Show map location of user
+                        layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
+                        layoutMap.setVisibility(View.VISIBLE);
+                        GeoPoint absenPoint = new GeoPoint(Double.parseDouble(latAbsenMandiri), Double.parseDouble(longAbsenMandiri));
+                        Marker titikAbsen = new Marker(mapAbsenLokasi);
+                        titikAbsen.setPosition(absenPoint);
+                        titikAbsen.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                        titikAbsen.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.marker_person, null));
+                        mapAbsenLokasi.getController().setZoom(15);
+                        mapAbsenLokasi.getController().setCenter(absenPoint);
+                        mapAbsenLokasi.getController().animateTo(absenPoint);
+                        mapAbsenLokasi.getOverlays().add(titikAbsen);
+
+                        //Absen Status
+                        if (tipeKeteranganAbsen.equals("CHECKIN")) {
+                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Masuk")
+                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    Intent backIntent = new Intent();
+                                    setResult(727, backIntent);
+                                    finish();
+                                }
+                            }).show();
+                        }
+                        else if (tipeKeteranganAbsen.equals("CHECKOUT")) {
+                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
+                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    Intent backIntent = new Intent();
+                                    setResult(727, backIntent);
+                                    finish();
+                                }
+                            }).show();
+                        }
+                        else if (tipeKeteranganAbsen.equals("RESTIN")) {
+                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Absen Mulai Istirahat")
+                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    finish();
+                                }
+                            }).show();
+                        }
+                        else {
+                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Absen Selesai Istirahat")
+                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    finish();
+                                }
+                            }).show();
+                        }
+
+                        imgAbsensiMandiri = null;
+                        tipeKeteranganAbsen = null;
+                        etLokasiAbsensiMandiri.setText(null);
+                        layoutAbsenMandiriCheckInOut.setVisibility(View.VISIBLE);
+                        layoutLokasiAbsenMandiri.setVisibility(View.GONE);
+                        btnSubmitAbsen.setVisibility(View.GONE);
+                    }
+                }
+        );
+
         btnSubmitAbsen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +201,7 @@ public class AbsensiMandiri extends AppCompatActivity {
                         takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
                         takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
                         takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        intentLaunchCamera.launch(takePictureIntent);
                     }
                 }
 
@@ -124,82 +210,36 @@ public class AbsensiMandiri extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void todayDate() {
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            getLocation();
-            nodocAbsensiMandiri = dbhelper.get_tbl_username(0) + "/ABSMDR/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-            Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            imgAbsensiMandiri = stream.toByteArray();
-            dbhelper.insert_absmdr(nodocAbsensiMandiri, tipeKeteranganAbsen, "FOTO",
-                    etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-            //Show map location of user
-            layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
-            layoutMap.setVisibility(View.VISIBLE);
-            GeoPoint absenPoint = new GeoPoint(Double.parseDouble(latAbsenMandiri), Double.parseDouble(longAbsenMandiri));
-            Marker titikAbsen = new Marker(mapAbsenLokasi);
-            titikAbsen.setPosition(absenPoint);
-            titikAbsen.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            titikAbsen.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.marker_person, null));
-            mapAbsenLokasi.getController().setZoom(15);
-            mapAbsenLokasi.getController().setCenter(absenPoint);
-            mapAbsenLokasi.getController().animateTo(absenPoint);
-            mapAbsenLokasi.getOverlays().add(titikAbsen);
-
-            //Absen Status
-            if (tipeKeteranganAbsen.equals("CHECKIN")) {
-                new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Masuk")
-                        .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        Intent backIntent = new Intent();
-                        setResult(727, backIntent);
-                        finish();
-                    }
-                }).show();
-            }
-            else if (tipeKeteranganAbsen.equals("CHECKOUT")) {
-                new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
-                        .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        Intent backIntent = new Intent();
-                        setResult(727, backIntent);
-                        finish();
-                    }
-                }).show();
-            }
-            else if (tipeKeteranganAbsen.equals("RESTIN")) {
-                new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Absen Mulai Istirahat")
-                        .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        finish();
-                    }
-                }).show();
-            }
-            else {
-                new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Absen Selesai Istirahat")
-                        .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        finish();
-                    }
-                }).show();
-            }
-
-            imgAbsensiMandiri = null;
-            tipeKeteranganAbsen = null;
-            etLokasiAbsensiMandiri.setText(null);
-            layoutAbsenMandiriCheckInOut.setVisibility(View.VISIBLE);
-            layoutLokasiAbsenMandiri.setVisibility(View.GONE);
-            btnSubmitAbsen.setVisibility(View.GONE);
+        switch (day) {
+            case Calendar.SUNDAY:
+                savedate = "Minggu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.MONDAY:
+                savedate = "Senin, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.TUESDAY:
+                savedate = "Selasa, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.WEDNESDAY:
+                savedate = "Rabu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.THURSDAY:
+                savedate = "Kamis, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.FRIDAY:
+                savedate = "Jumat, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.SATURDAY:
+                savedate = "Sabtu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
         }
+
+        tvTodayDate.setText(savedate);
 
     }
 

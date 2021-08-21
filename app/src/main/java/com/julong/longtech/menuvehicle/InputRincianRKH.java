@@ -103,32 +103,8 @@ public class InputRincianRKH extends AppCompatActivity {
 
     public void SubmitRincianRKH(View v) {
 
-        dlgSubmitRincianRKH = new Dialog(this);
-        dlgSubmitRincianRKH.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dlgSubmitRincianRKH.setContentView(R.layout.dialog_submitrincianrkh);
-        dlgSubmitRincianRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        Window windowDlgSubmitRKH = dlgSubmitRincianRKH.getWindow();
-        windowDlgSubmitRKH.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        TextView tvVehicleDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvVehicleDlgSubmitRincianRKH);
-        TextView tvDriverDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvDriverDlgSubmitRincianRKH);
-        TextView tvShiftDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvShiftDlgSubmitRincianRKH);
-        TextView tvTotalDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.tvTotalDlgSubmitRincianRKH);
-        Button btnDismissDlgSubmit = dlgSubmitRincianRKH.findViewById(R.id.btnDismissDlgSubmitRincianRKH);
-        Button btnSubmitDlg = dlgSubmitRincianRKH.findViewById(R.id.btnDlgSubmitRincianRKH);
-
-        btnDismissDlgSubmit.setOnClickListener(view -> dlgSubmitRincianRKH.dismiss());
-        btnSubmitDlg.setOnClickListener(view -> {
-            dlgSubmitRincianRKH.dismiss();
-            new SweetAlertDialog(InputRincianRKH.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Menyimpan")
-                    .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
-        });
-
-        tvVehicleDlgSubmit.setText(vehicleCodeRKH);
-        tvDriverDlgSubmit.setText(driverNameDetailRKH);
-        tvShiftDlgSubmit.setText(shiftRincianRKH);
-        tvTotalDlgSubmit.setText(dbhelper.count_rincianrkh(nodocRKH, vehicleCodeRKH) + " Total Input");
-
-        dlgSubmitRincianRKH.show();
+        new SweetAlertDialog(InputRincianRKH.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Menyimpan")
+                .setConfirmClickListener(sweetAlertDialog -> finish()).setConfirmText("OK").show();
 
     }
 
@@ -172,10 +148,10 @@ public class InputRincianRKH extends AppCompatActivity {
                 inputLayoutTargetKerja.setSuffixText(null);
                 selectedSatuan = null;
 
-                listKegiatanRincianRKH = dbhelper.get_activitysap_filtered(dbhelper.get_single_gsloadtype(adapterLoadTypeGS.getItem(position)),
-                        dbhelper.get_vehiclename(1, vehicleCodeRKH));
-                adapterKegiatan = new ArrayAdapter<String>(InputRincianRKH.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanRincianRKH);
-                acKegiatanRincianRKH.setAdapter(adapterKegiatan);
+//                listKegiatanRincianRKH = dbhelper.get_activitysap_filtered(dbhelper.get_single_gsloadtype(adapterLoadTypeGS.getItem(position)),
+//                        dbhelper.get_vehiclename(1, vehicleCodeRKH));
+//                adapterKegiatan = new ArrayAdapter<String>(InputRincianRKH.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanRincianRKH);
+//                acKegiatanRincianRKH.setAdapter(adapterKegiatan);
             }
         });
 

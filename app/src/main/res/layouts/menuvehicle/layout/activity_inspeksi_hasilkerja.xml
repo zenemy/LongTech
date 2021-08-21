@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="INSPEKSI HASIL KERJA"
+            android:text="INSPEKSI STATUS KERJA"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -144,65 +144,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="6dp"
+                android:layout_marginBottom="4dp"
                 android:background="@drawable/topborderonly"
                 android:orientation="horizontal"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginEnd="8dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    android:hint="Catatan Inspeksi (Optional)"
+                    app:endIconMode="clear_text">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDescInspeksiKerja"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Satuan Kerja">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etSatuanInspeksiKerja"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="4dp"
-                            android:editable="false"
-                            android:inputType="none"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:id="@+id/inputLayoutHasilInpeksi"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="Hasil Inspeksi">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etQtyInspeksiKerja"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:inputType="numberDecimal"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="12dp"
-                            android:paddingBottom="4dp"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
+                        android:layout_height="60dp"
+                        android:gravity="top"
+                        android:paddingStart="8dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="4dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:orientation="vertical">
 
@@ -217,8 +191,8 @@
 
                     <ImageButton
                         android:id="@+id/imgInspeksiKerja"
-                        android:layout_width="75dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
                         android:layout_marginTop="8dp"
                         android:layout_weight="1"
                         android:layout_gravity="center"
@@ -228,32 +202,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:boxCornerRadiusBottomEnd="10dp"
-                app:boxCornerRadiusBottomStart="10dp"
-                android:hint="Catatan Inspeksi (Optional)"
-                app:endIconMode="clear_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDescInspeksiKerja"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:gravity="top"
-                    android:paddingStart="8dp"
-                    android:paddingTop="10dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
 
 
         </LinearLayout>

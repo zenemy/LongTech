@@ -1,9 +1,14 @@
 package com.julong.longtech.menuvehicle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.GPSTracker;
@@ -62,13 +67,12 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class KartuKerjaVehicle extends AppCompatActivity {
 
-    private static int dataProcess, REQUEST_IMAGE_CAPTURE = 1;
     private KeyListener keyListenerEtHasilKerja, keyListenerJumlahRitase;
     byte[] gambarCarLog, fotoKilometer;
-    Handler handler = new Handler();
+    ActivityResultLauncher<Intent> intentLaunchCameraHasil, intentLaunchCameraKM;
 
     EditText etHasilKerjaCarLog, etCatatanCarLog, etHasilSatuanMuat, etHasilKerjaLaterite;
-    TextView tvTanggalCarLog, tvInfoUnitCarLog;
+    TextView tvInfoUnitCarLog;
     AutoCompleteTextView acLoadTypeCarLog, acHelper1CarLog, acHelper2CarLog, acLoadCategoryCarLog, acAsalKebunCarLog, acAsalDivisiCarLog,
             acAsalLokasiCarLog, acTujuanKebunCarLog, acTujuanDivisiCarLog, acTujuanLokasiCarLog, acTujuanKegiatanCarLog;
     LinearLayout layoutHelperCarlog, layoutAsalCarLog, layoutTujuanCarLog, layoutHasilKerja, layoutRitaseMuat;
@@ -77,6 +81,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     TextInputLayout inputLayoutAsalKebun, inputLayoutAsalDivisi, inputLayoutAsalLokasi, inputLayoutTujuanKebun, inputLayoutHelper1CarLog, inputLayoutSatuanMuat,
             inputLayoutHelper2CarLog, inputLayoutTujuanDivisi, inputLayoutTujuanLokasi, inputLayoutTujuanKegiatan, inputLayoutHasilKerjaCarLog;
     Dialog dlgSelesaiCarLog;
+    View parentLayout;
 
     // The Code
     private List<String> listTypeLoadCode, listCategoryLoadCode, listAsalKebunCode, listAsalDivisiCode,
@@ -97,7 +102,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         setContentView(R.layout.activity_kartukerja_vehicle);
 
         dbhelper = new DatabaseHelper(this);
-        tvTanggalCarLog = findViewById(R.id.tvTanggalCarLog);
         tvInfoUnitCarLog = findViewById(R.id.tvInfoUnitCarLog);
         layoutAsalCarLog = findViewById(R.id.layoutAsalMuatanCarLog);
         layoutTujuanCarLog = findViewById(R.id.layoutTujuanMuatanCarLog);
@@ -138,33 +142,75 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         inputLayoutHasilKerjaCarLog = findViewById(R.id.inputLayoutHasilKerjaCarLog);
         btnCameraCarLog = findViewById(R.id.imgCarLog);
         keyListenerEtHasilKerja = etHasilKerjaCarLog.getKeyListener();
-        keyListenerJumlahRitase= etHasilKerjaLaterite.getKeyListener();
+        keyListenerJumlahRitase = etHasilKerjaLaterite.getKeyListener();
+        parentLayout = findViewById(android.R.id.content);
 
-        todayDate();
         prepareCarLogData();
+
+        intentLaunchCameraHasil = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap photoCamera = (Bitmap) bundle.get("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                    gambarCarLog = stream.toByteArray();
+                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarCarLog, 0, gambarCarLog.length);
+                    btnCameraCarLog.setImageBitmap(compressedBitmap);
+                    btnCameraCarLog.setBackground(null);
+
+                }
+
+            }
+        );
+
+
+        intentLaunchCameraKM = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap photoCamera = (Bitmap) bundle.get("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                    fotoKilometer = stream.toByteArray();
+                    Bitmap bitmapKM = BitmapFactory.decodeByteArray(fotoKilometer, 0, fotoKilometer.length);
+                    btnFotoKilometer.setImageBitmap(bitmapKM);
+                    btnFotoKilometer.setBackground(null);
+
+                }
+
+            }
+        );
 
         btnCameraCarLog.setOnClickListener(v -> {
             gambarCarLog = null;
-            dataProcess = 1;
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(this.getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                intentLaunchCameraHasil.launch(takePictureIntent);
             }
         });
 
         acAsalKebunCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                selectedAsalDivisi = null;
+                acAsalDivisiCarLog.setText(null);
+
+                selectedAsalLokasi = null;
+                acAsalLokasiCarLog.setText(null);
+
                 selectedAsalKebun = listAsalKebunCode.get(position);
                 listAsalDivisiCarLog = dbhelper.get_itemdivisi(adapterAsalKebunCarLog.getItem(position), 1);
                 listAsalDivisiCode = dbhelper.get_itemdivisi(adapterAsalKebunCarLog.getItem(position), 0);
+
                 adapterAsalDivisiCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listAsalDivisiCarLog);
                 acAsalDivisiCarLog.setAdapter(adapterAsalDivisiCarLog);
-                acAsalDivisiCarLog.setText("");
 
-                listAsalLokasi = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 1);
-                adapterLokasiAsalCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listAsalLokasi);
-                acAsalLokasiCarLog.setAdapter(adapterLokasiAsalCarLog);
             }
         });
 
@@ -178,8 +224,12 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acAsalDivisiCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                selectedAsalLokasi = null;
+                acAsalLokasiCarLog.setText(null);
+
                 selectedAsalDivisi = listAsalDivisiCode.get(position);
-                listAsalLokasi = dbhelper.get_itemlocasal_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedAsalKebun, selectedAsalDivisi, 1);
+                listAsalLokasi = dbhelper.get_fieldcrop_filtered(selectedAsalKebun, selectedAsalDivisi, 1);
                 adapterLokasiAsalCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listAsalLokasi);
                 acAsalLokasiCarLog.setAdapter(adapterLokasiAsalCarLog);
             }
@@ -242,7 +292,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acHelper1CarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedHelper1 = dbhelper.get_empcode((String) adapterView.getItemAtPosition(position));
+                selectedHelper1 = dbhelper.get_empcode(0, (String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acHelper1CarLog.getWindowToken(), 0);
             }
@@ -251,7 +301,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acHelper2CarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedHelper2 = dbhelper.get_empcode((String) adapterView.getItemAtPosition(position));
+                selectedHelper2 = dbhelper.get_empcode(0, (String) adapterView.getItemAtPosition(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acHelper2CarLog.getWindowToken(), 0);
             }
@@ -260,16 +310,17 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acTujuanKebunCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedTujuanDivisi = null;
+                acTujuanDivisiCarLog.setText(null);
+
+                selectedTujuanLokasi = null;
+                acTujuanLokasiCarLog.setText(null);
+
                 selectedTujuanKebun = listTujuanKebunCode.get(position);
                 listTujuanDivisiCarLog = dbhelper.get_itemdivisi(adapterTujuanKebunCarLog.getItem(position), 1);
                 listTujuanDivisiCode = dbhelper.get_itemdivisi(adapterTujuanKebunCarLog.getItem(position), 0);
                 adapterTujuanDivisiCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanDivisiCarLog);
                 acTujuanDivisiCarLog.setAdapter(adapterTujuanDivisiCarLog);
-                acTujuanDivisiCarLog.setText("");
-
-                listTujuanLokasi = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 1);
-                adapterLokasiTujuanCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanLokasi);
-                acTujuanLokasiCarLog.setAdapter(adapterLokasiTujuanCarLog);
             }
         });
 
@@ -294,8 +345,12 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acTujuanDivisiCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                selectedTujuanLokasi = null;
+                acTujuanLokasiCarLog.setText(null);
+
                 selectedTujuanDivisi = listTujuanDivisiCode.get(position);
-                listTujuanLokasi = dbhelper.get_itemloctujuan_basedondiv(selectedTypeLoad, selectedCategoryLoad, selectedTujuanKebun, selectedTujuanDivisi, 1);
+                listTujuanLokasi = dbhelper.get_fieldcrop_filtered(selectedTujuanKebun, selectedTujuanDivisi, 1);
                 adapterLokasiTujuanCarLog = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listTujuanLokasi);
                 acTujuanLokasiCarLog.setAdapter(adapterLokasiTujuanCarLog);
             }
@@ -368,18 +423,17 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 btnCameraCarLog.setImageResource(R.drawable.ic_menu_camera);
 
                 if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("Y")) {
-                    layoutHelperCarlog.setVisibility(View.VISIBLE);
-                    inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
-                    inputLayoutHelper2CarLog.setVisibility(View.VISIBLE);
+//                    layoutHelperCarlog.setVisibility(View.VISIBLE);
+//                    inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
+//                    inputLayoutHelper2CarLog.setVisibility(View.VISIBLE);
                 } else if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("N")) {
-                    layoutHelperCarlog.setVisibility(View.VISIBLE);
-                    inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
-                    inputLayoutHelper2CarLog.setVisibility(View.GONE);
+//                    layoutHelperCarlog.setVisibility(View.VISIBLE);
+//                    inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
+//                    inputLayoutHelper2CarLog.setVisibility(View.GONE);
                 }
                 else if (dbhelper.layoutsetting_carlog(0, adapterCategoryMuatan.getItem(position)).equals("N") && dbhelper.layoutsetting_carlog(1, adapterCategoryMuatan.getItem(position)).equals("N")) {
                     layoutHelperCarlog.setVisibility(View.GONE);
                 }
-
 
                 //Layout Asal Muatan
                 if (dbhelper.layoutsetting_carlog(2, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(3, adapterCategoryMuatan.getItem(position)).equals("Y") && dbhelper.layoutsetting_carlog(4, adapterCategoryMuatan.getItem(position)).equals("Y")) {
@@ -714,7 +768,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 acHelper1CarLog.setText(dbhelper.get_empname(dbhelper.get_transactionstatuscarlog(5)));
                 acHelper1CarLog.setDropDownHeight(0);
                 acHelper1CarLog.setKeyListener(null);
-                layoutHelperCarlog.setVisibility(View.VISIBLE);
+//                layoutHelperCarlog.setVisibility(View.VISIBLE);
                 inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
             }
 
@@ -814,8 +868,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
         }
 
-        listMuatanCarLog = dbhelper.get_loadtype(1);
-        listTypeLoadCode = dbhelper.get_loadtype(0);
+        listMuatanCarLog = dbhelper.get_loadtype(1, dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)));
+        listTypeLoadCode = dbhelper.get_loadtype(0, dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)));
         adapterMuatanCarLog = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listMuatanCarLog);
         acLoadTypeCarLog.setAdapter(adapterMuatanCarLog);
 
@@ -841,8 +895,31 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
     public void eventSubmitCarlog(View v) {
 
-        if (dbhelper.get_transactionstatuscarlog(0).equals("1")) {
-
+        if (TextUtils.isEmpty(acLoadCategoryCarLog.getText().toString().trim())) {
+            new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Kategori Muatan").setConfirmText("OK").show();
+        }
+        else if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())) {
+            Snackbar.make(v, "Harap isi Tujuan Kebun / Divisi", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
+                    .setAction("OKAY", view -> {
+                        inputLayoutAsalKebun.requestFocus();
+                        inputLayoutAsalDivisi.requestFocus();
+                    }).show();
+        }
+        else if (TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())) {
+            Snackbar.make(v, "Harap isi Tujuan Kebun / Divisi", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
+                    .setAction("OKAY", view -> {
+                        inputLayoutTujuanKebun.requestFocus();
+                        inputLayoutTujuanDivisi.requestFocus();
+                    }).show();
+        }
+        else if (TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
+            Snackbar.make(v, "Harap isi Hasil Kerja", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
+                    .setAction("OKAY", view -> etHasilKerjaCarLog.requestFocus()).show();
+        }
+        else {
             dlgSelesaiCarLog = new Dialog(KartuKerjaVehicle.this);
             dlgSelesaiCarLog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dlgSelesaiCarLog.setContentView(R.layout.dlg_selesaicarlog);
@@ -852,7 +929,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             Button btnCancelDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnCancelDlgCarLog);
             Button btnDoneDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnDoneDlgCarLog);
             EditText etDateDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etDateDlgCarLog);
-            EditText tvJamAwalDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.tvJamAwalDlgCarLog);
             EditText tvJamAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.tvJamAkhirDlgCarLog);
             EditText etKMHMAwalDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAwalDlgCarLog);
             EditText etKMHMAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirDlgCarLog);
@@ -863,6 +939,14 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             TextInputLayout inputlayoutDlgKmAkhirDecimal = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhirDecimal);
             btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
 
+            String currenttdate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+            String currenttime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            etDateDlgCarLog.setText(currenttdate);
+            etNoteDlgCarLog.setText(etCatatanCarLog.getText().toString());
+            tvJamAkhirDlgCarLog.setText(currenttime);
+            etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
+            dlgSelesaiCarLog.show();
+
             etKMHMAkhirDlgCarLog.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -872,31 +956,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                         inputlayoutDlgKmAkhir.setHelperText("Max. 6 Digit");
                         inputlayoutDlgKmAkhir.setErrorEnabled(false);
                         inputlayoutDlgKmAkhir.setError(null);
-                    }
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    // TODO Auto-generated method stub
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                    // TODO Auto-generated method stub
-                }
-            });
-
-            etKMHMAkhirKomaDlgCarLog.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    // TODO Auto-generated method stub
-                    if (etKMHMAkhirKomaDlgCarLog.getText().toString().length() > 0) {
-                        inputlayoutDlgKmAkhirDecimal.setHelperTextEnabled(true);
-                        inputlayoutDlgKmAkhirDecimal.setHelperText("1/10");
-                        inputlayoutDlgKmAkhirDecimal.setErrorEnabled(false);
-                        inputlayoutDlgKmAkhirDecimal.setError(null);
                     }
                 }
 
@@ -927,10 +986,9 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     fotoKilometer = null;
-                    dataProcess = 2;
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(KartuKerjaVehicle.this.getPackageManager()) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                        intentLaunchCameraKM.launch(takePictureIntent);
                     }
                 }
             });
@@ -939,18 +997,13 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     getLocation();
-                    if (TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim()) || TextUtils.isEmpty(etKMHMAkhirKomaDlgCarLog.getText().toString().trim())) {
+                    if (TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim())) {
 
                         inputlayoutDlgKmAkhir.setHelperTextEnabled(false);
                         inputlayoutDlgKmAkhir.setHelperText(null);
                         inputlayoutDlgKmAkhir.setErrorEnabled(true);
                         inputlayoutDlgKmAkhir.setError("Wajib diisi!");
 
-                        inputlayoutDlgKmAkhirDecimal.setHelperTextEnabled(false);
-                        inputlayoutDlgKmAkhirDecimal.setHelperText(null);
-                        inputlayoutDlgKmAkhirDecimal.setErrorEnabled(true);
-                        inputlayoutDlgKmAkhirDecimal.setError(" ");
-                        inputlayoutDlgKmAkhirDecimal.setErrorIconDrawable(null);
                     }
                     else if (fotoKilometer == null ) {
                         btnFotoKilometer.startAnimation(AnimationUtils.loadAnimation(KartuKerjaVehicle.this, R.anim.errorshake));
@@ -958,402 +1011,23 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                         Toast.makeText(KartuKerjaVehicle.this, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        String kilometerAkhir = etKMHMAkhirDlgCarLog.getText().toString() + "," + etKMHMAkhirKomaDlgCarLog.getText().toString();
 
-//                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), selectedHelper1, selectedHelper2,
-//                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi,
-//                                selectedTujuanLokasi, selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(),
-//                                etHasilKerjaLaterite.getText().toString(), etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(),
-//                                kilometerAkhir, latCarLog, longCarLog, "Selesai", fotoKilometer);
+                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
+                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
+                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
+                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog,
+                                etKMHMAkhirDlgCarLog.getText().toString(), gambarCarLog, fotoKilometer);
 
-                        dbhelper.change_updatestatus_carlog(dbhelper.getnodoc_todayprosescarlog(), etHasilSatuanMuat.getText().toString(),
-                                etHasilKerjaLaterite.getText().toString(), etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(),
-                                kilometerAkhir, latCarLog, longCarLog, "Selesai", gambarCarLog, fotoKilometer);
                         dlgSelesaiCarLog.dismiss();
                         new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
                                 .setConfirmClickListener(sweetAlertDialog -> onBackPressed()).setConfirmText("OK").show();
+
+
                     }
 
                 }
             });
-
-            String currenttdate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-            String currenttime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-            etDateDlgCarLog.setText(currenttdate);
-            etNoteDlgCarLog.setText(etCatatanCarLog.getText().toString());
-            tvJamAwalDlgCarLog.setText(dbhelper.get_transactiontime(dbhelper.getnodoc_todayprosescarlog()));
-            tvJamAkhirDlgCarLog.setText(currenttime);
-            etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
-            dlgSelesaiCarLog.show();
-
         }
-        else { //Jika tidak ada transaksi
-            getLocation();
-            nodocCarLog = dbhelper.get_tbl_username(0) + "/CARLOG/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-            if (TextUtils.isEmpty(acLoadCategoryCarLog.getText().toString().trim())) {
-                new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Kategori Muatan").setConfirmText("OK").show();
-            } else {
-                if (selectedCategoryLoad.equals("ARL01")) {
-                    if (TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
-                        || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acTujuanKebunCarLog.setDropDownHeight(0);
-                        acTujuanDivisiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setKeyListener(null);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("BBT01")) {
-                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acAsalKebunCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setKeyListener(null);
-                        acTujuanKebunCarLog.setDropDownHeight(0);
-                        acTujuanDivisiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setKeyListener(null);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("BBT02")) {
-                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acAsalKebunCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setKeyListener(null);
-                        acTujuanKebunCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setKeyListener(null);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("DLL01") || selectedCategoryLoad.equals("JAL01") || selectedCategoryLoad.equals("JJK01")) {
-                    if (TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acTujuanKebunCarLog.setDropDownHeight(0);
-                        acTujuanDivisiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setKeyListener(null);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("DLL02") || selectedCategoryLoad.equals("DLL03") || selectedCategoryLoad.equals("DLL04") || selectedCategoryLoad.equals("DLL05")) {
-                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acAsalKebunCarLog.setDropDownHeight(0);
-                        acAsalDivisiCarLog.setDropDownHeight(0);
-                        acTujuanKebunCarLog.setDropDownHeight(0);
-                        acTujuanDivisiCarLog.setDropDownHeight(0);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("KRY01") || selectedCategoryLoad.equals("KRY02") || selectedCategoryLoad.equals("KRY03") || selectedCategoryLoad.equals("KRY04")) {
-                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acAsalKebunCarLog.setDropDownHeight(0);
-                        acAsalDivisiCarLog.setDropDownHeight(0);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("KRY05")) {
-                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acAsalKebunCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setDropDownHeight(0);
-                        acAsalDivisiCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setKeyListener(null);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("LTR01")) {
-                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim()) || TextUtils.isEmpty(etHasilKerjaLaterite.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acAsalKebunCarLog.setDropDownHeight(0);
-                        acAsalDivisiCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setKeyListener(null);
-                        acTujuanKebunCarLog.setDropDownHeight(0);
-                        acTujuanDivisiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setKeyListener(null);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-                else if (selectedCategoryLoad.equals("PPK01")) {
-                    if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalLokasiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(acTujuanLokasiCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanKegiatanCarLog.getText().toString().trim())
-                            || TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-                        new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("KEMBALI").show();
-                    }
-                    else {
-                        acLoadTypeCarLog.setDropDownHeight(0);
-                        acLoadCategoryCarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setDropDownHeight(0);
-                        acHelper1CarLog.setKeyListener(null);
-                        acAsalKebunCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setDropDownHeight(0);
-                        acAsalLokasiCarLog.setKeyListener(null);
-                        acTujuanKebunCarLog.setDropDownHeight(0);
-                        acTujuanDivisiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setDropDownHeight(0);
-                        acTujuanLokasiCarLog.setKeyListener(null);
-                        acTujuanKegiatanCarLog.setDropDownHeight(0);
-                        acTujuanKegiatanCarLog.setKeyListener(null);
-                        btnSubmitCarlog.setText("Selesai Bekerja");
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setContentText("Berhasil Memulai Pekerjaan").setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
-                                selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
-                                etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog, "Progress", gambarCarLog);
-                    }
-                }
-            }
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (dataProcess == 1) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-                gambarCarLog = stream.toByteArray();
-                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarCarLog, 0, gambarCarLog.length);
-                btnCameraCarLog.setImageBitmap(compressedBitmap);
-                btnCameraCarLog.setBackground(null);
-            }
-        }
-
-        if (dataProcess == 2) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-                fotoKilometer = stream.toByteArray();
-                Bitmap bitmapKM = BitmapFactory.decodeByteArray(fotoKilometer, 0, fotoKilometer.length);
-                btnFotoKilometer.setImageBitmap(bitmapKM);
-                btnFotoKilometer.setBackground(null);
-            }
-        }
-    }
-
-    void todayDate() {
-
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-
-        switch (day) {
-            case Calendar.SUNDAY:
-                savedate = "Minggu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-                break;
-            case Calendar.MONDAY:
-                savedate = "Senin, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-                break;
-            case Calendar.TUESDAY:
-                savedate = "Selasa, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-                break;
-            case Calendar.WEDNESDAY:
-                savedate = "Rabu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-                break;
-            case Calendar.THURSDAY:
-                savedate = "Kamis, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-                break;
-            case Calendar.FRIDAY:
-                savedate = "Jumat, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-                break;
-            case Calendar.SATURDAY:
-                savedate = "Sabtu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-                break;
-        }
-
-        tvTanggalCarLog.setText(savedate);
 
     }
 
@@ -1370,6 +1044,5 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         Intent backIntent = new Intent();
         setResult(3, backIntent);
         finish();
-
     }
 }

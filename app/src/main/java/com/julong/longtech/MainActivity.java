@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     HashPassword hashPassword;
 
     //Private
+    public static ActivityResultLauncher<Intent> intentLaunchMainActivity;
     private AppBarConfiguration mAppBarConfiguration;
     List<String> listGroupMenu;
     HashMap<String, List<String>> listMenu;
@@ -143,8 +145,11 @@ public class MainActivity extends AppCompatActivity {
         tvUsernameNavHome.setText(dbhelper.get_tbl_username(10));
         tvPositionNavHome.setText(dbhelper.get_tbl_username(13));
         tvDeptCode.setText(dbhelper.get_tbl_username(17));
+        expandableListView = findViewById(R.id.expandableListView);
 
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        generate_gs02menu();
 
         try {
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(), 0, dbhelper.get_gambar_user().length);
@@ -154,9 +159,37 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        ActivityResultLauncher<Intent> intentLaunchActivity = registerForActivityResult(
+        intentLaunchMainActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+
+                    if (result.getResultCode() == 1) {
+                        if (dbhelper.count_tablemd().equals("0")) {
+                            final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                            warningExitDlg.setContentText("Download data dahulu!");
+                            warningExitDlg.setConfirmText("YA");
+                            warningExitDlg.showCancelButton(false);
+                            warningExitDlg.setCancelable(false);
+                            warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                                warningExitDlg.dismiss();
+                                Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
+                                intentLaunchMainActivity.launch(intentDownload);
+                            });
+                            warningExitDlg.show();
+                        }
+                    }
+
+                    if (result.getResultCode() == 2) {
+                        loadlvinfohome(todayDate);
+                        loadLvHistoryCarLog(todayDate);
+                        loadLvHistoryApel(todayDate);
+                    }
+
+                    if (result.getResultCode() == 3) {
+                        loadlvinfohome(todayDate);
+                        loadLvHistoryCarLog(todayDate);
+                    }
+
                     if (result.getResultCode() == 4) {
                         loadlvinfohome(todayDate);
                         loadLvHistoryApel(todayDate);
@@ -167,16 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setDrawerLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-        expandableListView = findViewById(R.id.expandableListView);
+
 
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -212,14 +236,14 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0101") && menuSubCode.equals("010103")) {
                         Intent intent = new Intent(MainActivity.this, AbsensiBekerjaUnit.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
                     if (menuGroupCode.equals("0101") && menuSubCode.equals("010104")) {
                         Intent intent = new Intent(MainActivity.this, AbsensiMandiri.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
@@ -228,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, ApelPagi.class);
                             intent.putExtra("shiftapel", dbhelper.get_statusapelpagi(2));
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intentLaunchActivity.launch(intent);
+                            intentLaunchMainActivity.launch(intent);
                             onPause();
                         } else {
                             String[] arrayShiftApel = {"Shift 1", "Shift 2", "Shift 3"};
@@ -255,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = new Intent(MainActivity.this, ApelPagi.class);
                                     intent.putExtra("shiftapel", acShiftStartApel.getText().toString());
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intentLaunchActivity.launch(intent);
+                                    intentLaunchMainActivity.launch(intent);
                                     onPause();
                                 }
                             });
@@ -289,21 +313,21 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020201")) {
                         Intent intent = new Intent(MainActivity.this, RencanaKerjaHarian.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020202")) {
                         Intent intent = new Intent(MainActivity.this, PemeriksaanPengecekanHarian.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020203")) {
                         Intent intent = new Intent(MainActivity.this, KartuKerjaVehicle.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivityForResult(intent, 3);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
@@ -318,21 +342,21 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020206")) {
                         Intent intent = new Intent(MainActivity.this, AdjustmentUnit.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020207")) {
                         Intent intent = new Intent(MainActivity.this, VerifikasiGIS.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020208")) {
                         Intent intent = new Intent(MainActivity.this, InspeksiHasilKerja.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
@@ -365,14 +389,14 @@ public class MainActivity extends AppCompatActivity {
                 if (groupPosition == 5 && childPosition == 0) {
                     Intent intent = new Intent(MainActivity.this, DownloadData.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivityForResult(intent, 1);
+                    intentLaunchMainActivity.launch(intent);
                     onPause();
                 }
 
                 if (groupPosition == 5 && childPosition == 1) {
                     Intent intent = new Intent(MainActivity.this, UploadData.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivityForResult(intent, 2);
+                    intentLaunchMainActivity.launch(intent);
                     onPause();
                 }
 
@@ -401,7 +425,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        generate_gs02menu();
     }
 
     public void eventShowQR(View v) {
@@ -553,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generate_gs02menu() {
-        proDialog = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        proDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         proDialog.setTitleText("Loading Data");
         proDialog.setCancelable(false);
         proDialog.show();
@@ -570,6 +593,26 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
+                    proDialog.dismiss();
+                    Log.d("menu", "error");
+                    prepareListData();
+                    expandableListAdapter = new com.julong.longtech.ExpandableListAdapter(MainActivity.this, listGroupMenu, listMenu, 1);
+                    expandableListView.setAdapter(expandableListAdapter);
+                    proDialog.dismiss();
+
+                    if (dbhelper.count_tablemd().equals("0")) {
+                        final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                        warningExitDlg.setContentText("Download data dahulu!");
+                        warningExitDlg.setConfirmText("YA");
+                        warningExitDlg.showCancelButton(false);
+                        warningExitDlg.setCancelable(false);
+                        warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
+                            warningExitDlg.dismiss();
+                            Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
+                            intentLaunchMainActivity.launch(intentDownload);
+                        });
+                        warningExitDlg.show();
+                    }
                 }
             });
 
@@ -603,6 +646,8 @@ public class MainActivity extends AppCompatActivity {
                             jsonObjectHCM.getString("SEQ"), jsonObjectHCM.getString("MENUVIEW"), jsonObjectHCM.getString("MENUDEFAULT"));
                     iHCM++;
                 }
+
+                Log.d("menu", "downloading");
 
                 // Generate Menu Workshop
                 JSONArray jsonArrayWS = responseGS.getJSONArray("DATAWORKSHOP");
@@ -640,6 +685,8 @@ public class MainActivity extends AppCompatActivity {
                     iNV++;
                 }
 
+                prepareListData();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -648,11 +695,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            prepareListData();
+
             expandableListAdapter = new com.julong.longtech.ExpandableListAdapter(MainActivity.this, listGroupMenu, listMenu, 1);
             expandableListView.setAdapter(expandableListAdapter);
             proDialog.dismiss();
-
             if (dbhelper.count_tablemd().equals("0")) {
                 final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
                 warningExitDlg.setContentText("Download data dahulu!");
@@ -662,7 +708,7 @@ public class MainActivity extends AppCompatActivity {
                 warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
                     warningExitDlg.dismiss();
                     Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
-                    startActivityForResult(intentDownload, 1);
+                    intentLaunchMainActivity.launch(intentDownload);
                 });
                 warningExitDlg.show();
             }
@@ -672,38 +718,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 ) {
-            if (dbhelper.count_tablemd().equals("0")) {
-                final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
-                warningExitDlg.setContentText("Download data dahulu!");
-                warningExitDlg.setConfirmText("YA");
-                warningExitDlg.showCancelButton(false);
-                warningExitDlg.setCancelable(false);
-                warningExitDlg.setConfirmClickListener(sweetAlertDialog -> {
-                    warningExitDlg.dismiss();
-                    Intent intentDownload = new Intent(MainActivity.this, DownloadData.class);
-                    startActivityForResult(intentDownload, 1);
-                });
-                warningExitDlg.show();
-            }
-        }
-
         if (requestCode == 2) {
             loadlvinfohome(todayDate);
             loadLvHistoryCarLog(todayDate);
             loadLvHistoryApel(todayDate);
         }
 
-        if (requestCode == 3) {
+        if (requestCode == 727) {
             loadlvinfohome(todayDate);
-            loadLvHistoryCarLog(todayDate);
         }
 
     }
 
     @Override
     public void onBackPressed() {
-        final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+        final SweetAlertDialog warningExitDlg = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
         warningExitDlg.setTitleText("Anda yakin akan keluar?");
         warningExitDlg.setCancelText("KEMBALI");
         warningExitDlg.setConfirmText("YA");

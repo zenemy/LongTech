@@ -681,6 +681,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (!jsonPost.getString("EMPCODE").equals(dbhelper.get_tbl_username(8))) {
                     dbhelper.delete_data_username();
                     dbhelper.delete_datags();
+                    dbhelper.delete_menuGS02("HCM");
+                    dbhelper.delete_menuGS02("WORKSHOP");
+                    dbhelper.delete_menuGS02("VEHICLE");
+                    dbhelper.delete_menuGS02("INVENTORY");
                     dbhelper.delete_masterdata();
                     dbhelper.delete_alltrasanction();
                 }

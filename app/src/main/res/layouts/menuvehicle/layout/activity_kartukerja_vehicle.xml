@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clHeaderCarLog"
         android:layout_width="match_parent"
-        android:layout_height="135dp"
+        android:layout_height="120dp"
         android:background="@drawable/tbl_lr_bottom"
         android:backgroundTint="@color/colorPrimary">
 
@@ -20,7 +20,7 @@
             android:id="@+id/judulCarLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:text="KARTU KERJA KENDARAAN"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
@@ -30,29 +30,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvTanggalCarLog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Kamis, 8 Juli 2021"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/judulCarLog" />
-
-        <TextView
             android:id="@+id/tvInfoUnitCarLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="EXCAVATOR-99"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTanggalCarLog" />
+            app:layout_constraintTop_toBottomOf="@+id/judulCarLog" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -106,8 +94,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:editable="false"
-
                 android:inputType="none"
+                android:singleLine="true"
                 android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
@@ -465,7 +453,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="vertical"
-                            android:paddingTop="8dp">
+                            android:paddingTop="6dp">
 
                             <com.google.android.material.textfield.TextInputLayout
                                 android:id="@+id/inputLayoutSatuanMuat"
@@ -629,9 +617,8 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCatatanCarLog"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="60dp"
                             android:gravity="top"
-                            android:minHeight="60dp"
                             android:paddingStart="12dp"
                             android:paddingTop="12dp"
                             android:paddingEnd="8dp"
@@ -680,7 +667,7 @@
             android:paddingEnd="4dp"
             android:paddingRight="4dp"
             android:singleLine="true"
-            android:text="SIMPAN DATA"
+            android:text="SIMPAN HASIL"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />

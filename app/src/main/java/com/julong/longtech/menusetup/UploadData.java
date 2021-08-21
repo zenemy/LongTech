@@ -2,6 +2,7 @@ package com.julong.longtech.menusetup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
@@ -399,7 +400,6 @@ public class UploadData extends AppCompatActivity {
     }
 
     private void loaduploaddata() {
-        listviewUpload = findViewById(R.id.lvUpload);
         uploadParams = new ArrayList<>();
         uploadParams.clear();
         final Cursor cursor = dbHelper.view_tbl_uploadlist();
@@ -415,6 +415,14 @@ public class UploadData extends AppCompatActivity {
         }
         uploadAdapter = new UploadAdapter(this, R.layout.upload_list, uploadParams);
         listviewUpload.setAdapter(uploadAdapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(2, backIntent);
+        finish();
+
     }
 
 }

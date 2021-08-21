@@ -3,52 +3,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tvKeteranganNoteP2h"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/tbl_lr_top"
         android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:text="INPUT DESKRIPSI BAUT DAN MUR"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:text="PILIH KENDARAAN KERJA"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:padding="12dp"
+        android:background="@color/white"
+        app:hintEnabled="false"
+        app:endIconMode="dropdown_menu">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputLayoutDlgEtNoteP2H"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/acDlgVehicleCarLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:endIconMode="clear_text">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNoteDeskripsiP2H"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:gravity="top"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
+            android:hint="Pilih Kendaraan Kerja"
+            android:textColorHint="#808080"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -58,7 +48,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancelDlgNoteP2H"
+            android:id="@+id/btnCancelDlgVehicleCarLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
@@ -67,12 +57,13 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder"
             android:text="KEMBALI"
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSimpanDlgNoteP2H"
+            android:id="@+id/btnSimpanDlgVehicleCarLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="0.5dp"
@@ -81,6 +72,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
+            android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded"
             android:text="SIMPAN"
             android:textStyle="bold" />

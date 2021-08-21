@@ -7,27 +7,19 @@ import com.google.android.material.datepicker.CompositeDateValidator;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.julong.longtech.DatabaseHelper;
-import com.julong.longtech.LoginActivity;
 import com.julong.longtech.R;
-import com.julong.longtech.menusetup.DownloadData;
-import com.julong.longtech.menusetup.UploadAdapter;
-import com.julong.longtech.menusetup.UploadParam;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -35,14 +27,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -54,23 +45,21 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class RencanaKerjaHarian extends AppCompatActivity {
 
     public static String nodocRKH;
-    String[] arrayMenuShift = {"Shift 1", "Shift 2", "Shift 3"};
-    ArrayAdapter<String> adapterMenuShift;
-    private List<String> listVehicleDlg, listEmployeeDlg;
-    ArrayAdapter<String> adapterVehicleDlgRkh, adapterEmployeeDlgRKH;
+    public static Button btnRefreshRKH;
 
     LinearLayout layoutBtnRKH;
-    FloatingActionButton btnAddRKH;
+    AutoCompleteTextView acKegiatanKerjaRKH, acLokasiKerjaRKH;
     EditText etPelaksanaanTglRKH, etDescRKH;
     Button btnSubmitRKH, btnBackRKH;
     public static ListView listViewRKH;
 
-    private List<ListParamRKH> listParamRKH;
-    AdapterRKH adapterRKH;
-    String selectedHelper1, selectedHelper2, selectedDriver, selectedVehicle;
-    public static String selectedDateRKH;
+    List<String> listKegiatanRKH, listLokasiRKH;
+    ArrayAdapter<String> adapterKegiatan, adapterLokasi;
+    MaterialDatePicker<Long> datePickerRKH;
 
-    Dialog dlgAddUnit;
+    public static String selectedDateRKH;
+    String selectedVehicleType, selectedLokasi, selectedKegiatan;
+    Dialog dlgVehicleTypeRKH;
     DatabaseHelper dbHelper;
 
     @Override
@@ -82,23 +71,83 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
         // Declare design ID
         listViewRKH = findViewById(R.id.lvRKH);
-        btnAddRKH = findViewById(R.id.btnAddRKH);
         etDescRKH = findViewById(R.id.etDescRKH);
         btnBackRKH = findViewById(R.id.btnBackRKH);
         layoutBtnRKH = findViewById(R.id.layoutBtnRKH);
         btnSubmitRKH = findViewById(R.id.btnSubmitRKH);
+        btnRefreshRKH = findViewById(R.id.btnRefreshRKH);
+        acLokasiKerjaRKH = findViewById(R.id.acLokasiKerjaRKH);
+        acKegiatanKerjaRKH = findViewById(R.id.acKegiatanKerjaRKH);
         etPelaksanaanTglRKH = findViewById(R.id.etPelaksanaanTglRKH);
 
         nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
 
-        // Set tanggal pelaksanaan
-        etPelaksanaanTglRKH.setText(new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date()));
-        selectedDateRKH = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        if (dbHelper.get_statusrkh(0).equals("1")) {
+            try {
+                DateFormat formatShow = new SimpleDateFormat("yyyy-MM-dd");
+                Date newDate = formatShow.parse(dbHelper.get_statusrkh(2));
+                formatShow = new SimpleDateFormat("dd MMMM yyyy");
+                String dateShow = formatShow.format(newDate);
+                etPelaksanaanTglRKH.setText(dateShow);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            nodocRKH = dbHelper.get_statusrkh(1);
+            selectedDateRKH = dbHelper.get_statusrkh(2);
+            selectedVehicleType = dbHelper.get_statusrkh(3);
+            selectedLokasi = dbHelper.get_statusrkh(4);
+            selectedKegiatan = dbHelper.get_statusrkh(5);
+
+            acLokasiKerjaRKH.setText(dbHelper.get_singlelokasi(selectedLokasi));
+            acKegiatanKerjaRKH.setText(dbHelper.get_singletransportratename(selectedKegiatan));
+
+            etPelaksanaanTglRKH.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Selesaikan simpan RKH terlebih dahulu!", Snackbar.LENGTH_LONG).setAnchorView(layoutBtnRKH)
+                            .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+                }
+            });
+
+            listKegiatanRKH = dbHelper.get_transportactivity(selectedVehicleType);
+            adapterKegiatan = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanRKH);
+            acKegiatanKerjaRKH.setAdapter(adapterKegiatan);
+
+            loadListViewRKH();
+        } else {
+            showVehicleTypeDlg();
+        }
+
+        listLokasiRKH = dbHelper.get_fieldcrop(1);
+        adapterLokasi = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiRKH);
+        acLokasiKerjaRKH.setAdapter(adapterLokasi);
+
+        btnRefreshRKH.setOnClickListener(view -> loadListViewRKH());
+
+        acLokasiKerjaRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedLokasi = dbHelper.get_singlelokasiCode(adapterLokasi.getItem(position));
+                dbHelper.update_headerLokasiRKH(nodocRKH, selectedVehicleType, selectedLokasi);
+            }
+        });
+
+        acKegiatanKerjaRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+
+                selectedKegiatan = dbHelper.get_singletransportratecode(adapterKegiatan.getItem(position));
+
+                Toast.makeText(RencanaKerjaHarian.this, selectedKegiatan, Toast.LENGTH_LONG).show();
+                dbHelper.update_headerKegiatanRKH(nodocRKH, selectedVehicleType, selectedKegiatan);
+            }
+        });
 
         // Setting min date
         MaterialDatePicker.Builder<Long> materialDatePickerBuilder = MaterialDatePicker.Builder.datePicker();
         CalendarConstraints.Builder constraintsBuilderRange = new CalendarConstraints.Builder();
-        CalendarConstraints.DateValidator dateValidatorMin = DateValidatorPointForward.from(System.currentTimeMillis());
+        CalendarConstraints.DateValidator dateValidatorMin = DateValidatorPointForward.from(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
         ArrayList<CalendarConstraints.DateValidator> listValidators = new ArrayList<>();
         listValidators.add(dateValidatorMin);
         CalendarConstraints.DateValidator validators = CompositeDateValidator.allOf(listValidators);
@@ -106,13 +155,12 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         materialDatePickerBuilder.setCalendarConstraints(constraintsBuilderRange.build());
 
         //Datepicker tgl pelaksanaan
-        MaterialDatePicker<Long> datePickerRKH = materialDatePickerBuilder.setTitleText("Select Date").build();
-
-        etPelaksanaanTglRKH.setOnClickListener(v -> datePickerRKH.show(getSupportFragmentManager(), "TGLRKH"));
+        datePickerRKH = materialDatePickerBuilder.setTitleText("Tanggal Pelaksanaan").build();
 
         datePickerRKH.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
+
                 // Get the offset from our timezone and UTC.
                 TimeZone timeZoneUTC = TimeZone.getDefault();
                 // It will be negative, so that's the -1
@@ -125,7 +173,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 selectedDateRKH = formatSave.format(date);
                 etPelaksanaanTglRKH.setText(simpleFormatView.format(date));
 
-                Cursor cursorUnit = dbHelper.view_prepareunit_rkh();
+                Cursor cursorUnit = dbHelper.view_prepareunit_rkh(selectedVehicleType);
                 if (cursorUnit.moveToFirst()) {
                     do {
                         dbHelper.insert_rkh_detail1(nodocRKH,
@@ -138,166 +186,86 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 }
 
                 loadListViewRKH();
-                dbHelper.insert_rkh_header(nodocRKH, selectedDateRKH, listViewRKH.getAdapter().getCount());
+                dbHelper.insert_rkh_header(nodocRKH, selectedDateRKH, selectedVehicleType);
                 if (listViewRKH.getAdapter().getCount() > 0) {
-                    btnAddRKH.setVisibility(View.VISIBLE);
-                    etPelaksanaanTglRKH.setOnClickListener(view -> Toast.makeText(RencanaKerjaHarian.this,
-                            "Selesaikan RKH saat ini dahulu!", Toast.LENGTH_LONG).show());
+                    etPelaksanaanTglRKH.setOnClickListener(view -> new SweetAlertDialog(RencanaKerjaHarian.this,
+                            SweetAlertDialog.ERROR_TYPE).setContentText("Selesaikan RKH dahulu!").setConfirmText("OK").show());
                 }
 
             }
         });
-
-        loadListViewRKH();
 
         btnSubmitRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbHelper.updateselesai_rkh(nodocRKH, etDescRKH.getText().toString());
 
-                SweetAlertDialog finishRkhDlg = new SweetAlertDialog(RencanaKerjaHarian.this, SweetAlertDialog.SUCCESS_TYPE);
-                finishRkhDlg.setCancelable(false);
-                finishRkhDlg.setTitleText("Berhasil Menyimpan!");
-                finishRkhDlg.setConfirmClickListener(sweetAlertDialog -> onBackPressed());
-                finishRkhDlg.show();
+                if (listViewRKH.getAdapter().getCount() > 0) {
+                    dbHelper.updateselesai_rkh(nodocRKH, etDescRKH.getText().toString(), selectedVehicleType);
+
+                    SweetAlertDialog finishRkhDlg = new SweetAlertDialog(RencanaKerjaHarian.this, SweetAlertDialog.SUCCESS_TYPE);
+                    finishRkhDlg.setCancelable(false);
+                    finishRkhDlg.setTitleText("Berhasil Menyimpan!");
+                    finishRkhDlg.setConfirmClickListener(sweetAlertDialog -> onBackPressed());
+                    finishRkhDlg.show();
+                }
             }
         });
-
-        if (dbHelper.get_statusrkh(0).equals("1") && dbHelper.get_statusrkh(4).equals("")) {
-            try {
-                DateFormat formatShow = new SimpleDateFormat("yyyy-MM-dd");
-                Date newDate = formatShow.parse(dbHelper.get_statusrkh(2));
-                formatShow = new SimpleDateFormat("dd MMMM yyyy");
-                String dateShow = formatShow.format(newDate);
-                etPelaksanaanTglRKH.setText(dateShow);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            nodocRKH = dbHelper.get_statusrkh(1);
-            selectedDateRKH = dbHelper.get_statusrkh(2);
-            etPelaksanaanTglRKH.setOnClickListener(view -> Toast.makeText(this, "Selesaikan RKH saat ini dahulu!", Toast.LENGTH_LONG).show());
-        }
 
         btnBackRKH.setOnClickListener(view -> onBackPressed());
 
-    }
-
-    public void prepateTeamData() throws SQLiteException {
 
     }
 
-    public void eventAddUnitRKH(View v) {
+    private void showVehicleTypeDlg() {
+        dlgVehicleTypeRKH = new Dialog(this);
+        dlgVehicleTypeRKH.setCanceledOnTouchOutside(false);
+        dlgVehicleTypeRKH.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dlgVehicleTypeRKH.setContentView(R.layout.dialog_vehicletyperkh);
+        dlgVehicleTypeRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowDlgVehicleType = dlgVehicleTypeRKH.getWindow();
+        windowDlgVehicleType.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        AutoCompleteTextView acDlgVehicleType = dlgVehicleTypeRKH.findViewById(R.id.acDlgVehicleTypeRKH);
+        Button btnCancelDlgVehicleRKH = dlgVehicleTypeRKH.findViewById(R.id.btnCancelDlgVehicleRKH);
+        Button btnOkDlgVehicleRKH = dlgVehicleTypeRKH.findViewById(R.id.btnOkDlgVehicleRKH);
+        dlgVehicleTypeRKH.show();
 
-        selectedDriver = null;
-        selectedHelper1 = null;
-        selectedHelper2 = null;
-        selectedVehicle = null;
+        List<String> listVehicleType;
+        ArrayAdapter<String> adapterVehicleType;
 
-        //Popup dialog rincian RKH
-        dlgAddUnit = new Dialog(this);
-        dlgAddUnit.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dlgAddUnit.setContentView(R.layout.dialog_selectunit_inputrkh);
-        dlgAddUnit.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        Window windowValueA2 = dlgAddUnit.getWindow();
-        dlgAddUnit.setCanceledOnTouchOutside(false);
-        windowValueA2.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        Button btnDlgCancelPilihUnitInputKRH = dlgAddUnit.findViewById(R.id.btnDlgCancelPilihUnitInputKRH);
-        Button btnDlgSimpanPilihUnitInputKRH = dlgAddUnit.findViewById(R.id.btnDlgSimpanPilihUnitInputKRH);
-        AutoCompleteTextView acUnitInputRKH = dlgAddUnit.findViewById(R.id.acUnitInputRKH);
-        AutoCompleteTextView acShiftDriverRKH = dlgAddUnit.findViewById(R.id.acShiftDriverRKH);
-        AutoCompleteTextView acDriverInputRKH = dlgAddUnit.findViewById(R.id.acDriverInputRKH);
-        AutoCompleteTextView acHelper1InputRKH = dlgAddUnit.findViewById(R.id.acHelper1InputRKH);
-        AutoCompleteTextView acHelper2InputRKH = dlgAddUnit.findViewById(R.id.acHelper2InputRKH);
-        EditText etInputRKHBBM = dlgAddUnit.findViewById(R.id.etInputRKHBBM);
-        adapterMenuShift = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuShift);
-        acShiftDriverRKH.setAdapter(adapterMenuShift);
+        listVehicleType = dbHelper.get_vehiclegroup_filterkemandoran();
+        adapterVehicleType = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleType);
+        acDlgVehicleType.setAdapter(adapterVehicleType);
 
-        // List adapter vehicle
-        listVehicleDlg = dbHelper.get_vehiclemasterdata();
-        adapterVehicleDlgRkh = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleDlg);
-        acUnitInputRKH.setAdapter(adapterVehicleDlgRkh);
+        btnCancelDlgVehicleRKH.setOnClickListener(view -> finish());
 
-        // List adapter emp
-        listEmployeeDlg = dbHelper.get_employee();
-        adapterEmployeeDlgRKH = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeDlg);
-        acDriverInputRKH.setAdapter(adapterEmployeeDlgRKH);
-        acHelper1InputRKH.setAdapter(adapterEmployeeDlgRKH);
-        acHelper2InputRKH.setAdapter(adapterEmployeeDlgRKH);
+        dlgVehicleTypeRKH.setOnCancelListener(dialogInterface -> RencanaKerjaHarian.this.finish());
 
-        // Get selected code id
-        acUnitInputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedVehicle = dbHelper.get_vehiclecodeonly((String) adapterView.getItemAtPosition(position));
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
-            keyboardMgr.hideSoftInputFromWindow(acUnitInputRKH.getWindowToken(), 0);
-        });
-
-        acDriverInputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedDriver = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
-            keyboardMgr.hideSoftInputFromWindow(acDriverInputRKH.getWindowToken(), 0);
-        });
-
-        acHelper1InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedHelper1 = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
-            keyboardMgr.hideSoftInputFromWindow(acHelper1InputRKH.getWindowToken(), 0);
-        });
-
-        acHelper2InputRKH.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedHelper2 = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
-            InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
-            keyboardMgr.hideSoftInputFromWindow(acHelper2InputRKH.getWindowToken(), 0);
-        });
-
-        btnDlgCancelPilihUnitInputKRH.setOnClickListener(v1 -> dlgAddUnit.dismiss());
-
-        // Simpan RKH
-        btnDlgSimpanPilihUnitInputKRH.setOnClickListener(new View.OnClickListener() {
+        acDlgVehicleType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedVehicleType = dbHelper.get_single_vehicletypegroup(adapterVehicleType.getItem(position));
 
-                ArrayList<String> employeeOutput = (ArrayList<String>) listEmployeeDlg;
-                ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleDlg;
-
-                // Checking empty fields
-                if (TextUtils.isEmpty(acUnitInputRKH.getText().toString().trim()) || TextUtils.isEmpty(acShiftDriverRKH.getText().toString().trim())
-                    || TextUtils.isEmpty(acDriverInputRKH.getText().toString().trim()) || TextUtils.isEmpty(etInputRKHBBM.getText().toString().trim())) {
-                    Toast.makeText(RencanaKerjaHarian.this, "Lengkapi Data!", Toast.LENGTH_LONG).show();
-                }
-                // Restrict user from input data other than autocompletion list
-                else if (employeeOutput.indexOf(acDriverInputRKH.getText().toString()) == -1
-                        || (!TextUtils.isEmpty(acHelper1InputRKH.getText().toString().trim())
-                        && employeeOutput.indexOf(acHelper1InputRKH.getText().toString()) == -1)
-                        || (!TextUtils.isEmpty(acHelper2InputRKH.getText().toString().trim())
-                        && employeeOutput.indexOf(acHelper2InputRKH.getText().toString()) == -1)) {
-                    Toast.makeText(RencanaKerjaHarian.this, "Karyawan tidak valid!", Toast.LENGTH_LONG).show();
-                }
-                else if (vehicleOutput.indexOf(acUnitInputRKH.getText().toString()) == -1 ) {
-                    Toast.makeText(RencanaKerjaHarian.this, "Kendaraan tidak valid!", Toast.LENGTH_LONG).show();
-                }
-                else if (dbHelper.get_statusrkh(4).equals("")) {
-                    dbHelper.insert_rkh_detail1(nodocRKH, selectedVehicle, selectedDateRKH, acShiftDriverRKH.getText().toString(),
-                            selectedDriver, selectedHelper1, selectedHelper2, etInputRKHBBM.getText().toString());
-
-                    dbHelper.delete_rkh_header(nodocRKH);
-                    dlgAddUnit.dismiss();
-                    acUnitInputRKH.setText("");
-                    acShiftDriverRKH.setText("");
-                    acDriverInputRKH.setText("");
-                    acHelper1InputRKH.setText("");
-                    acHelper2InputRKH.setText("");
-                    etInputRKHBBM.setText(null);
-                    loadListViewRKH();
-
-                    if (listViewRKH.getAdapter().getCount() > 0) {
-                        etPelaksanaanTglRKH.setOnClickListener(view -> Toast.makeText(RencanaKerjaHarian.this,
-                                "Selesaikan RKH saat ini dahulu!", Toast.LENGTH_LONG).show());
-                    }
-                }
+                listKegiatanRKH = dbHelper.get_transportactivity(selectedVehicleType);
+                adapterKegiatan = new ArrayAdapter<String>(RencanaKerjaHarian.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanRKH);
+                acKegiatanKerjaRKH.setAdapter(adapterKegiatan);
             }
         });
 
-        dlgAddUnit.show();
+        btnOkDlgVehicleRKH.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedVehicleType == null) {
+                    Toast.makeText(RencanaKerjaHarian.this, "Harap pilih tipe kendaraan!", Toast.LENGTH_LONG).show();
+                } else {
+                    dlgVehicleTypeRKH.dismiss();
+
+                    datePickerRKH.show(getSupportFragmentManager(), "TGLRKH");
+
+                }
+
+            }
+        });
+
     }
 
     public static void loadListViewRKH() {
@@ -313,20 +281,21 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             do {
                 ListParamRKH listParamRKHS = new ListParamRKH(cursor.getString(0),
-                        cursor.getString(2), cursor.getString(3), cursor.getString(4),
-                        cursor.getString(5), cursor.getInt(6)
+                        cursor.getString(1), cursor.getString(2)
                 );
                 listParamRKH.add(listParamRKHS);
             } while (cursor.moveToNext());
         }
-        adapterRKH = new AdapterRKH(listViewRKH.getContext(), R.layout.item_lvrkh, listParamRKH);
+        adapterRKH = new AdapterRKH(listViewRKH.getContext(), listParamRKH);
         listViewRKH.setAdapter(adapterRKH);
     }
 
     @Override
     public void onBackPressed() {
-        Intent backIntent = new Intent();
-        setResult(727, backIntent);
-        finish();
+            Intent backIntent = new Intent();
+            setResult(727, backIntent);
+            finish();
+
+
     }
 }

@@ -1,5 +1,6 @@
 package com.julong.longtech.ui.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.julong.longtech.DatabaseHelper;
+import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
 import com.julong.longtech.menusetup.UploadData;
 import com.julong.longtech.menuvehicle.InputRincianRKH;
@@ -57,10 +59,12 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
         final ConstraintLayout layoutLvInfo = (ConstraintLayout) listViewItem.findViewById(R.id.layoutLvInfo);
         final TextView tvWorkType = (TextView) listViewItem.findViewById(R.id.tvWorkTypeInfoHome);
         final TextView tvWorkStatus = (TextView) listViewItem.findViewById(R.id.tvWorkStatusInfoHome);
+        final TextView tvTransactionTime = (TextView) listViewItem.findViewById(R.id.tvTransactionInfoTime);
         final ImageView imgUploaded = (ImageView) listViewItem.findViewById(R.id.imgUploadInfoHome);
         final ParamListHomeInfo listInfo = listHomeInfos.get(position);
 
         tvWorkType.setText(listInfo.getDatatype());
+        tvTransactionTime.setText(listInfo.getTransactiondate());
 
         if (listInfo.getWorkstatus().equals("0")) {
             tvWorkStatus.setText("Pekerjaan belum diupload");
@@ -69,7 +73,7 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, UploadData.class);
-                    context.startActivity(intent);
+                    ((MainActivity) context).startActivityForResult(intent, 727);
                 }
             });
         }

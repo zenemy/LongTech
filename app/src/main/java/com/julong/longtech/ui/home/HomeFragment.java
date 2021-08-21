@@ -396,6 +396,10 @@ public class HomeFragment extends Fragment {
             imgcamkendala.setImageBitmap(compressedBitmap);
             imgcamkendala.setBackground(null);
         }
+
+        if (requestCode == 727) {
+            loadlvinfohome(todayDate);
+        }
     }
 
     private void preparedUserAppData(String predefinedData) {
@@ -521,8 +525,41 @@ public class HomeFragment extends Fragment {
         });
 
         linearLayoutCarLog.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), KartuKerjaVehicle.class);
-            intentLaunchActivity.launch(intent);
+
+            Dialog dlgStartCarLog = new Dialog(getContext());
+            dlgStartCarLog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dlgStartCarLog.setContentView(R.layout.dlg_startcarlog);
+            dlgStartCarLog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            Window windowStartCarLog = dlgStartCarLog.getWindow();
+            windowStartCarLog.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            AutoCompleteTextView acDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.acDlgVehicleCarLog);
+            Button btnCancelDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.btnCancelDlgVehicleCarLog);
+            Button btnSimpanDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.btnSimpanDlgVehicleCarLog);
+            dlgStartCarLog.show();
+
+            btnCancelDlgVehicleCarLog.setOnClickListener(view -> dlgStartCarLog.dismiss());
+
+            List<String> listVehicleCarLog;
+            ArrayAdapter<String> adapterVehicleCarLog;
+            listVehicleCarLog = dbhelper.get_vehiclemasterdata();
+            adapterVehicleCarLog = new ArrayAdapter<>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listVehicleCarLog);
+            acDlgVehicleCarLog.setAdapter(adapterVehicleCarLog);
+
+            acDlgVehicleCarLog.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
+
+            btnSimpanDlgVehicleCarLog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dlgStartCarLog.dismiss();
+                    String selectedCarLogVehicle = dbhelper.get_vehiclecodeonly(acDlgVehicleCarLog.getText().toString());
+                    dbhelper.update_ancakcode_user(selectedCarLogVehicle);
+
+                    Intent intent = new Intent(getActivity(), KartuKerjaVehicle.class);
+                    intentLaunchActivity.launch(intent);
+                }
+            });
+
+
         });
 
         linearLayoutP2H.setOnClickListener(v -> {

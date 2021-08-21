@@ -48,8 +48,7 @@ public class InspeksiHasilKerja extends AppCompatActivity {
     DatabaseHelper dbHelper;
 
    AutoCompleteTextView acKebunInspeksi, acDivisiInspeksi, acLokasiInspeksi, acKegiatanInspeksi;
-   TextInputLayout inputLayoutHasilInspeksi;
-   EditText etHasilInspeksi, etDescInspeksi, etSatuanKerjaInspeksi;
+   EditText etDescInspeksi;
    ImageButton imgFotoInspeksi;
    Button btnSubmitInspeksi, btnBackInspeksi;
 
@@ -73,9 +72,6 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         acDivisiInspeksi = findViewById(R.id.acDivisiInspeksiKerja);
         acLokasiInspeksi = findViewById(R.id.acLokasiKerjaInspeksi);
         acKegiatanInspeksi = findViewById(R.id.acKegiatanInspeksiKerja);
-        etSatuanKerjaInspeksi = findViewById(R.id.etSatuanInspeksiKerja);
-        inputLayoutHasilInspeksi = findViewById(R.id.inputLayoutHasilInpeksi);
-        etHasilInspeksi = findViewById(R.id.etQtyInspeksiKerja);
         etDescInspeksi = findViewById(R.id.etDescInspeksiKerja);
         imgFotoInspeksi = findViewById(R.id.imgInspeksiKerja);
         btnSubmitInspeksi = findViewById(R.id.btnSubmitInspeksi);
@@ -139,7 +135,7 @@ public class InspeksiHasilKerja extends AppCompatActivity {
                 getLocation();
                 dbHelper.insert_kegiataninspeksi(nodocInspeksi, selectedKebunInspeksi, selectedDivisiInspeksi,
                         selectedLokasiInspeksi, selectedKegiatanInspeksi, selectedSatuanInspeksi,
-                        etHasilInspeksi.getText().toString(), latInspeksi, longInspeksi, byteImgInspeksi);
+                        null, latInspeksi, longInspeksi, byteImgInspeksi);
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Inspeksi")
                         .setConfirmText("SIMPAN").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -209,8 +205,6 @@ public class InspeksiHasilKerja extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedKegiatanInspeksi = dbHelper.get_singlekegiatancode(adapterKegiatan.getItem(position));
                 selectedSatuanInspeksi = dbHelper.get_singlekegiatanname(selectedKegiatanInspeksi, 1);
-                etSatuanKerjaInspeksi.setText(dbHelper.get_singlekegiatanname(selectedKegiatanInspeksi, 2));
-                inputLayoutHasilInspeksi.setSuffixText(selectedSatuanInspeksi);
 
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKegiatanInspeksi.getWindowToken(), 0);

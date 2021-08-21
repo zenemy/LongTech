@@ -21,13 +21,24 @@
 
     <TextView
         android:id="@+id/tvWorkStatusInfoHome"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/black"
         android:text="Status tr"
         app:layout_constraintTop_toBottomOf="@id/tvWorkTypeInfoHome"
         app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTransactionInfoTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Status tr"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/imgUploadInfoHome"
+        app:layout_constraintTop_toTopOf="@+id/imgUploadInfoHome" />
+
 
     <ImageView
         android:id="@+id/imgUploadInfoHome"

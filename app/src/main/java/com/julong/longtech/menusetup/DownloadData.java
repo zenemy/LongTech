@@ -17,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -42,7 +43,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class DownloadData extends AppCompatActivity {
 
     ConstraintLayout layoutDownloadGS, layoutDownloadMD, layoutHeaderDownload2;
-    Button btnDownload;
+    Button btnDownload, btnBackDownload;
     CheckBox checkBoxGS, checkBoxMD, checkAllDownload;
     DatabaseHelper dbhelper;
     TextView tvSubJudulDownloadGS, tvSubJudulDownloadMD;
@@ -74,6 +75,9 @@ public class DownloadData extends AppCompatActivity {
         checkAllDownload = findViewById(R.id.checkAllDownload);
         tvSubJudulDownloadGS = findViewById(R.id.tvSubJudulDataDownloadGS);
         tvSubJudulDownloadMD = findViewById(R.id.tvSubJudulDataDownloadMD);
+        btnBackDownload = findViewById(R.id.btnBackDownload);
+
+        btnBackDownload.setOnClickListener(view -> onBackPressed());
 
         checkAllDownload.setChecked(true);
         checkBoxGS.setChecked(true);
@@ -157,7 +161,7 @@ public class DownloadData extends AppCompatActivity {
                 dbhelper.delete_masterdata();
                 RequestQueue requestQueueDownloadMD = Volley.newRequestQueue(this);
                 String url_data = DatabaseHelper.url_api + "fetchdata/get_masterdata.php?userid="
-                        + dbhelper.get_tbl_username(0) + "&ancakcode="+dbhelper.get_tbl_username(19);
+                        + dbhelper.get_tbl_username(0) + "&gangcode="+dbhelper.get_tbl_username(18);
 
                 JsonObjectRequest jsonRequestMD = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -175,6 +179,10 @@ public class DownloadData extends AppCompatActivity {
                         requestQueueDownloadMD.stop();
                     }
                 });
+                jsonRequestMD.setRetryPolicy(new DefaultRetryPolicy(
+                        10000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 requestQueueDownloadMD.add(jsonRequestMD);
                 progressDialog.show();
             }
@@ -253,6 +261,27 @@ public class DownloadData extends AppCompatActivity {
                     intMD++;
                 }
 
+                JSONArray jsonArrayEmpMD = responseMD.getJSONArray("MASTERDATAEMPLOYEE");
+                int intEmpMD = 0;
+                while (intEmpMD < jsonArrayEmpMD.length()) {
+                    JSONObject jsonObjectEmpMD = jsonArrayEmpMD.getJSONObject(intEmpMD);
+                    dbhelper.insert_tablemd(jsonObjectEmpMD.getString("DATATYPE"), jsonObjectEmpMD.getString("SUBDATATYPE"),
+                        jsonObjectEmpMD.getString("COMP_ID"), jsonObjectEmpMD.getString("SITE_ID"), jsonObjectEmpMD.getString("DATE1"),
+                        jsonObjectEmpMD.getString("DATE2"), jsonObjectEmpMD.getString("DATE3"), jsonObjectEmpMD.getString("DATE4"),
+                        jsonObjectEmpMD.getString("DATE5"), jsonObjectEmpMD.getString("TEXT1"), jsonObjectEmpMD.getString("TEXT2"),
+                        jsonObjectEmpMD.getString("TEXT3"), jsonObjectEmpMD.getString("TEXT4"), jsonObjectEmpMD.getString("TEXT5"),
+                        jsonObjectEmpMD.getString("TEXT6"), jsonObjectEmpMD.getString("TEXT7"), jsonObjectEmpMD.getString("TEXT8"),
+                        jsonObjectEmpMD.getString("TEXT9"), jsonObjectEmpMD.getString("TEXT10"), jsonObjectEmpMD.getString("TEXT11"),
+                        jsonObjectEmpMD.getString("TEXT12"), jsonObjectEmpMD.getString("TEXT13"), jsonObjectEmpMD.getString("TEXT14"),
+                        jsonObjectEmpMD.getString("TEXT15"), jsonObjectEmpMD.getString("TEXT16"), jsonObjectEmpMD.getString("TEXT17"),
+                        jsonObjectEmpMD.getString("TEXT18"), jsonObjectEmpMD.getString("TEXT19"), jsonObjectEmpMD.getString("TEXT20"),
+                        jsonObjectEmpMD.getString("TEXT21"), jsonObjectEmpMD.getString("TEXT22"), jsonObjectEmpMD.getString("TEXT23"),
+                        jsonObjectEmpMD.getString("TEXT24"), jsonObjectEmpMD.getString("TEXT25"), jsonObjectEmpMD.getString("TEXT26"),
+                        jsonObjectEmpMD.getString("TEXT27"), jsonObjectEmpMD.getString("TEXT28"), jsonObjectEmpMD.getString("TEXT29"),
+                        jsonObjectEmpMD.getString("TEXT30"));
+                    intEmpMD++;
+                }
+
                 JSONArray jsonArrayMD2 = responseMD.getJSONArray("MASTERDATA2");
                 int intMD2 = 0;
                 while (intMD2 < jsonArrayMD2.length()) {
@@ -277,7 +306,7 @@ public class DownloadData extends AppCompatActivity {
                 while (intTrasport < jsonArrayTransportMD.length()) {
                     JSONObject jsonObjectTransportMD = jsonArrayTransportMD.getJSONObject(intTrasport);
                     dbhelper.insert_transportmd(jsonObjectTransportMD.getString("DATATYPE"), jsonObjectTransportMD.getString("SUBDATATYPE"), jsonObjectTransportMD.getString("COMP_ID"), jsonObjectTransportMD.getString("SITE_ID"),
-                            jsonObjectTransportMD.getString("TEXT1"), jsonObjectTransportMD.getString("TEXT2"), jsonObjectTransportMD.getString("TEXT3"), jsonObjectTransportMD.getString("TEXT4"),
+                            jsonObjectTransportMD.getString("TEXT1"), null, jsonObjectTransportMD.getString("TEXT3"), jsonObjectTransportMD.getString("TEXT4"),
                             jsonObjectTransportMD.getString("TEXT5"), jsonObjectTransportMD.getString("TEXT6"), jsonObjectTransportMD.getString("TEXT7"), jsonObjectTransportMD.getString("TEXT8"),
                             jsonObjectTransportMD.getString("TEXT9"), jsonObjectTransportMD.getString("TEXT10"), jsonObjectTransportMD.getString("TEXT11"), jsonObjectTransportMD.getString("TEXT12"),
                             jsonObjectTransportMD.getString("TEXT13"), jsonObjectTransportMD.getString("TEXT14"), jsonObjectTransportMD.getString("TEXT15"), jsonObjectTransportMD.getString("TEXT16"),
@@ -303,10 +332,18 @@ public class DownloadData extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             tvSubJudulDownloadMD.setText("Jumlah Data : " + dbhelper.count_tablemd() + " Data");
-            progressDialog.dismissWithAnimation();
+            progressDialog.dismiss();
             final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Download!").setConfirmText("OK");
+            errorDlg.setConfirmClickListener(sweetAlertDialog -> onBackPressed());
             errorDlg.show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(1, backIntent);
+        finish();
     }
 
 }

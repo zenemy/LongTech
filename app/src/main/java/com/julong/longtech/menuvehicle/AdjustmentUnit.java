@@ -70,7 +70,7 @@ public class AdjustmentUnit extends AppCompatActivity {
         etAdjustmentDecimalKMHM = findViewById(R.id.etAdjustmentDecimalKMHM);
         keyListenerAcDriver = acDriver.getKeyListener();
 
-        adapterMenuOption = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, arrayPilihanMenu);
+        adapterMenuOption = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayPilihanMenu);
         acPilihanMenu.setAdapter(adapterMenuOption);
 
         listVehicleAdj = dbHelper.get_vehiclemasterdata();
@@ -173,7 +173,7 @@ public class AdjustmentUnit extends AppCompatActivity {
         });
 
         acDriver.setOnItemClickListener((adapterView, view, position, l) -> {
-            selectedEmp = dbHelper.get_empcode((String) adapterView.getItemAtPosition(position));
+            selectedEmp = dbHelper.get_empcode(0, (String) adapterView.getItemAtPosition(position));
             InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(AdjustmentUnit.this.INPUT_METHOD_SERVICE);
             keyboardMgr.hideSoftInputFromWindow(acDriver.getWindowToken(), 0);
         });

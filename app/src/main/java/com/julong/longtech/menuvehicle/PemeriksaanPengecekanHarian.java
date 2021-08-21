@@ -55,17 +55,16 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
     AutoCompleteTextView acKendaraanP2H;
     LinearLayout layoutKebocoranOli, layoutBautMur, layoutKonsidiOliMesin, layoutKonsidiOliTransmisi, layoutKonsidiOliHidrolik,
-            layoutKonsidiOliRem, layoutKonsisiOliRadiator, layoutKonsidiOliBBM, layoutKonsidiAirflow, layoutKonsidiRadiator,
+            layoutKonsidiOliRem, layoutKonsidiOliBBM, layoutKonsidiAirflow, layoutKonsidiRadiator,
             layoutKondisiBan, layoutKerusakan, layoutSabukKipas, layoutSuaraMesin, layoutLampuKendaraan, layoutSpionKendaraan;
 
     CheckBox checkKebocoranOli, checkBautMur, checkKonsidiOliMesin, checkKonsidiOliTransmisi, checkKonsidiOliHidrolik,
-            checkKonsidiOliRem, checkKonsisiOliRadiator, checkKonsidiOliBBM, checkKonsidiAirflow, checkKonsidiRadiator,
+            checkKonsidiOliRem, checkKonsidiOliBBM, checkKonsidiAirflow, checkKonsidiRadiator,
             checkKondisiBan, checkKerusakan, checkSabukKipas, checkSuaraMesin, checkLampuKendaraan, checkSpionKendaraan;
 
     EditText etKebocoranOli, etBautMur, etKonsidiOliMesin, etKonsidiOliTransmisi, etKonsidiOliHidrolik,
-            etKonsidiOliRem, etKonsisiOliRadiator, etKonsidiOliBBM, etKonsidiAirflow, etKonsidiRadiator,
-            etKondisiBan, etKerusakan, etSabukKipas, etSuaraMesin, etLampuKendaraan, etSpionKendaraan,
-            etJamAwalP2H, etJamAkhirP2H, etDescPengecekan;
+            etKonsidiOliRem, etKonsidiOliBBM, etKonsidiAirflow, etKonsidiRadiator,
+            etKondisiBan, etKerusakan, etSabukKipas, etSuaraMesin, etLampuKendaraan, etSpionKendaraan, etDescPengecekan;
 
     ImageButton imgTakePictP2H;
     Button btnSubmitP2H, btnCancelP2H;
@@ -81,8 +80,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
         acKendaraanP2H = findViewById(R.id.acKendaraanKerjaP2H);
-        etJamAwalP2H = findViewById(R.id.etJamAwalP2h);
-        etJamAkhirP2H = findViewById(R.id.etJamAkhirP2H);
         etDescPengecekan = findViewById(R.id.etNoteP2H);
         imgTakePictP2H = findViewById(R.id.imgTakePictP2H);
         btnSubmitP2H = findViewById(R.id.btnSimpanP2H);
@@ -95,7 +92,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         layoutKonsidiOliTransmisi = findViewById(R.id.layoutOliTransmisi);
         layoutKonsidiOliHidrolik = findViewById(R.id.layoutOliHidrolik);
         layoutKonsidiOliRem = findViewById(R.id.layoutOliRem);
-        layoutKonsisiOliRadiator = findViewById(R.id.layoutOliRadiator);
         layoutKonsidiOliBBM = findViewById(R.id.layoutOliBBM);
         layoutKonsidiAirflow = findViewById(R.id.layoutSaringanUdara);
         layoutKonsidiRadiator = findViewById(R.id.layoutRadiator);
@@ -113,7 +109,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         checkKonsidiOliHidrolik = findViewById(R.id.cbOliHidrolik);
         checkKonsidiOliRem = findViewById(R.id.cbOliRem);
         checkKonsidiOliBBM = findViewById(R.id.cbOliBBM);
-        checkKonsisiOliRadiator = findViewById(R.id.cbOliRadiator);
         checkKonsidiAirflow = findViewById(R.id.cbSaringanUdara);
         checkKonsidiRadiator = findViewById(R.id.cbRadiator);
         checkKondisiBan = findViewById(R.id.cbKondisiBan);
@@ -130,7 +125,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         etKonsidiOliHidrolik = findViewById(R.id.etOliHidrolik);
         etKonsidiOliRem = findViewById(R.id.etOliRem);
         etKonsidiOliBBM = findViewById(R.id.etOliBBM);
-        etKonsisiOliRadiator = findViewById(R.id.etOliRadiator);
         etKonsidiAirflow = findViewById(R.id.etSaringanUdara);
         etKonsidiRadiator = findViewById(R.id.etRadiator);
         etKondisiBan = findViewById(R.id.etKondisiBan);
@@ -142,23 +136,14 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
         btnCancelP2H.setOnClickListener(v -> finish());
 
+        selectedVehicleCode = dbHelper.get_tbl_username(19);
+
+        acKendaraanP2H.setText(dbHelper.get_vehiclename(2, dbHelper.get_tbl_username(19)));
+
         // Vehicle list adapter for acVehicle
         listVehicleP2H = dbHelper.get_vehiclemasterdata();
         adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleP2H);
         acKendaraanP2H.setAdapter(adapterVehicleP2H);
-
-        String currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        etJamAwalP2H.setText(currentTime);
-
-        etJamAkhirP2H.setOnClickListener(v -> {
-            MaterialTimePicker timePickerJamAkhirP2H = new MaterialTimePicker.Builder()
-                    .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD).setTimeFormat(TimeFormat.CLOCK_24H).build();
-            timePickerJamAkhirP2H.show(getSupportFragmentManager(), "TAG");
-
-            timePickerJamAkhirP2H.addOnPositiveButtonClickListener(selection -> {
-                onTimeAkhirSelected(timePickerJamAkhirP2H.getHour(), timePickerJamAkhirP2H.getMinute());
-            });
-        });
 
         imgTakePictP2H.setOnClickListener(v -> {
             byteImgP2H = null;
@@ -233,15 +218,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             }
             else {
                 checkKonsidiOliRem.setChecked(true);
-            }
-        });
-
-        layoutKonsisiOliRadiator.setOnClickListener(v -> {
-            if (checkKonsisiOliRadiator.isChecked()) {
-                checkKonsisiOliRadiator.setChecked(false);
-            }
-            else {
-                checkKonsisiOliRadiator.setChecked(true);
             }
         });
 
@@ -333,20 +309,13 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
         ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleP2H;
 
-        SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm");
-
         try {
-            if (TextUtils.isEmpty(acKendaraanP2H.getText().toString().trim()) // Checking empty fields
-                    || TextUtils.isEmpty(etJamAkhirP2H.getText().toString().trim()) || byteImgP2H == null) {
-                new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
-            }
-            // Jam akhir harus lebih besar
-            else if (hourMinuteFormat.parse(etJamAwalP2H.getText().toString()).compareTo(hourMinuteFormat.parse(etJamAkhirP2H.getText().toString())) > 0) {
-                new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Jam pengecekan salah!").show();
+            if (TextUtils.isEmpty(acKendaraanP2H.getText().toString().trim()) || byteImgP2H == null) {
+                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
             }
             // Restrict user from input data other than autocompletion list
             else if (vehicleOutput.indexOf(acKendaraanP2H.getText().toString()) == -1) {
-                new SweetAlertDialog(PemeriksaanPengecekanHarian.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Kendaraan tidak valid!").show();
+                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Kendaraan tidak valid!").show();
             }
             else {
                 dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecodegroup(1, selectedVehicleCode), selectedVehicleCode,
@@ -374,10 +343,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
                 if (checkKonsidiOliRem.isChecked()) {
                     dbHelper.insert_dataP2H_detail(nodocP2H, "P2H06", "KETINGGIAN DAN KONDISI OLI REM", "CHECK", etKonsidiOliRem.getText().toString());
-                }
-
-                if (checkKonsisiOliRadiator.isChecked()) {
-                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H07", "KETINGGIAN DAN KONDISI OLI RADIATOR", "CHECK", etKonsisiOliRadiator.getText().toString());
                 }
 
                 if (checkKonsidiOliBBM.isChecked()) {
@@ -429,46 +394,44 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
     }
 
-    private void onTimeAwalSelected(int hour, int minute) {
-        String hourAsText;
-        String minuteAsText;
-
-        if (hour < 10) {
-            hourAsText = '0' + String.valueOf(hour);
-        } else {
-            hourAsText = String.valueOf(hour);
-        }
-
-        if (minute < 10) {
-            minuteAsText = '0' + String.valueOf(minute);
-        } else {
-            minuteAsText = String.valueOf(minute);
-        }
-
-        String showTime = hourAsText + ":" + minuteAsText;
-        etJamAwalP2H.setText(showTime);
-
-    }
-
-    private void onTimeAkhirSelected(int hour, int minute) {
-        String hourAsText;
-        String minuteAsText;
-
-        if (hour < 10) {
-            hourAsText = '0' + String.valueOf(hour);
-        } else {
-            hourAsText = String.valueOf(hour);
-        }
-
-        if (minute < 10) {
-            minuteAsText = '0' + String.valueOf(minute);
-        } else {
-            minuteAsText = String.valueOf(minute);
-        }
-
-        String showTime = hourAsText + ":" + minuteAsText;
-        etJamAkhirP2H.setText(showTime);
-    }
+//    private void onTimeAwalSelected(int hour, int minute) {
+//        String hourAsText;
+//        String minuteAsText;
+//
+//        if (hour < 10) {
+//            hourAsText = '0' + String.valueOf(hour);
+//        } else {
+//            hourAsText = String.valueOf(hour);
+//        }
+//
+//        if (minute < 10) {
+//            minuteAsText = '0' + String.valueOf(minute);
+//        } else {
+//            minuteAsText = String.valueOf(minute);
+//        }
+//
+//        String showTime = hourAsText + ":" + minuteAsText;
+//
+//    }
+//
+//    private void onTimeAkhirSelected(int hour, int minute) {
+//        String hourAsText;
+//        String minuteAsText;
+//
+//        if (hour < 10) {
+//            hourAsText = '0' + String.valueOf(hour);
+//        } else {
+//            hourAsText = String.valueOf(hour);
+//        }
+//
+//        if (minute < 10) {
+//            minuteAsText = '0' + String.valueOf(minute);
+//        } else {
+//            minuteAsText = String.valueOf(minute);
+//        }
+//
+//        String showTime = hourAsText + ":" + minuteAsText;
+//    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override

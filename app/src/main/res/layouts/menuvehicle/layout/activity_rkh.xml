@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clHeaderRKH"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="90dp"
         android:background="@drawable/tbl_lr_bottom"
         android:backgroundTint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="11dp"
             android:text="RENCANA KERJA HARIAN"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
@@ -37,8 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/tombol"
         android:backgroundTint="#FFFFFF"
         android:orientation="vertical"
@@ -46,48 +46,82 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tanggal Pelaksanaan RKH"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
-            android:textColor="@color/black"/>
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="8dp"
+            android:weightSum="2">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:hint="Tanggal Pelaksanaan"
+                app:endIconDrawable="@drawable/ic_baseline_calendar_24"
+                app:endIconMode="custom">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPelaksanaanTglRKH"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:clickable="true"
+                    android:focusableInTouchMode="false"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:inputType="time"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:hint="Lokasi Kerja"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acLokasiKerjaRKH"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingStart="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            app:endIconDrawable="@drawable/ic_baseline_calendar_24"
-            app:endIconMode="custom"
-            app:hintEnabled="false">
+            android:hint="Kegiatan Pekerjaan"
+            app:endIconMode="dropdown_menu">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPelaksanaanTglRKH"
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acKegiatanKerjaRKH"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:clickable="true"
-                android:focusableInTouchMode="false"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:hint="Tanggal Pelaksanaan RKH"
-                android:inputType="time"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Catatan Tambahan (Opsional)"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/black"/>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -97,22 +131,19 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            app:boxCornerRadiusBottomStart="10dp"
-            app:boxCornerRadiusBottomEnd="10dp"
-            app:hintEnabled="false"
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDescRKH"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
+                android:gravity="start|top"
                 android:hint="Catatan Rencana Kerja Harian"
                 android:inputType="textMultiLine"
-                android:gravity="start|top"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingBottom="4dp"
                 android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,7 +173,7 @@
                 android:gravity="center_horizontal|top"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="Rincian Rencana Kerja Harian"
+                android:text="List Kendaraan RKH"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -155,26 +186,12 @@
 
         </LinearLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnAddRKH"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:layout_alignParentEnd="true"
-            android:onClick="eventAddUnitRKH"
-            app:maxImageSize="48dp"
-            android:visibility="gone"
-            app:srcCompat="@android:drawable/ic_input_add" />
-
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/layoutBtnRKH"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
@@ -187,7 +204,7 @@
             android:id="@+id/btnBackRKH"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
@@ -201,7 +218,7 @@
             android:id="@+id/btnSubmitRKH"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
@@ -211,5 +228,13 @@
             android:textStyle="bold"
             app:cornerRadius="10dp" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnRefreshRKH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,7 +18,7 @@
         android:paddingBottom="12dp"
         android:text="SELESAI CAR LOG BEKERJA"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -28,40 +28,10 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tanggal Bekerja"
-            android:textColor="@color/black" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:endIconDrawable="@drawable/ic_baseline_calendar_24"
-            app:endIconMode="custom"
-            app:hintEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDateDlgCarLog"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:editable="false"
-                android:inputType="none"
-                android:paddingStart="12dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:weightSum="2">
 
             <com.google.android.material.textview.MaterialTextView
@@ -69,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:text="Jam Awal"
+                android:text="Tanggal Pekerjaan"
                 android:textColor="@color/black" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -77,12 +47,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
-                android:text="Jam Akhir"
+                android:text="Waktu Pekerjaan"
                 android:textColor="@color/black" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -92,14 +62,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                app:endIconDrawable="@drawable/ic_baseline_accesstime_24"
+                android:layout_marginEnd="4dp"
+                app:endIconDrawable="@drawable/ic_baseline_calendar_24"
                 app:endIconMode="custom"
                 app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvJamAwalDlgCarLog"
+                    android:id="@+id/etDateDlgCarLog"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:editable="false"
@@ -112,13 +82,14 @@
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
-                app:endIconDrawable="@drawable/ic_baseline_access_time_filled_24"
+                app:endIconDrawable="@drawable/ic_baseline_accesstime_24"
                 app:endIconMode="custom"
                 app:hintEnabled="false">
 
@@ -135,8 +106,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -244,6 +214,7 @@
                     android:layout_marginStart="4dp"
                     android:gravity="center"
                     android:text="—"
+                    android:visibility="gone"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -253,6 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
+                    android:visibility="gone"
                     app:helperText="1/10"
                     app:helperTextEnabled="true"
                     app:hintEnabled="false">
@@ -303,7 +275,7 @@
                 android:gravity="top"
                 android:hint="Catatan Keterangan (Opsional)"
                 android:paddingStart="12dp"
-                android:paddingTop="8dp"
+                android:paddingTop="10dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="8dp"
                 android:textColor="@color/black"

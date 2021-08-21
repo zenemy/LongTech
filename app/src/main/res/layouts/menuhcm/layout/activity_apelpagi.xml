@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFECEC"
+    android:focusableInTouchMode="true"
     tools:context=".menuhcm.ApelPagi">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,119 +47,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:weightSum="2">
+            app:boxCornerRadiusTopEnd="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:endIconMode="custom"
+            app:hintEnabled="false"
+            app:endIconDrawable="@drawable/ic_baseline_group_24">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etKemandoranApel"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:hint="Waktu"
-                app:endIconDrawable="@drawable/ic_baseline_accesstime_24"
-                app:endIconMode="custom">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etWaktuApelPagi"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:editable="false"
-                    android:focusableInTouchMode="false"
-                    android:inputType="none"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:hint="Pimpinan">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPimpinanApel"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:editable="false"
-                    android:focusableInTouchMode="false"
-                    android:inputType="none"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:singleLine="true"
-                    android:text="RAHMADI"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:hint="Kelompok Kerja">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etKemandoranApel"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:editable="false"
-                    android:focusableInTouchMode="false"
-                    android:inputType="none"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:text="KEMANDORAN"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                android:hint="Shift Kerja">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etShiftApel"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:editable="false"
-                    android:focusableInTouchMode="false"
-                    android:inputType="none"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:text="SHIFT"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
+                android:layout_height="40dp"
+                android:editable="false"
+                android:inputType="none"
+                android:paddingStart="12dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                android:text="KEMANDORAN"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -188,7 +103,7 @@
                         android:id="@+id/etLokasiApel"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:paddingStart="8dp"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
@@ -201,13 +116,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:hint="Deskripsi (Optional)"
+                    app:boxCornerRadiusBottomStart="10dp"
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNoteApel"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:paddingStart="8dp"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
@@ -225,20 +141,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Foto Apel Pagi"
+                    android:text="Foto Apel"
+                    android:layout_gravity="center_horizontal"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <ImageButton
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imgCaptureApel"
                     android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="4dp"
+                    android:clickable="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:foreground="@drawable/ic_menu_camera"
                     android:foregroundTint="#555555"
-                    android:scaleType="fitXY" />
+                    android:scaleType="fitXY"
+                    app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -246,9 +164,8 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabApelPagi"
-        style="@style/Widget.MaterialComponents.TabLayout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
@@ -285,20 +202,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tabApelPagi" />
 
-    <ListView
-        android:id="@+id/lvAnggotaApelPagi"
+    <RelativeLayout
+        android:id="@+id/layoutAnggotaApel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/tbl_lr_bottom"
-        android:backgroundTint="@color/white"
+        android:layout_weight="1"
         android:visibility="gone"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@id/layoutBtnApel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabApelPagi" />
+        app:layout_constraintTop_toBottomOf="@id/tabApelPagi">
+
+        <ListView
+            android:id="@+id/lvAnggotaApelPagi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnAddEmpApel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:onClick="addApelMember"
+            android:visibility="gone"
+            android:clickable="true"
+            app:rippleColor="#DCDCDC"
+            app:maxImageSize="48dp"
+            app:srcCompat="@android:drawable/ic_input_add"
+            app:backgroundTint="#007042"
+            app:tint="@color/white"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/layoutBtnApel"
@@ -313,7 +259,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddEmpApel"
+            android:id="@+id/btnBackApelPagi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="2dp"
@@ -322,9 +268,7 @@
             android:insetBottom="0dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:text="TAMBAH PEKERJA"
-            android:visibility="gone"
-            android:singleLine="true"
+            android:text="KEMBALI"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
@@ -333,7 +277,7 @@
             android:id="@+id/btnSimpanApelPagi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="0dp"
+            android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
