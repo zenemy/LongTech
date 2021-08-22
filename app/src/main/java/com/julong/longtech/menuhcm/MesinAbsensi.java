@@ -7,6 +7,7 @@ import com.julong.longtech.GPSTracker;
 import com.julong.longtech.R;
 import com.julong.longtech.menusetup.DownloadData;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -21,7 +23,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MesinAbsensi extends AppCompatActivity {
 
-    private String statusTipeAbsen, nodocMesinAbsensi, latMesinAbsensi, longMesinAbsensi;
+    private String statusTipeAbsen, nodocMesinAbsensi, latMesinAbsensi, longMesinAbsensi, savedate;
     DatabaseHelper dbhelper;
 
     LinearLayout linearLayoutMetodeAbsen, linearLayoutPilihAbsen, numpadLayoutMesinAbsensi, layoutIdAbsensiEmp, layoutInfoEmp;
@@ -29,7 +31,7 @@ public class MesinAbsensi extends AppCompatActivity {
 
     //Numpad Mesin Absensi
     Button numpad1, numpad2, numpad3, numpad4, numpad5, numpad6, numpad7, numpad8, numpad9, numpad0, numpadOK, numpadDel;
-    TextView tvTipeAbsenMesinAbsensi, tvIdAbsensiEmp, tvEmpMesinAbsensi, tvJabatanMesinAbsensi;
+    TextView tvTipeAbsenMesinAbsensi, tvIdAbsensiEmp, tvEmpMesinAbsensi, tvJabatanMesinAbsensi, tvTglMesinAbsensi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class MesinAbsensi extends AppCompatActivity {
         setContentView(R.layout.activity_mesinabsensi);
         dbhelper = new DatabaseHelper(this);
 
+        tvTglMesinAbsensi = findViewById(R.id.tvTglMesinAbsensi);
         btnAbsenMasukMesinAbsensi = findViewById(R.id.btnAbsensiMesinMasuk);
         btnAbsenPulangMesinAbsensi = findViewById(R.id.btnAbsensiMesinPulang);
         linearLayoutMetodeAbsen = findViewById(R.id.linearLayoutPilihMetodeMesinAbsen);
@@ -50,6 +53,9 @@ public class MesinAbsensi extends AppCompatActivity {
         layoutIdAbsensiEmp = findViewById(R.id.layoutIdAbsensiEmp);
         tvEmpMesinAbsensi = findViewById(R.id.tvEmpMesinAbsensi);
         tvJabatanMesinAbsensi = findViewById(R.id.tvJabatanMesinAbsensi);
+
+        savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        todayDate();
 
         //Numpad Mesin Absensi
         numpad1 = findViewById(R.id.numpad1MesinAbsensi);
@@ -268,6 +274,39 @@ public class MesinAbsensi extends AppCompatActivity {
 
     }
 
+    private void todayDate() {
+
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        switch (day) {
+            case Calendar.SUNDAY:
+                savedate = "Minggu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.MONDAY:
+                savedate = "Senin, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.TUESDAY:
+                savedate = "Selasa, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.WEDNESDAY:
+                savedate = "Rabu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.THURSDAY:
+                savedate = "Kamis, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.FRIDAY:
+                savedate = "Jumat, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+            case Calendar.SATURDAY:
+                savedate = "Sabtu, " + new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+                break;
+        }
+
+        tvTglMesinAbsensi.setText(savedate);
+
+    }
+
     private void getLocation() {
         GPSTracker gps = new GPSTracker(this);
         double latitude = gps.getLatitude();
@@ -293,6 +332,8 @@ public class MesinAbsensi extends AppCompatActivity {
             layoutInfoEmp.setVisibility(View.GONE);
         }
         else {
+            Intent backIntent = new Intent();
+            setResult(727, backIntent);
             finish();
         }
 

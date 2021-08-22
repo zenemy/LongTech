@@ -64,8 +64,8 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
 
     private Context context;
     //constructor
-    public ApelPagiAdapter(Context context, int resource, List<ApelPagiList> listApelPagi) {
-        super(context, resource, listApelPagi);
+    public ApelPagiAdapter(Context context, List<ApelPagiList> listApelPagi) {
+        super(context, R.layout.apelpagi_adapter, listApelPagi);
         this.context = context;
         this.listApelPagi = listApelPagi;
     }
@@ -80,7 +80,9 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
         final View listViewItem = inflater.inflate(R.layout.apelpagi_adapter, null, true);
         final TextView tvEmpName = (TextView) listViewItem.findViewById(R.id.tvEmpApelPagiLV);
         final TextView tvPositionName = (TextView) listViewItem.findViewById(R.id.tvJabatanApelPagiLv);
+        final TextView tvJudulKehadiran = (TextView) listViewItem.findViewById(R.id.tvJudulKehadiranApelLv);
         final TextView tvJenisKehadiran = (TextView) listViewItem.findViewById(R.id.tvJenisKehadiranApelPagiLv);
+        final TextView tvWaktuKehadiran = (TextView) listViewItem.findViewById(R.id.tvWaktuKehadiranApelPagiLv);
         final ImageView imgViewAnggota = (ImageView) listViewItem.findViewById(R.id.imgViewAdapterApel);
         final ApelPagiList listApel = listApelPagi.get(position);
 
@@ -98,9 +100,11 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
         }
 
         if (listApel.getWaktuAbsem() != null) {
-            tvJenisKehadiran.setText("Kehadiran : " + listApel.getMetodeAbsen() + " " + listApel.getWaktuAbsem());
+            tvJenisKehadiran.setText(listApel.getMetodeAbsen());
+            tvWaktuKehadiran.setText(listApel.getWaktuAbsem());
         } else {
             tvJenisKehadiran.setTextColor(Color.RED);
+            tvJudulKehadiran.setTextColor(Color.RED);
         }
 
         listViewItem.setOnClickListener(new View.OnClickListener() {

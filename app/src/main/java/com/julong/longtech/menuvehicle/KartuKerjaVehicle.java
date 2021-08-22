@@ -345,7 +345,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         acTujuanDivisiCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
                 selectedTujuanLokasi = null;
                 acTujuanLokasiCarLog.setText(null);
 
@@ -898,16 +897,16 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         if (TextUtils.isEmpty(acLoadCategoryCarLog.getText().toString().trim())) {
             new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Kategori Muatan").setConfirmText("OK").show();
         }
-        else if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())) {
-            Snackbar.make(v, "Harap isi Tujuan Kebun / Divisi", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
-                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
-                    .setAction("OKAY", view -> {
-                        inputLayoutAsalKebun.requestFocus();
-                        inputLayoutAsalDivisi.requestFocus();
-                    }).show();
-        }
+//        else if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())) {
+//            Snackbar.make(v, "Harap isi Tujuan Kebun / Divisi", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
+//                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
+//                    .setAction("OKAY", view -> {
+//                        inputLayoutAsalKebun.requestFocus();
+//                        inputLayoutAsalDivisi.requestFocus();
+//                    }).show();
+//        }
         else if (TextUtils.isEmpty(acTujuanKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acTujuanDivisiCarLog.getText().toString().trim())) {
-            Snackbar.make(v, "Harap isi Tujuan Kebun / Divisi", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
+            Snackbar.make(v, "Harap isi Lokasi Kerja", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
                     .setAction("OKAY", view -> {
                         inputLayoutTujuanKebun.requestFocus();
@@ -996,13 +995,14 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             btnDoneDlgCarLog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getLocation();
-                    if (TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim())) {
+
+                    if (TextUtils.isEmpty(etKMHMAwalDlgCarLog.getText().toString().trim()) || TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim())) {
 
                         inputlayoutDlgKmAkhir.setHelperTextEnabled(false);
                         inputlayoutDlgKmAkhir.setHelperText(null);
                         inputlayoutDlgKmAkhir.setErrorEnabled(true);
                         inputlayoutDlgKmAkhir.setError("Wajib diisi!");
+                        Toast.makeText(KartuKerjaVehicle.this, "Isi info kilometer!", Toast.LENGTH_LONG).show();
 
                     }
                     else if (fotoKilometer == null ) {
@@ -1011,9 +1011,12 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                         Toast.makeText(KartuKerjaVehicle.this, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
                     }
                     else {
+                        getLocation();
+                        nodocCarLog = dbhelper.get_tbl_username(0) + "/CARLOG/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
 
-                        dbhelper.insert_carlog(nodocCarLog, dbhelper.get_tbl_username(27), selectedTypeLoad, selectedCategoryLoad, selectedHelper1, selectedHelper2,
-                                selectedAsalKebun, selectedAsalDivisi, selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
+                        dbhelper.insert_carlog(nodocCarLog, etKMHMAwalDlgCarLog.getText().toString(), selectedTypeLoad,
+                                selectedCategoryLoad, selectedHelper1, selectedHelper2, selectedAsalKebun, selectedAsalDivisi,
+                                selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,
                                 selectedTujuanKegiatan, etHasilSatuanMuat.getText().toString(), etHasilKerjaLaterite.getText().toString(),
                                 etHasilKerjaCarLog.getText().toString(), etCatatanCarLog.getText().toString(), latCarLog, longCarLog,
                                 etKMHMAkhirDlgCarLog.getText().toString(), gambarCarLog, fotoKilometer);
@@ -1032,7 +1035,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     }
 
     private void getLocation() {
-        GPSTracker gps = new GPSTracker(KartuKerjaVehicle.this);
+        GPSTracker gps = new GPSTracker(this);
         double latitude = gps.getLatitude();
         double longitude = gps.getLongitude();
         latCarLog = String.valueOf(latitude);

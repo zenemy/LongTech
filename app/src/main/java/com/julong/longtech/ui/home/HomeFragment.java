@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -59,6 +61,7 @@ import com.fxn.OnBubbleClickListener;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menusetup.DividerItemDecorator;
+import com.julong.longtech.menusetup.UploadData;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
@@ -82,11 +85,15 @@ import java.util.TimeZone;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.julong.longtech.DatabaseHelper.url_api;
+import static com.julong.longtech.menusetup.UploadData.uploadBL01;
+import static com.julong.longtech.menusetup.UploadData.uploadTR01;
+import static com.julong.longtech.menusetup.UploadData.uploadTR02;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     HashPassword hashPassword;
+    ActivityResultLauncher<Intent> intentLaunchActivity;
 
     DatabaseHelper dbhelper;
     public static TextView tvjabatanuser, tvnamauser;
@@ -161,10 +168,6 @@ public class HomeFragment extends Fragment {
 
 //        tvnamauser.setText(dbhelper.get_tbl_username(0));
 //        tvjabatanuser.setText(dbhelper.get_tbl_username(3));
-
-        preparedUserAppData("theme");
-        preparedUserAppData("sysname");
-        preparedUserAppData("bgcolor");
 
         adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistory);
         acMenuRiwayatHome.setAdapter(adapterMenuHistory);
@@ -402,46 +405,29 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void preparedUserAppData(String predefinedData) {
-        if (predefinedData.equals("theme")) {
-            try {
-                tvSystemNameFragmentHome.setTextColor(Color.parseColor(dbhelper.get_tbl_username(26)));
-                btnsimpankendala.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
-                btnrefresh.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(dbhelper.get_tbl_username(26))));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (predefinedData.equals("sysname")) {
-            try {
-//                tvSystemNameFragmentHome.setText(dbhelper.get_tbl_username(25));
-            } catch (Exception e) {
-                e.printStackTrace();
-//                tvSystemNameFragmentHome.setText("NAMA SYSTEM");
-            }
-        }
-
-        if (predefinedData.equals("bgcolor")) {
-            try {
-                clBgMainActivity.setBackgroundColor(Color.parseColor(dbhelper.get_tbl_username(29)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void eventClickMenu() {
+
+        btnrefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AsyncUploadData().execute();
+            }
+        });
 
         linearLayoutQR.setOnClickListener(view -> ((MainActivity) getActivity()).eventShowQR(view));
 
-        ActivityResultLauncher<Intent> intentLaunchActivity = registerForActivityResult(
+        intentLaunchActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == 3) {
                     acMenuRiwayatHome.setText(adapterMenuHistory.getItem(1), false);
                     loadlvinfohome(todayDate);
                     loadLvHistoryCarLog(todayDate);
+                }
+                if (result.getResultCode() == 4) {
+                    acMenuRiwayatHome.setText(adapterMenuHistory.getItem(0), false);
+                    loadlvinfohome(todayDate);
+                    loadLvHistoryApel(todayDate);
                 }
                 if (result.getResultCode() == 727) {
                     loadlvinfohome(todayDate);
@@ -547,6 +533,14 @@ public class HomeFragment extends Fragment {
 
             acDlgVehicleCarLog.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
 
+            acDlgVehicleCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    InputMethodManager keyboardMgr = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
+                    keyboardMgr.hideSoftInputFromWindow(acDlgVehicleCarLog.getWindowToken(), 0);
+                }
+            });
+
             btnSimpanDlgVehicleCarLog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -568,6 +562,115 @@ public class HomeFragment extends Fragment {
         });
 
         loadlvinfohome(todayDate);
+    }
+
+    private class AsyncUploadData extends AsyncTask<Void, Void, Void> {
+
+        protected Void doInBackground(Void... params) {
+
+            try { // Transaction 01
+                Cursor cursorTransaction1 = dbhelper.view_upload_tr01();
+                if (cursorTransaction1.moveToFirst()) {
+                    do {
+                        uploadTR01(getActivity(),
+                                cursorTransaction1.getInt(0), cursorTransaction1.getString(1),
+                                cursorTransaction1.getString(2), cursorTransaction1.getString(3),
+                                cursorTransaction1.getString(4), cursorTransaction1.getString(5),
+                                cursorTransaction1.getString(6), cursorTransaction1.getString(7),
+                                cursorTransaction1.getString(8), cursorTransaction1.getString(9),
+                                cursorTransaction1.getString(10), cursorTransaction1.getString(11),
+                                cursorTransaction1.getString(12), cursorTransaction1.getString(13),
+                                cursorTransaction1.getString(14), cursorTransaction1.getString(15),
+                                cursorTransaction1.getString(16), cursorTransaction1.getString(17),
+                                cursorTransaction1.getString(18), cursorTransaction1.getString(19),
+                                cursorTransaction1.getString(20), cursorTransaction1.getString(21),
+                                cursorTransaction1.getString(22), cursorTransaction1.getString(23),
+                                cursorTransaction1.getString(24), cursorTransaction1.getString(25),
+                                cursorTransaction1.getString(26), cursorTransaction1.getString(27),
+                                cursorTransaction1.getString(28), cursorTransaction1.getString(29),
+                                cursorTransaction1.getString(30), cursorTransaction1.getString(31),
+                                cursorTransaction1.getString(32), cursorTransaction1.getString(33),
+                                cursorTransaction1.getString(34), cursorTransaction1.getString(35),
+                                cursorTransaction1.getString(36), cursorTransaction1.getString(37),
+                                cursorTransaction1.getString(38), cursorTransaction1.getString(39),
+                                cursorTransaction1.getString(40)
+                        );
+                    } while (cursorTransaction1.moveToNext());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //Transaction 02
+            try {
+                Cursor cursorTransaction2 = dbhelper.view_upload_tr02();
+                if (cursorTransaction2.moveToFirst()) {
+                    do {
+                        uploadTR02(getActivity(),
+                                cursorTransaction2.getInt(0), cursorTransaction2.getString(1),
+                                cursorTransaction2.getString(2), cursorTransaction2.getString(3),
+                                cursorTransaction2.getString(4), cursorTransaction2.getString(5),
+                                cursorTransaction2.getString(6), cursorTransaction2.getString(7),
+                                cursorTransaction2.getString(8), cursorTransaction2.getString(9),
+                                cursorTransaction2.getString(10), cursorTransaction2.getString(11),
+                                cursorTransaction2.getString(12), cursorTransaction2.getString(13),
+                                cursorTransaction2.getString(14), cursorTransaction2.getString(15),
+                                cursorTransaction2.getString(16), cursorTransaction2.getString(17),
+                                cursorTransaction2.getString(18), cursorTransaction2.getString(19),
+                                cursorTransaction2.getString(20), cursorTransaction2.getString(21),
+                                cursorTransaction2.getString(22), cursorTransaction2.getString(23),
+                                cursorTransaction2.getString(24), cursorTransaction2.getString(25),
+                                cursorTransaction2.getString(26), cursorTransaction2.getString(27),
+                                cursorTransaction2.getString(28), cursorTransaction2.getString(29),
+                                cursorTransaction2.getString(30), cursorTransaction2.getString(31),
+                                cursorTransaction2.getString(32), cursorTransaction2.getString(33),
+                                cursorTransaction2.getString(34), cursorTransaction2.getString(35),
+                                cursorTransaction2.getString(36), cursorTransaction2.getString(37),
+                                cursorTransaction2.getString(38), cursorTransaction2.getString(39),
+                                cursorTransaction2.getString(40), cursorTransaction2.getString(41),
+                                cursorTransaction2.getString(42)
+                        );
+                    } while (cursorTransaction2.moveToNext());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Blob 01
+            try {
+                Cursor cursorImg = dbhelper.view_upload_bl01();
+                if (cursorImg.moveToFirst()) {
+                    do {
+
+                        String base64blob1 = android.util.Base64.encodeToString(cursorImg.getBlob(9),  android.util.Base64.DEFAULT);
+                        String base64blob2 = android.util.Base64.encodeToString(cursorImg.getBlob(10),  android.util.Base64.DEFAULT);
+                        String base64blob3 = android.util.Base64.encodeToString(cursorImg.getBlob(11),  android.util.Base64.DEFAULT);
+                        String base64blob4 = android.util.Base64.encodeToString(cursorImg.getBlob(12),  android.util.Base64.DEFAULT);
+                        String base64blob5 = android.util.Base64.encodeToString(cursorImg.getBlob(13),  android.util.Base64.DEFAULT);
+
+                        uploadBL01(getActivity(),
+                                cursorImg.getInt(0), cursorImg.getString(1),
+                                cursorImg.getString(2), cursorImg.getString(3),
+                                cursorImg.getString(4), cursorImg.getString(5),
+                                cursorImg.getString(6), cursorImg.getString(7),
+                                cursorImg.getString(8), base64blob1, base64blob2,
+                                base64blob3, base64blob4, base64blob5
+                        );
+
+                    } while (cursorImg.moveToNext());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            loadlvinfohome(todayDate);
+            Toast.makeText(getContext(), "DONE!", Toast.LENGTH_LONG).show();
+        }
     }
 
     public static void loadlvinfohome(String selectedDate) {
@@ -649,7 +752,6 @@ public class HomeFragment extends Fragment {
                 ListHistoryHomeCarLog paramsCarLogHistory = new ListHistoryHomeCarLog(
                         cursor.getString(cursor.getColumnIndex("documentno")),
                         cursor.getString(cursor.getColumnIndex("tglawal")),
-                        cursor.getString(cursor.getColumnIndex("tglakhir")),
                         cursor.getString(cursor.getColumnIndex("unitcode")),
                         cursor.getString(cursor.getColumnIndex("kmawal")),
                         cursor.getString(cursor.getColumnIndex("kmakhir")),

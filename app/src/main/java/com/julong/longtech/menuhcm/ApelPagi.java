@@ -144,8 +144,8 @@ public class ApelPagi extends AppCompatActivity {
         btnActionApel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadlvanggota();
                 loadlvpimpinan();
+                loadlvanggota();
             }
         });
 
@@ -449,7 +449,7 @@ public class ApelPagi extends AppCompatActivity {
                 listsPimpinan.add(pimpinanLists);
             } while (cursor.moveToNext());
         }
-        apelAdapter = new ApelPagiAdapter(this, R.layout.apelpagi_adapter, listsPimpinan);
+        apelAdapter = new ApelPagiAdapter(this, listsPimpinan);
         lvPimpinan.setAdapter(apelAdapter);
 
     }
@@ -475,9 +475,10 @@ public class ApelPagi extends AppCompatActivity {
                 listsAnggota.add(anggotaLists);
             } while (cursor.moveToNext());
         }
-        apelAdapter = new ApelPagiAdapter(this, R.layout.apelpagi_adapter, listsAnggota);
+        apelAdapter = new ApelPagiAdapter(this, listsAnggota);
         lvAnggota.setAdapter(apelAdapter);
     }
+
 
     public static void scanBarcode(Activity activity) {
         IntentIntegrator intentIntegrator = new IntentIntegrator(activity);

@@ -29,16 +29,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="OPR. ALAT BERAT EXCA-22"
+            android:text="OPR. ALAT BERAT"
             android:textColor="@color/black" />
 
-        <TextView
-            android:id="@+id/tvJenisKehadiranApelPagiLv"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Kehadiran: N/A"
-            android:textColor="@color/black"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvJudulKehadiranApelLv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Kehadiran  :"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tvJenisKehadiranApelPagiLv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="N/A"/>
+
+            <TextView
+                android:id="@+id/tvWaktuKehadiranApelPagiLv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/black"
+                android:text=""/>
+        </LinearLayout>
+
     </LinearLayout>
 
     <ImageView

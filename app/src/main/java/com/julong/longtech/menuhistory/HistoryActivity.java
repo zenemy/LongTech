@@ -1,6 +1,8 @@
 package com.julong.longtech.menuhistory;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -25,11 +27,15 @@ import java.util.TimeZone;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    ListView lvHistoryApel, lvHistoryCarLog;
+    ListView lvHistoryCarLog;
+    RecyclerView lvHistoryRKH, lvHistoryApel;
     AutoCompleteTextView acMenuRiwayat;
     EditText etDatepicker;
 
     DatabaseHelper dbhelper;
+
+    private List<ListHistoryRKH> listHistoriesRKH;
+    HistoryAdapterRKH adapterLvRKH;
 
     private List<ListHistoryApel> listApelHistories;
     HistoryApelAdapter adapterLvHistory;
@@ -37,7 +43,7 @@ public class HistoryActivity extends AppCompatActivity {
     private List<ListHistoryCarLog> listHistoryCarLogs;
     HistoryCarlogAdapter carlogAdapter;
 
-    String[] arrayMenuHistory = {"APEL PAGI", "CAR LOG"};
+    String[] arrayMenuHistory = {"APEL PAGI", "CAR LOG", "RKH"};
     ArrayAdapter<String> adapterMenuHistory;
 
     @Override
@@ -47,11 +53,12 @@ public class HistoryActivity extends AppCompatActivity {
 
         dbhelper = new DatabaseHelper(this);
 
-        lvHistoryApel = findViewById(R.id.lvHistoryApel);
-        lvHistoryCarLog = findViewById(R.id.lvHistoryCarLog);
-        acMenuRiwayat = findViewById(R.id.acMenuRiwayat);
+        lvHistoryRKH = findViewById(R.id.lvHistoryRKH);
         etDatepicker = findViewById(R.id.etDateRiwayat);
-        lvHistoryApel.setDivider(null);
+        lvHistoryApel = findViewById(R.id.lvHistoryApel);
+        acMenuRiwayat = findViewById(R.id.acMenuRiwayat);
+        lvHistoryCarLog = findViewById(R.id.lvHistoryCarLog);
+
         lvHistoryCarLog.setDivider(null);
 
         String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -85,12 +92,20 @@ public class HistoryActivity extends AppCompatActivity {
                 if (acMenuRiwayat.getText().toString().equals("APEL PAGI")) {
                     lvHistoryApel.setVisibility(View.VISIBLE);
                     lvHistoryCarLog.setVisibility(View.GONE);
+                    lvHistoryRKH.setVisibility(View.GONE);
                     loadListViewHistoryApel(simpleFormat.format(date));
+                }
+                else if (acMenuRiwayat.getText().toString().equals("CAR LOG")) {
+                    lvHistoryApel.setVisibility(View.GONE);
+                    lvHistoryCarLog.setVisibility(View.VISIBLE);
+                    lvHistoryRKH.setVisibility(View.GONE);
+                    loadListViewHistoryCarLog(simpleFormat.format(date));
                 }
                 else {
                     lvHistoryApel.setVisibility(View.GONE);
-                    lvHistoryCarLog.setVisibility(View.VISIBLE);
-                    loadListViewHistoryCarLog(simpleFormat.format(date));
+                    lvHistoryCarLog.setVisibility(View.GONE);
+                    lvHistoryRKH.setVisibility(View.VISIBLE);
+                    loadListViewHistoryRKH(simpleFormat.format(date));
                 }
             }
         });
@@ -107,7 +122,6 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void loadListViewHistoryCarLog(String selectedDate) {
-        lvHistoryCarLog = findViewById(R.id.lvHistoryCarLog);
         listHistoryCarLogs = new ArrayList<>();
         listHistoryCarLogs.clear();
         final Cursor cursor = dbhelper.listview_historycarlog(selectedDate);
@@ -116,7 +130,6 @@ public class HistoryActivity extends AppCompatActivity {
                 ListHistoryCarLog paramsCarLogHistory = new ListHistoryCarLog(
                         cursor.getString(cursor.getColumnIndex("documentno")),
                         cursor.getString(cursor.getColumnIndex("tglawal")),
-                        cursor.getString(cursor.getColumnIndex("tglakhir")),
                         cursor.getString(cursor.getColumnIndex("unitcode")),
                         cursor.getString(cursor.getColumnIndex("kmawal")),
                         cursor.getString(cursor.getColumnIndex("kmakhir")),
@@ -134,7 +147,10 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void loadListViewHistoryApel(String selectedDate) {
-        lvHistoryApel = findViewById(R.id.lvHistoryApel);
+
+        LinearLayoutManager layoutApel = new LinearLayoutManager(this);
+        lvHistoryApel.setLayoutManager(layoutApel);
+
         listApelHistories = new ArrayList<>();
         listApelHistories.clear();
         final Cursor cursor = dbhelper.listview_historyapel(selectedDate);
@@ -154,7 +170,34 @@ public class HistoryActivity extends AppCompatActivity {
                 listApelHistories.add(paramsApelHistory);
             } while (cursor.moveToNext());
         }
-        adapterLvHistory = new HistoryApelAdapter(this, R.layout.listview_historyapelpagi, listApelHistories);
+        adapterLvHistory = new HistoryApelAdapter(listApelHistories, this);
         lvHistoryApel.setAdapter(adapterLvHistory);
+    }
+
+    private void loadListViewHistoryRKH(String selectedDate) {
+
+        LinearLayoutManager layoutRKH = new LinearLayoutManager(this);
+        lvHistoryRKH.setLayoutManager(layoutRKH);
+
+        listHistoriesRKH = new ArrayList<>();
+        listHistoriesRKH.clear();
+        final Cursor cursor = dbhelper.listview_historyRKH(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
+                        cursor.getString(cursor.getColumnIndex("documentno")),
+                        cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
+                        cursor.getString(cursor.getColumnIndex("empname")),
+                        cursor.getString(cursor.getColumnIndex("activity")),
+                        cursor.getString(cursor.getColumnIndex("blok")),
+                        cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("shiftcode")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+                );
+                listHistoriesRKH.add(paramsHistoryRKH);
+            } while (cursor.moveToNext());
+        }
+        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, this);
+        lvHistoryRKH.setAdapter(adapterLvRKH);
     }
 }

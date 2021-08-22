@@ -2,6 +2,7 @@ package com.julong.longtech.menusetup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -43,9 +44,7 @@ public class UploadData extends AppCompatActivity {
 
     Button btnUpload;
     DatabaseHelper dbHelper;
-    ListView listviewUpload;
-    private List<UploadParam> uploadParams;
-    UploadAdapter uploadAdapter;
+    public static ListView listviewUpload;
     SweetAlertDialog progressDialog;
 
     boolean isUploadDone = false;
@@ -63,7 +62,7 @@ public class UploadData extends AppCompatActivity {
         btnUpload = findViewById(R.id.btnOkUpload);
         listviewUpload = findViewById(R.id.lvUpload);
 
-        loaduploaddata();
+        loaduploaddata(this);
     }
 
     public void uploadData(View v) throws SQLiteException {
@@ -80,7 +79,7 @@ public class UploadData extends AppCompatActivity {
                 Cursor cursorTransaction1 = dbHelper.view_upload_tr01();
                 if (cursorTransaction1.moveToFirst()) {
                     do {
-                        uploadTR01(
+                        uploadTR01(UploadData.this,
                                 cursorTransaction1.getInt(0), cursorTransaction1.getString(1),
                                 cursorTransaction1.getString(2), cursorTransaction1.getString(3),
                                 cursorTransaction1.getString(4), cursorTransaction1.getString(5),
@@ -115,7 +114,7 @@ public class UploadData extends AppCompatActivity {
                 Cursor cursorTransaction2 = dbHelper.view_upload_tr02();
                 if (cursorTransaction2.moveToFirst()) {
                     do {
-                        uploadTR02(
+                        uploadTR02(UploadData.this,
                                 cursorTransaction2.getInt(0), cursorTransaction2.getString(1),
                                 cursorTransaction2.getString(2), cursorTransaction2.getString(3),
                                 cursorTransaction2.getString(4), cursorTransaction2.getString(5),
@@ -157,7 +156,7 @@ public class UploadData extends AppCompatActivity {
                         String base64blob4 = android.util.Base64.encodeToString(cursorImg.getBlob(12),  android.util.Base64.DEFAULT);
                         String base64blob5 = android.util.Base64.encodeToString(cursorImg.getBlob(13),  android.util.Base64.DEFAULT);
 
-                        uploadBL01(
+                        uploadBL01(UploadData.this,
                                 cursorImg.getInt(0), cursorImg.getString(1),
                                 cursorImg.getString(2), cursorImg.getString(3),
                                 cursorImg.getString(4), cursorImg.getString(5),
@@ -181,14 +180,18 @@ public class UploadData extends AppCompatActivity {
         }
     }
 
-    private void uploadTR01(int id, String nodoc, String datatype, String subdatatype, String compid, String siteid, String date1,
-                            String date2, String date3, String date4, String date5, String text1, String text2, String text3,
-                            String text4, String text5, String text6, String text7, String text8, String text9, String text10,
-                            String text11, String text12, String text13, String text14, String text15, String text16,
-                            String text17, String text18, String text19, String text20, String text21, String text22,
-                            String text23, String text24, String text25, String text26, String text27, String text28,
-                            String text29, String text30) {
-        RequestQueue requestQueueTR01 = Volley.newRequestQueue(this);
+    public static void uploadTR01(Context context, int id, String nodoc, String datatype, String subdatatype, String compid, String siteid, String date1,
+                                  String date2, String date3, String date4, String date5, String text1, String text2, String text3,
+                                  String text4, String text5, String text6, String text7, String text8, String text9, String text10,
+                                  String text11, String text12, String text13, String text14, String text15, String text16,
+                                  String text17, String text18, String text19, String text20, String text21, String text22,
+                                  String text23, String text24, String text25, String text26, String text27, String text28,
+                                  String text29, String text30) {
+
+        DatabaseHelper dbHelper;
+        dbHelper = new DatabaseHelper(context);
+
+        RequestQueue requestQueueTR01 = Volley.newRequestQueue(context);
         String server_url = DatabaseHelper.url_api + "dataupload/uploadTR01.php";
         StringRequest stringRequestTR01 = new StringRequest(Request.Method.POST, server_url,
             new Response.Listener<String>() {
@@ -198,7 +201,7 @@ public class UploadData extends AppCompatActivity {
                         JSONObject jsonPostTR01 = new JSONObject(response);
                         if (jsonPostTR01.getString("UPLOAD").equals("SUCCESS")) {
                             dbHelper.change_statusuploadtr01(id, nodoc);
-                            loaduploaddata();
+                            loaduploaddata(context);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -262,8 +265,7 @@ public class UploadData extends AppCompatActivity {
         requestQueueTR01.add(stringRequestTR01);
     }
 
-    private void uploadTR02(int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata,
-                            String compid, String siteid, String date1, String date2, String date3, String date4,
+    public static void uploadTR02(Context context, int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata, String compid, String siteid, String date1, String date2, String date3, String date4,
                             String date5, String text1, String text2, String text3, String text4, String text5,
                             String text6, String text7, String text8, String text9, String text10,
                             String text11, String text12, String text13, String text14,
@@ -271,7 +273,11 @@ public class UploadData extends AppCompatActivity {
                             String text19, String text20, String text21, String text22,
                             String text23, String text24, String text25, String text26,
                             String text27, String text28, String text29, String text30) {
-        RequestQueue requestQueueTR02 = Volley.newRequestQueue(this);
+
+        DatabaseHelper dbHelper;
+        dbHelper = new DatabaseHelper(context);
+
+        RequestQueue requestQueueTR02 = Volley.newRequestQueue(context);
         String server_url = DatabaseHelper.url_api + "dataupload/uploadTR02.php";
         StringRequest stringRequestTR02 = new StringRequest(Request.Method.POST, server_url, new Response.Listener<String>() {
             @Override
@@ -348,10 +354,14 @@ public class UploadData extends AppCompatActivity {
         requestQueueTR02.add(stringRequestTR02);
     }
 
-    private void uploadBL01(int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata,
+    public static void uploadBL01(Context context, int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata,
                             String compid, String siteid, String remarks, String base64Blob1, String base64Blob2,
                             String base64Blob3, String base64Blob4, String base64Blob5) {
-        RequestQueue requestQueueBlob = Volley.newRequestQueue(this);
+
+        DatabaseHelper dbHelper;
+        dbHelper = new DatabaseHelper(context);
+
+        RequestQueue requestQueueBlob = Volley.newRequestQueue(context);
         String server_url = DatabaseHelper.url_api + "dataupload/uploadBL01.php";
         StringRequest stringRequestImg = new StringRequest(Request.Method.POST, server_url, new Response.Listener<String>() {
             @Override
@@ -399,7 +409,13 @@ public class UploadData extends AppCompatActivity {
         requestQueueBlob.add(stringRequestImg);
     }
 
-    private void loaduploaddata() {
+    public static void loaduploaddata(Context context) {
+
+        List<UploadParam> uploadParams;
+        UploadAdapter uploadAdapter;
+        DatabaseHelper dbHelper;
+        dbHelper = new DatabaseHelper(context);
+
         uploadParams = new ArrayList<>();
         uploadParams.clear();
         final Cursor cursor = dbHelper.view_tbl_uploadlist();
@@ -413,7 +429,7 @@ public class UploadData extends AppCompatActivity {
                 uploadParams.add(uploadParam);
             } while (cursor.moveToNext());
         }
-        uploadAdapter = new UploadAdapter(this, R.layout.upload_list, uploadParams);
+        uploadAdapter = new UploadAdapter(context, R.layout.upload_list, uploadParams);
         listviewUpload.setAdapter(uploadAdapter);
     }
 

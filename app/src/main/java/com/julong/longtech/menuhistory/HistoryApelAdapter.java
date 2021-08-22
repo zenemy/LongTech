@@ -10,72 +10,138 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryApelAdapter extends ArrayAdapter<ListHistoryApel> {
+public class HistoryApelAdapter extends RecyclerView.Adapter<HistoryApelAdapter.ApelHolder> {
 
-    //storing all the names in the list
-    private List<ListHistoryApel> listHistoryApel;
-    DatabaseHelper dbhelper;
+    // List to store all the contact details
+    private List<ListHistoryApel> apelList;
+    private Context mContext;
 
-    private Context context;
-    //constructor
-    public HistoryApelAdapter(Context context, int resource, List<ListHistoryApel> listHistoryApel) {
-        super(context, resource, listHistoryApel);
-        this.context = context;
-        this.listHistoryApel = listHistoryApel;
+    // Counstructor for the Class
+    public HistoryApelAdapter(List apelList, Context context) {
+        this.apelList = apelList;
+        this.mContext = context;
+    }
+
+    // This method creates views for the RecyclerView by inflating the layout
+    // Into the viewHolders which helps to display the items in the RecyclerView
+    @Override
+    public ApelHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+
+        // Inflate the layout view you have created for the list rows here
+        View view = layoutInflater.inflate(R.layout.listview_historyapelpagi, parent, false);
+        return new ApelHolder(view);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        dbhelper = new DatabaseHelper(getContext());
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        //getting listview itmes
-        final View listViewItem = inflater.inflate(R.layout.listview_historyapelpagi, null, true);
-        final TextView tvNoDoc = (TextView) listViewItem.findViewById(R.id.tvNodocHistoryApel);
-        final TextView tvTglReport = (TextView) listViewItem.findViewById(R.id.tvHistoryDateApel);
-        final TextView tvTimeReport = (TextView) listViewItem.findViewById(R.id.tvHistoryTimeApel);
-        final TextView tvEmpNameApel = (TextView) listViewItem.findViewById(R.id.tvEmpApelHistory);
-        final TextView tvPositionApel = (TextView) listViewItem.findViewById(R.id.tvPositionApelHistory);
-        final TextView tvKehadiranApel = (TextView) listViewItem.findViewById(R.id.tvKehadiranApelHistory);
-        final TextView tvMetodeAbsen = (TextView) listViewItem.findViewById(R.id.tvMetodeAbsenApelHistory);
-        final ImageView imgViewApel = (ImageView) listViewItem.findViewById(R.id.imgHistoryApelPagi);
-        final ImageView imgUploaded = (ImageView) listViewItem.findViewById(R.id.imgUploadHistoryApel);
-        final ListHistoryApel reportsList = listHistoryApel.get(position);
-
-        tvNoDoc.setText(reportsList.getDocumentNumber());
-        tvTglReport.setText(reportsList.getTglApel());
-        tvTimeReport.setText(reportsList.getWaktuApel());
-        tvEmpNameApel.setText(reportsList.getEmployeeName());
-        tvPositionApel.setText(reportsList.getEmpPosition());
-        tvKehadiranApel.setText(reportsList.getKehadiranEmp());
-
-        try {
-            if (reportsList.getFotoApel() != null) {
-                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(reportsList.getFotoApel(), 0, reportsList.getFotoApel().length);
-                imgViewApel.setBackground(null);
-                imgViewApel.setImageBitmap(compressedBitmap);
-            }
-            if (reportsList.getMetodeAbsen() != null) {
-                tvMetodeAbsen.setText("(" + reportsList.getMetodeAbsen() + ")");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (reportsList.getIsUploaded() == 0 ) {
-            imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
-        }
-        else {
-            imgUploaded.setImageResource(R.drawable.bluetick);
-        }
-
-        return listViewItem;
+    public int getItemCount() {
+        return apelList == null? 0: apelList.size();
     }
 
+    // This method is called when binding the data to the views being created in RecyclerView
+    @Override
+    public void onBindViewHolder(@NonNull ApelHolder holder, final int position) {
+        final ListHistoryApel apelHistories = apelList.get(position);
+
+        // Set the data to the views here
+        holder.setDocumentNumber(apelHistories.getDocumentNumber());
+        holder.setApelDate(apelHistories.getTglApel());
+        holder.setApelTime(apelHistories.getWaktuApel());
+        holder.setEmpName(apelHistories.getEmployeeName());
+        holder.setEmpPosition(apelHistories.getEmpPosition());
+        holder.setUploaded(apelHistories.getIsUploaded());
+        holder.setKehadiranEmp(apelHistories.getKehadiranEmp());
+
+        if (apelHistories.getFotoApel() != null) {
+            holder.setApelImg(apelHistories.getFotoApel());
+        }
+
+        if (apelHistories.getMetodeAbsen() != null) {
+            holder.setMetodeAbsen(apelHistories.getMetodeAbsen());
+        }
+
+    }
+
+    // This class that helps to populate data to the view
+    public class ApelHolder extends RecyclerView.ViewHolder {
+
+        private TextView tvNoDoc, tvTglHistory, tvTimeHistory, tvEmpNameApel,
+                tvPositionApel, tvKehadiranApel, tvMetodeAbsen;
+
+        private ImageView imgViewApel, imgUploaded;
+
+        public ApelHolder(View itemView) {
+            super(itemView);
+
+            tvNoDoc = (TextView) itemView.findViewById(R.id.tvNodocHistoryApel);
+            tvTglHistory = (TextView) itemView.findViewById(R.id.tvHistoryDateApel);
+            tvTimeHistory = (TextView) itemView.findViewById(R.id.tvHistoryTimeApel);
+            tvEmpNameApel = (TextView) itemView.findViewById(R.id.tvEmpApelHistory);
+            tvPositionApel = (TextView) itemView.findViewById(R.id.tvPositionApelHistory);
+            tvKehadiranApel = (TextView) itemView.findViewById(R.id.tvKehadiranApelHistory);
+            tvMetodeAbsen = (TextView) itemView.findViewById(R.id.tvMetodeAbsenApelHistory);
+            imgViewApel = (ImageView) itemView.findViewById(R.id.imgHistoryApelPagi);
+            imgUploaded = (ImageView) itemView.findViewById(R.id.imgUploadHistoryApel);
+
+        }
+
+        public void setDocumentNumber(String nodoc) {
+            tvNoDoc.setText(nodoc);
+        }
+
+        public void setApelDate(String apelDate) {
+            tvTglHistory.setText(apelDate);
+        }
+
+        public void setApelTime(String apelTime) {
+            tvTimeHistory.setText(apelTime);
+        }
+
+        public void setEmpName(String empname) {
+            tvEmpNameApel.setText(empname);
+        }
+
+        public void setEmpPosition(String empPosition) {
+            tvPositionApel.setText(empPosition);
+        }
+
+        public void setKehadiranEmp(String kehadiranEmp) {
+            tvKehadiranApel.setText(kehadiranEmp);
+        }
+
+        public void setMetodeAbsen(String metodeAbsen) {
+            if (metodeAbsen != null) {
+                tvMetodeAbsen.setText("(" + metodeAbsen + ")");
+            }
+        }
+
+        public void setApelImg(byte[] fotoApel) {
+            try {
+                if (fotoApel != null) {
+                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(fotoApel, 0, fotoApel.length);
+                    imgViewApel.setBackground(null);
+                    imgViewApel.setImageBitmap(compressedBitmap);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void setUploaded(int isUploaded) {
+            if (isUploaded == 0 ) {
+                imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
+            } else {
+                imgUploaded.setImageResource(R.drawable.bluetick);
+            }
+        }
+    }
 }

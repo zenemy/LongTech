@@ -16,7 +16,7 @@
         android:gravity="center"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
-        android:text="SELESAI CAR LOG BEKERJA"
+        android:text="KM / HM KENDARAAN KERJA"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -26,12 +26,13 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="12dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:visibility="gone"
             android:weightSum="2">
 
             <com.google.android.material.textview.MaterialTextView
@@ -56,14 +57,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:visibility="gone"
             android:weightSum="2">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="4dp"
+                android:layout_weight="1"
                 app:endIconDrawable="@drawable/ic_baseline_calendar_24"
                 app:endIconMode="custom"
                 app:hintEnabled="false">
@@ -111,16 +113,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:weightSum="2">
 
-            <com.google.android.material.textview.MaterialTextView
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:text="KM/HM Awal"
-                android:textColor="@color/black" />
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="KM/HM Awal"
+                    android:textColor="@color/black" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="*"
+                    android:textColor="@color/red" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -163,8 +176,11 @@
                     android:id="@+id/etKMHMAwalDlgCarLog"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:editable="false"
-                    android:inputType="none"
+                    android:hint="00000"
+                    android:inputType="number"
+                    android:longClickable="@null"
+                    android:maxLength="6"
+                    android:gravity="center"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
@@ -316,7 +332,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:background="@drawable/tbl_lr_bottom"
         android:backgroundTint="@color/white"
         android:orientation="horizontal">
@@ -324,7 +340,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancelDlgCarLog"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="0.5dp"
             android:layout_marginBottom="1dp"
@@ -339,7 +355,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDoneDlgCarLog"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="0.5dp"
             android:layout_marginEnd="1dp"
             android:layout_marginBottom="1dp"

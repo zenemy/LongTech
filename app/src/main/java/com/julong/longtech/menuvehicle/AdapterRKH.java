@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.julong.longtech.R;
 import com.julong.longtech.DatabaseHelper;
 
@@ -84,37 +86,50 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
         viewHolder.checkBoxLvRKH.setTag(position);
         viewHolder.checkBoxLvRKH.setChecked(rkhParams.get(position).isChecked());
 
+        if (RencanaKerjaHarian.selectedLokasi != null && RencanaKerjaHarian.selectedKegiatan != null) {
+            viewHolder.checkBoxLvRKH.setVisibility(View.VISIBLE);
+        }
+
         viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (viewHolder.checkBoxLvRKH.isChecked()) {
-                    viewHolder.checkBoxLvRKH.setChecked(false);
-                    checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
-                    RencanaKerjaHarian.btnRefreshRKH.performClick();
-                    if (checkedRKH != null) {
-                        dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"");
+                if (RencanaKerjaHarian.selectedLokasi == null && RencanaKerjaHarian.selectedKegiatan == null) {
+                    Snackbar.make(v, "Harap pilih lokasi dan kegiatan", Snackbar.LENGTH_LONG).setAnchorView(((RencanaKerjaHarian) context).layoutBtnRKH)
+                            .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+                }
+                else {
+                    if (viewHolder.checkBoxLvRKH.isChecked()) {
                         viewHolder.checkBoxLvRKH.setChecked(false);
+                        checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
+                        RencanaKerjaHarian.btnRefreshRKH.performClick();
+                        if (checkedRKH != null) {
+                            dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                                    rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
+                                    null, null, "");
+                            viewHolder.checkBoxLvRKH.setChecked(false);
+                            RencanaKerjaHarian.btnRefreshRKH.performClick();
+                        }
+                    }
+                    else {
+                        viewHolder.checkBoxLvRKH.setChecked(true);
+                        dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
+                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
+                                RencanaKerjaHarian.selectedLokasi,RencanaKerjaHarian.selectedKegiatan,"Checked");
                         RencanaKerjaHarian.btnRefreshRKH.performClick();
                     }
                 }
-                else {
-                    viewHolder.checkBoxLvRKH.setChecked(true);
-                    dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"Checked");
-                    RencanaKerjaHarian.btnRefreshRKH.performClick();
-                }
+
             }
         });
 
         viewHolder.checkBoxLvRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (viewHolder.checkBoxLvRKH.isChecked()) {
                     dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"Checked");
+                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
+                            RencanaKerjaHarian.selectedLokasi,RencanaKerjaHarian.selectedKegiatan,"Checked");
                     RencanaKerjaHarian.btnRefreshRKH.performClick();
                 } else {
                     checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
@@ -122,7 +137,8 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
                     RencanaKerjaHarian.btnRefreshRKH.performClick();
                     if (checkedRKH != null) {
                         dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),"");
+                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
+                                null, null, "");
                         viewHolder.checkBoxLvRKH.setChecked(false);
                         RencanaKerjaHarian.btnRefreshRKH.performClick();
                     }

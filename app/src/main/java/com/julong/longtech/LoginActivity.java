@@ -160,11 +160,6 @@ public class LoginActivity extends AppCompatActivity {
         TextView tvTelpDlgImg = dialoggambar.findViewById(R.id.tvTelpDlgImg);
         TextView tvDeptDlgImg = dialoggambar.findViewById(R.id.tvDeptDlgImg);
 
-        pDialog = new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.setTitleText("Pengecekan Akun");
-        pDialog.setCancelable(false);
-
-
         //Perijinan=================================================================================
         try {
             if ((ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -316,6 +311,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void eventClickLogin(View view) {
+
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.setTitleText("Pengecekan Akun");
+        pDialog.setCancelable(false);
 
         dialoginsertpassword = new Dialog(this);
         dialoginsertpassword.requestWindowFeature(Window.FEATURE_NO_TITLE);

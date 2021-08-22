@@ -54,7 +54,7 @@ public class HistoryHomeCarLogAdapter extends RecyclerView.Adapter<HistoryHomeCa
 
         // Set the data to the views here
         holder.setDocumentNumber(historyCarLogs.getDocumentNumber());
-        holder.setLogTime(historyCarLogs.getWaktuAwal(), historyCarLogs.getWaktuAkhir());
+        holder.setLogTime(historyCarLogs.getWaktuAwal());
         holder.setVehicle(historyCarLogs.getUnitCarLog());
         holder.setKMHM(historyCarLogs.getKmAwal(), historyCarLogs.getKmAkhir());
         holder.setLoadType(historyCarLogs.getJenisMuatan(), historyCarLogs.getKategoriMuatan());
@@ -89,8 +89,8 @@ public class HistoryHomeCarLogAdapter extends RecyclerView.Adapter<HistoryHomeCa
             tvNoDoc.setText(nodoc);
         }
 
-        public void setLogTime(String startTime, String endTime) {
-            tvTglHistory.setText(startTime + " — " + endTime);
+        public void setLogTime(String startTime) {
+            tvTglHistory.setText(startTime);
         }
 
         public void setVehicle(String vehicle) {

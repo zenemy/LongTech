@@ -852,11 +852,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String get_kmhmunit(String vehiclecode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT IFNULL(text28, '') AS kmhm FROM md_01 WHERE " +
+                "datatype = 'VEHICLE' AND subdatatype = '" + vehiclecode + "';", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
+
     public boolean update_ancakcode_user(String vehiclecode) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("ancakcode", vehiclecode);
-        contentValues.put("kmhm", "123456");
+        contentValues.put("kmhm", get_kmhmunit(vehiclecode));
 
         long update = db.update("tbl_username", contentValues, null, null);
         if (update == -1) {
@@ -1000,7 +1013,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_adjustmentunit(String nodoc, String tglPerintah, String unitstatus, String vehiclecode, String empcode, String note, String kmhm) {
+    public boolean insert_adjustmentunit(String nodoc, String unitstatus, String vehiclecode, String empcode, String note, String kmhm) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -1010,7 +1023,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("comp_id", get_tbl_username(14));
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("date1", savedate);
-        contentValues.put("date2", tglPerintah);
         contentValues.put("text1", unitstatus);
         contentValues.put("text2", vehiclecode);
         contentValues.put("text3", empcode);
@@ -1144,6 +1156,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor listview_historyRKH(String date) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tr2.documentno, strftime('%d-%m-%Y', tr2.date2) AS tglpelaksannaan, mdemp.text2 AS empname, " +
+                "mdactivity.text6 AS activity, mdblok.text2 AS blok, tr2.text1 AS unitcode, tr2.text2 AS shiftcode, " +
+                "tr2.uploaded AS uploaded FROM tr_02 tr2 " +
+                "LEFT JOIN md_01 mdemp ON mdemp.text1 = tr2.text3 AND mdemp.datatype = 'EMPLOYEE' " +
+                "LEFT JOIN md_01 mdactivity ON mdactivity.text5 = tr2.text5 AND mdactivity.datatype = 'TRANSPORTRATE' " +
+                "LEFT JOIN md_01 mdblok ON mdblok.text1 = tr2.text4 AND mdblok.datatype = 'FIELDCROP' " +
+                "WHERE tr2.datatype = 'RKHVH' AND DATE(tr2.date1) = DATE('"+date+"') and tr2.uploaded IS NOT NULL", null);
+        return cursor;
+    }
+
     public Cursor listview_historyapel(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT tr2.documentno, date(tr2.date1) AS tglapel, time(tr2.date1) AS waktuapel, md1.text2 AS empname, " +
@@ -1156,8 +1180,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_historycarlog(String date) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT tr.documentno, strftime('%d-%m-%Y %H:%M', tr.date1) AS tglawal, " +
-                "strftime('%d-%m-%Y %H:%M', tr.date2) AS tglakhir, tr.text1 AS unitcode, md.text4 AS jenismuatan, " +
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.documentno, strftime('%d-%m-%Y %H:%M', tr.date1) AS tglawal, " +
+                "tr.text1 AS unitcode, md.text4 AS jenismuatan, " +
                 "md.text6 AS kategorimuatan, tr.text2 AS kmawal, tr.text18 AS kmakhir, tr.text16 AS hasilkerja, " +
                 "md.text7 AS satuankerja, tr.uploaded AS uploaded FROM tr_01 tr LEFT JOIN md_01 md ON tr.text4 = md.text5 " +
                 "AND md.datatype = 'TRANSPORTRATE' WHERE tr.datatype = 'CARLOG' " +
@@ -1285,7 +1309,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text18", kmakhir);
         contentValues.put("text19", latitude);
         contentValues.put("text20", longitude);
-        contentValues.put("text23", "Selesai");
         contentValues.put("uploaded", 0);
 
         ContentValues contentValuesPhoto = new ContentValues();
@@ -1743,7 +1766,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(index).toString();
+            if (cursor.isNull(index)) {
+                return null;
+            } else {
+                return cursor.getString(index).toString();
+            }
         } else {
             return null;
         }
@@ -1906,9 +1933,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<String> get_itemkebun(int index) {
-        ArrayList<String> dataList = new ArrayList<String>();
+        ArrayList<String> dataList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text1, text2 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' ORDER BY text2 ASC";
+        String query = "SELECT DISTINCT text1, text2 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' AND text5 = 'E' ORDER BY text2 ASC";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -1976,7 +2003,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_fieldcrop(int index) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT text1, text2 FROM md_01 WHERE datatype = 'FIELDCROP' AND text4 = '"+get_tbl_username(16)+"'";
+        String query = "SELECT text1, text2 FROM md_01 WHERE datatype = 'FIELDCROP'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -2540,9 +2567,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean update_checkedRKH(String nodoc, String unitcode, String shiftcode, String empcode, String checkvalue) {
+    public Boolean update_checkedRKH(String nodoc, String unitcode, String shiftcode, String empcode,
+                                     String lokasiCode, String kegiatanCode, String checkvalue) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValuesTR02 = new ContentValues();
+        contentValuesTR02.put("text4", lokasiCode);
+        contentValuesTR02.put("text5", kegiatanCode);
         contentValuesTR02.put("text7", checkvalue);
 
         long update = db.update("tr_02", contentValuesTR02, "documentno = '"+nodoc+"' AND " +
@@ -2744,7 +2774,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         contentValues.put("date1", savedate);
-        contentValues.put("text3", "N/A");
+        contentValues.put("text3", jenisTdkHadir);
         contentValues.put("text4", jenisTdkHadir);
         contentValues.put("text5", keteranganTdkHadir);
         contentValues.putNull("text6");

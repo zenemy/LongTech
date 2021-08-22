@@ -2,6 +2,7 @@ package com.julong.longtech.menusetup;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -23,15 +24,14 @@ import java.util.List;
 public class UploadAdapter extends ArrayAdapter<UploadParam> {
 
     private List<UploadParam> uploadParams;
-    private final Activity context;
+    private final Context context;
     public static TextView data;
     DatabaseHelper dbhelper;
     public static CheckBox checkBox;
 
-    public UploadAdapter(Activity context, int download_list, List<UploadParam> uploadParams) {
+    public UploadAdapter(Context context, int download_list, List<UploadParam> uploadParams) {
         super(context, R.layout.upload_list, uploadParams);
         this.context = context;
-        this.uploadParams = uploadParams;
         this.uploadParams = uploadParams;
     }
 
@@ -43,7 +43,7 @@ public class UploadAdapter extends ArrayAdapter<UploadParam> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            LayoutInflater inflator = context.getLayoutInflater();
+            LayoutInflater inflator = LayoutInflater.from(context);
             convertView = inflator.inflate(R.layout.upload_list, null);
 
             ViewHolder viewHolder = new UploadAdapter.ViewHolder();

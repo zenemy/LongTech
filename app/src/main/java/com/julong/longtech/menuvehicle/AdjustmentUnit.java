@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.LoginActivity;
@@ -36,18 +38,17 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class AdjustmentUnit extends AppCompatActivity {
 
-    String[] arrayPilihanMenu = {"Perintah Operasi Unit", "Ganti Driver / Operator", "Status Standby Unit", "Adjusment KM/HM", "Status Unit Breakdown"};
+    String[] arrayPilihanMenu = {"Perintah Operasi Unit", "Status Standby Unit", "Adjusment KM/HM", "Status Unit Breakdown"};
     String codeOptionMenu, selectedVehicle, selectedEmp, nodocAdjustment, dateSaveDatabase, unitKm;
     private List<String> listVehicleAdj, listEmployeeAdj;
     ArrayAdapter<String> adapterMenuOption, adapterVehicleAdjustmentUnit, adapterEmployeeAdjustmentUnit;
     DatabaseHelper dbHelper;
     private KeyListener keyListenerAcDriver;
 
-    TextInputLayout inputLayoutDecimalKM;
-    LinearLayout layoutKMHMVehicle;
+    TextInputLayout inputLayoutKM;
     Button btnSubmitAdjustment, btnBackAdjustment;
     AutoCompleteTextView acPilihanMenu, acVehicleAdjustmentUnit, acDriver;
-    EditText etPelaksanaanTgl, etNoteAdjustment, etAdjustmentKMHM, etAdjustmentDecimalKMHM;
+    EditText etNoteAdjustment, etAdjustmentKMHM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +60,12 @@ public class AdjustmentUnit extends AppCompatActivity {
         //Declare design ID
         acPilihanMenu = findViewById(R.id.acMenuOptionAdjustmentUnit);
         acVehicleAdjustmentUnit = findViewById(R.id.acKendaraanKerjaGantiDriver);
-        layoutKMHMVehicle = findViewById(R.id.layoutKMHMVehicle);
-        inputLayoutDecimalKM = findViewById(R.id.inputLayoutAdjustmentDecimalKM);
+        inputLayoutKM = findViewById(R.id.inputLayoutAdjustKMHM);
         acDriver = findViewById(R.id.acNamaSupirGantiDriver);
         btnSubmitAdjustment = findViewById(R.id.btnSubmitAdjustmentVehicle);
         btnBackAdjustment = findViewById(R.id.btnBackAdjustmentVehicle);
-        etPelaksanaanTgl = findViewById(R.id.etPelaksanaanTglGantiDriver);
         etNoteAdjustment = findViewById(R.id.etNoteAdjustmentUnit);
         etAdjustmentKMHM = findViewById(R.id.etAdjustmentKMHM);
-        etAdjustmentDecimalKMHM = findViewById(R.id.etAdjustmentDecimalKMHM);
         keyListenerAcDriver = acDriver.getKeyListener();
 
         adapterMenuOption = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayPilihanMenu);
@@ -78,47 +76,14 @@ public class AdjustmentUnit extends AppCompatActivity {
         acVehicleAdjustmentUnit.setAdapter(adapterVehicleAdjustmentUnit);
 
         // Select work date
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
-        etPelaksanaanTgl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                datePicker.show(getSupportFragmentManager(), datePicker.toString());
-
-                datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
-                    @Override
-                    public void onPositiveButtonClick(Long selection) {
-                        // Get the offset from our timezone and UTC.
-                        TimeZone timeZoneUTC = TimeZone.getDefault();
-                        // It will be negative, so that's the -1
-                        int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
-                        // Create a date format, then a date object with our offset
-                        SimpleDateFormat simpleFormatView = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
-                        SimpleDateFormat formatSave = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                        Date date = new Date(selection + offsetFromUTC);
-                        dateSaveDatabase = formatSave.format(date);
-
-                        etPelaksanaanTgl.setText(simpleFormatView.format(date));
-                    }
-                });
-            }
-        });
-
         acPilihanMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
 
-                if (selection.equals("Ganti Driver / Operator")) {
-                    codeOptionMenu = "CHANGE";
-                    layoutKMHMVehicle.setVisibility(View.GONE);
-                    listEmployeeAdj = dbHelper.get_employee();
-                    adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
-                    acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
-//                    acDriver.setKeyListener(keyListenerAcDriver);
-                }
-                else if (selection.equals("Perintah Operasi Unit")) {
+                if (selection.equals("Perintah Operasi Unit")) {
                     codeOptionMenu = "RUN";
-                    layoutKMHMVehicle.setVisibility(View.GONE);
+                    inputLayoutKM.setVisibility(View.GONE);
                     listEmployeeAdj = dbHelper.get_employee();
                     adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
@@ -129,7 +94,7 @@ public class AdjustmentUnit extends AppCompatActivity {
                 }
                 else if (selection.equals("Adjusment KM/HM")) {
                     codeOptionMenu = "KM/HM";
-                    layoutKMHMVehicle.setVisibility(View.VISIBLE);
+                    inputLayoutKM.setVisibility(View.VISIBLE);
                     listEmployeeAdj = dbHelper.get_employee();
                     adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
@@ -140,7 +105,7 @@ public class AdjustmentUnit extends AppCompatActivity {
                 }
                 else if (selection.equals("Status Unit Breakdown")) {
                     codeOptionMenu = "BREAKDOWN";
-                    layoutKMHMVehicle.setVisibility(View.GONE);
+                    inputLayoutKM.setVisibility(View.GONE);
                     listEmployeeAdj = dbHelper.get_employee();
                     adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
@@ -151,7 +116,7 @@ public class AdjustmentUnit extends AppCompatActivity {
                 }
                 else {
                     codeOptionMenu = "STANDBY";
-                    layoutKMHMVehicle.setVisibility(View.GONE);
+                    inputLayoutKM.setVisibility(View.GONE);
                     listEmployeeAdj = dbHelper.get_employee();
                     adapterEmployeeAdjustmentUnit = new ArrayAdapter<String>(AdjustmentUnit.this, R.layout.spinnerlist, R.id.spinnerItem, listEmployeeAdj);
                     acDriver.setAdapter(adapterEmployeeAdjustmentUnit);
@@ -206,25 +171,24 @@ public class AdjustmentUnit extends AppCompatActivity {
                     new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Pilih Driver!").setConfirmText("OK").show();
                 }
                 else if (vehicleOutput.indexOf(acVehicleAdjustmentUnit.getText().toString()) == -1 || driverOutput.indexOf(acDriver.getText().toString()) == -1) {
-                    new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Data tidak valid!").setConfirmText("OK").show();
+                    Snackbar.make(view, "Kendaraan / Driver salah", Snackbar.LENGTH_LONG).setAnchorView(findViewById(android.R.id.content))
+                            .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).setAction("OKAY", snackview -> {
+                                acVehicleAdjustmentUnit.requestFocus();
+                                acDriver.requestFocus();
+                            }).show();
                 }
                 else {
-                    if (inputLayoutDecimalKM.getVisibility() == View.VISIBLE) {
-                        unitKm = etAdjustmentKMHM.getText().toString() + "," + etAdjustmentDecimalKMHM.getText().toString();
-                    }
-                    else {
-                        unitKm = "";
-                    }
+
+                    unitKm = etAdjustmentKMHM.getText().toString();
 
                     nodocAdjustment = dbHelper.get_tbl_username(0) + "/RUNVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
 
-                    dbHelper.insert_adjustmentunit(nodocAdjustment, dateSaveDatabase, codeOptionMenu,
-                            selectedVehicle, selectedEmp, etNoteAdjustment.getText().toString(), unitKm);
+                    dbHelper.insert_adjustmentunit(nodocAdjustment, codeOptionMenu, selectedVehicle,
+                            selectedEmp, etNoteAdjustment.getText().toString(), unitKm);
 
                     new SweetAlertDialog(AdjustmentUnit.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Adjustment Unit")
                         .setConfirmClickListener(sweetAlertDialog -> {
                             acPilihanMenu.setText(null);
-                            etPelaksanaanTgl.setText(null);
                             acDriver.setText(null);
                             acVehicleAdjustmentUnit.setText(null);
                             etNoteAdjustment.setText(null);

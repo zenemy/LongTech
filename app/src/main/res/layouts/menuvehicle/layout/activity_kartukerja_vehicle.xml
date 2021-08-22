@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Jenis Muatan"
+            android:hint="Kategori"
             app:endIconMode="dropdown_menu">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="4dp"
-            android:hint="Kategori Muatan"
+            android:hint="Aktifitas Pekerjaan"
             app:endIconMode="dropdown_menu">
 
             <AutoCompleteTextView
@@ -309,7 +309,7 @@
                     android:gravity="center_horizontal"
                     android:paddingTop="6dp"
                     android:paddingBottom="6dp"
-                    android:text="Tujuan Muatan"
+                    android:text="Lokasi Kerja"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -421,7 +421,7 @@
                 android:backgroundTint="@color/white"
                 android:orientation="vertical"
                 android:paddingBottom="8dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/judulHasilKerja"
@@ -612,6 +612,7 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginEnd="8dp"
                         android:hint="Catatan Tambahan"
+                        android:visibility="gone"
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText

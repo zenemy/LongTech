@@ -75,7 +75,7 @@
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,10 +92,12 @@
                     android:id="@+id/acLokasiKerjaRKH"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:singleLine="true"
+                    android:enabled="false"
                     android:paddingStart="8dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingBottom="4dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -116,10 +118,12 @@
                 android:id="@+id/acKegiatanKerjaRKH"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:singleLine="true"
+                android:enabled="false"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
+                android:paddingBottom="4dp"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 

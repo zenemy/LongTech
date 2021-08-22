@@ -108,7 +108,7 @@
                     android:inputType="time"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:hint="Tanggal Kerja"
+                    android:hint="Tanggal Penginputan"
                     android:textColorHint="#808080"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
@@ -121,13 +121,13 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lvHistoryApel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         android:visibility="gone"
-        android:background="@drawable/tbl_lr_bottom"
+        android:background="@drawable/tombol"
         android:backgroundTint="#EFECEC"/>
 
     <ListView
@@ -136,6 +136,15 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="#EFECEC"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lvHistoryRKH"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:background="@drawable/tombol"
         android:backgroundTint="#EFECEC"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
