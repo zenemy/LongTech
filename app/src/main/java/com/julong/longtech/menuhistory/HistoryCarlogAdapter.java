@@ -48,7 +48,7 @@ public class HistoryCarlogAdapter extends ArrayAdapter<ListHistoryCarLog> {
 
         tvNoDoc.setText(historyCarLog.getDocumentNumber());
         tvTglHistory.setText(historyCarLog.getWaktuAwal());
-        tvUnitCarLog.setText(historyCarLog.getUnitCarLog());
+        tvUnitCarLog.setText("(" + historyCarLog.getUnitCarLog() + ")");
         tvKmCarLog.setText(historyCarLog.getKmAwal() + " — " + historyCarLog.getKmAkhir());
         tvLoadType.setText(historyCarLog.getJenisMuatan() + " (" + historyCarLog.getKategoriMuatan() + ")");
         tvHasilHistory.setText(historyCarLog.getHasilPekerjaan());

@@ -7,99 +7,87 @@
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackgroundBorderless">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgHistoryHomeCarLog"
-            android:layout_width="50dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/ic_baseline_insertimg_80"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/roundedMiniCorner"
-            app:strokeWidth="1dp" />
+    <TextView
+        android:id="@+id/tvNodocHistoryHomeCarLog"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingEnd="8dp"
+        android:text="NO DOCUMENT"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tvHistoryHomeVehicleCarLog"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvNodocHistoryHomeCarLog"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="8dp"
-            android:text="NO DOCUMENT"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imgHistoryHomeCarLog"
-            app:layout_constraintTop_toTopOf="@id/imgHistoryHomeCarLog" />
+    <TextView
+        android:id="@+id/tvHistoryHomeVehicleCarLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:text="Unit Kendaraan"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayoutCompatHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvHistoryHomeVehicleCarLog">
 
         <TextView
             android:id="@+id/tvHistoryHomeDateCarLog"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="8dp"
-            android:drawableStart="@drawable/ic_baseline_calendar_16"
-            android:drawablePadding="4dp"
-            android:text="2021-08-12 11:47:32 - 2021-08-12 11:47:32"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imgHistoryHomeCarLog"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imgHistoryHomeCarLog" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/linearLayoutCompatHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:weightSum="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imgHistoryHomeCarLog">
-
-            <TextView
-                android:id="@+id/tvHistoryHomeKMHMCarLog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:drawableStart="@drawable/ic_baseline_speedometer_16"
-                android:drawablePadding="6dp"
-                android:text="123456,2 - 123460,3"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tvHistoryHomeVehicleCarLog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:drawableStart="@drawable/ic_baseline_car_16"
-                android:drawablePadding="6dp"
-                android:text="Unit Kendaraan"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_baseline_calendar_16"
+            android:drawablePadding="12dp"
+            android:layout_marginEnd="4dp"
+            android:text="2021-08-12 11:47:32"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tvHistoryHomeMuatanCarLog"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvHistoryHomeKMHMCarLog"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:drawableStart="@drawable/ic_twotone_briefcase_16"
-            android:drawablePadding="6dp"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_baseline_speedometer_16"
+            android:drawablePadding="12dp"
+            android:layout_marginStart="4dp"
+            android:text="123456,2 - 123460,3"
             android:textColor="@color/black"
-            android:text="Jenis kategori muatan"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompatHome" />
+            android:textSize="14sp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <TextView
+        android:id="@+id/tvHistoryHomeMuatanCarLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/ic_twotone_briefcase_16"
+        android:drawablePadding="12dp"
+        android:text="Jenis kategori muatan"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompatHome" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"

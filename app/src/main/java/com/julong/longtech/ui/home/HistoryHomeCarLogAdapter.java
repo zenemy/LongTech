@@ -94,7 +94,7 @@ public class HistoryHomeCarLogAdapter extends RecyclerView.Adapter<HistoryHomeCa
         }
 
         public void setVehicle(String vehicle) {
-            tvUnitCarLog.setText(vehicle);
+            tvUnitCarLog.setText("(" + vehicle + ")");
         }
 
         public void setKMHM(String kmhmAwal, String kmhmAkhir) {

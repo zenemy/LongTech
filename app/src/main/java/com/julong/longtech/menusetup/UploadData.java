@@ -2,6 +2,7 @@ package com.julong.longtech.menusetup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.LoginActivity;
 import com.julong.longtech.R;
+import com.julong.longtech.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,21 +35,23 @@ import org.json.JSONObject;
 import java.net.URLEncoder;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class UploadData extends AppCompatActivity {
 
+    public static String todayDate;
     Button btnUpload;
     DatabaseHelper dbHelper;
     public static ListView listviewUpload;
     SweetAlertDialog progressDialog;
-
-    boolean isUploadDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,8 @@ public class UploadData extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         btnUpload = findViewById(R.id.btnOkUpload);
         listviewUpload = findViewById(R.id.lvUpload);
+
+        todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         loaduploaddata(this);
     }
@@ -79,7 +85,7 @@ public class UploadData extends AppCompatActivity {
                 Cursor cursorTransaction1 = dbHelper.view_upload_tr01();
                 if (cursorTransaction1.moveToFirst()) {
                     do {
-                        uploadTR01(UploadData.this,
+                        uploadTR01private(
                                 cursorTransaction1.getInt(0), cursorTransaction1.getString(1),
                                 cursorTransaction1.getString(2), cursorTransaction1.getString(3),
                                 cursorTransaction1.getString(4), cursorTransaction1.getString(5),
@@ -180,7 +186,88 @@ public class UploadData extends AppCompatActivity {
         }
     }
 
-    public static void uploadTR01(Context context, int id, String nodoc, String datatype, String subdatatype, String compid, String siteid, String date1,
+    private void uploadTR01private(int id, String nodoc, String datatype, String subdatatype, String compid, String siteid, String date1,
+                            String date2, String date3, String date4, String date5, String text1, String text2, String text3,
+                            String text4, String text5, String text6, String text7, String text8, String text9, String text10,
+                            String text11, String text12, String text13, String text14, String text15, String text16,
+                            String text17, String text18, String text19, String text20, String text21, String text22,
+                            String text23, String text24, String text25, String text26, String text27, String text28,
+                            String text29, String text30) {
+        RequestQueue requestQueueTR01 = Volley.newRequestQueue(this);
+        String server_url = DatabaseHelper.url_api + "dataupload/uploadTR01.php";
+        StringRequest stringRequestTR01 = new StringRequest(Request.Method.POST, server_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonPostTR01 = new JSONObject(response);
+                            if (jsonPostTR01.getString("UPLOAD").equals("SUCCESS")) {
+                                dbHelper.change_statusuploadtr01(id, nodoc);
+                                loaduploaddata(UploadData.this);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        requestQueueTR01.stop();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("nodoc", nodoc);
+                params.put("datatype", datatype);
+                params.put("subdatatype", subdatatype);
+                params.put("compid", compid);
+                params.put("siteid", siteid);
+                params.put("date1", date1);
+                params.put("date2", date2);
+                params.put("date3", date3);
+                params.put("date4", date4);
+                params.put("date5", date5);
+                params.put("text1", text1);
+                params.put("text2", text2);
+                params.put("text3", text3);
+                params.put("text4", text4);
+                params.put("text5", text5);
+                params.put("text6", text6);
+                params.put("text7", text7);
+                params.put("text8", text8);
+                params.put("text9", text9);
+                params.put("text10", text10);
+                params.put("text11", text11);
+                params.put("text12", text12);
+                params.put("text13", text13);
+                params.put("text14", text14);
+                params.put("text15", text15);
+                params.put("text16", text16);
+                params.put("text17", text17);
+                params.put("text18", text18);
+                params.put("text19", text19);
+                params.put("text20", text20);
+                params.put("text21", text21);
+                params.put("text22", text22);
+                params.put("text23", text23);
+                params.put("text24", text24);
+                params.put("text25", text25);
+                params.put("text26", text26);
+                params.put("text27", text27);
+                params.put("text28", text28);
+                params.put("text29", text29);
+                params.put("text30", text30);
+                params.put("userid", dbHelper.get_tbl_username(0));
+                return params;
+            }
+        };
+        requestQueueTR01.add(stringRequestTR01);
+    }
+
+    public static void uploadTR01public(Activity context, int id, String nodoc, String datatype, String subdatatype, String compid, String siteid, String date1,
                                   String date2, String date3, String date4, String date5, String text1, String text2, String text3,
                                   String text4, String text5, String text6, String text7, String text8, String text9, String text10,
                                   String text11, String text12, String text13, String text14, String text15, String text16,
@@ -190,6 +277,8 @@ public class UploadData extends AppCompatActivity {
 
         DatabaseHelper dbHelper;
         dbHelper = new DatabaseHelper(context);
+
+        todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         RequestQueue requestQueueTR01 = Volley.newRequestQueue(context);
         String server_url = DatabaseHelper.url_api + "dataupload/uploadTR01.php";
@@ -201,7 +290,9 @@ public class UploadData extends AppCompatActivity {
                         JSONObject jsonPostTR01 = new JSONObject(response);
                         if (jsonPostTR01.getString("UPLOAD").equals("SUCCESS")) {
                             dbHelper.change_statusuploadtr01(id, nodoc);
-                            loaduploaddata(context);
+                            HomeFragment.loadlvinfohome(todayDate);
+                            HomeFragment.loadLvHistoryCarLog(todayDate);
+                            HomeFragment.loadLvHistoryApel(todayDate);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -212,6 +303,7 @@ public class UploadData extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
+                    Toast.makeText(context, "Cek koneksi jaringan", Toast.LENGTH_LONG).show();
                     requestQueueTR01.stop();
                 }
             }) {
@@ -265,7 +357,7 @@ public class UploadData extends AppCompatActivity {
         requestQueueTR01.add(stringRequestTR01);
     }
 
-    public static void uploadTR02(Context context, int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata, String compid, String siteid, String date1, String date2, String date3, String date4,
+    public static void uploadTR02(Activity context, int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata, String compid, String siteid, String date1, String date2, String date3, String date4,
                             String date5, String text1, String text2, String text3, String text4, String text5,
                             String text6, String text7, String text8, String text9, String text10,
                             String text11, String text12, String text13, String text14,
@@ -354,7 +446,7 @@ public class UploadData extends AppCompatActivity {
         requestQueueTR02.add(stringRequestTR02);
     }
 
-    public static void uploadBL01(Context context, int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata,
+    public static void uploadBL01(Activity context, int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata,
                             String compid, String siteid, String remarks, String base64Blob1, String base64Blob2,
                             String base64Blob3, String base64Blob4, String base64Blob5) {
 
@@ -409,12 +501,15 @@ public class UploadData extends AppCompatActivity {
         requestQueueBlob.add(stringRequestImg);
     }
 
-    public static void loaduploaddata(Context context) {
+    public static void loaduploaddata(Activity context) {
+
+        DatabaseHelper dbHelper;
+        dbHelper = new DatabaseHelper(context);
 
         List<UploadParam> uploadParams;
         UploadAdapter uploadAdapter;
-        DatabaseHelper dbHelper;
-        dbHelper = new DatabaseHelper(context);
+
+        listviewUpload = (ListView) context.findViewById(R.id.lvUpload);
 
         uploadParams = new ArrayList<>();
         uploadParams.clear();
@@ -438,7 +533,6 @@ public class UploadData extends AppCompatActivity {
         Intent backIntent = new Intent();
         setResult(2, backIntent);
         finish();
-
     }
 
 }

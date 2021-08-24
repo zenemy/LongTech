@@ -46,7 +46,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class RencanaKerjaHarian extends AppCompatActivity {
 
     public static String nodocRKH, selectedLokasi, selectedKegiatan;
-    public static Button btnRefreshRKH;
     public static AdapterRKH adapterRKH;
 
     LinearLayout layoutBtnRKH;
@@ -77,7 +76,6 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         btnBackRKH = findViewById(R.id.btnBackRKH);
         layoutBtnRKH = findViewById(R.id.layoutBtnRKH);
         btnSubmitRKH = findViewById(R.id.btnSubmitRKH);
-        btnRefreshRKH = findViewById(R.id.btnRefreshRKH);
         acLokasiKerjaRKH = findViewById(R.id.acLokasiKerjaRKH);
         acKegiatanKerjaRKH = findViewById(R.id.acKegiatanKerjaRKH);
         etPelaksanaanTglRKH = findViewById(R.id.etPelaksanaanTglRKH);
@@ -137,13 +135,9 @@ public class RencanaKerjaHarian extends AppCompatActivity {
             }
         });
 
-        etPelaksanaanTglRKH.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                datePickerRKH.show(getSupportFragmentManager(), "TGLRKH");
-            }
-        });
+        etPelaksanaanTglRKH.setOnClickListener(view -> datePickerRKH.show(getSupportFragmentManager(), "TGLRKH"));
 
+        // Checking unfinished input
         if (dbHelper.get_statusrkh(0).equals("1")) {
             try {
                 DateFormat formatShow = new SimpleDateFormat("yyyy-MM-dd");
@@ -191,8 +185,6 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         adapterLokasi = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiRKH);
         acLokasiKerjaRKH.setAdapter(adapterLokasi);
 
-        btnRefreshRKH.setOnClickListener(view -> adapterRKH.notifyDataSetChanged());
-
         acLokasiKerjaRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -220,6 +212,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
             }
         });
 
+        // Saving RKH data
         btnSubmitRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -300,11 +293,8 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 }
                 else {
                     dlgVehicleTypeRKH.dismiss();
-
                     datePickerRKH.show(getSupportFragmentManager(), "TGLRKH");
-
                 }
-
             }
         });
 
@@ -333,10 +323,8 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            Intent backIntent = new Intent();
-            setResult(727, backIntent);
-            finish();
-
-
+        Intent backIntent = new Intent();
+        setResult(727, backIntent);
+        finish();
     }
 }

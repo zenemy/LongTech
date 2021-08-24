@@ -20,8 +20,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -63,11 +67,11 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             checkKondisiBan, checkKerusakan, checkSabukKipas, checkSuaraMesin, checkLampuKendaraan, checkSpionKendaraan;
 
     EditText etKebocoranOli, etBautMur, etKonsidiOliMesin, etKonsidiOliTransmisi, etKonsidiOliHidrolik,
-            etKonsidiOliRem, etKonsidiOliBBM, etKonsidiAirflow, etKonsidiRadiator,
+            etKonsidiOliRem, etKonsidiOliBBM, etKonsidiAirflow, etKonsidiRadiator, etKMHM,
             etKondisiBan, etKerusakan, etSabukKipas, etSuaraMesin, etLampuKendaraan, etSpionKendaraan, etDescPengecekan;
 
     ImageButton imgTakePictP2H;
-    Button btnSubmitP2H, btnCancelP2H;
+    Button btnCancelP2H;
 
     String nodocP2H, latitudeP2H, longitudeP2H, selectedVehicleCode;
     private List<String> listVehicleP2H;
@@ -82,8 +86,8 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         acKendaraanP2H = findViewById(R.id.acKendaraanKerjaP2H);
         etDescPengecekan = findViewById(R.id.etNoteP2H);
         imgTakePictP2H = findViewById(R.id.imgTakePictP2H);
-        btnSubmitP2H = findViewById(R.id.btnSimpanP2H);
         btnCancelP2H = findViewById(R.id.btnCancelP2H);
+        etKMHM = findViewById(R.id.etKMHMP2H);
 
         // P2H items
         layoutKebocoranOli = findViewById(R.id.layoutKebocoranOli);
@@ -157,7 +161,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedVehicleCode = dbHelper.get_vehiclecodeonly((String) adapterView.getItemAtPosition(position));
-                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(PemeriksaanPengecekanHarian.this.INPUT_METHOD_SERVICE);
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(PemeriksaanPengecekanHarian.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKendaraanP2H.getWindowToken(), 0);
             }
         });
@@ -168,6 +172,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
     private void eventClickLayout() {
         layoutKebocoranOli.setOnClickListener(v -> {
+
             if (checkKebocoranOli.isChecked()) {
                 checkKebocoranOli.setChecked(false);
             }
@@ -318,6 +323,10 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Kendaraan tidak valid!").show();
             }
             else {
+
+                String newValue = etKMHM.getText().toString().replace(".",",");
+                etKMHM.setText(newValue);
+
                 dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecodegroup(1, selectedVehicleCode), selectedVehicleCode,
                         etDescPengecekan.getText().toString(), latitudeP2H, longitudeP2H, byteImgP2H);
 
@@ -380,6 +389,8 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                 if (checkSpionKendaraan.isChecked()) {
                     dbHelper.insert_dataP2H_detail(nodocP2H, "P2H16", "SPION KANAN DAN SPION KIRI", "CHECK", etSpionKendaraan.getText().toString());
                 }
+
+                dbHelper.update_kmhm(etKMHM.getText().toString());
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Menyelesaikan P2H")
                         .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> {

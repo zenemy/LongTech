@@ -29,174 +29,151 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="-40dp"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/tombol"
-        android:backgroundTint="@color/white"
-        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="-40dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/tombol"
+            android:backgroundTint="@color/white"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Kendaraan Alat Berat"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Kode Workshop"
+                android:layout_marginTop="4dp"
+                app:hintEnabled="false"
                 app:endIconMode="dropdown_menu">
 
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acVehiclePerintahService"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:paddingStart="8dp"
+                    android:hint="Pilih Kendaraan Alat Berat"
+                    android:singleLine="true"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="8dp"
+                    android:textColorHint="#808080"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Estimasi Hari Pengerjaan"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Kode Kendaraan Alat Berat"
-                app:endIconMode="dropdown_menu">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:weightSum="2">
+                android:layout_marginTop="4dp">
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    app:suffixText="DAYS"
                     android:layout_marginEnd="4dp"
-                    android:hint="Tanggal Perintah Kerja Perbaikan"
-                    app:endIconDrawable="@drawable/ic_baseline_calendar_24"
-                    app:endIconMode="custom">
+                    app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDatePerintahPerbaikan"
+                        android:id="@+id/etEstimasiPerintahService"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:paddingStart="8dp"
-                        android:focusableInTouchMode="false"
+                        android:inputType="number"
+                        android:text="0"
+                        android:hint="Estimasi Hari Pengerjaan"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
+                        android:paddingEnd="12dp"
                         android:paddingBottom="8dp"
+                        android:textColorHint="#808080"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                <ImageButton
+                    android:id="@+id/btnReduceEstimasiPerintahService"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="4dp"
-                    android:hint="Estimasi Pengerjaan (Jam)"
-                    app:endIconDrawable="@drawable/ic_baseline_accesstime_24"
-                    app:endIconMode="custom">
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_baseline_remove_circle_outline_24"
+                    android:visibility="visible"
+                    app:tint="@color/red" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etTimePerintahPerbaikan"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:inputType="time"
-                        android:focusableInTouchMode="false"
-                        android:paddingStart="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                <ImageButton
+                    android:id="@+id/btnAddEstimasiPerintahService"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_baseline_add_circle_outline_24"
+                    android:visibility="visible"
+                    app:tint="@color/green" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:hint="Mekanik">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:inputType="number"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="8dp"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
-    </ScrollView>
-
-    <com.google.android.material.tabs.TabLayout
-        style="@style/Widget.MaterialComponents.TabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/tbl_lr_top">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MEKANIK" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MATERIAL" />
-
-    </com.google.android.material.tabs.TabLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/tbl_lr_bottom"
-        android:backgroundTint="#FFFFFF">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="4dp">
+
+        <TextView
+            android:id="@+id/tvHeaderMekanikPerintahPerbaikan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tbl_lr_top"
+            android:backgroundTint="@color/colorPrimary"
+            android:gravity="center_horizontal"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="List Mekanik"
+            android:letterSpacing="0.10"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lvMekanikPerintahService"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/tbl_lr_bottom"
+            android:backgroundTint="@color/white"
+            android:layout_below="@id/tvHeaderMekanikPerintahPerbaikan"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"/>
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnAddPerintahPerbaikan"
@@ -207,9 +184,46 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
+            android:onClick="eventAddMekanikList"
             app:maxImageSize="48dp"
             app:srcCompat="@android:drawable/ic_input_add" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackPerintahService"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="KEMBALI"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitPerintahService"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:onClick="submitPerintahPerbaikan"
+            android:text="SUBMIT"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
+    </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

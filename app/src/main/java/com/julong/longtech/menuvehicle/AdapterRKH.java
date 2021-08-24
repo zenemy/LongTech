@@ -27,10 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.julong.longtech.R;
 import com.julong.longtech.DatabaseHelper;
 
-import java.util.Date;
 import java.util.List;
-
-import static com.julong.longtech.menuvehicle.RencanaKerjaHarian.loadListViewRKH;
 
 public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
 
@@ -90,6 +87,7 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
             viewHolder.checkBoxLvRKH.setVisibility(View.VISIBLE);
         }
 
+        // Set checked checkBoxLvRKH
         viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,13 +100,13 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
                         viewHolder.checkBoxLvRKH.setChecked(false);
                         checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
                                 rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
-                        RencanaKerjaHarian.btnRefreshRKH.performClick();
+                        notifyDataSetChanged();
                         if (checkedRKH != null) {
                             dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
                                     rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
                                     null, null, "");
                             viewHolder.checkBoxLvRKH.setChecked(false);
-                            RencanaKerjaHarian.btnRefreshRKH.performClick();
+                            notifyDataSetChanged();
                         }
                     }
                     else {
@@ -116,13 +114,14 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
                         dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
                                 rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
                                 RencanaKerjaHarian.selectedLokasi,RencanaKerjaHarian.selectedKegiatan,"Checked");
-                        RencanaKerjaHarian.btnRefreshRKH.performClick();
+                        notifyDataSetChanged();
                     }
                 }
 
             }
         });
 
+        // Set checked checkBoxLvRKH
         viewHolder.checkBoxLvRKH.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,23 +129,23 @@ public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
                     dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
                             rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
                             RencanaKerjaHarian.selectedLokasi,RencanaKerjaHarian.selectedKegiatan,"Checked");
-                    RencanaKerjaHarian.btnRefreshRKH.performClick();
+                    notifyDataSetChanged();
                 } else {
                     checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
                             rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
-                    RencanaKerjaHarian.btnRefreshRKH.performClick();
+                    notifyDataSetChanged();
                     if (checkedRKH != null) {
                         dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
                                 rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
                                 null, null, "");
                         viewHolder.checkBoxLvRKH.setChecked(false);
-                        RencanaKerjaHarian.btnRefreshRKH.performClick();
+                        notifyDataSetChanged();
                     }
                 }
             }
         });
 
-
+        // Get checked vaue
         String checkRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
                 rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
 

@@ -38,134 +38,169 @@
         android:layout_marginTop="-40dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/tombol"
-        android:backgroundTint="@color/white"
-        android:paddingTop="8dp">
+        android:backgroundTint="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="12dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            <RadioGroup
+                android:id="@+id/radioGroupMintaServiceType"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Tujuan Workshop"
-                app:endIconMode="dropdown_menu">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <RadioButton
+                    android:id="@+id/radioTuneUpMintaService"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:drawableTop="@drawable/ic_baseline_miscellaneous_services_32"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@drawable/radio_textcolor"
+                    android:background="@drawable/radio_selector"
+                    android:button="@android:color/transparent"
+                    android:elevation="4dp"
+                    android:gravity="center"
                     android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:paddingBottom="8dp"
+                    android:singleLine="true"
+                    android:text="TUNE-UP"
+                    android:textColor="@drawable/radio_textcolor"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Tipe Pemeliharaan"
-                app:endIconMode="dropdown_menu">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <RadioButton
+                    android:id="@+id/radioMintaServiceRingan"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_sharp_settings_32"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@drawable/radio_textcolor"
+                    android:background="@drawable/radio_selector"
+                    android:button="@android:color/transparent"
+                    android:elevation="4dp"
+                    android:gravity="center"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="12dp"
+                    android:singleLine="true"
+                    android:text="RINGAN"
+                    android:textColor="@drawable/radio_textcolor"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Kode Workshop"
-                app:endIconMode="dropdown_menu">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <RadioButton
+                    android:id="@+id/radioInsidenMintaService"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_baseline_build_32"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@drawable/radio_textcolor"
+                    android:background="@drawable/radio_selector"
+                    android:button="@android:color/transparent"
+                    android:elevation="4dp"
+                    android:gravity="center"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="8dp"
+                    android:singleLine="true"
+                    android:text="INSIDEN"
+                    android:textColor="@drawable/radio_textcolor"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:text="Kendaraan Alat Berat"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
                 android:hint="Kode Kendaraan Alat Berat"
+                app:hintEnabled="false"
                 app:endIconMode="dropdown_menu">
 
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acVehicleMintaServicer"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
+                    android:layout_height="50dp"
+                    android:hint="Pilih Kendaraan"
+                    android:textColorHint="#808080"
+                    android:singleLine="true"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:hint="Driver / Operator"
-                app:endIconMode="dropdown_menu">
+                android:layout_marginTop="16dp"
+                android:text="Catatan Perbaikan"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:hint="Catatan Deskripsi (Optional)"
-                app:endIconMode="clear_text">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="65dp"
-                    android:gravity="top"
-                    android:paddingStart="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    android:layout_marginEnd="6dp"
+                    app:hintEnabled="false"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etNoteMintaService"
+                        android:layout_width="match_parent"
+                        android:layout_height="85dp"
+                        android:gravity="top|start"
+                        android:hint="Input Catatan Perbaikan"
+                        android:textColorHint="#808080"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    app:cardElevation="0dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/ic_baseline_photo_32"
+                    app:cardCornerRadius="10dp">
+
+                    <ImageButton
+                        android:id="@+id/imgTakePictPermintaanPerbaikan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_baseline_photo_32"
+                        android:scaleType="centerCrop" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
         </LinearLayout>
     </ScrollView>
@@ -174,11 +209,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackMintaService"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
@@ -187,10 +223,12 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="KEMBALI"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitMintaService"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
@@ -198,7 +236,9 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="SIMPAN"
+            android:onClick="submitPermintaanPerbaikan"
+            android:text="SUBMIT"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
     </LinearLayout>

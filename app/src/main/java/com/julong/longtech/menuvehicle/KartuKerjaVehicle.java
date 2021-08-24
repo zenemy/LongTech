@@ -389,8 +389,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
                 inputLayoutHasilKerjaCarLog.setSuffixText(null);
                 selectedTypeLoad = listTypeLoadCode.get(position);
-                listCategoryMuatan = dbhelper.get_loadcategory(adapterMuatanCarLog.getItem(position), 1);
-                listCategoryLoadCode = dbhelper.get_loadcategory(adapterMuatanCarLog.getItem(position), 0);
+                listCategoryMuatan = dbhelper.get_loadcategory(dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)), adapterMuatanCarLog.getItem(position), 1);
+                listCategoryLoadCode = dbhelper.get_loadcategory(dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)), adapterMuatanCarLog.getItem(position), 0);
                 adapterCategoryMuatan = new ArrayAdapter<String>(KartuKerjaVehicle.this, R.layout.spinnerlist, R.id.spinnerItem, listCategoryMuatan);
                 acLoadCategoryCarLog.setAdapter(adapterCategoryMuatan);
             }
@@ -740,131 +740,13 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         btnBackCarLog.setOnClickListener(v -> onBackPressed());
     }
 
-    void prepareCarLogData() {
-        tvInfoUnitCarLog.setText(dbhelper.get_tbl_username(19) + " [" + dbhelper.get_tbl_username(27) + "]");
-        selectedAsalDivisi = "";
-        selectedTujuanDivisi = "";
-        selectedHelper1 = "";
-        selectedHelper2 = "";
-        selectedAsalKebun = "";
-        selectedAsalDivisi = "";
-        selectedAsalLokasi = "";
-        selectedTujuanKebun = "";
-        selectedTujuanDivisi = "";
-        selectedTujuanLokasi = "";
-        selectedTujuanKegiatan = "";
+    public void prepareCarLogData() {
 
-        if (dbhelper.get_transactionstatuscarlog(0).equals("1")) {
-            acLoadTypeCarLog.setText(dbhelper.get_singleloadtype(dbhelper.get_transactionstatuscarlog(3)));
-            acLoadCategoryCarLog.setText(dbhelper.get_singlecategoryloadtype(dbhelper.get_transactionstatuscarlog(4)));
-            acLoadTypeCarLog.setDropDownHeight(0);
-            acLoadCategoryCarLog.setDropDownHeight(0);
-            inputLayoutHasilKerjaCarLog.setSuffixText(dbhelper.settingcarlog_satuanhasilkerja(acLoadCategoryCarLog.getText().toString()));
-
-            btnSubmitCarlog.setText("SELESAI BEKERJA");
-
-            if (dbhelper.get_transactionstatuscarlog(5).length() > 0) {
-                acHelper1CarLog.setText(dbhelper.get_empname(dbhelper.get_transactionstatuscarlog(5)));
-                acHelper1CarLog.setDropDownHeight(0);
-                acHelper1CarLog.setKeyListener(null);
-//                layoutHelperCarlog.setVisibility(View.VISIBLE);
-                inputLayoutHelper1CarLog.setVisibility(View.VISIBLE);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(6).length() > 0) {
-                acHelper2CarLog.setText(dbhelper.get_empname(dbhelper.get_transactionstatuscarlog(6)));
-                acHelper2CarLog.setDropDownHeight(0);
-                acHelper2CarLog.setKeyListener(null);
-                inputLayoutHelper2CarLog.setVisibility(View.VISIBLE);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(7).length() > 0) {
-                layoutAsalCarLog.setVisibility(View.VISIBLE);
-                inputLayoutAsalKebun.setVisibility(View.VISIBLE);
-                acAsalKebunCarLog.setText(dbhelper.get_singlekebun(dbhelper.get_transactionstatuscarlog(7)));
-                acAsalKebunCarLog.setDropDownHeight(0);
-                selectedAsalKebun = dbhelper.get_transactionstatuscarlog(7);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(8).length() > 0) {
-                layoutAsalCarLog.setVisibility(View.VISIBLE);
-                inputLayoutAsalDivisi.setVisibility(View.VISIBLE);
-                acAsalDivisiCarLog.setText(dbhelper.get_singledivisi(dbhelper.get_transactionstatuscarlog(8)));
-                acAsalDivisiCarLog.setDropDownHeight(0);
-                selectedAsalDivisi = dbhelper.get_transactionstatuscarlog(8);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(9).length() > 0) {
-                layoutAsalCarLog.setVisibility(View.VISIBLE);
-                inputLayoutAsalLokasi.setVisibility(View.VISIBLE);
-                acAsalLokasiCarLog.setText(dbhelper.get_singlelokasi(dbhelper.get_transactionstatuscarlog(9)));
-                acAsalLokasiCarLog.setDropDownHeight(0);
-                acAsalLokasiCarLog.setKeyListener(null);
-                selectedAsalLokasi = dbhelper.get_transactionstatuscarlog(9);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(10).length() > 0) {
-                layoutTujuanCarLog.setVisibility(View.VISIBLE);
-                inputLayoutTujuanKebun.setVisibility(View.VISIBLE);
-                acTujuanKebunCarLog.setText(dbhelper.get_singlekebun(dbhelper.get_transactionstatuscarlog(10)));
-                acTujuanKebunCarLog.setDropDownHeight(0);
-                selectedTujuanKebun = dbhelper.get_transactionstatuscarlog(10);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(11).length() > 0) {
-                layoutTujuanCarLog.setVisibility(View.VISIBLE);
-                inputLayoutTujuanDivisi.setVisibility(View.VISIBLE);
-                acTujuanDivisiCarLog.setText(dbhelper.get_singledivisi(dbhelper.get_transactionstatuscarlog(11)));
-                acTujuanDivisiCarLog.setDropDownHeight(0);
-                selectedTujuanDivisi = dbhelper.get_transactionstatuscarlog(11);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(12).length() > 0) {
-                layoutTujuanCarLog.setVisibility(View.VISIBLE);
-                inputLayoutTujuanLokasi.setVisibility(View.VISIBLE);
-                acTujuanLokasiCarLog.setText(dbhelper.get_singlelokasi(dbhelper.get_transactionstatuscarlog(12)));
-                acTujuanLokasiCarLog.setDropDownHeight(0);
-                acTujuanLokasiCarLog.setKeyListener(null);
-                selectedTujuanLokasi = dbhelper.get_transactionstatuscarlog(12);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(13).length() > 0) {
-                layoutTujuanCarLog.setVisibility(View.VISIBLE);
-                inputLayoutTujuanKegiatan.setVisibility(View.VISIBLE);
-                acTujuanKegiatanCarLog.setText(dbhelper.get_transactionstatuscarlog(13));
-                acTujuanKegiatanCarLog.setDropDownHeight(0);
-                acTujuanKegiatanCarLog.setKeyListener(null);
-                selectedTujuanKegiatan = dbhelper.get_transactionstatuscarlog(13);
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(14).length() > 0) {
-                layoutHasilKerja.setVisibility(View.VISIBLE);
-                inputLayoutSatuanMuat.setVisibility(View.VISIBLE);
-                etHasilSatuanMuat.setText(dbhelper.get_transactionstatuscarlog(14));
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(15).length() > 0) {
-                layoutHasilKerja.setVisibility(View.VISIBLE);
-                layoutRitaseMuat.setVisibility(View.VISIBLE);
-                etHasilKerjaLaterite.setText(dbhelper.get_transactionstatuscarlog(15));
-            }
-
-            if (dbhelper.get_transactionstatuscarlog(16).length() > 0) {
-                layoutHasilKerja.setVisibility(View.VISIBLE);
-                inputLayoutHasilKerjaCarLog.setVisibility(View.VISIBLE);
-                etHasilKerjaCarLog.setText(dbhelper.get_transactionstatuscarlog(16));
-            }
-
-            try {
-                if (dbhelper.get_fotocarlog(dbhelper.getnodoc_todayprosescarlog()).length > 0) {
-                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(dbhelper.get_fotocarlog(dbhelper.getnodoc_todayprosescarlog()), 0, dbhelper.get_fotocarlog(dbhelper.getnodoc_todayprosescarlog()).length);
-                    btnCameraCarLog.setBackground(null);
-                    btnCameraCarLog.setImageBitmap(compressedBitmap);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+        if (dbhelper.get_tbl_username(27) != null) {
+            tvInfoUnitCarLog.setText(dbhelper.get_tbl_username(19) + " [" + dbhelper.get_tbl_username(27) + "]");
+        }
+        else {
+            tvInfoUnitCarLog.setText(dbhelper.get_tbl_username(19));
         }
 
         listMuatanCarLog = dbhelper.get_loadtype(1, dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)));
@@ -943,7 +825,11 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             etDateDlgCarLog.setText(currenttdate);
             etNoteDlgCarLog.setText(etCatatanCarLog.getText().toString());
             tvJamAkhirDlgCarLog.setText(currenttime);
-            etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
+
+            if (dbhelper.get_tbl_username(27) != null) {
+                etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
+            }
+
             dlgSelesaiCarLog.show();
 
             etKMHMAkhirDlgCarLog.addTextChangedListener(new TextWatcher() {
@@ -996,6 +882,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
+                    String currentValue = etKMHMAwalDlgCarLog.getText().toString().replace(",",".");
+
                     if (TextUtils.isEmpty(etKMHMAwalDlgCarLog.getText().toString().trim()) || TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim())) {
 
                         inputlayoutDlgKmAkhir.setHelperTextEnabled(false);
@@ -1005,15 +893,25 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                         Toast.makeText(KartuKerjaVehicle.this, "Isi info kilometer!", Toast.LENGTH_LONG).show();
 
                     }
-                    else if (fotoKilometer == null ) {
+                    else if (fotoKilometer == null) {
                         btnFotoKilometer.startAnimation(AnimationUtils.loadAnimation(KartuKerjaVehicle.this, R.anim.errorshake));
                         tvJudulFotoKM.startAnimation(AnimationUtils.loadAnimation(KartuKerjaVehicle.this, R.anim.errorshake));
                         Toast.makeText(KartuKerjaVehicle.this, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
                     }
+                    else if (Float.parseFloat(currentValue) >= Float.parseFloat(etKMHMAkhirDlgCarLog.getText().toString())) {
+                        Toast.makeText(KartuKerjaVehicle.this, "Kilometer akhir salah", Toast.LENGTH_LONG).show();
+                    }
                     else {
+                        //Replace dot with comma
+                        String newStartValue = etKMHMAwalDlgCarLog.getText().toString().replace(".",",");
+                        etKMHMAwalDlgCarLog.setText(newStartValue);
+                        String newEndValue = etKMHMAkhirDlgCarLog.getText().toString().replace(".",",");
+                        etKMHMAkhirDlgCarLog.setText(newEndValue);
+
                         getLocation();
                         nodocCarLog = dbhelper.get_tbl_username(0) + "/CARLOG/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
 
+                        dbhelper.update_kmhm(etKMHMAkhirDlgCarLog.getText().toString());
                         dbhelper.insert_carlog(nodocCarLog, etKMHMAwalDlgCarLog.getText().toString(), selectedTypeLoad,
                                 selectedCategoryLoad, selectedHelper1, selectedHelper2, selectedAsalKebun, selectedAsalDivisi,
                                 selectedAsalLokasi, selectedTujuanKebun, selectedTujuanDivisi, selectedTujuanLokasi,

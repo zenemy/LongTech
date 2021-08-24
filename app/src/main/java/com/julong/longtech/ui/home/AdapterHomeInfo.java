@@ -42,8 +42,8 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
     //context object
     private Context context;
     //constructor
-    public AdapterHomeInfo(Context context, int resource, List<ParamListHomeInfo> listHomeInfos) {
-        super(context, resource, listHomeInfos);
+    public AdapterHomeInfo(Context context, List<ParamListHomeInfo> listHomeInfos) {
+        super(context, R.layout.item_lvworkinfohome, listHomeInfos);
         this.context = context;
         this.listHomeInfos = listHomeInfos;
     }
@@ -60,10 +60,30 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
         final TextView tvWorkType = (TextView) listViewItem.findViewById(R.id.tvWorkTypeInfoHome);
         final TextView tvWorkStatus = (TextView) listViewItem.findViewById(R.id.tvWorkStatusInfoHome);
         final TextView tvTransactionTime = (TextView) listViewItem.findViewById(R.id.tvTransactionInfoTime);
+        final TextView tvNoteTambahan = (TextView) listViewItem.findViewById(R.id.tvNoteTambahanLvInfo);
         final ImageView imgUploaded = (ImageView) listViewItem.findViewById(R.id.imgUploadInfoHome);
         final ParamListHomeInfo listInfo = listHomeInfos.get(position);
 
         tvWorkType.setText(listInfo.getDatatype());
+
+        // Keterangan tambahan
+        if (listInfo.getMenucode().equals("010104")) {
+            if (dbhelper.get_statuscheckinout_absmdr(listInfo.getDocumentnumber()).equals("CHECKIN")) {
+                tvNoteTambahan.setText("ABSEN MASUK");
+            } else {
+                tvNoteTambahan.setText("ABSEN PULANG");
+            }
+
+        }
+
+        if (listInfo.getMenucode().equals("020202")) {
+            tvNoteTambahan.setText(dbhelper.get_unitP2H_fragmentinfo(listInfo.getDocumentnumber()));
+        }
+
+        if (listInfo.getMenucode().equals("020203")) {
+            tvNoteTambahan.setText(dbhelper.get_unitcarlog_fragmentinfo(listInfo.getDocumentnumber()));
+        }
+
         tvTransactionTime.setText(listInfo.getTransactiondate());
 
         if (listInfo.getWorkstatus().equals("0")) {

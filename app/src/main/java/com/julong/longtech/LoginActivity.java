@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -59,6 +60,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.RegistrasiKaryawan;
 import com.julong.longtech.menuvehicle.AdjustmentUnit;
+import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -180,13 +182,16 @@ public class LoginActivity extends AppCompatActivity {
 
         //Setup Profile System======================================================================
         try {
-            bitmaplogosystem = BitmapFactory.decodeByteArray(dbhelper.get_companyimg(0),
-                    0, dbhelper.get_companyimg(0).length);
-            imglogo.setImageBitmap(bitmaplogosystem);
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
-                    dbhelper.get_companyimg(1), 0, dbhelper.get_companyimg(1).length);
-            BitmapDrawable backgroundLogin = new BitmapDrawable(compressedBitmap);
-            layoutBgLogin.setBackgroundDrawable(backgroundLogin);
+            BitmapFactory.Options myOptions = new BitmapFactory.Options();
+            myOptions.inDither = true;
+            myOptions.inScaled = false;
+            myOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            myOptions.inDither = false;
+            myOptions.inPurgeable = true;
+            Bitmap preparedBitmap = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.bgoil, myOptions);
+            Drawable background = new BitmapDrawable(preparedBitmap);
+            layoutBgLogin.setBackgroundDrawable(background);
 
             try {
                 Bitmap profileuser = BitmapFactory.decodeByteArray(dbhelper.get_gambar_user(),
@@ -896,6 +901,11 @@ public class LoginActivity extends AppCompatActivity {
             });
             queue.add(stringRequest);
         }
+    }
+
+    public void eventLoginTest(View v) {
+        Intent intent = new Intent(LoginActivity.this, PerintahPerbaikan.class);
+        startActivity(intent);
     }
 
     //Function Bahasa===============================================================================

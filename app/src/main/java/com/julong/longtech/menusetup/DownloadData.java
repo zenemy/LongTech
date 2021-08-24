@@ -43,13 +43,12 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class DownloadData extends AppCompatActivity {
 
     ConstraintLayout layoutDownloadGS, layoutDownloadMD, layoutHeaderDownload2;
-    Button btnDownload, btnBackDownload;
+    Button btnBackDownload;
     CheckBox checkBoxGS, checkBoxMD, checkAllDownload;
     DatabaseHelper dbhelper;
     TextView tvSubJudulDownloadGS, tvSubJudulDownloadMD;
     SweetAlertDialog progressDialog;
 
-    Handler handler = new Handler();
 
     boolean isDownloadGSDone;
     boolean isDownloadMDDone;
@@ -248,17 +247,52 @@ public class DownloadData extends AppCompatActivity {
                 int intMD = 0;
                 while (intMD < jsonArrayMD.length()) {
                     JSONObject jsonObjectMD = jsonArrayMD.getJSONObject(intMD);
-                    dbhelper.insert_tablemd(jsonObjectMD.getString("DATATYPE"), jsonObjectMD.getString("SUBDATATYPE"), jsonObjectMD.getString("COMP_ID"), jsonObjectMD.getString("SITE_ID"),
-                            jsonObjectMD.getString("DATE1"), jsonObjectMD.getString("DATE2"), jsonObjectMD.getString("DATE3"), jsonObjectMD.getString("DATE4"),
-                            jsonObjectMD.getString("DATE5"), jsonObjectMD.getString("TEXT1"), jsonObjectMD.getString("TEXT2"), jsonObjectMD.getString("TEXT3"),
-                            jsonObjectMD.getString("TEXT4"), jsonObjectMD.getString("TEXT5"), jsonObjectMD.getString("TEXT6"), jsonObjectMD.getString("TEXT7"),
-                            jsonObjectMD.getString("TEXT8"), jsonObjectMD.getString("TEXT9"), jsonObjectMD.getString("TEXT10"), jsonObjectMD.getString("TEXT11"),
-                            jsonObjectMD.getString("TEXT12"), jsonObjectMD.getString("TEXT13"), jsonObjectMD.getString("TEXT14"), jsonObjectMD.getString("TEXT15"),
-                            jsonObjectMD.getString("TEXT16"), jsonObjectMD.getString("TEXT17"), jsonObjectMD.getString("TEXT18"), jsonObjectMD.getString("TEXT19"),
-                            jsonObjectMD.getString("TEXT20"), jsonObjectMD.getString("TEXT21"), jsonObjectMD.getString("TEXT22"), jsonObjectMD.getString("TEXT23"),
-                            jsonObjectMD.getString("TEXT24"), jsonObjectMD.getString("TEXT25"), jsonObjectMD.getString("TEXT26"), jsonObjectMD.getString("TEXT27"),
+                    dbhelper.insert_tablemd(jsonObjectMD.getString("DATATYPE"), jsonObjectMD.getString("SUBDATATYPE"),
+                            jsonObjectMD.getString("COMP_ID"), jsonObjectMD.getString("SITE_ID"),
+                            jsonObjectMD.getString("DATE1"), jsonObjectMD.getString("DATE2"),
+                            jsonObjectMD.getString("DATE3"), jsonObjectMD.getString("DATE4"),
+                            jsonObjectMD.getString("DATE5"), jsonObjectMD.getString("TEXT1"),
+                            jsonObjectMD.getString("TEXT2"), jsonObjectMD.getString("TEXT3"),
+                            jsonObjectMD.getString("TEXT4"), jsonObjectMD.getString("TEXT5"),
+                            jsonObjectMD.getString("TEXT6"), jsonObjectMD.getString("TEXT7"),
+                            jsonObjectMD.getString("TEXT8"), jsonObjectMD.getString("TEXT9"),
+                            jsonObjectMD.getString("TEXT10"), jsonObjectMD.getString("TEXT11"),
+                            jsonObjectMD.getString("TEXT12"), jsonObjectMD.getString("TEXT13"),
+                            jsonObjectMD.getString("TEXT14"), jsonObjectMD.getString("TEXT15"),
+                            jsonObjectMD.getString("TEXT16"), jsonObjectMD.getString("TEXT17"),
+                            jsonObjectMD.getString("TEXT18"), jsonObjectMD.getString("TEXT19"),
+                            jsonObjectMD.getString("TEXT20"), jsonObjectMD.getString("TEXT21"),
+                            jsonObjectMD.getString("TEXT22"), jsonObjectMD.getString("TEXT23"),
+                            jsonObjectMD.getString("TEXT24"), jsonObjectMD.getString("TEXT25"),
+                            jsonObjectMD.getString("TEXT26"), jsonObjectMD.getString("TEXT27"),
                             jsonObjectMD.getString("TEXT28"), jsonObjectMD.getString("TEXT29"), jsonObjectMD.getString("TEXT30"));
                     intMD++;
+                }
+
+                JSONArray jsonArrayMDVH = responseMD.getJSONArray("MASTERDATAVEHICLE");
+                int intVH = 0;
+                while (intVH < jsonArrayMDVH.length()) {
+                    JSONObject jsonObjectMDVH = jsonArrayMDVH.getJSONObject(intVH);
+                    dbhelper.insert_tablemd(jsonObjectMDVH.getString("DATATYPE"), jsonObjectMDVH.getString("SUBDATATYPE"),
+                            jsonObjectMDVH.getString("COMP_ID"), jsonObjectMDVH.getString("SITE_ID"),
+                            jsonObjectMDVH.getString("DATE1"), jsonObjectMDVH.getString("DATE2"),
+                            jsonObjectMDVH.getString("DATE3"), jsonObjectMDVH.getString("DATE4"),
+                            jsonObjectMDVH.getString("DATE5"), jsonObjectMDVH.getString("TEXT1"),
+                            jsonObjectMDVH.getString("TEXT2"), jsonObjectMDVH.getString("TEXT3"),
+                            jsonObjectMDVH.getString("TEXT4"), jsonObjectMDVH.getString("TEXT5"),
+                            jsonObjectMDVH.getString("TEXT6"), jsonObjectMDVH.getString("TEXT7"),
+                            jsonObjectMDVH.getString("TEXT8"), jsonObjectMDVH.getString("TEXT9"),
+                            jsonObjectMDVH.getString("TEXT10"), jsonObjectMDVH.getString("TEXT11"),
+                            jsonObjectMDVH.getString("TEXT12"), jsonObjectMDVH.getString("TEXT13"),
+                            jsonObjectMDVH.getString("TEXT14"), jsonObjectMDVH.getString("TEXT15"),
+                            jsonObjectMDVH.getString("TEXT16"), jsonObjectMDVH.getString("TEXT17"),
+                            jsonObjectMDVH.getString("TEXT18"), jsonObjectMDVH.getString("TEXT19"),
+                            jsonObjectMDVH.getString("TEXT20"), jsonObjectMDVH.getString("TEXT21"),
+                            jsonObjectMDVH.getString("TEXT22"), jsonObjectMDVH.getString("TEXT23"),
+                            jsonObjectMDVH.getString("TEXT24"), jsonObjectMDVH.getString("TEXT25"),
+                            jsonObjectMDVH.getString("TEXT26"), jsonObjectMDVH.getString("TEXT27"),
+                            jsonObjectMDVH.getString("TEXT28"), jsonObjectMDVH.getString("TEXT29"), jsonObjectMDVH.getString("TEXT30"));
+                    intVH++;
                 }
 
                 JSONArray jsonArrayEmpMD = responseMD.getJSONArray("MASTERDATAEMPLOYEE");

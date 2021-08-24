@@ -75,6 +75,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +87,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.julong.longtech.DatabaseHelper.url_api;
 import static com.julong.longtech.menusetup.UploadData.uploadBL01;
-import static com.julong.longtech.menusetup.UploadData.uploadTR01;
+import static com.julong.longtech.menusetup.UploadData.uploadTR01public;
 import static com.julong.longtech.menusetup.UploadData.uploadTR02;
 
 public class HomeFragment extends Fragment {
@@ -109,10 +110,10 @@ public class HomeFragment extends Fragment {
     String lat_awal, long_awal, todayDate, todayDateTime, selectedKendala;
     ScrollView scrollkendala;
     ConstraintLayout clBgMainActivity;
-    LinearLayout layoutRiwayatFragment, layoutInfoFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
+    public static LinearLayout layoutRiwayatFragment, layoutInfoFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
             linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel;
 
-    String[] arrayMenuHistory = {"APEL PAGI", "CAR LOG"};
+    List<String> arrayMenuHistory = Arrays.asList("APEL KERJA", "CAR LOG");
     ArrayAdapter<String> adapterMenuHistory;
 
     private List<String> listKendalaCode, listKendalaName;
@@ -191,7 +192,7 @@ public class HomeFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String selected = (String) adapterView.getItemAtPosition(position);
 
-                if (selected.equals("APEL PAGI")) {
+                if (selected.equals("APEL KERJA")) {
                     lvHistoryApel.setVisibility(View.VISIBLE);
                     lvHistoryCarLog.setVisibility(View.GONE);
                     lvHistoryApel.setAdapter(null);
@@ -235,7 +236,7 @@ public class HomeFragment extends Fragment {
 
                 filtertglhistory.setText(simpleFormat.format(date));
 
-                if (acMenuRiwayatHome.getText().toString().equals("APEL PAGI")) {
+                if (acMenuRiwayatHome.getText().toString().equals("APEL KERJA")) {
                     loadLvHistoryApel(simpleFormat.format(date));
                 } else {
                     loadLvHistoryCarLog(simpleFormat.format(date));
@@ -407,12 +408,7 @@ public class HomeFragment extends Fragment {
 
     private void eventClickMenu() {
 
-        btnrefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AsyncUploadData().execute();
-            }
-        });
+        btnrefresh.setOnClickListener(view -> new AsyncUploadData().execute());
 
         linearLayoutQR.setOnClickListener(view -> ((MainActivity) getActivity()).eventShowQR(view));
 
@@ -420,12 +416,15 @@ public class HomeFragment extends Fragment {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == 3) {
-                    acMenuRiwayatHome.setText(adapterMenuHistory.getItem(1), false);
+
+                    acMenuRiwayatHome.setText(arrayMenuHistory.get(1));
+                    acMenuRiwayatHome.setSelection(1);
                     loadlvinfohome(todayDate);
                     loadLvHistoryCarLog(todayDate);
                 }
                 if (result.getResultCode() == 4) {
-                    acMenuRiwayatHome.setText(adapterMenuHistory.getItem(0), false);
+                    acMenuRiwayatHome.setText(arrayMenuHistory.get(0));
+                    acMenuRiwayatHome.setSelection(0);
                     loadlvinfohome(todayDate);
                     loadLvHistoryApel(todayDate);
                 }
@@ -435,28 +434,21 @@ public class HomeFragment extends Fragment {
             }
         );
 
-        if (dbhelper.get_tbl_username(3).equals("USR")) {
-            linearLayoutRKH.setVisibility(View.GONE);
-            linearLayoutApel.setVisibility(View.GONE);
+        linearLayoutBBM.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), PermintaanBBM.class);
+            intentLaunchActivity.launch(intent);
+        });
 
-            linearLayoutBBM.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), PermintaanBBM.class);
-                intentLaunchActivity.launch(intent);
-            });
-            linearLayoutService.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
-                intentLaunchActivity.launch(intent);
-            });
-
-        }
-
-        if (dbhelper.get_tbl_username(3).equals("SPV")) {
-            linearLayoutCarLog.setVisibility(View.GONE);
-            linearLayoutP2H.setVisibility(View.GONE);
-            linearLayoutBBM.setVisibility(View.GONE);
-
+        if (dbhelper.get_tbl_username(3).equals("SPV-WS")) {
             linearLayoutService.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), PerintahPerbaikan.class);
+                intentLaunchActivity.launch(intent);
+            });
+        }
+
+        else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
+            linearLayoutService.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
                 intentLaunchActivity.launch(intent);
             });
         }
@@ -527,11 +519,12 @@ public class HomeFragment extends Fragment {
 
             List<String> listVehicleCarLog;
             ArrayAdapter<String> adapterVehicleCarLog;
+
+            acDlgVehicleCarLog.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
+
             listVehicleCarLog = dbhelper.get_vehiclemasterdata();
             adapterVehicleCarLog = new ArrayAdapter<>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listVehicleCarLog);
             acDlgVehicleCarLog.setAdapter(adapterVehicleCarLog);
-
-            acDlgVehicleCarLog.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
 
             acDlgVehicleCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -572,7 +565,7 @@ public class HomeFragment extends Fragment {
                 Cursor cursorTransaction1 = dbhelper.view_upload_tr01();
                 if (cursorTransaction1.moveToFirst()) {
                     do {
-                        uploadTR01(getActivity(),
+                        uploadTR01public(getActivity(),
                                 cursorTransaction1.getInt(0), cursorTransaction1.getString(1),
                                 cursorTransaction1.getString(2), cursorTransaction1.getString(3),
                                 cursorTransaction1.getString(4), cursorTransaction1.getString(5),
@@ -668,17 +661,17 @@ public class HomeFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void result) {
-            loadlvinfohome(todayDate);
-            Toast.makeText(getContext(), "DONE!", Toast.LENGTH_LONG).show();
+
         }
     }
 
     public static void loadlvinfohome(String selectedDate) {
 
-        List<ParamListHomeInfo> informationsHome;
-        AdapterHomeInfo adapterHomeInfo;
         DatabaseHelper dbhelper;
         dbhelper = new DatabaseHelper(lvfragment.getContext());
+
+        List<ParamListHomeInfo> informationsHome;
+        AdapterHomeInfo adapterHomeInfo;
 
         informationsHome = new ArrayList<>();
         informationsHome.clear();
@@ -686,15 +679,18 @@ public class HomeFragment extends Fragment {
         if (cursor.moveToFirst()) {
             do {
                 ParamListHomeInfo infoListFragment = new ParamListHomeInfo(
+                        cursor.getString(cursor.getColumnIndex("menucode")),
                         cursor.getString(cursor.getColumnIndex("dataname")),
                         cursor.getString(cursor.getColumnIndex("statusupload")),
-                        cursor.getString(cursor.getColumnIndex("transactiondate"))
+                        cursor.getString(cursor.getColumnIndex("transactiondate")),
+                        cursor.getString(cursor.getColumnIndex("documentno"))
                 );
                 informationsHome.add(infoListFragment);
             } while (cursor.moveToNext());
         }
-        adapterHomeInfo = new AdapterHomeInfo(lvfragment.getContext(), R.layout.item_lvworkinfohome, informationsHome);
+        adapterHomeInfo = new AdapterHomeInfo(lvfragment.getContext(), informationsHome);
         lvfragment.setAdapter(adapterHomeInfo);
+        adapterHomeInfo.notifyDataSetChanged();
     }
 
     public static void loadLvHistoryApel(String selectedDate) {

@@ -203,8 +203,6 @@ public class ApelPagi extends AppCompatActivity {
                         @Override
                         public void onClick(SweetAlertDialog dlgExit) {
                             dbhelper.updateselesai_apelpagi(nodocApel, etLokasiApel.getText().toString(), etDescApel.getText().toString());
-                            lvAnggota.setEnabled(false);
-                            lvPimpinan.setEnabled(false);
                             dlgExit.dismiss();
                             SweetAlertDialog dlgFinishApel = new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE);
                             dlgFinishApel.setCancelable(false);
@@ -403,6 +401,8 @@ public class ApelPagi extends AppCompatActivity {
             imgFotoApelPagi.setEnabled(false);
             etLokasiApel.setFocusable(false);
             etDescApel.setFocusable(false);
+            lvAnggota.setEnabled(false);
+            lvPimpinan.setEnabled(false);
             etLokasiApel.setText(dbhelper.check_existingapel(2, selectedShift));
             etDescApel.setText(dbhelper.check_existingapel(3, selectedShift));
             gambarApelPagi = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1, selectedShift));

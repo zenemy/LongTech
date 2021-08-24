@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -68,6 +70,7 @@ import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuhcm.BiodataKaryawan;
 import com.julong.longtech.menusetup.MyAccount;
+import com.julong.longtech.ui.home.HomeFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -212,12 +215,11 @@ public class MainActivity extends AppCompatActivity {
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-
-                try {
                     String menuGroupCode = dbhelper.get_menucode(listGroupMenu.get(groupPosition),
                             listMenu.get(listGroupMenu.get(groupPosition)).get(childPosition), 0);
                     String menuSubCode = dbhelper.get_menucode(listGroupMenu.get(groupPosition),
                             listMenu.get(listGroupMenu.get(groupPosition)).get(childPosition), 1);
+                try {
 
                     if (menuGroupCode.equals("0101") && menuSubCode.equals("010101")) {
                         Intent intent = new Intent(MainActivity.this, BiodataKaryawan.class);
@@ -298,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0201") && menuSubCode.equals("020102")) {
                         Intent intent = new Intent(MainActivity.this, PerintahPerbaikan.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
@@ -325,10 +327,50 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020203")) {
-                        Intent intent = new Intent(MainActivity.this, KartuKerjaVehicle.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchMainActivity.launch(intent);
-                        onPause();
+
+                        Dialog dlgStartCarLog = new Dialog(MainActivity.this);
+                        dlgStartCarLog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dlgStartCarLog.setContentView(R.layout.dlg_startcarlog);
+                        dlgStartCarLog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                        Window windowStartCarLog = dlgStartCarLog.getWindow();
+                        windowStartCarLog.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                        AutoCompleteTextView acDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.acDlgVehicleCarLog);
+                        Button btnCancelDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.btnCancelDlgVehicleCarLog);
+                        Button btnSimpanDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.btnSimpanDlgVehicleCarLog);
+                        dlgStartCarLog.show();
+
+                        btnCancelDlgVehicleCarLog.setOnClickListener(view -> dlgStartCarLog.dismiss());
+
+                        List<String> listVehicleCarLog;
+                        ArrayAdapter<String> adapterVehicleCarLog;
+
+                        acDlgVehicleCarLog.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
+
+                        listVehicleCarLog = dbhelper.get_vehiclemasterdata();
+                        adapterVehicleCarLog = new ArrayAdapter<String>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleCarLog);
+                        acDlgVehicleCarLog.setAdapter(adapterVehicleCarLog);
+
+                        acDlgVehicleCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+                                keyboardMgr.hideSoftInputFromWindow(acDlgVehicleCarLog.getWindowToken(), 0);
+                            }
+                        });
+
+                        btnSimpanDlgVehicleCarLog.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dlgStartCarLog.dismiss();
+                                String selectedCarLogVehicle = dbhelper.get_vehiclecodeonly(acDlgVehicleCarLog.getText().toString());
+                                dbhelper.update_ancakcode_user(selectedCarLogVehicle);
+
+                                Intent intent = new Intent(MainActivity.this, KartuKerjaVehicle.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intentLaunchMainActivity.launch(intent);
+                                onPause();
+                            }
+                        });
                     }
 
                     if (groupPosition == 2 && childPosition == 3) {
@@ -375,25 +417,27 @@ public class MainActivity extends AppCompatActivity {
                         onPause();
                     }
 
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if (groupPosition == 4 && childPosition == 0) {
+                if (menuGroupCode.equals("0401") && menuSubCode.equals("040102")) {
                     Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     onPause();
                 }
 
-                if (groupPosition == 5 && childPosition == 0) {
+                if (menuGroupCode.equals("0501") && menuSubCode.equals("050101")) {
                     Intent intent = new Intent(MainActivity.this, DownloadData.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intentLaunchMainActivity.launch(intent);
                     onPause();
                 }
 
-                if (groupPosition == 5 && childPosition == 1) {
+                if (menuGroupCode.equals("0501") && menuSubCode.equals("050102")) {
                     Intent intent = new Intent(MainActivity.this, UploadData.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intentLaunchMainActivity.launch(intent);
@@ -539,39 +583,53 @@ public class MainActivity extends AppCompatActivity {
         listGroupMenu = new ArrayList<String>();
         listMenu = new HashMap<String, List<String>>();
 
+        int menuCount = 0;
+
         listGroupMenu.add(dbhelper.get_groupmenu("HCM", "HCM"));
         List<String> MENUHCM = dbhelper.get_menuname("HCM", "HCM");
-        listMenu.put(listGroupMenu.get(0), MENUHCM);
+        listMenu.put(listGroupMenu.get(menuCount), MENUHCM);
+        menuCount++;
 
-        listGroupMenu.add(dbhelper.get_groupmenu("OPERASIONAL", "WSA"));
-        List<String> MENUWORKSHOP = dbhelper.get_menuname("OPERASIONAL", "WSA");
-        listMenu.put(listGroupMenu.get(1), MENUWORKSHOP);
+        if (dbhelper.get_groupmenu("OPERASIONAL", "WSA") != null) {
+            listGroupMenu.add(dbhelper.get_groupmenu("OPERASIONAL", "WSA"));
+            List<String> MENUWORKSHOP = dbhelper.get_menuname("OPERASIONAL", "WSA");
+            listMenu.put(listGroupMenu.get(menuCount), MENUWORKSHOP);
+            menuCount++;
+        }
 
-        listGroupMenu.add(dbhelper.get_groupmenu("OPERASIONAL", "VHA"));
-        List<String> MENUVEHICLE = dbhelper.get_menuname("OPERASIONAL", "VHA");
-        listMenu.put(listGroupMenu.get(2), MENUVEHICLE);
+        if (dbhelper.get_groupmenu("OPERASIONAL", "VHA") != null) {
+            listGroupMenu.add(dbhelper.get_groupmenu("OPERASIONAL", "VHA"));
+            List<String> MENUVEHICLE = dbhelper.get_menuname("OPERASIONAL", "VHA");
+            listMenu.put(listGroupMenu.get(menuCount), MENUVEHICLE);
+            menuCount++;
+        }
 
-        listGroupMenu.add(dbhelper.get_groupmenu("DISTRIBUTION", "INV"));
-        List<String> MENUINVENTORY = dbhelper.get_menuname("DISTRIBUTION", "INV");
-        listMenu.put(listGroupMenu.get(3), MENUINVENTORY);
+        if (dbhelper.get_groupmenu("DISTRIBUTION", "INV") != null) {
+            listGroupMenu.add(dbhelper.get_groupmenu("DISTRIBUTION", "INV"));
+            List<String> MENUINVENTORY = dbhelper.get_menuname("DISTRIBUTION", "INV");
+            listMenu.put(listGroupMenu.get(menuCount), MENUINVENTORY);
+            menuCount++;
+        }
 
-        listGroupMenu.add("LAPORAN");
-        List<String> REPORT = Arrays.asList("RIWAYAT PEKERJAAN", "LAPORAN PEKERJAAN");
-        listMenu.put(listGroupMenu.get(4), REPORT);
+        listGroupMenu.add("REPORT");
+        List<String> REPORT = dbhelper.get_menuname("REPORT", "RPRT");
+        listMenu.put(listGroupMenu.get(menuCount), REPORT);
+        menuCount++;
 
         listGroupMenu.add("UPLOAD & DOWNLOAD");
-        List<String> UPLOADDOWNLOAD =  Arrays.asList("DOWNLOAD DATA","UPLOAD DATA");
-        listMenu.put(listGroupMenu.get(5), UPLOADDOWNLOAD);
+        List<String> UPLOADDOWNLOAD =  dbhelper.get_menuname("DATA", "SYNC");
+        listMenu.put(listGroupMenu.get(menuCount), UPLOADDOWNLOAD);
+        menuCount++;
 
-        listGroupMenu.add("PENGATURAN");
-        if (dbhelper.get_tbl_username(2).equals("ASU")) {
-            List<String> SETUP = Arrays.asList("AKUN", "PROFILE SYSTEM", "PEMBARUAN SYSTEM");
-            listMenu.put(listGroupMenu.get(6), SETUP);
-        }
-        else {
-            List<String> SETUP = Arrays.asList("AKUN", "PEMBARUAN SYSTEM");
-            listMenu.put(listGroupMenu.get(6), SETUP);
-        }
+//        listGroupMenu.add("PENGATURAN");
+//        if (dbhelper.get_tbl_username(2).equals("ASU")) {
+//            List<String> SETUP = Arrays.asList("AKUN", "PROFILE SYSTEM", "PEMBARUAN SYSTEM");
+//            listMenu.put(listGroupMenu.get(6), SETUP);
+//        }
+//        else {
+//            List<String> SETUP = Arrays.asList("AKUN", "PEMBARUAN SYSTEM");
+//            listMenu.put(listGroupMenu.get(6), SETUP);
+//        }
 
     }
 
@@ -581,11 +639,14 @@ public class MainActivity extends AppCompatActivity {
         proDialog.setCancelable(false);
         proDialog.show();
 
+        //  Fetch menu from API
         String url_data = url_api + "fetchdata/get_menugs02.php?rolecode=" + dbhelper.get_tbl_username(3);
         JsonObjectRequest jsonRequest = new JsonObjectRequest
             (Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+
+                    //
                     new AsyncJsonMenuGS().execute(response, null, null);
                 }
             }, new Response.ErrorListener() {
@@ -593,12 +654,31 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     error.printStackTrace();
-                    proDialog.dismiss();
-                    Log.d("menu", "error");
+
                     prepareListData();
                     expandableListAdapter = new com.julong.longtech.ExpandableListAdapter(MainActivity.this, listGroupMenu, listMenu, 1);
                     expandableListView.setAdapter(expandableListAdapter);
                     proDialog.dismiss();
+
+                    if (dbhelper.check_menufragment("010105").equals("0")) {
+                        HomeFragment.linearLayoutApel.setVisibility(View.GONE);
+                    }
+                    if (dbhelper.check_menufragment("020201").equals("0")) {
+                        HomeFragment.linearLayoutRKH.setVisibility(View.GONE);
+                    }
+                    if (dbhelper.check_menufragment("020202").equals("0")) {
+                        HomeFragment.linearLayoutP2H.setVisibility(View.GONE);
+                    }
+                    if (dbhelper.check_menufragment("020203").equals("0")) {
+                        HomeFragment.linearLayoutCarLog.setVisibility(View.GONE);
+                    }
+                    if (dbhelper.check_menufragment("030101").equals("0")) {
+                        HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
+                    }
+
+                    if (dbhelper.check_menufragment("020101").equals("0") && dbhelper.check_menufragment("020102").equals("0")) {
+                        HomeFragment.linearLayoutService.setVisibility(View.GONE);
+                    }
 
                     if (dbhelper.count_tablemd().equals("0")) {
                         final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
@@ -628,6 +708,8 @@ public class MainActivity extends AppCompatActivity {
             dbhelper.delete_menuGS02("WORKSHOP");
             dbhelper.delete_menuGS02("VEHICLE");
             dbhelper.delete_menuGS02("INVENTORY");
+            dbhelper.delete_menuGS02("REPORT");
+            dbhelper.delete_menuGS02("UPLOAD & DOWNLOAD");
 
         }
 
@@ -647,43 +729,76 @@ public class MainActivity extends AppCompatActivity {
                     iHCM++;
                 }
 
-                Log.d("menu", "downloading");
-
                 // Generate Menu Workshop
-                JSONArray jsonArrayWS = responseGS.getJSONArray("DATAWORKSHOP");
-                int iWS = 0;
-                while (iWS < jsonArrayWS.length()) {
-                    JSONObject jsonObjectWS = jsonArrayWS.getJSONObject(iWS);
-                    dbhelper.insert_menuGS02(jsonObjectWS.getString("GROUPCODE"), jsonObjectWS.getString("GROUPPARAMDESC"), jsonObjectWS.getString("MODULECODE"),
-                            jsonObjectWS.getString("MODULEDESC"), jsonObjectWS.getString("CONTROLSYSTEM"), jsonObjectWS.getString("DOCTYPECODE"),
-                            jsonObjectWS.getString("SUBMODULECODE"), jsonObjectWS.getString("SUBMODULEDESC"), jsonObjectWS.getString("SUBMODULETYPE"),
-                            jsonObjectWS.getString("SEQ"), jsonObjectWS.getString("MENUVIEW"), jsonObjectWS.getString("MENUDEFAULT"));
-                    iWS++;
+                if (responseGS.has("DATAWORKSHOP")) {
+                    JSONArray jsonArrayWS = responseGS.getJSONArray("DATAWORKSHOP");
+                    if (jsonArrayWS != null || jsonArrayWS.length() > 0)  {
+                        int iWS = 0;
+                        while (iWS < jsonArrayWS.length()) {
+                            JSONObject jsonObjectWS = jsonArrayWS.getJSONObject(iWS);
+                            dbhelper.insert_menuGS02(jsonObjectWS.getString("GROUPCODE"), jsonObjectWS.getString("GROUPPARAMDESC"), jsonObjectWS.getString("MODULECODE"),
+                                    jsonObjectWS.getString("MODULEDESC"), jsonObjectWS.getString("CONTROLSYSTEM"), jsonObjectWS.getString("DOCTYPECODE"),
+                                    jsonObjectWS.getString("SUBMODULECODE"), jsonObjectWS.getString("SUBMODULEDESC"), jsonObjectWS.getString("SUBMODULETYPE"),
+                                    jsonObjectWS.getString("SEQ"), jsonObjectWS.getString("MENUVIEW"), jsonObjectWS.getString("MENUDEFAULT"));
+                            iWS++;
+                        }
+                    }
                 }
 
                 // Generate Menu Vehicle
-                JSONArray jsonArrayVH = responseGS.getJSONArray("DATAVEHICLE");
-                int iVH = 0;
-                while (iVH < jsonArrayVH.length()) {
-                    JSONObject jsonObjectVH = jsonArrayVH.getJSONObject(iVH);
-                    dbhelper.insert_menuGS02(jsonObjectVH.getString("GROUPCODE"), jsonObjectVH.getString("GROUPPARAMDESC"), jsonObjectVH.getString("MODULECODE"),
-                            jsonObjectVH.getString("MODULEDESC"), jsonObjectVH.getString("CONTROLSYSTEM"), jsonObjectVH.getString("DOCTYPECODE"),
-                            jsonObjectVH.getString("SUBMODULECODE"), jsonObjectVH.getString("SUBMODULEDESC"), jsonObjectVH.getString("SUBMODULETYPE"),
-                            jsonObjectVH.getString("SEQ"), jsonObjectVH.getString("MENUVIEW"), jsonObjectVH.getString("MENUDEFAULT"));
-                    iVH++;
+                if (responseGS.has("DATAVEHICLE")) {
+                    JSONArray jsonArrayVH = responseGS.getJSONArray("DATAVEHICLE");
+                    if (jsonArrayVH != null || jsonArrayVH.length() > 0)  {
+                        int iVH = 0;
+                        while (iVH < jsonArrayVH.length()) {
+                            JSONObject jsonObjectVH = jsonArrayVH.getJSONObject(iVH);
+                            dbhelper.insert_menuGS02(jsonObjectVH.getString("GROUPCODE"), jsonObjectVH.getString("GROUPPARAMDESC"), jsonObjectVH.getString("MODULECODE"),
+                                    jsonObjectVH.getString("MODULEDESC"), jsonObjectVH.getString("CONTROLSYSTEM"), jsonObjectVH.getString("DOCTYPECODE"),
+                                    jsonObjectVH.getString("SUBMODULECODE"), jsonObjectVH.getString("SUBMODULEDESC"), jsonObjectVH.getString("SUBMODULETYPE"),
+                                    jsonObjectVH.getString("SEQ"), jsonObjectVH.getString("MENUVIEW"), jsonObjectVH.getString("MENUDEFAULT"));
+                            iVH++;
+                        }
+                    }
                 }
 
+
                 // Generate Menu Inventory
-                JSONArray jsonArrayINV = responseGS.getJSONArray("DATAINVENTORY");
-                int iNV = 0;
-                while (iNV < jsonArrayINV.length()) {
-                    JSONObject jsonObjectINV = jsonArrayINV.getJSONObject(iNV);
-                    dbhelper.insert_menuGS02(jsonObjectINV.getString("GROUPCODE"), jsonObjectINV.getString("GROUPPARAMDESC"), jsonObjectINV.getString("MODULECODE"),
-                            jsonObjectINV.getString("MODULEDESC"), jsonObjectINV.getString("CONTROLSYSTEM"), jsonObjectINV.getString("DOCTYPECODE"),
-                            jsonObjectINV.getString("SUBMODULECODE"), jsonObjectINV.getString("SUBMODULEDESC"), jsonObjectINV.getString("SUBMODULETYPE"),
-                            jsonObjectINV.getString("SEQ"), jsonObjectINV.getString("MENUVIEW"), jsonObjectINV.getString("MENUDEFAULT"));
-                    iNV++;
+                if (responseGS.has("DATAINVENTORY")) {
+                    JSONArray jsonArrayINV = responseGS.getJSONArray("DATAINVENTORY");
+                    if (jsonArrayINV != null || jsonArrayINV.length() > 0)  {
+                        int iNV = 0;
+                        while (iNV < jsonArrayINV.length()) {
+                            JSONObject jsonObjectINV = jsonArrayINV.getJSONObject(iNV);
+                            dbhelper.insert_menuGS02(jsonObjectINV.getString("GROUPCODE"), jsonObjectINV.getString("GROUPPARAMDESC"), jsonObjectINV.getString("MODULECODE"),
+                                    jsonObjectINV.getString("MODULEDESC"), jsonObjectINV.getString("CONTROLSYSTEM"), jsonObjectINV.getString("DOCTYPECODE"),
+                                    jsonObjectINV.getString("SUBMODULECODE"), jsonObjectINV.getString("SUBMODULEDESC"), jsonObjectINV.getString("SUBMODULETYPE"),
+                                    jsonObjectINV.getString("SEQ"), jsonObjectINV.getString("MENUVIEW"), jsonObjectINV.getString("MENUDEFAULT"));
+                            iNV++;
+                        }
+                    }
                 }
+
+
+                dbhelper.insert_menuGS02("04", "REPORT", "0401",
+                        "REPORT", "RPRT", "RPRTON",
+                        "040101", "Laporan Pekerjaan", null,
+                        "1", null, null);
+
+                dbhelper.insert_menuGS02("04", "REPORT", "0401",
+                        "REPORT", "RPRT", "HSTROFF",
+                        "040102", "Riwayat Pekerjaan", null,
+                        "2", null, null);
+
+
+                dbhelper.insert_menuGS02("05", "DATA", "0501",
+                        "UPLOAD & DOWNLOAD", "SYNC", "FETCHDT",
+                        "050101", "Download Data", null,
+                        "1", null, null);
+
+                dbhelper.insert_menuGS02("05", "DATA", "0501",
+                        "UPLOAD & DOWNLOAD", "SYNC", "STOREDT",
+                        "050102", "Upload Data", null,
+                        "2", null, null);
 
                 prepareListData();
 
@@ -696,9 +811,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
 
+            if (dbhelper.check_menufragment("010105").equals("0")) {
+                HomeFragment.linearLayoutApel.setVisibility(View.GONE);
+            }
+            if (dbhelper.check_menufragment("020201").equals("0")) {
+                HomeFragment.linearLayoutRKH.setVisibility(View.GONE);
+            }
+            if (dbhelper.check_menufragment("020202").equals("0")) {
+                HomeFragment.linearLayoutP2H.setVisibility(View.GONE);
+            }
+            if (dbhelper.check_menufragment("020203").equals("0")) {
+                HomeFragment.linearLayoutCarLog.setVisibility(View.GONE);
+            }
+            if (dbhelper.check_menufragment("030101").equals("0")) {
+                HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
+            }
+            if (dbhelper.check_menufragment("020101").equals("0") && dbhelper.check_menufragment("020102").equals("0")) {
+                HomeFragment.linearLayoutService.setVisibility(View.GONE);
+            }
+
             expandableListAdapter = new com.julong.longtech.ExpandableListAdapter(MainActivity.this, listGroupMenu, listMenu, 1);
             expandableListView.setAdapter(expandableListAdapter);
             proDialog.dismiss();
+
             if (dbhelper.count_tablemd().equals("0")) {
                 final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
                 warningExitDlg.setContentText("Download data dahulu!");
