@@ -10,4 +10,11 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+    <string name="judulvehicle">Kendaraan Kerja</string>
+    <string name="hintvehicle">Pilih Kendaraan Kerja</string>
+    <string name="juduldesc">Catatan Tambahan</string>
+    <string name="bbmgoodang">Gudang BBM</string>
+    <string name="hintgoodang">Pilih Gudang BBM</string>
+    <string name="judulopr">Driver / Operator</string>
 </resources>

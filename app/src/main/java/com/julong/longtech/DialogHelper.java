@@ -133,8 +133,8 @@ public class DialogHelper extends Dialog {
         dlgSelesaiVerifikasi.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowVerificationDone = dlgSelesaiVerifikasi.getWindow();
         windowVerificationDone.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        TextView tvEstateSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvEstateSummaryGIS);
-        TextView tvDivisiSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvDivisiSummaryGIS);
+        TextView tvUnitSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvHESummaryGIS);
+        TextView tvDriverSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvDriverSummaryGIS);
         TextView tvLokasiSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvBlokSummaryGIS);
         TextView tvKegiatanSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvActivitySummaryGIS);
         TextView tvHasilSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvResultSummaryGIS);
@@ -144,17 +144,18 @@ public class DialogHelper extends Dialog {
         dlgSelesaiVerifikasi.show();
         btnBackSummary.setOnClickListener(view1 -> dlgSelesaiVerifikasi.dismiss());
 
-        tvEstateSummary.setText(VerifikasiGIS.acKebunGIS.getText().toString());
-        tvDivisiSummary.setText(VerifikasiGIS.acDivisiGIS.getText().toString());
+        tvUnitSummary.setText(dbhelper.get_vehiclename(0, VerifikasiGIS.selectedVehicleGIS));
+        tvDriverSummary.setText(dbhelper.get_empname(VerifikasiGIS.selectedDriverGIS));
         tvLokasiSummary.setText(VerifikasiGIS.acLokasiGIS.getText().toString());
         tvKegiatanSummary.setText(VerifikasiGIS.acKegiatanGIS.getText().toString());
-        tvHasilSummary.setText(VerifikasiGIS.etHasilVerifikasi.getText() + " " + VerifikasiGIS.etSatuanKerjaGIS.getText().toString());
+        tvHasilSummary.setText(VerifikasiGIS.etHasilVerifikasi.getText());
         tvTotalKoordinat.setText(dbhelper.get_count_totalkoordinatgis(VerifikasiGIS.nodocVerifikasiGIS));
         btnDoneSummary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dlgSelesaiVerifikasi.dismiss();
-                dbhelper.updatestatus_verifikasigis(VerifikasiGIS.nodocVerifikasiGIS, VerifikasiGIS.etHasilVerifikasi.getText().toString());
+                dbhelper.updatestatus_verifikasigis(VerifikasiGIS.nodocVerifikasiGIS,
+                        VerifikasiGIS.etHasilVerifikasi.getText().toString(), VerifikasiGIS.byteFotoGIS);
                 SweetAlertDialog sweetDlgVerifikasiDone = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
                 sweetDlgVerifikasiDone.setTitleText("Verifikasi Selesai");
                 sweetDlgVerifikasiDone.setConfirmText("SELESAI");

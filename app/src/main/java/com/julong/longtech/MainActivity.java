@@ -52,6 +52,7 @@ import com.julong.longtech.menuhcm.AbsensiBekerjaUnit;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryActivity;
+import com.julong.longtech.menuinventory.PenerimaanBBM;
 import com.julong.longtech.menusetup.AppSetting;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.UpdateSystem;
@@ -66,6 +67,7 @@ import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
+import com.julong.longtech.menuworkshop.ProsesPerbaikan;
 import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuhcm.BiodataKaryawan;
@@ -122,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
     ExpandableListView expandableListView;
     View hView;
     ConstraintLayout clnavheader;
-    //END===========================================================================================
+
+    private List<String> listKendalaCode, listKendalaName;
+    ArrayAdapter<String> adapterKendala;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +183,11 @@ public class MainActivity extends AppCompatActivity {
                                 intentLaunchMainActivity.launch(intentDownload);
                             });
                             warningExitDlg.show();
+                        } else {
+                            listKendalaCode = dbhelper.get_menukendala(0);
+                            listKendalaName = dbhelper.get_menukendala(1);
+                            adapterKendala = new ArrayAdapter<String>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, listKendalaName);
+                            HomeFragment.ackendala.setAdapter(adapterKendala);
                         }
                     }
 
@@ -231,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0101") && menuSubCode.equals("010102")) {
                         Intent intent = new Intent(MainActivity.this, MesinAbsensi.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
@@ -293,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0201") && menuSubCode.equals("020101")) {
                         Intent intent = new Intent(MainActivity.this, PermintaanPerbaikan.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
@@ -308,6 +317,13 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, SelesaiPerbaikanBA.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+                        onPause();
+                    }
+
+                    if (menuGroupCode.equals("0201") && menuSubCode.equals("020104")) {
+                        Intent intent = new Intent(MainActivity.this, ProsesPerbaikan.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
 
@@ -406,18 +422,24 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0301") && menuSubCode.equals("030101")) {
                         Intent intent = new Intent(MainActivity.this, PermintaanBBM.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
+
+                    if (menuGroupCode.equals("0301") && menuSubCode.equals("030103")) {
+                        Intent intent = new Intent(MainActivity.this, PenerimaanBBM.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intentLaunchMainActivity.launch(intent);
+                        onPause();
+                    }
+
 
                     if (menuGroupCode.equals("0301") && menuSubCode.equals("030102")) {
                         Intent intent = new Intent(MainActivity.this, PengeluaranBBM.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        intentLaunchMainActivity.launch(intent);
                         onPause();
                     }
-
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -646,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
 
-                    //
+                    // Background process fetching each menu data
                     new AsyncJsonMenuGS().execute(response, null, null);
                 }
             }, new Response.ErrorListener() {
@@ -676,7 +698,9 @@ public class MainActivity extends AppCompatActivity {
                         HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
                     }
 
-                    if (dbhelper.check_menufragment("020101").equals("0") && dbhelper.check_menufragment("020102").equals("0")) {
+                    if (dbhelper.check_menufragment("020101").equals("0")
+                            && dbhelper.check_menufragment("020102").equals("0")
+                            && dbhelper.check_menufragment("020104").equals("0")) {
                         HomeFragment.linearLayoutService.setVisibility(View.GONE);
                     }
 
@@ -826,7 +850,9 @@ public class MainActivity extends AppCompatActivity {
             if (dbhelper.check_menufragment("030101").equals("0")) {
                 HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
             }
-            if (dbhelper.check_menufragment("020101").equals("0") && dbhelper.check_menufragment("020102").equals("0")) {
+            if (dbhelper.check_menufragment("020101").equals("0")
+                    && dbhelper.check_menufragment("020102").equals("0")
+                    && dbhelper.check_menufragment("020104").equals("0")) {
                 HomeFragment.linearLayoutService.setVisibility(View.GONE);
             }
 

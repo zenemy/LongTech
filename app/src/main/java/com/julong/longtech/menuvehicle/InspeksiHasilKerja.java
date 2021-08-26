@@ -47,16 +47,16 @@ public class InspeksiHasilKerja extends AppCompatActivity {
     private static int REQUEST_IMAGE_CAPTURE = 1;
     DatabaseHelper dbHelper;
 
-   AutoCompleteTextView acKebunInspeksi, acDivisiInspeksi, acLokasiInspeksi, acKegiatanInspeksi;
+   AutoCompleteTextView acVehicleInspeksi, acDriverInspeksi, acLokasiInspeksi, acKegiatanInspeksi;
    EditText etDescInspeksi;
    ImageButton imgFotoInspeksi;
    Button btnSubmitInspeksi, btnBackInspeksi;
 
-    private List<String> listNamaKebun, listKebunCode, listLokasiInspeksi, listDivisiName,
-            listDivisiCode, listKegiatanInspeksi, listKegiatanSatuanCode, listKegiatanSatuanName;
-    ArrayAdapter<String> adapterKebun, adapterDivisi, adapterLokasi, adapterKegiatan;
+    private List<String> listVehicleName, listLokasiInspeksi,
+            listDriverName, listKegiatanInspeksi;
+    ArrayAdapter<String> adapterVehicle, adapterDriver, adapterLokasi, adapterKegiatan;
 
-    String nodocInspeksi, selectedKebunInspeksi, selectedDivisiInspeksi, selectedLokasiInspeksi,
+    String nodocInspeksi, selectedVehicle, selectedDriver, selectedLokasiInspeksi,
             selectedKegiatanInspeksi, selectedSatuanInspeksi, latInspeksi, longInspeksi;
     byte[] byteImgInspeksi;
 
@@ -68,8 +68,8 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
         // Declare Design ID
-        acKebunInspeksi = findViewById(R.id.acKebunInspeksiKerja);
-        acDivisiInspeksi = findViewById(R.id.acDivisiInspeksiKerja);
+        acVehicleInspeksi = findViewById(R.id.acVehicleInspeksi);
+        acDriverInspeksi = findViewById(R.id.acDriverInspeksi);
         acLokasiInspeksi = findViewById(R.id.acLokasiKerjaInspeksi);
         acKegiatanInspeksi = findViewById(R.id.acKegiatanInspeksiKerja);
         etDescInspeksi = findViewById(R.id.etDescInspeksiKerja);
@@ -133,7 +133,7 @@ public class InspeksiHasilKerja extends AppCompatActivity {
             }
             else {
                 getLocation();
-                dbHelper.insert_kegiataninspeksi(nodocInspeksi, selectedKebunInspeksi, selectedDivisiInspeksi,
+                dbHelper.insert_kegiataninspeksi(nodocInspeksi, selectedVehicle, selectedDriver,
                         selectedLokasiInspeksi, selectedKegiatanInspeksi, selectedSatuanInspeksi,
                         null, latInspeksi, longInspeksi, byteImgInspeksi);
 
@@ -153,41 +153,38 @@ public class InspeksiHasilKerja extends AppCompatActivity {
     }
 
     private void prepareHeaderData() {
-        listNamaKebun = dbHelper.get_itemkebun(1);
-        listKebunCode = dbHelper.get_itemkebun(0);
-        adapterKebun = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listNamaKebun);
-        acKebunInspeksi.setAdapter(adapterKebun);
+
+        listVehicleName = dbHelper.get_vehiclemasterdata();
+        adapterVehicle = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
+        acVehicleInspeksi.setAdapter(adapterVehicle);
 
         listKegiatanInspeksi = dbHelper.get_activitylist(1);
-        listKegiatanSatuanCode = dbHelper.get_activitylist(3);
-        listKegiatanSatuanName = dbHelper.get_activitylist(4);
-        adapterKegiatan = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanInspeksi);
+        adapterKegiatan = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanInspeksi);
         acKegiatanInspeksi.setAdapter(adapterKegiatan);
 
-        acKebunInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listDriverName = dbHelper.get_employee();
+        adapterDriver = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listDriverName);
+        acDriverInspeksi.setAdapter(adapterDriver);
+
+        listLokasiInspeksi = dbHelper.get_fieldcrop(1);
+        adapterLokasi = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiInspeksi);
+        acLokasiInspeksi.setAdapter(adapterKegiatan);
+
+        acVehicleInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                acDivisiInspeksi.setText(null);
-                acLokasiInspeksi.setText(null);
-                acDivisiInspeksi.setAdapter(null);
-                acLokasiInspeksi.setAdapter(null);
-                selectedKebunInspeksi = listKebunCode.get(position);
-
-                listDivisiName = dbHelper.get_itemdivisi(adapterKebun.getItem(position), 1);
-                listDivisiCode = dbHelper.get_itemdivisi(adapterKebun.getItem(position), 0);
-                adapterDivisi = new ArrayAdapter<String>(InspeksiHasilKerja.this, R.layout.spinnerlist, R.id.spinnerItem, listDivisiName);
-                acDivisiInspeksi.setAdapter(adapterDivisi);
+                selectedVehicle = dbHelper.get_vehiclecodeonly(adapterVehicle.getItem(position));
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acVehicleInspeksi.getWindowToken(), 0);
             }
         });
 
-        acDivisiInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        acDriverInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedDivisiInspeksi = listDivisiCode.get(position);
-
-                listLokasiInspeksi = dbHelper.get_fieldcrop_filtered(selectedKebunInspeksi, selectedDivisiInspeksi, 1);
-                adapterLokasi = new ArrayAdapter<String>(InspeksiHasilKerja.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiInspeksi);
-                acLokasiInspeksi.setAdapter(adapterLokasi);
+                selectedDriver = dbHelper.get_empcode(0, adapterDriver.getItem(position));
+                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acVehicleInspeksi.getWindowToken(), 0);
             }
         });
 

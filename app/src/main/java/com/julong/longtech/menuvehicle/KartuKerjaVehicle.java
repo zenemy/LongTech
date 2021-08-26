@@ -776,6 +776,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
 
     public void eventSubmitCarlog(View v) {
 
+        // Checking empty fields
         if (TextUtils.isEmpty(acLoadCategoryCarLog.getText().toString().trim())) {
             new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Kategori Muatan").setConfirmText("OK").show();
         }
@@ -801,6 +802,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     .setAction("OKAY", view -> etHasilKerjaCarLog.requestFocus()).show();
         }
         else {
+            //Showing finishDlg
             dlgSelesaiCarLog = new Dialog(KartuKerjaVehicle.this);
             dlgSelesaiCarLog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dlgSelesaiCarLog.setContentView(R.layout.dlg_selesaicarlog);

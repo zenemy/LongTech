@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#EFECEC"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
     tools:context=".menuworkshop.PermintaanPerbaikan">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,8 +47,25 @@
             android:orientation="vertical"
             android:padding="12dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tipe Perbaikan"
+                android:textSize="16sp"
+                android:layout_marginTop="-4dp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="?android:attr/listDivider" />
+
             <RadioGroup
                 android:id="@+id/radioGroupMintaServiceType"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -121,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
-                android:text="Kendaraan Alat Berat"
+                android:text="@string/judulvehicle"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -137,7 +155,7 @@
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/acVehicleMintaServicer"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:hint="Pilih Kendaraan"
                     android:textColorHint="#808080"
                     android:singleLine="true"
@@ -148,7 +166,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
-                android:text="Catatan Perbaikan"
+                android:text="Lokasi Kendaraan"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Kode Kendaraan Alat Berat"
+                app:hintEnabled="false"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acLokasiMintaService"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Pilih Blok"
+                    android:textColorHint="#808080"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:text="Detail Lokasi Kerusakan"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -172,7 +217,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="85dp"
                         android:gravity="top|start"
-                        android:hint="Input Catatan Perbaikan"
+                        android:hint="Masukkan detail lokasi kerusakan"
                         android:textColorHint="#808080"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>

@@ -142,6 +142,7 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
 
                         btnBackDlgApel.setOnClickListener(view1 -> dlgMetodeAbsen.dismiss());
 
+                        // Metode Foto
                         btnApelFoto.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -160,6 +161,7 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                             }
                         });
 
+                        // Metode Scan
                         btnApelQR.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -171,6 +173,7 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                             }
                         });
 
+                        // Tidak Hadir
                         btnApelTidakHadir.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

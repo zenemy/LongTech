@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -41,8 +42,9 @@ public class PermintaanBBM extends AppCompatActivity {
     byte[] byteFotoMintaBBM;
 
     AutoCompleteTextView acVehicle, acGudangMintaBBM;
-    EditText etLastKMHM, etJumlahPermintaanBBM, etNoteMintaBBM;
+    EditText etTodayDate, etLastKMHM, etJumlahPermintaanBBM, etNoteMintaBBM;
     ImageButton btnFotoPermintaanBBM;
+    Button btnBackMintaBBM;
 
     List<String> listVehicle, listGudangName, listGudangCode;
     ArrayAdapter<String> adapterVehicle, adapterGudang;
@@ -54,12 +56,24 @@ public class PermintaanBBM extends AppCompatActivity {
 
         dbhelper = new DatabaseHelper(this);
 
+        etTodayDate = findViewById(R.id.etTodayDateMintaBBM);
         acVehicle = findViewById(R.id.acUnitMintaBBM);
         acGudangMintaBBM = findViewById(R.id.acGudangMintaBBM);
         etLastKMHM = findViewById(R.id.etMintaBBMKHM);
         etJumlahPermintaanBBM = findViewById(R.id.etJumlahPermintaanBBM);
         etNoteMintaBBM = findViewById(R.id.etNoteMintaBBM);
         btnFotoPermintaanBBM = findViewById(R.id.btnFotoMintaBBM);
+        btnBackMintaBBM = findViewById(R.id.btnBackMintaBBM);
+
+        String todayDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+        etTodayDate.setText(todayDate);
+
+        btnBackMintaBBM.setOnClickListener(view -> onBackPressed());
+
+        if (dbhelper.get_tbl_username(3).equals("OPR")) {
+            acVehicle.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
+            selectedVehicle = dbhelper.get_tbl_username(19);
+        }
 
         listVehicle = dbhelper.get_vehiclemasterdata();
         adapterVehicle = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicle);
@@ -137,7 +151,7 @@ public class PermintaanBBM extends AppCompatActivity {
         }
     }
 
-    @Override
+
     public void onBackPressed() {
         Intent backIntent = new Intent();
         setResult(727, backIntent);

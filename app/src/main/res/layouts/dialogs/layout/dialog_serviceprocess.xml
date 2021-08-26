@@ -5,8 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
 
     <TextView
         android:id="@+id/tvHeaderDlgMetodeApel"
@@ -17,7 +17,7 @@
         android:gravity="center"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
-        android:text="Employee Name"
+        android:text="PILIH TIPE PERBAIKAN"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="18sp"
@@ -32,68 +32,54 @@
         android:backgroundTint="@color/white">
 
         <LinearLayout
-            android:id="@+id/layoutDlgMetodeAbsen"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnApelQR"
+                android:id="@+id/btnResumeServiceProcess"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_baseline_qr_code_24"
-                android:drawablePadding="8dp"
+                android:drawableTop="@drawable/ic_baseline_directions_car_40"
                 android:drawableTint="@color/white"
-                android:gravity="center"
+                android:drawablePadding="8dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:paddingTop="12dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="8dp"
+                android:paddingRight="8dp"
                 android:paddingBottom="12dp"
                 android:singleLine="true"
-                android:text="Scan QR Code"
-                android:textSize="14sp"
+                android:text="Lanjut Service"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnApelFoto"
+                android:id="@+id/btnNewServiceProcess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_baseline_photo_32"
+                android:drawableTop="@drawable/ic_addcaricon_40"
                 android:drawablePadding="8dp"
                 android:drawableTint="@color/white"
-                android:gravity="center"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:paddingLeft="8dp"
                 android:paddingTop="12dp"
-                android:paddingRight="8dp"
                 android:paddingBottom="12dp"
                 android:singleLine="true"
-                android:text="Foto Karyawan"
-                android:textSize="14sp"
+                android:text="Service Baru"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp" />
+
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnApelTidakHadir"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="24dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="TIDAK HADIR"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:cornerRadius="10dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBackDlgApel"
+            android:id="@+id/btnBackDlgServiceProcess"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -104,7 +90,7 @@
             android:paddingRight="8dp"
             android:singleLine="true"
             android:text="KEMBALI"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:rippleColor="#007042"

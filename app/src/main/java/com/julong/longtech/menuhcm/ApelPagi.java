@@ -108,6 +108,7 @@ public class ApelPagi extends AppCompatActivity {
 
         btnBackApelPagi.setOnClickListener(view -> onBackPressed());
 
+        // Get selected shift value from intent
         Bundle bundle = getIntent().getExtras();
         selectedShift = bundle.getString("shiftapel");
         etKemandoranApel.setText(dbhelper.get_infokemandoranapel(0, dbhelper.get_tbl_username(18)) + " (" +selectedShift + ")");
@@ -117,6 +118,8 @@ public class ApelPagi extends AppCompatActivity {
         loadlvpimpinan();
         loadlvanggota();
 
+        // Checking if the leader have checkin this morning,
+        // so the leaders wont have to checkin again at middle shift briefing
         if (lvPimpinan.getAdapter().getCount() == 0) {
             Cursor cursorPimpinan = dbhelper.view_preparepimpinan_apelpagi();
             if (cursorPimpinan.moveToFirst()) {
@@ -187,6 +190,7 @@ public class ApelPagi extends AppCompatActivity {
 
         });
 
+        // Finish apel
         btnSubmitApel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -425,6 +429,8 @@ public class ApelPagi extends AppCompatActivity {
             }
 
         }
+
+        tabApelPagi.getTabAt(1).select();
 
     }
 

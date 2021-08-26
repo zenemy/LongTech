@@ -49,115 +49,231 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Tanggal Permintaan BBM"
+                android:textColor="@color/black" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                app:endIconDrawable="@drawable/ic_baseline_calendar_24"
+                app:endIconMode="custom"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTodayDateMintaBBM"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp"
+                    android:textColorHint="#808080"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/judulvehicle"
+                android:textColor="@color/black" />
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Unit Kendaraan"
-                app:endIconMode="dropdown_menu">
+
+                app:endIconMode="dropdown_menu"
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/acUnitMintaBBM"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:hint="@string/hintvehicle"
+                    android:singleLine="true"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
+                    android:textColorHint="#808080"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/bbmgoodang"
+                android:textColor="@color/black" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_weight="1"
-                android:hint="Gudang BBM"
-                app:endIconMode="dropdown_menu">
+                app:endIconMode="dropdown_menu"
+                app:endIconDrawable="@drawable/ic_baseline_warehouse_24"
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/acGudangMintaBBM"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:editable="false"
+                    android:hint="@string/hintgoodang"
                     android:inputType="none"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
+                    android:textColorHint="#808080"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/topborderonly"
-                android:orientation="horizontal"
                 android:paddingStart="8dp"
                 android:paddingTop="10dp"
-                android:paddingEnd="8dp">
+                android:paddingEnd="12dp"
+                android:text="KM / HM Terakhir"
+                android:textColor="@color/black" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMintaBBMKHM"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="KM / HM Terakhir"
+                    android:inputType="numberDecimal"
+                    android:maxLength="6"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:textColorHint="#808080"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:text="Jumlah Permintaan BBM"
+                android:textColor="@color/black" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                app:endIconDrawable="@drawable/ic_baseline_gas_station_24"
+                app:endIconMode="custom"
+                app:hintEnabled="false"
+                app:suffixText="Liter">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etJumlahPermintaanBBM"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="Jumlah Liter BBM"
+                    android:inputType="number"
+                    android:imeOptions="actionNext"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:textColorHint="#808080"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/juduldesc"
+                        android:textColor="@color/black" />
+
+
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="KM / HM Terakhir">
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="4dp"
+                        android:layout_weight="1"
+                        android:hint="Catatan Tambahan (Optional)"
+                        app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etMintaBBMKHM"
+                            android:id="@+id/etNoteMintaBBM"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:inputType="numberDecimal"
-                            android:maxLength="8"
+                            android:layout_height="match_parent"
+                            android:gravity="top"
+                            android:inputType="text"
                             android:paddingStart="12dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
                             android:paddingBottom="4dp"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="Jumlah Permintaan BBM"
-                        app:suffixText="Liter"
-                        app:endIconDrawable="@drawable/ic_baseline_gas_station_24"
-                        app:endIconMode="custom">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etJumlahPermintaanBBM"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:inputType="number"
-                            android:paddingStart="12dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:paddingBottom="4dp"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -170,38 +286,14 @@
 
                     <ImageButton
                         android:id="@+id/btnFotoMintaBBM"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_menu_camera"
-                        android:scaleType="fitXY" />
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_menu_camera" />
                 </LinearLayout>
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:hint="Catatan Tambahan (Optional)"
-                app:endIconMode="clear_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNoteMintaBBM"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:gravity="top"
-                    android:inputType="text"
-                    android:paddingStart="12dp"
-                    android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="4dp"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </LinearLayout>
     </ScrollView>
@@ -210,7 +302,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -218,7 +310,7 @@
         app:layout_constraintTop_toBottomOf="@+id/scrollView4">
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button"
+            android:id="@+id/btnBackMintaBBM"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginEnd="2dp"
@@ -231,7 +323,6 @@
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="2dp"

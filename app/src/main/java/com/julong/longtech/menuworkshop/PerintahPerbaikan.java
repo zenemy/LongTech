@@ -97,21 +97,21 @@ public class PerintahPerbaikan extends AppCompatActivity {
             }
         });
 
-        btnAddEstimasiService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int result = Integer.parseInt(etEstimasiPerbaikan.getText().toString()) + 1;
-                etEstimasiPerbaikan.setText(String.valueOf(result));
-            }
-        });
-
-        btnReduceEstimasiService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int result = Integer.parseInt(etEstimasiPerbaikan.getText().toString()) - 1;
-                etEstimasiPerbaikan.setText(String.valueOf(result));
-            }
-        });
+//        btnAddEstimasiService.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int result = Integer.parseInt(etEstimasiPerbaikan.getText().toString()) + 1;
+//                etEstimasiPerbaikan.setText(String.valueOf(result));
+//            }
+//        });
+//
+//        btnReduceEstimasiService.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int result = Integer.parseInt(etEstimasiPerbaikan.getText().toString()) - 1;
+//                etEstimasiPerbaikan.setText(String.valueOf(result));
+//            }
+//        });
 
         etEstimasiPerbaikan.addTextChangedListener(new TextWatcher() {
             @Override
@@ -140,12 +140,17 @@ public class PerintahPerbaikan extends AppCompatActivity {
     }
 
     public void eventAddMekanikList(View v) {
+        ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicle;
         if (selectedVehicle == null) { // Check vehicle value
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Pilih Kendaraan")
                     .setConfirmClickListener(sweetAlertDialog -> {
                         acVehiclePerintahService.requestFocus();
                         sweetAlertDialog.dismiss();
                     }).setConfirmText("OK").show();
+        }
+        else if (vehicleOutput.indexOf(acVehiclePerintahService.getText().toString()) == -1) {
+            Snackbar.make(v, "Data Kendaraan salah!", Snackbar.LENGTH_LONG).setAnchorView(btnBackPerintahService)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
         }
         else {
             nodocPerintahService = dbhelper.get_tbl_username(0) + "/WOWS/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());

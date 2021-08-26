@@ -72,7 +72,7 @@
                     android:focusableInTouchMode="false"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:inputType="time"
-                    android:paddingStart="8dp"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
@@ -92,12 +92,12 @@
                     android:id="@+id/acLokasiKerjaRKH"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:singleLine="true"
                     android:enabled="false"
-                    android:paddingStart="8dp"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
+                    android:singleLine="true"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,36 +118,36 @@
                 android:id="@+id/acKegiatanKerjaRKH"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:singleLine="true"
                 android:enabled="false"
-                android:paddingStart="8dp"
+                android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
+                android:singleLine="true"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/inputLayoutHasilKerjaRKH"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:hint="Total Target Kerja"
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDescRKH"
+                android:id="@+id/etTargetRKH"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:gravity="start|top"
-                android:hint="Catatan Rencana Kerja Harian"
-                android:inputType="textMultiLine"
-                android:paddingStart="8dp"
+                android:layout_height="40dp"
+                android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
+                android:singleLine="true"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -206,7 +206,6 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBackRKH"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="2dp"
@@ -220,7 +219,6 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitRKH"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="2dp"

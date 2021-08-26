@@ -55,7 +55,7 @@
                     android:layout_height="40dp"
                     android:editable="false"
                     android:inputType="none"
-                    android:paddingStart="8dp"
+                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
@@ -85,12 +85,12 @@
                         android:id="@+id/acNamaSupirGantiDriver"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:paddingStart="8dp"
+                        android:imeOptions="actionDone"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:singleLine="true"
-                        android:imeOptions="actionDone"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,19 +99,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:hint="Kendaraan Kerja"
+                    android:hint="@string/judulvehicle"
                     app:endIconMode="dropdown_menu">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acKendaraanKerjaGantiDriver"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:paddingStart="8dp"
+                        android:imeOptions="actionDone"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:singleLine="true"
-                        android:imeOptions="actionDone"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,7 +152,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:gravity="top"
-                        android:paddingStart="8dp"
+                        android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"

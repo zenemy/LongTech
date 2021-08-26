@@ -68,6 +68,7 @@ import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
+import com.julong.longtech.menuworkshop.ProsesPerbaikan;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,7 +103,7 @@ public class HomeFragment extends Fragment {
     public static ListView lvfragment;
     public static RecyclerView lvHistoryApel, lvHistoryCarLog;
     byte[] gambar1;
-    AutoCompleteTextView ackendala, acMenuRiwayatHome;
+    public static AutoCompleteTextView ackendala, acMenuRiwayatHome;
     TextView tvSystemNameFragmentHome;
     EditText etdesckendala, etpanjangkendala, etlebarkendala, etluaskendala, aclokasikendala, filtertglhistory;
     Button btnsimpankendala, btnDateLvInfo;
@@ -180,12 +181,7 @@ public class HomeFragment extends Fragment {
 
         ackendala.setOnItemClickListener((adapterView, view, position, l) -> selectedKendala = listKendalaCode.get(position));
 
-        openDrawerBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                ((MainActivity) getActivity()).openDrawer();
-            }
-        });
+        openDrawerBtn.setOnClickListener(v -> ((MainActivity) getActivity()).openDrawer());
 
         acMenuRiwayatHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -449,6 +445,12 @@ public class HomeFragment extends Fragment {
         else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
             linearLayoutService.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
+                intentLaunchActivity.launch(intent);
+            });
+        }
+        else if (dbhelper.get_tbl_username(3).equals("MEK")) {
+            linearLayoutService.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), ProsesPerbaikan.class);
                 intentLaunchActivity.launch(intent);
             });
         }

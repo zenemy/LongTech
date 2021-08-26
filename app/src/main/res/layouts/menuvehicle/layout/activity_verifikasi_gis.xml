@@ -46,23 +46,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="8dp"
             app:boxCornerRadiusTopStart="10dp"
             app:boxCornerRadiusTopEnd="10dp"
-            android:hint="Kebun"
+            android:hint="@string/judulvehicle"
             app:endIconMode="dropdown_menu">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/acKebunGIS"
+                android:id="@+id/acVehicleGIS"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:editable="false"
-                android:inputType="none"
                 android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
+                android:paddingBottom="4dp"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
@@ -75,43 +73,17 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:hint="Divisi"
+            android:hint="Driver / Operator"
             app:endIconMode="dropdown_menu">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/acDivisiGIS"
+                android:id="@+id/acDriverGIS"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:editable="false"
-                android:inputType="none"
                 android:paddingStart="10dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:hint="Lokasi Verifikasi"
-            app:endIconMode="dropdown_menu">
-
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/acLokasiGIS"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:paddingStart="12dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
+                android:paddingBottom="4dp"
                 android:singleLine="true"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
@@ -131,7 +103,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -150,8 +122,9 @@
                         android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
+                        android:dropDownWidth="350dp"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -163,23 +136,22 @@
                     android:weightSum="2">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:hint="Satuan Kerja">
+                        android:layout_marginEnd="4dp"
+                        android:hint="Lokasi"
+                        app:endIconMode="dropdown_menu">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etSatuanKerjaGIS"
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/acLokasiGIS"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:editable="false"
-                            android:inputType="none"
                             android:paddingStart="12dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:paddingBottom="8dp"
+                            android:paddingBottom="4dp"
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
@@ -203,7 +175,7 @@
                             android:paddingStart="12dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="12dp"
-                            android:paddingBottom="8dp"
+                            android:paddingBottom="4dp"
                             android:singleLine="true"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
@@ -231,7 +203,7 @@
                         android:paddingStart="12dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="4dp"
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
@@ -243,6 +215,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_marginStart="4dp"
                 android:orientation="vertical">
 
                 <TextView

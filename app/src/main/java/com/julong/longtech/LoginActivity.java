@@ -57,6 +57,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
+import com.julong.longtech.menuinventory.PenerimaanBBM;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.RegistrasiKaryawan;
 import com.julong.longtech.menuvehicle.AdjustmentUnit;
@@ -904,7 +905,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void eventLoginTest(View v) {
-        Intent intent = new Intent(LoginActivity.this, PerintahPerbaikan.class);
+        Intent intent = new Intent(LoginActivity.this, PenerimaanBBM.class);
         startActivity(intent);
     }
 

@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Kendaraan Kerja"
+                android:hint="@string/judulvehicle"
                 android:layout_marginEnd="4dp"
                 app:endIconMode="dropdown_menu">
 

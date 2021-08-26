@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Kendaraan Alat Berat"
+                android:text="@string/judulvehicle"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -60,7 +60,7 @@
                     android:id="@+id/acVehiclePerintahService"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:hint="Pilih Kendaraan Alat Berat"
+                    android:hint="@string/hintvehicle"
                     android:singleLine="true"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
@@ -90,7 +90,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:suffixText="DAYS"
-                    android:layout_marginEnd="4dp"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -98,7 +97,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:inputType="number"
-                        android:text="0"
                         android:hint="Estimasi Hari Pengerjaan"
                         android:paddingStart="12dp"
                         android:paddingTop="8dp"
@@ -118,7 +116,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_baseline_remove_circle_outline_24"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:tint="@color/red" />
 
                 <ImageButton
@@ -130,7 +128,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_baseline_add_circle_outline_24"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:tint="@color/green" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

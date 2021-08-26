@@ -16,13 +16,14 @@
         android:gravity="center"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
-        android:text="PILIH KENDARAAN KERJA"
+        android:text="@string/judulvehicle"
+        android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
@@ -34,7 +35,7 @@
             android:id="@+id/acDlgVehicleCarLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Pilih Kendaraan Kerja"
+            android:hint="@string/hintvehicle"
             android:textColorHint="#808080"
             android:textColor="@color/black"
             android:textSize="16sp" />

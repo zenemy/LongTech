@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.julong.longtech">
 
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -31,7 +33,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Longtech.NoActionBar">
-        <activity android:name=".menuhistory.HistoryDetailRKH"></activity>
+        <activity android:name=".menureport.ReportCarLogActivity"></activity>
+        <activity android:name=".menuworkshop.ProsesPerbaikan" />
+        <activity android:name=".menuinventory.PenerimaanBBM" />
+        <activity android:name=".menuhistory.HistoryDetailRKH" />
         <activity android:name=".menuvehicle.AdjustmentUnit" />
         <activity android:name=".menusetup.RegistrasiKaryawan" />
         <activity android:name=".menuvehicle.KartuKerjaVehicle" />

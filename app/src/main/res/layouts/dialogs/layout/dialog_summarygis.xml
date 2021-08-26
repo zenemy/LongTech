@@ -18,7 +18,7 @@
         android:paddingBottom="12dp"
         android:text="SELESAI VERIFIKASI GIS"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -36,23 +36,23 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:text="Kebun"
                 android:layout_marginEnd="4dp"
-                android:textColor="@color/black"/>
+                android:layout_weight="1"
+                android:text="Unit Alat Berat"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tvEstateSummaryGIS"
+                android:id="@+id/tvHESummaryGIS"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:text="ESTATE"
-                android:gravity="end"
-                android:textStyle="bold"
                 android:layout_marginStart="4dp"
-                android:textColor="@color/black"/>
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="HE"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -67,18 +67,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:text="Divisi"
+                android:text="Driver / Operator"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tvDivisiSummaryGIS"
+                android:id="@+id/tvDriverSummaryGIS"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="DIVISI"
+                android:text="Driver"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />

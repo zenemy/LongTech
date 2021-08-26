@@ -9,6 +9,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.R;
 
@@ -50,8 +51,9 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
     LinearLayout layoutBtnRKH;
     AutoCompleteTextView acKegiatanKerjaRKH, acLokasiKerjaRKH;
-    EditText etPelaksanaanTglRKH, etDescRKH;
+    EditText etPelaksanaanTglRKH, etTotalTargetRKH;
     Button btnSubmitRKH, btnBackRKH;
+    TextInputLayout inputLayoutTotalTarget;
     public static ListView listViewRKH;
 
     List<String> listKegiatanRKH, listLokasiRKH;
@@ -72,14 +74,14 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
         // Declare design ID
         listViewRKH = findViewById(R.id.lvRKH);
-        etDescRKH = findViewById(R.id.etDescRKH);
+        etTotalTargetRKH = findViewById(R.id.etTargetRKH);
         btnBackRKH = findViewById(R.id.btnBackRKH);
         layoutBtnRKH = findViewById(R.id.layoutBtnRKH);
         btnSubmitRKH = findViewById(R.id.btnSubmitRKH);
         acLokasiKerjaRKH = findViewById(R.id.acLokasiKerjaRKH);
         acKegiatanKerjaRKH = findViewById(R.id.acKegiatanKerjaRKH);
         etPelaksanaanTglRKH = findViewById(R.id.etPelaksanaanTglRKH);
-
+        inputLayoutTotalTarget = findViewById(R.id.inputLayoutHasilKerjaRKH);
         nodocRKH = dbHelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
 
         // Setting min date
@@ -201,13 +203,11 @@ public class RencanaKerjaHarian extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 selectedKegiatan = dbHelper.get_singletransportratecode(adapterKegiatan.getItem(position));
-
-                Toast.makeText(RencanaKerjaHarian.this, selectedKegiatan, Toast.LENGTH_LONG).show();
                 dbHelper.update_headerKegiatanRKH(nodocRKH, selectedVehicleType, selectedKegiatan);
 
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKegiatanKerjaRKH.getWindowToken(), 0);
-
+                inputLayoutTotalTarget.setSuffixText(dbHelper.get_singlekegiatanname(selectedKegiatan, 1));
                 adapterRKH.notifyDataSetChanged();
             }
         });
@@ -234,7 +234,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                             .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
                 }
                 else {
-                    dbHelper.updateselesai_rkh(nodocRKH, etDescRKH.getText().toString(), selectedVehicleType);
+                    dbHelper.updateselesai_rkh(nodocRKH, etTotalTargetRKH.getText().toString(), selectedVehicleType);
 
                     SweetAlertDialog finishRkhDlg = new SweetAlertDialog(RencanaKerjaHarian.this, SweetAlertDialog.SUCCESS_TYPE);
                     finishRkhDlg.setCancelable(false);
