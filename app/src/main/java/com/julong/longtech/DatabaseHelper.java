@@ -772,8 +772,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insert_kegiataninspeksi(String nodoc, String kebun, String divisi, String lokasi, String kegiatan,
-                                           String resultInspeksi, String latitude, String longitude, byte[] fotoInspeksi) {
+    public boolean insert_kegiataninspeksi(String nodoc, String kebun, String divisi, String lokasi, String resultInspeksi,
+                                           String nextAction, String latitude, String longitude, byte[] fotoInspeksi) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
@@ -786,8 +786,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text1", kebun);
         contentValues.put("text2", divisi);
         contentValues.put("text3", lokasi);
-        contentValues.put("text4", kegiatan);
-        contentValues.put("text5", resultInspeksi);
+        contentValues.put("text4", resultInspeksi);
+        contentValues.put("text5", nextAction);
         contentValues.put("text6", latitude);
         contentValues.put("text7", longitude);
         contentValues.put("uploaded", 0);

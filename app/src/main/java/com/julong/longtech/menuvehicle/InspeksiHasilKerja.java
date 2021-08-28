@@ -43,21 +43,17 @@ import java.util.Locale;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class InspeksiHasilKerja extends AppCompatActivity {
-
-    private static int REQUEST_IMAGE_CAPTURE = 1;
     DatabaseHelper dbHelper;
 
-   AutoCompleteTextView acVehicleInspeksi, acDriverInspeksi, acLokasiInspeksi, acKegiatanInspeksi;
-   EditText etDescInspeksi;
+   AutoCompleteTextView acVehicleInspeksi, acDriverInspeksi, acLokasiInspeksi;
+   EditText etHasilTemuan, etTindakLanjut;
    ImageButton imgFotoInspeksi;
    Button btnSubmitInspeksi, btnBackInspeksi;
 
-    private List<String> listVehicleName, listLokasiInspeksi,
-            listDriverName, listKegiatanInspeksi;
-    ArrayAdapter<String> adapterVehicle, adapterDriver, adapterLokasi, adapterKegiatan;
+    private List<String> listVehicleName, listLokasiInspeksi, listDriverName;
+    ArrayAdapter<String> adapterVehicle, adapterDriver, adapterLokasi;
 
-    String nodocInspeksi, selectedVehicle, selectedDriver, selectedLokasiInspeksi,
-            selectedKegiatanInspeksi, selectedSatuanInspeksi, latInspeksi, longInspeksi;
+    String nodocInspeksi, selectedVehicle, selectedDriver, selectedLokasiInspeksi, latInspeksi, longInspeksi;
     byte[] byteImgInspeksi;
 
     @Override
@@ -71,8 +67,8 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         acVehicleInspeksi = findViewById(R.id.acVehicleInspeksi);
         acDriverInspeksi = findViewById(R.id.acDriverInspeksi);
         acLokasiInspeksi = findViewById(R.id.acLokasiKerjaInspeksi);
-        acKegiatanInspeksi = findViewById(R.id.acKegiatanInspeksiKerja);
-        etDescInspeksi = findViewById(R.id.etDescInspeksiKerja);
+        etTindakLanjut = findViewById(R.id.etTindakLanjutInspeksi);
+        etHasilTemuan = findViewById(R.id.etHasilTemuanInspeski);
         imgFotoInspeksi = findViewById(R.id.imgInspeksiKerja);
         btnSubmitInspeksi = findViewById(R.id.btnSubmitInspeksi);
         btnBackInspeksi = findViewById(R.id.btnBackInspeksi);
@@ -96,46 +92,36 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         );
 
         imgFotoInspeksi.setOnClickListener(v -> {
-
-            ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanInspeksi;
-            ArrayList<String> locOutput = (ArrayList<String>) listLokasiInspeksi;
-
-            // Checking empty fields and restrict user from selecting other than autocompletion list
-            if (TextUtils.isEmpty(acLokasiInspeksi.getText().toString().trim()) && TextUtils.isEmpty(acKegiatanInspeksi.getText().toString().trim())) {
-                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            try {
+                intentLaunchCamera.launch(takePictureIntent);
+            } catch (ActivityNotFoundException e) {
+                // display error state to the user
             }
-            else if (activityOutput.indexOf(acKegiatanInspeksi.getText().toString()) == -1 || locOutput.indexOf(acLokasiInspeksi.getText().toString()) == -1) {
-                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Data tidak valid!").show();
-            }
-            else {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                try {
-                    intentLaunchCamera.launch(takePictureIntent);
-                } catch (ActivityNotFoundException e) {
-                    // display error state to the user
-                }
-            }
-
         });
 
         btnSubmitInspeksi.setOnClickListener(v -> {
-
-            nodocInspeksi = dbHelper.get_tbl_username(0) + "/IHKVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-
-            ArrayList<String> activityOutput = (ArrayList<String>) listKegiatanInspeksi;
+            ArrayList<String> vehicleOutput = (ArrayList<String>) listVehicleName;
+            ArrayList<String> driverOutput = (ArrayList<String>) listDriverName;
             ArrayList<String> locOutput = (ArrayList<String>) listLokasiInspeksi;
 
-            if (TextUtils.isEmpty(acLokasiInspeksi.getText().toString().trim()) || TextUtils.isEmpty(acKegiatanInspeksi.getText().toString().trim())) {
+            if (selectedVehicle == null || selectedDriver == null
+                    || selectedLokasiInspeksi == null || byteImgInspeksi == null
+                    || TextUtils.isEmpty(etHasilTemuan.getText().toString().trim())
+                    || TextUtils.isEmpty(etTindakLanjut.getText().toString().trim())) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
             }
-            else if (activityOutput.indexOf(acKegiatanInspeksi.getText().toString()) == -1 || locOutput.indexOf(acLokasiInspeksi.getText().toString()) == -1) {
+            else if (locOutput.indexOf(acLokasiInspeksi.getText().toString()) == -1
+                    || vehicleOutput.indexOf(acVehicleInspeksi.getText().toString()) == -1
+                    || driverOutput.indexOf(acDriverInspeksi.getText().toString()) == -1) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Data tidak valid!").show();
             }
             else {
+                nodocInspeksi = dbHelper.get_tbl_username(0) + "/IHKVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
                 getLocation();
                 dbHelper.insert_kegiataninspeksi(nodocInspeksi, selectedVehicle, selectedDriver,
-                        selectedLokasiInspeksi, selectedKegiatanInspeksi,
-                        etDescInspeksi.getText().toString(), latInspeksi, longInspeksi, byteImgInspeksi);
+                        selectedLokasiInspeksi, etHasilTemuan.getText().toString(),
+                        etTindakLanjut.getText().toString(), latInspeksi, longInspeksi, byteImgInspeksi);
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Inspeksi")
                         .setConfirmText("SIMPAN").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -157,10 +143,6 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         listVehicleName = dbHelper.get_vehiclemasterdata();
         adapterVehicle = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
         acVehicleInspeksi.setAdapter(adapterVehicle);
-
-        listKegiatanInspeksi = dbHelper.get_all_transport();
-        adapterKegiatan = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanInspeksi);
-        acKegiatanInspeksi.setAdapter(adapterKegiatan);
 
         listDriverName = dbHelper.get_employee();
         adapterDriver = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listDriverName);
@@ -197,16 +179,6 @@ public class InspeksiHasilKerja extends AppCompatActivity {
             }
         });
 
-        acKegiatanInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedKegiatanInspeksi = dbHelper.get_singlekegiatancode(adapterKegiatan.getItem(position));
-                selectedSatuanInspeksi = dbHelper.get_singlekegiatanname(selectedKegiatanInspeksi, 1);
-
-                InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(InspeksiHasilKerja.INPUT_METHOD_SERVICE);
-                keyboardMgr.hideSoftInputFromWindow(acKegiatanInspeksi.getWindowToken(), 0);
-            }
-        });
 
     }
 

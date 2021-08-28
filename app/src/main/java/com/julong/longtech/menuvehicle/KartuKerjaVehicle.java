@@ -777,8 +777,8 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     public void eventSubmitCarlog(View v) {
 
         // Checking empty fields
-        if (TextUtils.isEmpty(acLoadCategoryCarLog.getText().toString().trim())) {
-            new SweetAlertDialog(KartuKerjaVehicle.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Kategori Muatan").setConfirmText("OK").show();
+        if (selectedCategoryLoad == null) {
+            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Aktifitas").setConfirmText("OK").show();
         }
 //        else if (TextUtils.isEmpty(acAsalKebunCarLog.getText().toString().trim()) || TextUtils.isEmpty(acAsalDivisiCarLog.getText().toString().trim())) {
 //            Snackbar.make(v, "Harap isi Tujuan Kebun / Divisi", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
