@@ -772,7 +772,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insert_kegiataninspeksi(String nodoc, String kebun, String divisi, String lokasi, String kegiatan, String satuan,
+    public boolean insert_kegiataninspeksi(String nodoc, String kebun, String divisi, String lokasi, String kegiatan,
                                            String resultInspeksi, String latitude, String longitude, byte[] fotoInspeksi) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -787,10 +787,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text2", divisi);
         contentValues.put("text3", lokasi);
         contentValues.put("text4", kegiatan);
-        contentValues.put("text5", satuan);
-        contentValues.put("text6", resultInspeksi);
-        contentValues.put("text7", latitude);
-        contentValues.put("text8", longitude);
+        contentValues.put("text5", resultInspeksi);
+        contentValues.put("text6", latitude);
+        contentValues.put("text7", longitude);
         contentValues.put("uploaded", 0);
 
         ContentValues contentValuesPhoto = new ContentValues();
@@ -882,6 +881,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (fotoservice != null) {
             db.insert("bl_01", null, contentValuesBL);
         }
+        if (insertTR == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    public boolean insert_prosesperbaikan_header(String nodoc, String vehiclecode, String statusSubmit, String activityDesc,
+                                                 String latitude, String longitude) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        ContentValues contentValuesTR01 = new ContentValues();
+        contentValuesTR01.put("documentno", nodoc);
+        contentValuesTR01.put("datatype", "PSWS");
+        contentValuesTR01.put("subdatatype", get_tbl_username(8));
+        contentValuesTR01.put("comp_id", get_tbl_username(14));
+        contentValuesTR01.put("site_id", get_tbl_username(15));
+        contentValuesTR01.put("date1", savedate);
+        contentValuesTR01.put("text1", vehiclecode);
+        contentValuesTR01.put("text2", statusSubmit);
+        contentValuesTR01.put("text3", activityDesc);
+        contentValuesTR01.put("text4", latitude);
+        contentValuesTR01.put("text5", longitude);
+        contentValuesTR01.put("uploaded", 0);
+
+        long insertTR = db.insert("tr_01", null, contentValuesTR01);
+        if (insertTR == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean insert_prosesperbaikan_detail1(String nodoc, String materialCode, String materialQty) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("documentno", nodoc);
+        contentValues.put("datatype", "PSWS");
+        contentValues.put("subdatatype", get_tbl_username(8));
+        contentValues.put("itemdata", "DETAIL1");
+        contentValues.put("subitemdata", "DETAIL1");
+        contentValues.put("comp_id", get_tbl_username(14));
+        contentValues.put("site_id", get_tbl_username(15));
+        contentValues.put("date1", savedate);
+        contentValues.put("text1", materialCode);
+        contentValues.put("text2", materialQty);
+        contentValues.put("uploaded", 0);
+
+        long insertTR = db.insert("tr_02", null, contentValues);
         if (insertTR == -1) {
             return false;
         } else {
@@ -1361,7 +1411,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_material(String vehicleType) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT md.text1, gs.parameterdesc FROM md_01 md " +
+        Cursor cursor = db.rawQuery("SELECT DISTINCT md.text1, md.subdatatype, gs.parameterdesc FROM md_01 md " +
                 "LEFT JOIN gs_01 gs ON gs.parametercode = md.text6 WHERE md.datatype = 'MATERIAL' " +
                 "AND md.text4 = '"+vehicleType+"' AND gs.groupparamcode = 'GS07'", null);
         return cursor;

@@ -134,8 +134,8 @@ public class InspeksiHasilKerja extends AppCompatActivity {
             else {
                 getLocation();
                 dbHelper.insert_kegiataninspeksi(nodocInspeksi, selectedVehicle, selectedDriver,
-                        selectedLokasiInspeksi, selectedKegiatanInspeksi, selectedSatuanInspeksi,
-                        null, latInspeksi, longInspeksi, byteImgInspeksi);
+                        selectedLokasiInspeksi, selectedKegiatanInspeksi,
+                        etDescInspeksi.getText().toString(), latInspeksi, longInspeksi, byteImgInspeksi);
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Inspeksi")
                         .setConfirmText("SIMPAN").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -158,7 +158,7 @@ public class InspeksiHasilKerja extends AppCompatActivity {
         adapterVehicle = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleName);
         acVehicleInspeksi.setAdapter(adapterVehicle);
 
-        listKegiatanInspeksi = dbHelper.get_activitylist(1);
+        listKegiatanInspeksi = dbHelper.get_all_transport();
         adapterKegiatan = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanInspeksi);
         acKegiatanInspeksi.setAdapter(adapterKegiatan);
 
@@ -168,7 +168,7 @@ public class InspeksiHasilKerja extends AppCompatActivity {
 
         listLokasiInspeksi = dbHelper.get_fieldcrop(1);
         adapterLokasi = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiInspeksi);
-        acLokasiInspeksi.setAdapter(adapterKegiatan);
+        acLokasiInspeksi.setAdapter(adapterLokasi);
 
         acVehicleInspeksi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

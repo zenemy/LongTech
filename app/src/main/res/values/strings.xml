@@ -17,4 +17,5 @@
     <string name="bbmgoodang">Gudang BBM</string>
     <string name="hintgoodang">Pilih Gudang BBM</string>
     <string name="judulopr">Driver / Operator</string>
+    <string name="backbtn">KEMBALI</string>
 </resources>

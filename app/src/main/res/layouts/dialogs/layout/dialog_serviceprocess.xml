@@ -9,7 +9,6 @@
     android:paddingEnd="8dp">
 
     <TextView
-        android:id="@+id/tvHeaderDlgMetodeApel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/tbl_lr_top"
@@ -17,13 +16,13 @@
         android:gravity="center"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
-        android:text="PILIH TIPE PERBAIKAN"
+        android:text="PILIH STATUS PERBAIKAN"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -31,47 +30,62 @@
         android:background="@drawable/tbl_lr_bottom"
         android:backgroundTint="@color/white">
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDoneServiceProcess"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_twotone_check_circle_40"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/white"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:singleLine="true"
+            android:text="SERVICE Selesai"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="12dp"
+            android:weightSum="2">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnResumeServiceProcess"
+                android:id="@+id/btnWaitSparepartServiceProcess"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_baseline_directions_car_40"
+                android:drawableTop="@drawable/ic_baseline_build_32"
                 android:drawableTint="@color/white"
-                android:drawablePadding="8dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="8dp"
+                android:paddingHorizontal="8dp"
+                android:layout_marginEnd="6dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="8dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="12dp"
-                android:singleLine="true"
-                android:text="Lanjut Service"
+                android:text="MENUNGGU\nSPAREPART"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnNewServiceProcess"
+                android:id="@+id/btnNotCompleteServiceProcess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_addcaricon_40"
-                android:drawablePadding="8dp"
+                android:drawableTop="@drawable/ic_baseline_miscellaneous_services_32"
                 android:drawableTint="@color/white"
+                android:layout_marginStart="6dp"
+                android:drawablePadding="8dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:singleLine="true"
-                android:text="Service Baru"
+                android:paddingVertical="12dp"
+                android:paddingHorizontal="8dp"
+                android:text="SERVICE\nBELUM SELESAI"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp" />
@@ -89,14 +103,13 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:singleLine="true"
-            android:text="KEMBALI"
+            android:text="@string/backbtn"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:rippleColor="#007042"
             app:strokeWidth="3dp" />
 
-
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </LinearLayout>
