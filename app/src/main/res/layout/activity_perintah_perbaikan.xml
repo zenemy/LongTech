@@ -79,61 +79,29 @@
                 android:layout_marginTop="8dp"
                 android:textSize="14sp" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:layout_weight="1"
+                android:layout_marginTop="4dp"
+                app:suffixText="DAYS"
+                app:hintEnabled="false">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEstimasiPerintahService"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:suffixText="DAYS"
-                    app:hintEnabled="false">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEstimasiPerintahService"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:inputType="number"
-                        android:hint="Estimasi Hari Pengerjaan"
-                        android:paddingStart="12dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="12dp"
-                        android:paddingBottom="8dp"
-                        android:textColorHint="#808080"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageButton
-                    android:id="@+id/btnReduceEstimasiPerintahService"
-                    android:layout_width="45dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="4dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_baseline_remove_circle_outline_24"
-                    android:visibility="gone"
-                    app:tint="@color/red" />
-
-                <ImageButton
-                    android:id="@+id/btnAddEstimasiPerintahService"
-                    android:layout_width="45dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="4dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_baseline_add_circle_outline_24"
-                    android:visibility="gone"
-                    app:tint="@color/green" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-
+                    android:layout_height="40dp"
+                    android:inputType="number"
+                    android:hint="Estimasi Hari Pengerjaan"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
+                    android:textColorHint="#808080"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 

@@ -60,6 +60,8 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
 
         holder.setMaterialName(materialServices.getMaterialName());
         holder.setMaterialUOM(materialServices.getUnitMeasure());
+
+        // Text watcher, important to get adapter value same as edittext value
         holder.etQtyMaterial.setText(materialServices.getEditTextValue());
 
         //if true, your checkbox will be selected, else unselected
@@ -99,6 +101,7 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
 
         DatabaseHelper dbhelper;
 
+        private ConstraintLayout layoutLvMaterial;
         private TextInputLayout layoutQtyMaterial;
         private TextView tvMaterialName;
         private EditText etQtyMaterial;
@@ -108,11 +111,13 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
             super(itemView);
 
             dbhelper = new DatabaseHelper(mContext);
+            layoutLvMaterial = (ConstraintLayout) itemView.findViewById(R.id.layoutLvMaterial);
             layoutQtyMaterial = (TextInputLayout) itemView.findViewById(R.id.layoutQtyMaterialLvServiceProcess);
             tvMaterialName = (TextView) itemView.findViewById(R.id.tvMaterialLvServiceProcess);
             checkBoxMaterial = (CheckBox) itemView.findViewById(R.id.cbLvMaterialLvServiceProcess);
             etQtyMaterial = (EditText) itemView.findViewById(R.id.etQtyMaterialLvServiceProcess);
 
+            // Text watcher, important to set adapter value same as edittext value
             etQtyMaterial.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

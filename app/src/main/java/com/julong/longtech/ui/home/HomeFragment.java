@@ -3,11 +3,9 @@ package com.julong.longtech.ui.home;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,14 +59,13 @@ import com.fxn.OnBubbleClickListener;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menusetup.DividerItemDecorator;
-import com.julong.longtech.menusetup.UploadData;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
-import com.julong.longtech.menuworkshop.ProsesPerbaikan;
+import com.julong.longtech.menuworkshop.LaporanPerbaikan;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -450,7 +447,7 @@ public class HomeFragment extends Fragment {
         }
         else if (dbhelper.get_tbl_username(3).equals("MEK")) {
             linearLayoutService.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), ProsesPerbaikan.class);
+                Intent intent = new Intent(getActivity(), LaporanPerbaikan.class);
                 intentLaunchActivity.launch(intent);
             });
         }

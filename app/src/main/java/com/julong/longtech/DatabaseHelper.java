@@ -900,8 +900,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValuesTR01.put("comp_id", get_tbl_username(14));
         contentValuesTR01.put("site_id", get_tbl_username(15));
         contentValuesTR01.put("date1", savedate);
-        contentValuesTR01.put("text1", vehiclecode);
-        contentValuesTR01.put("text2", statusSubmit);
+        contentValuesTR01.put("text1", statusSubmit);
+        contentValuesTR01.put("text2", vehiclecode);
         contentValuesTR01.put("text3", activityDesc);
         contentValuesTR01.put("text4", latitude);
         contentValuesTR01.put("text5", longitude);
@@ -915,15 +915,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_prosesperbaikan_detail1(String nodoc, String materialCode, String materialQty) {
+    public boolean insert_prosesperbaikan_detailmaterial(String nodoc, String materialCode, String materialQty) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
         contentValues.put("documentno", nodoc);
         contentValues.put("datatype", "PSWS");
         contentValues.put("subdatatype", get_tbl_username(8));
-        contentValues.put("itemdata", "DETAIL1");
-        contentValues.put("subitemdata", "DETAIL1");
+        contentValues.put("itemdata", "DETAIL2");
+        contentValues.put("subitemdata", materialCode);
         contentValues.put("comp_id", get_tbl_username(14));
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("date1", savedate);
@@ -933,6 +933,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long insertTR = db.insert("tr_02", null, contentValues);
         if (insertTR == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean update_detail_laporanperbaikan(String nodoc) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DELETE FROM tr_02 WHERE datatype = 'PSWS' AND itemdata = 'DETAIL2' AND (text2 = '' OR text2 IS NULL) AND uploaded = 0");
+        db.execSQL("DELETE FROM tr_02 WHERE datatype = 'PSWS' AND itemdata = 'DETAIL1' AND uploaded IS NULL AND (text3 = '' OR text3 IS NULL)");
+
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("documentno", nodoc);
+        contentValues.put("date1", savedate);
+        contentValues.putNull("text3");
+        contentValues.put("uploaded", 0);
+
+        long update = db.update("tr_02", contentValues, "datatype = 'PSWS' AND itemdata = 'DETAIL1' AND uploaded IS NULL", null);
+        if (update == -1) {
             return false;
         } else {
             return true;
@@ -1171,6 +1192,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insert_mekanik_laporanservice(String gangcode, String empcode) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        contentValues.put("datatype", "PSWS");
+        contentValues.put("subdatatype", get_tbl_username(0));
+        contentValues.put("itemdata", "DETAIL1");
+        contentValues.put("subitemdata", empcode);
+        contentValues.put("comp_id", get_tbl_username(14));
+        contentValues.put("site_id", get_tbl_username(15));
+        contentValues.put("date1", savedate);
+        contentValues.put("text1", gangcode);
+        contentValues.put("text2", empcode);
+        contentValues.putNull("text3");
+
+        long insert = db.insert("tr_02", null, contentValues);
+        if (insert == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public boolean insert_apelpagi_pimpinan(String nodoc, String empcode, String jabatancode, String groupcode) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -1375,14 +1419,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT (CASE WHEN a.datatype LIKE '%ABS%' AND b.doctypecode LIKE '%ABS%' THEN 'ABS' " +
                 "WHEN a.datatype IN('P2HVH', 'RKHVH', 'GISVH', 'IHKVH', 'CARLOG', 'VDA', 'APPVH', 'RUNVH', 'CHGVH', 'ADJVH') " +
                 "AND b.doctypecode IN('P2HVH', 'RKHVH', 'GISVH', 'IHKVH', 'CARLOG', 'VDA', 'APPVH', 'RUNVH', 'CHGVH', 'ADJVH') THEN 'VH' " +
-                "WHEN a.datatype IN('SRWS', 'WOWS', 'BAWS') " +
-                "AND b.doctypecode IN('SRWS', 'WOWS', 'BAWS') THEN 'WS'" +
+                "WHEN a.datatype IN('SRWS', 'WOWS', 'PSWS', 'BAWS') " +
+                "AND b.doctypecode IN('SRWS', 'WOWS', 'PSWS', 'BAWS') THEN 'WS'" +
                 "WHEN a.datatype IN('PRBBM', 'SIVBBM', 'RCVBBM') " +
                 "AND b.doctypecode IN('PRBBM', 'SIVBBM', 'RCVBBM') THEN 'INV' END) AS kodeabsen, " +
                 "(CASE WHEN a.datatype LIKE '%ABS%' AND b.doctypecode LIKE '%ABS%' THEN 'Transaksi Absen' WHEN a.datatype IN('P2HVH', 'RKHVH', 'GISVH', 'IHKVH', 'CARLOG', 'VDA', 'APPVH', 'RUNVH', 'CHGVH', 'ADJVH') " +
                 "AND b.doctypecode IN('P2HVH', 'RKHVH', 'GISVH', 'IHKVH', 'CARLOG', 'VDA', 'APPVH', 'RUNVH', 'CHGVH', 'ADJVH') THEN 'Transaksi Vehicle' " +
-                "WHEN a.datatype IN('SRWS', 'WOWS', 'BAWS') " +
-                "AND b.doctypecode IN('SRWS', 'WOWS', 'BAWS') THEN 'Transaksi Workshop'" +
+                "WHEN a.datatype IN('SRWS', 'WOWS', 'PSWS', 'BAWS') " +
+                "AND b.doctypecode IN('SRWS', 'WOWS', 'PSWS', 'BAWS') THEN 'Transaksi Workshop'" +
                 "WHEN a.datatype IN('PRBBM', 'SIVBBM', 'RCVBBM') " +
                 "AND b.doctypecode IN('PRBBM', 'SIVBBM', 'RCVBBM') THEN 'Transaksi Inventory' END) AS dataabsen, " +
                 "SUM(CASE WHEN a.uploaded = 0 THEN 1 ELSE 0 END) AS datapending, SUM(CASE WHEN a.uploaded = 1 THEN 1 ELSE 0 END) AS uploadeddata " +
@@ -1479,7 +1523,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT md.text2 AS empname, tr2.text2 AS empcode " +
                 "FROM tr_02 tr2 LEFT JOIN md_01 md ON tr2.text2 = md.text1 " +
-                "WHERE tr2.datatype = 'WOWS' AND md.datatype = 'EMPLOYEE' AND tr2.uploaded IS NULL", null);
+                "WHERE tr2.datatype = 'PSWS' AND tr2.itemdata = 'DETAIL1' AND md.datatype = 'EMPLOYEE' AND tr2.uploaded IS NULL", null);
         return cursor;
     }
 
@@ -2395,7 +2439,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_loadcategory(String vehiclegroup, String loadtype, int index) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text5, text6 FROM md_01 WHERE datatype = 'TRANSPORTRATE' AND text1 = '"+vehiclegroup+"' AND text4 = '"+loadtype+"'";
+        String query = "SELECT DISTINCT text5, text6 FROM md_01 WHERE datatype = 'TRANSPORTRATE' AND text1 = '"+vehiclegroup+"' AND text3 = '"+loadtype+"'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -2750,9 +2794,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String settingcarlog_satuanhasilkerja(String category) {
+    public String settingcarlog_satuanhasilkerja(String loadActivity) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT text7 FROM md_01 WHERE text6 = '"+category+"'", null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT text7 FROM md_01 WHERE text5 = '"+loadActivity+"' AND datatype = 'TRANSPORTRATE'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -2762,9 +2806,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String layoutsetting_carlog(int index, String kategorimuatan) {
+    public String layoutsetting_carlog(int index, String activityLoad) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT text8, text9, text10, text11, text12, text13, text14, text15, text16, text17 FROM md_01 WHERE text6 = '"+kategorimuatan+"'", null);
+        Cursor cursor = db.rawQuery("SELECT text8, text9, text10, text11, text12, text13, text14, text15, text16, text17 FROM md_01 WHERE text5 = '"+activityLoad+"'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -2873,8 +2917,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValuesTR02 = new ContentValues();
         contentValuesTR02.put("text3", checkvalue);
 
-        long update = db.update("tr_02", contentValuesTR02,
-                "text2 = '"+mekanikCode+"' AND uploaded IS NULL", null);
+        long update = db.update("tr_02", contentValuesTR02, "datatype = 'PSWS' " +
+                "AND itemdata = 'DETAIL1' AND text2 = '"+mekanikCode+"' AND uploaded IS NULL", null);
         if (update == -1) {
             return false;
         } else {
@@ -2898,7 +2942,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String getCheckMekanik(String empcode) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT IFNULL(text3, '') AS mekanikcek FROM tr_02 " +
-                "WHERE datatype = 'WOWS' AND text2 ='"+empcode+"' AND uploaded IS NULL", null);
+                "WHERE datatype = 'PSWS' AND text2 ='"+empcode+"' AND uploaded IS NULL", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);

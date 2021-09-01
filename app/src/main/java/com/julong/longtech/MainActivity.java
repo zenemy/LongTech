@@ -9,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -53,6 +52,7 @@ import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryActivity;
 import com.julong.longtech.menuinventory.PenerimaanBBM;
+import com.julong.longtech.menureport.ReportCarLogActivity;
 import com.julong.longtech.menusetup.AppSetting;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.UpdateSystem;
@@ -67,7 +67,7 @@ import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
-import com.julong.longtech.menuworkshop.ProsesPerbaikan;
+import com.julong.longtech.menuworkshop.LaporanPerbaikan;
 import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuhcm.BiodataKaryawan;
@@ -80,7 +80,6 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -307,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (menuGroupCode.equals("0201") && menuSubCode.equals("020102")) {
-                        Intent intent = new Intent(MainActivity.this, PerintahPerbaikan.class);
+                        Intent intent = new Intent(MainActivity.this, LaporanPerbaikan.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intentLaunchMainActivity.launch(intent);
                         onPause();
@@ -320,12 +319,6 @@ public class MainActivity extends AppCompatActivity {
                         onPause();
                     }
 
-                    if (menuGroupCode.equals("0201") && menuSubCode.equals("020104")) {
-                        Intent intent = new Intent(MainActivity.this, ProsesPerbaikan.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchMainActivity.launch(intent);
-                        onPause();
-                    }
 
                     // Vehicle Menu
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020201")) {
@@ -443,6 +436,13 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+                if (menuGroupCode.equals("0401") && menuSubCode.equals("040101")) {
+                    Intent intent = new Intent(MainActivity.this, ReportCarLogActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    onPause();
                 }
 
                 if (menuGroupCode.equals("0401") && menuSubCode.equals("040102")) {

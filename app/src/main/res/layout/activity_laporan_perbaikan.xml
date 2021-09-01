@@ -7,10 +7,9 @@
     android:orientation="vertical"
     android:background="#EFECEC"
     android:focusableInTouchMode="true"
-    tools:context=".menuworkshop.ProsesPerbaikan">
+    tools:context=".menuworkshop.LaporanPerbaikan">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clHeaderSelesaiPerbaikanBA"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="@drawable/tbl_lr_bottom"
@@ -20,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="PROSES PERBAIKAN"
+            android:text="LAPORAN PERBAIKAN PERAWATAN"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -42,19 +41,16 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Tanggal Perbaikan"
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/ic_baseline_calendar_24">
+            app:endIconMode="dropdown_menu"
+            android:hint="@string/hintvehicle">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDateServiceProcess"
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acVehicleLaporanService"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:editable="false"
                 android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
@@ -64,15 +60,17 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginTop="6dp"
-            app:endIconMode="dropdown_menu"
-            android:hint="@string/hintvehicle">
+            android:hint="Lokasi Perbaikan"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_baseline_location_24">
 
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/acVehicleServiceProcess"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLokLaporanService"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:paddingStart="12dp"
@@ -93,7 +91,7 @@
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etKegiatanProsesPerbaikan"
+                android:id="@+id/etKegiatanLaporanService"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:paddingStart="12dp"
@@ -107,28 +105,47 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <TextView
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLaporanPerbaikan"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
+        android:background="@drawable/tbl_lr_top"
+        android:backgroundTint="@color/white"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/tbl_lr_top"
-        android:backgroundTint="#007042"
-        android:text="List Material"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"/>
+        android:layout_marginTop="4dp">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MATERIAL" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MEKANIK" />
+
+    </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lvMaterialServiceProcess"
+        android:id="@+id/lvMekanikLaporanService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:visibility="gone"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="@color/white"
+        android:scrollbars="vertical"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lvMaterialLaporanService"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:scrollbars="vertical"
+        android:visibility="visible"
         android:background="@drawable/tbl_lr_bottom"
         android:backgroundTint="@color/white"
         android:layout_marginStart="4dp"
@@ -141,7 +158,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBackServiceProcess"
+            android:id="@+id/btnBackLaporanService"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginEnd="2dp"
@@ -154,15 +171,14 @@
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOkServiceProcess"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:onClick="submitProsesPerbaikan"
-            android:text="SIMPAN"
+            android:onClick="submitLaporanPerbaikan"
+            android:text="@string/okbtn"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />

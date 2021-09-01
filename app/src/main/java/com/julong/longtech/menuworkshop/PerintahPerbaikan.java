@@ -58,7 +58,6 @@ public class PerintahPerbaikan extends AppCompatActivity {
     RecyclerView lvMekanikPerintahService;
     FloatingActionButton btnAddMekanik;
     Button btnBackPerintahService, btnSubmitPerintahService;
-    ImageButton btnReduceEstimasiService, btnAddEstimasiService;
 
     List<String> listVehicle;
     ArrayAdapter<String> adapterVehicle;
@@ -78,8 +77,6 @@ public class PerintahPerbaikan extends AppCompatActivity {
         btnAddMekanik = findViewById(R.id.btnAddPerintahPerbaikan);
         lvMekanikPerintahService = findViewById(R.id.lvMekanikPerintahService);
         btnBackPerintahService = findViewById(R.id.btnBackPerintahService);
-        btnAddEstimasiService = findViewById(R.id.btnAddEstimasiPerintahService);
-        btnReduceEstimasiService = findViewById(R.id.btnReduceEstimasiPerintahService);
         btnSubmitPerintahService = findViewById(R.id.btnSubmitPerintahService);
 
         btnBackPerintahService.setOnClickListener(view -> onBackPressed());
@@ -94,44 +91,6 @@ public class PerintahPerbaikan extends AppCompatActivity {
                 selectedVehicle = dbhelper.get_vehiclecodeonly(adapterVehicle.getItem(position));
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(KartuKerjaVehicle.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acVehiclePerintahService.getWindowToken(), 0);
-            }
-        });
-
-//        btnAddEstimasiService.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int result = Integer.parseInt(etEstimasiPerbaikan.getText().toString()) + 1;
-//                etEstimasiPerbaikan.setText(String.valueOf(result));
-//            }
-//        });
-//
-//        btnReduceEstimasiService.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int result = Integer.parseInt(etEstimasiPerbaikan.getText().toString()) - 1;
-//                etEstimasiPerbaikan.setText(String.valueOf(result));
-//            }
-//        });
-
-        etEstimasiPerbaikan.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-                if (etEstimasiPerbaikan.getText().toString().contains("-")) {
-                    etEstimasiPerbaikan.setText("0");
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                // TODO Auto-generated method stub
             }
         });
 

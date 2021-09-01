@@ -9,7 +9,6 @@
     tools:context=".menureport.ReportCarLogActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clHeaderLaporanKerja"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@drawable/tbl_lr_bottom"
@@ -74,7 +73,7 @@
             app:hintEnabled="false">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/acMenuRiwayat"
+                android:id="@+id/acUnitReportCarLog"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:editable="false"
@@ -100,7 +99,7 @@
             app:hintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDateRiwayat"
+                android:id="@+id/etDateReportCarLog"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:clickable="true"
