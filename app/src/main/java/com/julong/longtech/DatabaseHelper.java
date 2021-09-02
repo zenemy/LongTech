@@ -35,12 +35,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, "db_dsi.db", null,
-                35);
+                36);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        //Setting awal dan User
         //Setting awal dan User
         db.execSQL("CREATE TABLE tbl_companyurl (groupcompanycode text, logocomp blob, backgroundimg blob, systemname text, urlapi text, " +
                 "picname TEXT, picemail TEXT, picnotelp TEXT, compaddress TEXT, reg_type text, tdate date, headercolor text, textcolor text, lastupdate datetime)");
@@ -81,7 +82,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ancakcode varchar, shiftcode varchar, lastlogin text, groupcompanycode varchar, userphoto blob, usercolorheader text, " +
                 "usercolortext text, language varchar);");
 
-        db.execSQL("CREATE TABLE gs_08 (rolecode TEXT, roledesc TEXT, modulecode TEXT, submodulecode TEXT, authorized TEXT, comp_id TEXT, site_id TEXT);");
+        db.execSQL("CREATE TABLE gs_08 (rolecode TEXT, roledesc TEXT, modulecode TEXT, submodulecode TEXT, " +
+                "authorized TEXT, authorized_report TEXT, comp_id TEXT, site_id TEXT);");
 
         db.execSQL("CREATE TABLE gs_09 (userid TEXT, modulecode TEXT, submodulecode TEXT, authorized TEXT, comp_id TEXT, site_id TEXT);");
 
@@ -179,7 +181,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase dbwrite = this.getWritableDatabase();
         dbwrite.execSQL("DELETE FROM gs_01");
         dbwrite.execSQL("DELETE FROM gs_06");
-        dbwrite.execSQL("DELETE FROM gs_07");
+        dbwrite.execSQL("DELETE FROM gs_08");
     }
 
     public void delete_alltrasanction() {
@@ -1699,7 +1701,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String count_datadownloadGS() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT (SELECT COUNT(*) FROM gs_01 WHERE GROUPPARAMCODE IN ('GS04', 'GS05', 'GS06', 'GS07', 'GS08', 'GS10', 'GS11', 'GS14', 'GS15', 'GS16', 'GS17')) + (SELECT count(*) FROM gs_06) + (SELECT count(*) FROM gs_07) AS total_rows;", null);
+        Cursor cursor = db.rawQuery("SELECT (SELECT COUNT(*) FROM gs_01 WHERE GROUPPARAMCODE IN ('GS04', 'GS05', 'GS06', 'GS07', 'GS08', 'GS10', 'GS11', 'GS14', 'GS15', 'GS16', 'GS17')) + (SELECT count(*) FROM gs_06) + (SELECT count(*) FROM gs_08) AS total_rows;", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -2578,29 +2580,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_dataGS07(String userid, String username, String usertype, String userrole, String empcode, String no_telp, String email, String empname, String positionid, String position_name,
-                                   String comp_id, String site_id, String deptcode, String divcode, String gangcode, String ancakcode, String shiftcode) {
+    public boolean insert_dataGS08(String rolecode, String roledesc, String modulecode,
+                                   String submodulecode, String authorized, String authorized_report) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("userid", userid);
-        contentValues.put("username", username);
-        contentValues.put("usertype", usertype);
-        contentValues.put("userrole", userrole);
-        contentValues.put("empcode", empcode);
-        contentValues.put("no_telp", no_telp);
-        contentValues.put("email", email);
-        contentValues.put("empname", empname);
-        contentValues.put("position_id", positionid);
-        contentValues.put("position_name", position_name);
-        contentValues.put("comp_id", comp_id);
-        contentValues.put("site_id", site_id);
-        contentValues.put("deptcode", deptcode);
-        contentValues.put("divcode", divcode);
-        contentValues.put("gangcode", gangcode);
-        contentValues.put("ancakcode", ancakcode);
-        contentValues.put("shiftcode", shiftcode);
+        contentValues.put("rolecode", rolecode);
+        contentValues.put("roledesc", roledesc);
+        contentValues.put("modulecode", modulecode);
+        contentValues.put("submodulecode", submodulecode);
+        contentValues.put("authorized", authorized);
+        contentValues.put("authorized_report", authorized_report);
 
-        long insert = db.insert("gs_07", null, contentValues);
+        long insert = db.insert("gs_08", null, contentValues);
         if (insert == -1) {
             return false;
         } else {

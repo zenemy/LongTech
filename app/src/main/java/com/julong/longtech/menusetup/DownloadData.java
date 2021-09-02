@@ -139,10 +139,11 @@ public class DownloadData extends AppCompatActivity {
             if (checkBoxGS.isChecked()) {
                 dbhelper.delete_datags();
                 RequestQueue requestQueueDownloadDataGS = Volley.newRequestQueue(this);
-                String url_data = DatabaseHelper.url_api + "fetchdata/get_generalsetup.php";
+                String url_data = DatabaseHelper.url_api + "fetchdata/get_generalsetup.php?rolecode=" + dbhelper.get_tbl_username(3);
                 JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        // Fetching and inserting data in background process
                         new AsyncJsonGS().execute(response, null, null);
                     }
                 }, new Response.ErrorListener() {
@@ -165,6 +166,7 @@ public class DownloadData extends AppCompatActivity {
                 JsonObjectRequest jsonRequestMD = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        // Fetching and inserting data in background process
                         new AsyncJsonMD().execute(response, null, null);
                     }
                 }, new Response.ErrorListener() {
@@ -188,6 +190,7 @@ public class DownloadData extends AppCompatActivity {
         }
     }
 
+    // Background process Data General Setup
     private class AsyncJsonGS extends AsyncTask<JSONObject, Void, Integer> {
 
         protected Integer doInBackground(JSONObject... jsonObjectsGS) {
@@ -215,16 +218,14 @@ public class DownloadData extends AppCompatActivity {
                     igs06++;
                 }
 
-                JSONArray jsonArrayGS07 = responseGS.getJSONArray("DATAGS07");
-                int igs07 = 0;
-                while (igs07 < jsonArrayGS07.length()) {
-                    JSONObject jsonObjectGS07 = jsonArrayGS07.getJSONObject(igs07);
-                    dbhelper.insert_dataGS07(jsonObjectGS07.getString("USERID"), jsonObjectGS07.getString("USERNAME"), jsonObjectGS07.getString("USERTYPE"),
-                            jsonObjectGS07.getString("USERROLE"), jsonObjectGS07.getString("EMPCODE"), jsonObjectGS07.getString("NO_TELP"), jsonObjectGS07.getString("EMAILUSER"),
-                            jsonObjectGS07.getString("EMPNAME"), jsonObjectGS07.getString("POSITION_ID"), jsonObjectGS07.getString("POSITION_NAME"),
-                            jsonObjectGS07.getString("COMP_ID"), jsonObjectGS07.getString("SITE_ID"), jsonObjectGS07.getString("DEPTCODE"),
-                            jsonObjectGS07.getString("DIVCODE"), jsonObjectGS07.getString("GANGCODE"), jsonObjectGS07.getString("ANCAKCODE"), jsonObjectGS07.getString("SHIFTCODE"));
-                    igs07++;
+                JSONArray jsonArrayGS08 = responseGS.getJSONArray("DATAGS08");
+                int igs08 = 0;
+                while (igs08 < jsonArrayGS08.length()) {
+                    JSONObject jsonObjectGS08 = jsonArrayGS08.getJSONObject(igs08);
+                    dbhelper.insert_dataGS08(jsonObjectGS08.getString("ROLECODE"), jsonObjectGS08.getString("ROLEDESC"),
+                            jsonObjectGS08.getString("MODULECODE"), jsonObjectGS08.getString("SUBMODULECODE"),
+                            jsonObjectGS08.getString("AUTHORIZED"), jsonObjectGS08.getString("AUTHORIZED_REPORT"));
+                    igs08++;
                 }
 
             } catch (JSONException e) {
@@ -238,6 +239,8 @@ public class DownloadData extends AppCompatActivity {
         }
     }
 
+
+    // Background process fetching Master Data
     private class AsyncJsonMD extends AsyncTask<JSONObject, Void, Integer> {
 
         protected Integer doInBackground(JSONObject... jsonObjectsMD) {
