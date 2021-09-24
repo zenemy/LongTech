@@ -99,8 +99,7 @@ public class DialogHelper extends Dialog {
         dialogInfo.setContentView(R.layout.dialog_info);
         dialogInfo.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowPreviewGambar = dialogInfo.getWindow();
-        windowPreviewGambar.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT);
+        windowPreviewGambar.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
         btn_ok = dialogInfo.findViewById(R.id.btnDialogInfo);
         tvtitle = dialogInfo.findViewById(R.id.tvDlgInfoTitle);

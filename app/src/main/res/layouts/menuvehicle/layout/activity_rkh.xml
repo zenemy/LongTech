@@ -71,7 +71,7 @@
                     android:clickable="true"
                     android:focusableInTouchMode="false"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:inputType="time"
+                    android:inputType="date"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"

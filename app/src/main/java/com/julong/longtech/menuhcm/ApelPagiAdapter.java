@@ -43,7 +43,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.julong.longtech.menuhcm.ApelPagi.REQUEST_IMAGE_CAPTURE;
 import static com.julong.longtech.menuhcm.ApelPagi.btnActionApel;
-import static com.julong.longtech.menuhcm.ApelPagi.gambarApelPagi;
+import static com.julong.longtech.menuhcm.ApelPagi.byteGambarApel;
 import static com.julong.longtech.menuhcm.ApelPagi.dataProcess;
 import static com.julong.longtech.menuhcm.ApelPagi.nodocApel;
 import static com.julong.longtech.menuhcm.ApelPagi.scanBarcode;
@@ -119,11 +119,10 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                             || dbhelper.check_existingapel(5, selectedShift).equals("1"))) {
 
                     }
-                    else if (gambarApelPagi == null) {
+                    else if (byteGambarApel == null) {
                         new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE).setTitleText("Foto apel dahulu").setConfirmText("OK").show();
                     }
                     else {
-
                         //Show method dialog
                         dlgMetodeAbsen = new Dialog(getContext());
                         dlgMetodeAbsen.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -131,7 +130,6 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                         dlgMetodeAbsen.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                         Window windowMetodeAbsen = dlgMetodeAbsen.getWindow();
                         windowMetodeAbsen.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                        LinearLayout layoutDlgMetodeAbsen = dlgMetodeAbsen.findViewById(R.id.layoutDlgMetodeAbsen);
                         TextView tvHeaderDlgMetode = dlgMetodeAbsen.findViewById(R.id.tvHeaderDlgMetodeApel);
                         Button btnApelQR = dlgMetodeAbsen.findViewById(R.id.btnApelQR);
                         Button btnApelFoto = dlgMetodeAbsen.findViewById(R.id.btnApelFoto);
@@ -286,13 +284,19 @@ public class ApelPagiAdapter extends ArrayAdapter<ApelPagiList> {
                                 btnKonfirmTdkHadir.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        dbhelper.updateapel_tidakhadir(nodocApel, selectedItemData, selectedEmp,
-                                                tipeTidakHadir, etNoteDlgTdkHadir.getText().toString());
-                                        btnActionApel.performClick();
-                                        dlgTidakHadir.dismiss();
+                                        if (tipeTidakHadir != null) {
+                                            dbhelper.updateapel_tidakhadir(nodocApel, selectedItemData, selectedEmp,
+                                                    tipeTidakHadir, etNoteDlgTdkHadir.getText().toString());
+                                            btnActionApel.performClick();
+                                            dlgTidakHadir.dismiss();
 
-                                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE);
-                                        dlgStartOK.setTitleText("Tidak Hadir").setContentText(dbhelper.get_empname(selectedEmp)).setConfirmText("OK").show();
+                                            final SweetAlertDialog dlgStartOK = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE);
+                                            dlgStartOK.setTitleText("Tidak Hadir").setContentText(dbhelper.get_empname(selectedEmp)).setConfirmText("OK").show();
+                                        }
+                                        else {
+                                            Toast.makeText(context, "Pilih alasan tidak hadir", Toast.LENGTH_LONG).show();
+                                        }
+
                                     }
                                 });
 

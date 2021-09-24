@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.julong.longtech.R;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.HolderRKH> {
@@ -49,7 +51,7 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
 
         // Set the data to the views here
         holderRKH.setDocumentNumber(historyDailyPlans.getDocumentNumber());
-        holderRKH.setTglHistory(historyDailyPlans.getTglPelaksanaan());
+        holderRKH.setTglHistory(historyDailyPlans.getInputDate(), historyDailyPlans.getTglPelaksanaan());
         holderRKH.setVehicle(historyDailyPlans.getUnitCode());
         holderRKH.setShiftRKH(historyDailyPlans.getShiftcode());
         holderRKH.setEmployeeName(historyDailyPlans.getEmployeeName());
@@ -62,7 +64,7 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
     // This is your ViewHolder class that helps to populate data to the view
     public class HolderRKH extends RecyclerView.ViewHolder {
 
-        private TextView tvNoDoc, tvTglHistory, tvUnitRKH, tvShiftRKH,
+        private TextView tvNoDoc, tvInputDate, tvTglPelaksanaan, tvUnitRKH, tvShiftRKH,
                 tvEmployeeName, tvActivityName, tvLocationName;
 
         private ImageView imgUploaded;
@@ -71,7 +73,8 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
             super(itemView);
 
             tvNoDoc = (TextView) itemView.findViewById(R.id.tvNodocHistoryRKH);
-            tvTglHistory = (TextView) itemView.findViewById(R.id.tvTglHistoryRKH);
+            tvInputDate = (TextView) itemView.findViewById(R.id.tvInputDateHistoryRKH);
+            tvTglPelaksanaan = (TextView) itemView.findViewById(R.id.tvWorkDateHistoryRKH);
             tvEmployeeName = (TextView) itemView.findViewById(R.id.tvDriverHistoryRKH);
             tvUnitRKH = (TextView) itemView.findViewById(R.id.tvVehicleHistoryRKH);
             tvShiftRKH = (TextView) itemView.findViewById(R.id.tvShiftHistoryRKH);
@@ -85,8 +88,9 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
             tvNoDoc.setText(nodoc);
         }
 
-        public void setTglHistory(String startTime) {
-            tvTglHistory.setText(startTime);
+        public void setTglHistory(String inputDate, String workDate) {
+            tvInputDate.setText(inputDate);
+            tvTglPelaksanaan.setText(workDate);
         }
 
         public void setVehicle(String vehicle) {
@@ -112,8 +116,12 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
         public void setUploaded(int isUploaded) {
             if (isUploaded == 0 ) {
                 imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
-            } else {
+            }
+            else if (isUploaded == 1) {
                 imgUploaded.setImageResource(R.drawable.bluetick);
+            }
+            else {
+                imgUploaded.setVisibility(View.GONE);
             }
         }
     }

@@ -19,47 +19,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutCompat4"
-                android:layout_width="wrap_content"
+
+            <TextView
+                android:id="@+id/tvVehicleReportP2H"
+                android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:gravity="center"
-                android:orientation="vertical"
+                android:text="EXC-006"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5">
+                app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5" />
 
-                <TextView
-                    android:id="@+id/tvVehicleHistoryRKH"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="EXC-006"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvShiftHistoryRKH"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:text="Shift 1"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <View
-                android:id="@+id/view"
+
+                android:id="@+id/view2"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/linearLayoutCompat4"
+                app:layout_constraintStart_toEndOf="@+id/tvVehicleReportP2H"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -75,7 +59,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/tvNodocHistoryRKH"
+                    android:id="@+id/tvNodocReportP2H"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -85,7 +69,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvInputDateHistoryRKH"
+                    android:id="@+id/tvInputDateReportP2H"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -100,78 +84,54 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="12dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/view"
+                app:layout_constraintStart_toEndOf="@+id/view2"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5">
 
                 <TextView
-                    android:id="@+id/tvDriverHistoryRKH"
+                    android:id="@+id/tvDriverReportP2H"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:drawableStart="@drawable/ic_twotone_person_20"
-                    android:drawablePadding="6dp"
+                    android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:text="Employee Name"
                     android:textColor="@color/black" />
 
                 <TextView
-                    android:id="@+id/tvWorkDateHistoryRKH"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginTop="4dp"
-                    android:paddingStart="2dp"
-                    android:drawableStart="@drawable/ic_baseline_calendar_16"
-                    android:drawablePadding="6dp"
-                    android:gravity="center_vertical"
-                    android:text="Date NYA"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/tvKegiatanHistoryRKH"
+                    android:id="@+id/tvKegiatanReportP2H"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_weight="1"
-                    android:paddingStart="2dp"
                     android:drawableStart="@drawable/ic_twotone_briefcase_16"
-                    android:drawablePadding="8dp"
+                    android:drawablePadding="10dp"
                     android:gravity="center_vertical"
+                    android:paddingStart="2dp"
                     android:text="Activity Name"
                     android:textColor="@color/black" />
 
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <TextView
+                    android:id="@+id/tvNoteReportP2H"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp">
-
-                    <TextView
-                        android:id="@+id/tvLokasiHistoryRKH"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_baseline_location_on_16"
-                        android:drawablePadding="6dp"
-                        android:gravity="center_vertical"
-                        android:text="Location Name"
-                        android:textColor="@color/black" />
-
-                    <ImageView
-                        android:id="@+id/imgUploadHistoryRKH"
-                        android:layout_width="20dp"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/bluetick" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
+                    android:layout_marginTop="4dp"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:drawableStart="@drawable/ic_baseline_note_16"
+                    android:drawablePadding="8dp"
+                    android:paddingStart="2dp"
+                    android:gravity="center_vertical"
+                    android:text="Catatan Tambahan"
+                    android:textColor="@color/black" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

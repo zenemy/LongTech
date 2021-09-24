@@ -790,11 +790,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                         inputLayoutTujuanDivisi.requestFocus();
                     }).show();
         }
-        else if (TextUtils.isEmpty(etHasilKerjaCarLog.getText().toString().trim())) {
-            Snackbar.make(v, "Harap isi Hasil Kerja", Snackbar.LENGTH_LONG).setAnchorView(btnSubmitCarlog)
-                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
-                    .setAction("OKAY", view -> etHasilKerjaCarLog.requestFocus()).show();
-        }
         else {
             //Showing finishDlg
             dlgSelesaiCarLog = new Dialog(KartuKerjaVehicle.this);
@@ -809,11 +804,9 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             EditText tvJamAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.tvJamAkhirDlgCarLog);
             EditText etKMHMAwalDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAwalDlgCarLog);
             EditText etKMHMAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirDlgCarLog);
-            EditText etKMHMAkhirKomaDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirKomaDlgCarLog);
             EditText etNoteDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etNoteDlgCarLog);
             TextView tvJudulFotoKM = dlgSelesaiCarLog.findViewById(R.id.tvJudulFotoKM);
             TextInputLayout inputlayoutDlgKmAkhir = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhir);
-            TextInputLayout inputlayoutDlgKmAkhirDecimal = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhirDecimal);
             btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
 
             String currenttdate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());

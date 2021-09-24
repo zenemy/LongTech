@@ -154,7 +154,6 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAbsensiMandiriMasuk"
-                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginEnd="4dp"
@@ -168,14 +167,15 @@
                     android:textStyle="bold"
                     app:cornerRadius="10dp" />
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAbsensiMandiriPulang"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginStart="4dp"
                     android:layout_weight="1"
-                    android:background="@drawable/tombol"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="10dp"
                     android:text="ABSEN\nPULANG"
                     android:textColor="@color/white"
                     android:textSize="24sp"

@@ -70,7 +70,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             etKonsidiOliRem, etKonsidiOliBBM, etKonsidiAirflow, etKonsidiRadiator, etKMHM,
             etKondisiBan, etKerusakan, etSabukKipas, etSuaraMesin, etLampuKendaraan, etSpionKendaraan, etDescPengecekan;
 
-    ImageButton imgTakePictP2H;
+    ImageView imgTakePictP2H;
     Button btnCancelP2H;
 
     String nodocP2H, latitudeP2H, longitudeP2H, selectedVehicleCode;
@@ -140,9 +140,11 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
         btnCancelP2H.setOnClickListener(v -> finish());
 
-        selectedVehicleCode = dbHelper.get_tbl_username(19);
+        if (dbHelper.get_tbl_username(3).equals("OPR")) {
+            selectedVehicleCode = dbHelper.get_tbl_username(19);
 
-        acKendaraanP2H.setText(dbHelper.get_vehiclename(2, dbHelper.get_tbl_username(19)));
+            acKendaraanP2H.setText(dbHelper.get_vehiclename(2, dbHelper.get_tbl_username(19)));
+        }
 
         // Vehicle list adapter for acVehicle
         listVehicleP2H = dbHelper.get_vehiclemasterdata();
@@ -371,7 +373,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                 }
 
                 if (checkKerusakan.isChecked()) {
-                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H12", "TERHADAP KERUSAKAN BENGKOK, PENYOK DAN PATAH", "CHECK", etKerusakan.getText().toString());
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H12", "KERUSAKAN BENGKOK, PENYOK DAN PATAH", "CHECK", etKerusakan.getText().toString());
                 }
 
                 if (checkSabukKipas.isChecked()) {
@@ -455,9 +457,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             byteImgP2H = stream.toByteArray();
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteImgP2H, 0, byteImgP2H.length);
             imgTakePictP2H.setImageBitmap(compressedBitmap);
-            imgTakePictP2H.setForeground(null);
-            imgTakePictP2H.getLayoutParams().width = 50;
-            imgTakePictP2H.requestLayout();
         }
     }
 

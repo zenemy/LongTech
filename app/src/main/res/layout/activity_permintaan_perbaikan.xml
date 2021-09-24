@@ -244,9 +244,7 @@
 
 
             </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-
+            
         </LinearLayout>
     </ScrollView>
 
@@ -267,7 +265,7 @@
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="KEMBALI"
+            android:text="@string/backbtn"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
@@ -282,7 +280,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:onClick="submitPermintaanPerbaikan"
-            android:text="SUBMIT"
+            android:text="@string/okbtn"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />

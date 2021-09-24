@@ -4,6 +4,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
@@ -38,13 +40,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class VerifikasiGIS extends AppCompatActivity {
 
     public static AutoCompleteTextView acLokasiGIS, acKegiatanGIS, acIntervalGIS;
-    public static EditText etHasilVerifikasi;
+    public static EditText etHasilVerifikasi, etDateGIS;
 
     AutoCompleteTextView acDriverGIS, acVehicleGIS;
     TextInputLayout inputLayoutHasilGIS;
@@ -58,6 +61,7 @@ public class VerifikasiGIS extends AppCompatActivity {
     private List<ListParamGIS> listParamGIS;
     AdapterKoordinatGIS adapterKoordinatGIS;
     ArrayAdapter<String> adapterInterval;
+    MaterialDatePicker<Long> datePickerRKH;
 
     private List<String> listVehicleGIS, listLokasiGIS, listDriverGIS, listKegiatanGIS;
     ArrayAdapter<String> adapterVehicleGIS, adapterDriverGIS, adapterLokasiGIS, adapterKegiatanGIS;
@@ -65,7 +69,7 @@ public class VerifikasiGIS extends AppCompatActivity {
     private boolean isRunning;
     public static byte[] byteFotoGIS;
     public static String selectedDriverGIS, selectedVehicleGIS;
-    String selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan, latGIS, longGIS;
+    String selectedDate, selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan, latGIS, longGIS;
     public static String nodocVerifikasiGIS;
 
     DatabaseHelper dbhelper;
@@ -81,6 +85,7 @@ public class VerifikasiGIS extends AppCompatActivity {
 
         // Declare attribute ID
         btnBackGIS = findViewById(R.id.btnBackGIS);
+        etDateGIS = findViewById(R.id.etDateGIS);
         acVehicleGIS = findViewById(R.id.acVehicleGIS);
         acDriverGIS = findViewById(R.id.acDriverGIS);
         acLokasiGIS = findViewById(R.id.acLokasiGIS);
@@ -99,22 +104,23 @@ public class VerifikasiGIS extends AppCompatActivity {
         prepareHeaderData();
 
         ActivityResultLauncher<Intent> intentLaunchCameraHasil = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
 
-                        Bundle bundle = result.getData().getExtras();
-                        Bitmap photoCamera = (Bitmap) bundle.get("data");
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-                        byteFotoGIS = stream.toByteArray();
-                        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteFotoGIS, 0, byteFotoGIS.length);
-                        imgTakePictGIS.setImageBitmap(compressedBitmap);
-                        imgTakePictGIS.setScaleType(ImageView.ScaleType.FIT_XY);
-
-                    }
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap photoCamera = (Bitmap) bundle.get("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                    byteFotoGIS = stream.toByteArray();
+                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteFotoGIS, 0, byteFotoGIS.length);
+                    imgTakePictGIS.setImageBitmap(compressedBitmap);
+                    imgTakePictGIS.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imgTakePictGIS.setForeground(null);
 
                 }
+
+            }
         );
 
         imgTakePictGIS.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +149,7 @@ public class VerifikasiGIS extends AppCompatActivity {
                     }
                     else {
                         nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-                        dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedVehicleGIS, selectedDriverGIS,
+                        dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedDate, selectedVehicleGIS, selectedDriverGIS,
                                 selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
                                 etHasilVerifikasi.getText().toString());
 
@@ -223,7 +229,7 @@ public class VerifikasiGIS extends AppCompatActivity {
         getLocation();
         if (dbhelper.get_statusverifikasigis(0).equals("0")) {
             nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-            dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedVehicleGIS, selectedDriverGIS,
+            dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedDate, selectedVehicleGIS, selectedDriverGIS,
                     selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
                     etHasilVerifikasi.getText().toString());
             dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS, acIntervalGIS.getText().toString(), "START");
@@ -269,24 +275,48 @@ public class VerifikasiGIS extends AppCompatActivity {
 
     private void prepareHeaderData() throws SQLiteException {
 
-        adapterInterval = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayIntervalOption);
+        adapterInterval = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayIntervalOption);
         acIntervalGIS.setAdapter(adapterInterval);
 
         listDriverGIS = dbhelper.get_employee();
-        adapterDriverGIS = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listDriverGIS);
+        adapterDriverGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listDriverGIS);
         acDriverGIS.setAdapter(adapterDriverGIS);
 
-        listVehicleGIS = dbhelper.get_vehiclemasterdata();
-        adapterVehicleGIS = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleGIS);
+        listVehicleGIS = dbhelper.get_vehiclecodelist();
+        adapterVehicleGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleGIS);
         acVehicleGIS.setAdapter(adapterVehicleGIS);
 
         listKegiatanGIS = dbhelper.get_all_transport();
-        adapterKegiatanGIS = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanGIS);
+        adapterKegiatanGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanGIS);
         acKegiatanGIS.setAdapter(adapterKegiatanGIS);
 
         listLokasiGIS = dbhelper.get_fieldcrop(1);
-        adapterLokasiGIS = new ArrayAdapter<String>(VerifikasiGIS.this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiGIS);
+        adapterLokasiGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiGIS);
         acLokasiGIS.setAdapter(adapterLokasiGIS);
+
+        //Datepicker tgl pelaksanaan
+
+        datePickerRKH = MaterialDatePicker.Builder.datePicker().setTitleText("Tanggal Unit Kerja").build();
+
+        datePickerRKH.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+
+                // Get the offset from our timezone and UTC.
+                TimeZone timeZoneUTC = TimeZone.getDefault();
+                // It will be negative, so that's the -1
+                int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
+                // Create a date format, then a date object with our offset
+                SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date = new Date(selection + offsetFromUTC);
+
+                etDateGIS.setText(simpleFormat.format(date));
+                selectedDate = simpleFormat.format(date);
+
+            }
+        });
+
+        etDateGIS.setOnClickListener(view -> datePickerRKH.show(getSupportFragmentManager(), "DATEPICKER_GIS"));
 
         acDriverGIS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -300,7 +330,7 @@ public class VerifikasiGIS extends AppCompatActivity {
         acVehicleGIS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedVehicleGIS = dbhelper.get_vehiclecodeonly(adapterVehicleGIS.getItem(position));
+                selectedVehicleGIS = adapterVehicleGIS.getItem(position);
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acVehicleGIS.getWindowToken(), 0);
             }
@@ -324,7 +354,6 @@ public class VerifikasiGIS extends AppCompatActivity {
                 inputLayoutHasilGIS.setEnabled(true);
                 btnTagLocation.setVisibility(View.VISIBLE);
 
-                Toast.makeText(VerifikasiGIS.this, selectedSatuanKegiatan, Toast.LENGTH_LONG).show();
 
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKegiatanGIS.getWindowToken(), 0);

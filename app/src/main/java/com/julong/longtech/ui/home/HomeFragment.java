@@ -62,6 +62,7 @@ import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
+import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
@@ -95,21 +96,21 @@ public class HomeFragment extends Fragment {
     ActivityResultLauncher<Intent> intentLaunchActivity;
 
     DatabaseHelper dbhelper;
-    public static TextView tvjabatanuser, tvnamauser;
+    public static TextView tvjabatanuser, tvnamauser, tvPlaceholder;
     BubbleTabBar bubbleTabBar;
     public static ListView lvfragment;
     public static RecyclerView lvHistoryApel, lvHistoryCarLog;
     byte[] gambar1;
     public static AutoCompleteTextView ackendala, acMenuRiwayatHome;
-    TextView tvSystemNameFragmentHome;
     EditText etdesckendala, etpanjangkendala, etlebarkendala, etluaskendala, aclokasikendala, filtertglhistory;
     Button btnsimpankendala, btnDateLvInfo;
     ImageButton btnrefresh, openDrawerBtn, imgcamkendala;
     String lat_awal, long_awal, todayDate, todayDateTime, selectedKendala;
     ScrollView scrollkendala;
-    ConstraintLayout clBgMainActivity;
-    public static LinearLayout layoutRiwayatFragment, layoutInfoFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
-            linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel;
+    ConstraintLayout clBgMainActivity, layoutInfoFragment;
+    public static LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
+            linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel, linearLayoutGIS;
+
 
     List<String> arrayMenuHistory = Arrays.asList("APEL KERJA", "CAR LOG");
     ArrayAdapter<String> adapterMenuHistory;
@@ -126,6 +127,7 @@ public class HomeFragment extends Fragment {
 
         tvnamauser = root.findViewById(R.id.tvNamaUser);
         layoutInfoFragment = root.findViewById(R.id.layoutInfoFragment);
+        tvPlaceholder = root.findViewById(R.id.tvPlaceholderInfoHome);
         btnDateLvInfo = root.findViewById(R.id.btnDateLvInfoHome);
         clBgMainActivity = root.findViewById(R.id.clBgMainActivity);
         tvjabatanuser = root.findViewById(R.id.tvJabatanUser);
@@ -157,6 +159,7 @@ public class HomeFragment extends Fragment {
         linearLayoutBBM = root.findViewById(R.id.linearLayoutBBM);
         linearLayoutService = root.findViewById(R.id.linearLayoutService);
         linearLayoutQR = root.findViewById(R.id.linearLayoutMyQR);
+        linearLayoutGIS = root.findViewById(R.id.linearLayoutGIS);
 
         todayDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -165,8 +168,9 @@ public class HomeFragment extends Fragment {
 
         eventClickMenu();
 
-//        tvnamauser.setText(dbhelper.get_tbl_username(0));
-//        tvjabatanuser.setText(dbhelper.get_tbl_username(3));
+        if (lvfragment.getAdapter().getCount() > 0) {
+            tvPlaceholder.setVisibility(View.GONE);
+        }
 
         adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistory);
         acMenuRiwayatHome.setAdapter(adapterMenuHistory);
@@ -414,15 +418,24 @@ public class HomeFragment extends Fragment {
                     acMenuRiwayatHome.setSelection(1);
                     loadlvinfohome(todayDate);
                     loadLvHistoryCarLog(todayDate);
+                    if (lvfragment.getAdapter().getCount() > 0) {
+                        tvPlaceholder.setVisibility(View.GONE);
+                    }
                 }
                 if (result.getResultCode() == 4) {
                     acMenuRiwayatHome.setText(arrayMenuHistory.get(0));
                     acMenuRiwayatHome.setSelection(0);
                     loadlvinfohome(todayDate);
                     loadLvHistoryApel(todayDate);
+                    if (lvfragment.getAdapter().getCount() > 0) {
+                        tvPlaceholder.setVisibility(View.GONE);
+                    }
                 }
                 if (result.getResultCode() == 727) {
                     loadlvinfohome(todayDate);
+                    if (lvfragment.getAdapter().getCount() > 0) {
+                        tvPlaceholder.setVisibility(View.GONE);
+                    }
                 }
             }
         );
@@ -432,22 +445,20 @@ public class HomeFragment extends Fragment {
             intentLaunchActivity.launch(intent);
         });
 
+        linearLayoutGIS.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), VerifikasiGIS.class);
+            intentLaunchActivity.launch(intent);
+        });
+
         if (dbhelper.get_tbl_username(3).equals("SPV-WS")) {
             linearLayoutService.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), PerintahPerbaikan.class);
+                Intent intent = new Intent(getActivity(), LaporanPerbaikan.class);
                 intentLaunchActivity.launch(intent);
             });
         }
-
         else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
             linearLayoutService.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
-                intentLaunchActivity.launch(intent);
-            });
-        }
-        else if (dbhelper.get_tbl_username(3).equals("MEK")) {
-            linearLayoutService.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), LaporanPerbaikan.class);
                 intentLaunchActivity.launch(intent);
             });
         }
@@ -554,6 +565,10 @@ public class HomeFragment extends Fragment {
         });
 
         loadlvinfohome(todayDate);
+
+        if (lvfragment.getAdapter().getCount() > 0) {
+            tvPlaceholder.setVisibility(View.GONE);
+        }
     }
 
     private class AsyncUploadData extends AsyncTask<Void, Void, Void> {

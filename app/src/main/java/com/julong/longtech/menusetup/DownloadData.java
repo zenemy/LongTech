@@ -42,45 +42,28 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DownloadData extends AppCompatActivity {
 
-    ConstraintLayout layoutDownloadGS, layoutDownloadMD, layoutHeaderDownload2;
     Button btnBackDownload;
-    CheckBox checkBoxGS, checkBoxMD, checkAllDownload;
     DatabaseHelper dbhelper;
     TextView tvSubJudulDownloadGS, tvSubJudulDownloadMD;
     SweetAlertDialog progressDialog;
-
-
-    boolean isDownloadGSDone;
-    boolean isDownloadMDDone;
+    View parentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
 
-        isDownloadGSDone = false;
-        isDownloadMDDone = false;
-
         dbhelper = new DatabaseHelper(this);
-        progressDialog = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.PROGRESS_TYPE);
+        progressDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         progressDialog.setTitleText("Mendownload Data");
         progressDialog.setCancelable(false);
 
-        layoutDownloadGS = findViewById(R.id.layoutDownloadGS);
-        layoutHeaderDownload2 = findViewById(R.id.clHeaderDownload2);
-        layoutDownloadMD = findViewById(R.id.layoutDownloadMD);
-        checkBoxGS = findViewById(R.id.checkBoxDataDownloadGS);
-        checkBoxMD = findViewById(R.id.checkBoxDataDownloadMD);
-        checkAllDownload = findViewById(R.id.checkAllDownload);
         tvSubJudulDownloadGS = findViewById(R.id.tvSubJudulDataDownloadGS);
         tvSubJudulDownloadMD = findViewById(R.id.tvSubJudulDataDownloadMD);
         btnBackDownload = findViewById(R.id.btnBackDownload);
+        parentLayout = findViewById(android.R.id.content);
 
         btnBackDownload.setOnClickListener(view -> onBackPressed());
-
-        checkAllDownload.setChecked(true);
-        checkBoxGS.setChecked(true);
-        checkBoxMD.setChecked(true);
 
         try {
             tvSubJudulDownloadGS.setText("Jumlah Data : " + dbhelper.count_datadownloadGS() + " Data");
@@ -89,105 +72,70 @@ public class DownloadData extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        checkAllDownload.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (checkAllDownload.isChecked()) {
-//                    checkBoxGS.setChecked(true);
-//                    checkBoxMD.setChecked(true);
-//                }
-//                else {
-//                    checkBoxGS.setChecked(false);
-//                    checkBoxMD.setChecked(false);
-//                }
-//            }
-//        });
-//
-//        layoutHeaderDownload2.setOnClickListener(v -> {
-//            if (checkAllDownload.isChecked()) {
-//                checkAllDownload.setChecked(false);
-//            }
-//            else {
-//                checkAllDownload.setChecked(true);
-//            }
-//        });
-//
-//        layoutDownloadGS.setOnClickListener(v -> {
-//            if (checkBoxGS.isChecked()) {
-//                checkBoxGS.setChecked(false);
-//            }
-//            else {
-//                checkBoxGS.setChecked(true);
-//            }
-//        });
-//
-//        layoutDownloadMD.setOnClickListener(v -> {
-//            if (checkBoxMD.isChecked()) {
-//                checkBoxMD.setChecked(false);
-//            }
-//            else {
-//                checkBoxMD.setChecked(true);
-//            }
-//        });
-
+        if (dbhelper.count_tablemd().equals("0")) {
+            eventDownloadData(parentLayout);
+        }
     }
 
     public void eventDownloadData(View v) {
-        if (!checkBoxGS.isChecked() && !checkBoxMD.isChecked()) {
-            new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Pilih Data!").setConfirmText("OK").show();
-        } else {
-            if (checkBoxGS.isChecked()) {
-                dbhelper.delete_datags();
-                RequestQueue requestQueueDownloadDataGS = Volley.newRequestQueue(this);
-                String url_data = DatabaseHelper.url_api + "fetchdata/get_generalsetup.php?rolecode=" + dbhelper.get_tbl_username(3);
-                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Fetching and inserting data in background process
-                        new AsyncJsonGS().execute(response, null, null);
-                    }
-                }, new Response.ErrorListener() {
+        progressDialog.show();
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                        requestQueueDownloadDataGS.stop();
-                    }
-                });
-                requestQueueDownloadDataGS.add(jsonRequest);
+        // Download GS
+        dbhelper.delete_datags();
+        RequestQueue requestQueueDownloadDataGS = Volley.newRequestQueue(this);
+        String url_gs = DatabaseHelper.url_api + "fetchdata/get_generalsetup.php?rolecode=" + dbhelper.get_tbl_username(3);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_gs, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                // Fetching and inserting data in background process
+                new AsyncJsonGS().execute(response, null, null);
             }
-
-            if (checkBoxMD.isChecked()) {
-                dbhelper.delete_masterdata();
-                RequestQueue requestQueueDownloadMD = Volley.newRequestQueue(this);
-                String url_data = DatabaseHelper.url_api + "fetchdata/get_masterdata.php?userid="
-                        + dbhelper.get_tbl_username(0) + "&gangcode="+dbhelper.get_tbl_username(18);
-
-                JsonObjectRequest jsonRequestMD = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Fetching and inserting data in background process
-                        new AsyncJsonMD().execute(response, null, null);
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                        progressDialog.dismiss();
-                        final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Periksa Jaringan!").setConfirmText("OK");
-                        errorDlg.show();
-                        requestQueueDownloadMD.stop();
-                    }
-                });
-                jsonRequestMD.setRetryPolicy(new DefaultRetryPolicy(
-                        10000,
-                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                requestQueueDownloadMD.add(jsonRequestMD);
-                progressDialog.show();
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                requestQueueDownloadDataGS.stop();
             }
-        }
+        });
+        requestQueueDownloadDataGS.add(jsonRequest);
+
+        // POST Value download MD
+        dbhelper.delete_masterdata();
+        Map<String, String> paramsMD = new HashMap();
+        paramsMD.put("compid", dbhelper.get_tbl_username(14));
+        paramsMD.put("siteid", dbhelper.get_tbl_username(15));
+        paramsMD.put("userid", dbhelper.get_tbl_username(0));
+        paramsMD.put("positionid", dbhelper.get_tbl_username(12));
+        paramsMD.put("gangcode", dbhelper.get_tbl_username(18));
+        JSONObject postParametersMD = new JSONObject(paramsMD);
+
+        Log.d("postm", String.valueOf(postParametersMD));
+
+        // Downloading MD
+        RequestQueue requestQueueDownloadMD = Volley.newRequestQueue(this);
+        String url_md = DatabaseHelper.url_api + "fetchdata/get_masterdatapost.php";
+        JsonObjectRequest jsonRequestMD = new JsonObjectRequest(Request.Method.POST, url_md, postParametersMD, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                // Fetching and inserting data in background process
+                new AsyncJsonMD().execute(response, null, null);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                progressDialog.dismiss();
+                final SweetAlertDialog errorDlg = new SweetAlertDialog(DownloadData.this, SweetAlertDialog.ERROR_TYPE).setContentText("Periksa Jaringan!").setConfirmText("OK");
+                errorDlg.show();
+                requestQueueDownloadMD.stop();
+            }
+        });
+        jsonRequestMD.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueueDownloadMD.add(jsonRequestMD);
+
     }
 
     // Background process Data General Setup
@@ -319,23 +267,25 @@ public class DownloadData extends AppCompatActivity {
                     intEmpMD++;
                 }
 
-                JSONArray jsonArrayMD2 = responseMD.getJSONArray("MASTERDATA2");
-                int intMD2 = 0;
-                while (intMD2 < jsonArrayMD2.length()) {
-                    JSONObject jsonObjectMD2 = jsonArrayMD2.getJSONObject(intMD2);
-                    dbhelper.insert_tablemd2(jsonObjectMD2.getString("DATATYPE"), jsonObjectMD2.getString("SUBDATATYPE"),
-                            jsonObjectMD2.getString("ITEMDATA"), jsonObjectMD2.getString("SUBITEMDATA"), jsonObjectMD2.getString("COMP_ID"),
-                            jsonObjectMD2.getString("SITE_ID"), jsonObjectMD2.getString("DATE1"), jsonObjectMD2.getString("DATE2"),
-                            jsonObjectMD2.getString("DATE3"), jsonObjectMD2.getString("DATE4"), jsonObjectMD2.getString("DATE5"), jsonObjectMD2.getString("TEXT1"),
-                            jsonObjectMD2.getString("TEXT2"), jsonObjectMD2.getString("TEXT3"), jsonObjectMD2.getString("TEXT4"), jsonObjectMD2.getString("TEXT5"),
-                            jsonObjectMD2.getString("TEXT6"), jsonObjectMD2.getString("TEXT7"), jsonObjectMD2.getString("TEXT8"), jsonObjectMD2.getString("TEXT9"),
-                            jsonObjectMD2.getString("TEXT10"), jsonObjectMD2.getString("TEXT11"), jsonObjectMD2.getString("TEXT12"), jsonObjectMD2.getString("TEXT13"),
-                            jsonObjectMD2.getString("TEXT14"), jsonObjectMD2.getString("TEXT15"), jsonObjectMD2.getString("TEXT16"), jsonObjectMD2.getString("TEXT17"),
-                            jsonObjectMD2.getString("TEXT18"), jsonObjectMD2.getString("TEXT19"), jsonObjectMD2.getString("TEXT20"), jsonObjectMD2.getString("TEXT21"),
-                            jsonObjectMD2.getString("TEXT22"), jsonObjectMD2.getString("TEXT23"), jsonObjectMD2.getString("TEXT24"), jsonObjectMD2.getString("TEXT25"),
-                            jsonObjectMD2.getString("TEXT26"), jsonObjectMD2.getString("TEXT27"), jsonObjectMD2.getString("TEXT28"), jsonObjectMD2.getString("TEXT29"),
-                            jsonObjectMD2.getString("TEXT30"));
-                    intMD2++;
+                if (responseMD.has("MASTERDATA2")) {
+                    JSONArray jsonArrayMD2 = responseMD.getJSONArray("MASTERDATA2");
+                    int intMD2 = 0;
+                    while (intMD2 < jsonArrayMD2.length()) {
+                        JSONObject jsonObjectMD2 = jsonArrayMD2.getJSONObject(intMD2);
+                        dbhelper.insert_tablemd2(jsonObjectMD2.getString("DATATYPE"), jsonObjectMD2.getString("SUBDATATYPE"),
+                                jsonObjectMD2.getString("ITEMDATA"), jsonObjectMD2.getString("SUBITEMDATA"), jsonObjectMD2.getString("COMP_ID"),
+                                jsonObjectMD2.getString("SITE_ID"), jsonObjectMD2.getString("DATE1"), jsonObjectMD2.getString("DATE2"),
+                                jsonObjectMD2.getString("DATE3"), jsonObjectMD2.getString("DATE4"), jsonObjectMD2.getString("DATE5"), jsonObjectMD2.getString("TEXT1"),
+                                jsonObjectMD2.getString("TEXT2"), jsonObjectMD2.getString("TEXT3"), jsonObjectMD2.getString("TEXT4"), jsonObjectMD2.getString("TEXT5"),
+                                jsonObjectMD2.getString("TEXT6"), jsonObjectMD2.getString("TEXT7"), jsonObjectMD2.getString("TEXT8"), jsonObjectMD2.getString("TEXT9"),
+                                jsonObjectMD2.getString("TEXT10"), jsonObjectMD2.getString("TEXT11"), jsonObjectMD2.getString("TEXT12"), jsonObjectMD2.getString("TEXT13"),
+                                jsonObjectMD2.getString("TEXT14"), jsonObjectMD2.getString("TEXT15"), jsonObjectMD2.getString("TEXT16"), jsonObjectMD2.getString("TEXT17"),
+                                jsonObjectMD2.getString("TEXT18"), jsonObjectMD2.getString("TEXT19"), jsonObjectMD2.getString("TEXT20"), jsonObjectMD2.getString("TEXT21"),
+                                jsonObjectMD2.getString("TEXT22"), jsonObjectMD2.getString("TEXT23"), jsonObjectMD2.getString("TEXT24"), jsonObjectMD2.getString("TEXT25"),
+                                jsonObjectMD2.getString("TEXT26"), jsonObjectMD2.getString("TEXT27"), jsonObjectMD2.getString("TEXT28"), jsonObjectMD2.getString("TEXT29"),
+                                jsonObjectMD2.getString("TEXT30"));
+                        intMD2++;
+                    }
                 }
 
                 JSONArray jsonArrayTransportMD = responseMD.getJSONArray("DATATRANSPORT");
@@ -355,7 +305,6 @@ public class DownloadData extends AppCompatActivity {
                 int intOrgStructure = 0;
                 while (intOrgStructure < jsonArrayOrgStructure.length()) {
                     JSONObject jsonObjectOrgStructure = jsonArrayOrgStructure.getJSONObject(intOrgStructure);
-                    Log.d("ORGSTRUCUTREDATA", jsonObjectOrgStructure.getString("DATATYPE"));
                     dbhelper.insert_orgstructuremd(jsonObjectOrgStructure.getString("DATATYPE"), jsonObjectOrgStructure.getString("SUBDATATYPE"), jsonObjectOrgStructure.getString("COMP_ID"), jsonObjectOrgStructure.getString("SITE_ID"),
                             jsonObjectOrgStructure.getString("TEXT1"), jsonObjectOrgStructure.getString("TEXT2"), jsonObjectOrgStructure.getString("TEXT3"), jsonObjectOrgStructure.getString("TEXT4"),
                             jsonObjectOrgStructure.getString("TEXT5"), jsonObjectOrgStructure.getString("TEXT6"), jsonObjectOrgStructure.getString("TEXT7"), jsonObjectOrgStructure.getString("TEXT8"));

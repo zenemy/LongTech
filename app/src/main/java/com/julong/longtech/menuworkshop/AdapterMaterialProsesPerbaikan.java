@@ -27,7 +27,6 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
 
     // List to store all the contact details
     public static List<ListMaterialProsesPerbaikan> materialList;
-    public static int totalChecked = 0;
     private Context mContext;
     LayoutInflater layoutInflater;
 
@@ -59,40 +58,8 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
         final ListMaterialProsesPerbaikan materialServices = materialList.get(position);
 
         holder.setMaterialName(materialServices.getMaterialName());
+        holder.setMaterialQty(materialServices.getMaterialQty());
         holder.setMaterialUOM(materialServices.getUnitMeasure());
-
-        // Text watcher, important to get adapter value same as edittext value
-        holder.etQtyMaterial.setText(materialServices.getEditTextValue());
-
-        //if true, your checkbox will be selected, else unselected
-        holder.checkBoxMaterial.setChecked(materialServices.getChecked());
-
-        holder.checkBoxMaterial.setTag(position);
-        holder.checkBoxMaterial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Integer pos = (Integer) holder.checkBoxMaterial.getTag();
-
-                if (materialServices.getChecked()) {
-                    materialList.get(pos).setChecked(false);
-                } else {
-                    materialList.get(pos).setChecked(true);
-                }
-            }
-        });
-
-        holder.checkBoxMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (materialServices.getChecked()) {
-                    holder.layoutQtyMaterial.setEnabled(false);
-                    holder.etQtyMaterial.setText(null);
-                }
-                else {
-                    holder.layoutQtyMaterial.setEnabled(true);
-                }
-            }
-        });
 
     }
 
@@ -105,7 +72,6 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
         private TextInputLayout layoutQtyMaterial;
         private TextView tvMaterialName;
         private EditText etQtyMaterial;
-        private CheckBox checkBoxMaterial;
 
         public MaterialHolder(View itemView) {
             super(itemView);
@@ -114,27 +80,7 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
             layoutLvMaterial = (ConstraintLayout) itemView.findViewById(R.id.layoutLvMaterial);
             layoutQtyMaterial = (TextInputLayout) itemView.findViewById(R.id.layoutQtyMaterialLvServiceProcess);
             tvMaterialName = (TextView) itemView.findViewById(R.id.tvMaterialLvServiceProcess);
-            checkBoxMaterial = (CheckBox) itemView.findViewById(R.id.cbLvMaterialLvServiceProcess);
             etQtyMaterial = (EditText) itemView.findViewById(R.id.etQtyMaterialLvServiceProcess);
-
-            // Text watcher, important to set adapter value same as edittext value
-            etQtyMaterial.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    materialList.get(getAdapterPosition()).setEditTextValue(etQtyMaterial.getText().toString());
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-
-                }
-            });
 
         }
 
@@ -142,8 +88,12 @@ public class AdapterMaterialProsesPerbaikan extends RecyclerView.Adapter<Adapter
             tvMaterialName.setText(materialName);
         }
 
+        public void setMaterialQty(int materialQty) {
+            etQtyMaterial.setText(String.valueOf(materialQty));
+        }
+
         public void setMaterialUOM(String materialUOM) {
-            etQtyMaterial.setHint(materialUOM);
+            layoutQtyMaterial.setSuffixText(materialUOM);
         }
     }
 }

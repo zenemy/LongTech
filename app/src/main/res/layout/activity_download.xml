@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/clBgDownload"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E4E1E1"
+    android:background="#EFECEC"
     android:keepScreenOn="true"
+    android:orientation="vertical"
     tools:context=".menusetup.DownloadData">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clHeaderDownload"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@drawable/tbl_lr_bottom"
-        android:backgroundTint="#305031"
+        android:backgroundTint="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center"
             android:text="DOWNLOAD DATA"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
@@ -35,130 +31,83 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clHeaderDownload2"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Master Data dan Data Awal"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:paddingVertical="8dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="-40dp"
         android:layout_marginEnd="4dp"
-        android:background="@drawable/border_dialog"
+        android:background="@drawable/tbl_lr_top"
         android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:foreground="?android:attr/selectableItemBackgroundBorderless" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Master Data dan Data Awal"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView47"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView47"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:gravity="center"
-            android:text="Check"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <CheckBox
-            android:id="@+id/checkAllDownload"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView47"
-            app:layout_constraintTop_toBottomOf="@+id/textView47" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/dividerDownload"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/tombol"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_weight="1"
+        android:background="@drawable/tbl_lr_bottom"
         android:backgroundTint="@color/white"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayoutCompat2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clHeaderDownload2">
+        android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layoutDownloadGS"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:orientation="vertical"
             android:background="@drawable/bottomborderonly"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:paddingBottom="8dp">
 
             <TextView
-                android:id="@+id/tvJudulDataDownloadGS"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bottomborderonly"
                 android:paddingBottom="4dp"
-                android:text="General Setup"
+                android:text="Data General Setup"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/checkBoxDataDownloadGS"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvSubJudulDataDownloadGS"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="16dp"
                 android:text="Jumlah Data : 0 Data"
                 android:textColor="@color/black"
-                app:layout_constraintEnd_toStartOf="@+id/checkBoxDataDownloadGS"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvJudulDataDownloadGS" />
-
-            <CheckBox
-                android:id="@+id/checkBoxDataDownloadGS"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:clickable="false"
-                app:layout_constraintBottom_toBottomOf="@+id/tvSubJudulDataDownloadGS"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvJudulDataDownloadGS" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvJudulDataEmpMD" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layoutDownloadMD"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bottomborderonly"
+            android:orientation="vertical"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:paddingBottom="8dp">
 
             <TextView
-                android:id="@+id/tvJudulDataDownloadMD"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
@@ -168,68 +117,48 @@
                 android:text="Master Data"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/checkBoxDataDownloadMD"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvSubJudulDataDownloadMD"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="16dp"
                 android:text="Jumlah Data : 0 Data"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toStartOf="@+id/checkBoxDataDownloadMD"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvJudulDataDownloadMD" />
+                android:textColor="@color/black" />
 
-            <CheckBox
-                android:id="@+id/checkBoxDataDownloadMD"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:clickable="false"
-                app:layout_constraintBottom_toBottomOf="@+id/tvSubJudulDataDownloadMD"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvJudulDataDownloadMD" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayoutCompat2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
-        android:weightSum="2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:weightSum="2">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBackDownload"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:onClick="eventDownloadData"
-            android:text="Kembali"
+            android:text="@string/backbtn"
             android:layout_marginEnd="2dp"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:backgroundTint="#305031"
+            app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnOkDownload"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
@@ -241,11 +170,9 @@
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:backgroundTint="#305031"
+            app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="10dp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

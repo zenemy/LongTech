@@ -8,7 +8,6 @@
     android:clickable="true"
     android:foreground="?attr/selectableItemBackgroundBorderless">
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="50dp"

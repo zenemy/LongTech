@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingHorizontal="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tbl_lr_top"
+        android:backgroundTint="@color/colorPrimary"
+        android:gravity="center"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:text="Kuantitas Material"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="12dp"
+        android:background="@color/white"
+        android:weightSum="3">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Material"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/black"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Kuantitas"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/black"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="12dp"
+        android:weightSum="3">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconMode="dropdown_menu"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acDlgMaterialService"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:paddingStart="12dp"
+                android:paddingVertical="12dp"
+                android:dropDownWidth="300dp"
+                android:paddingEnd="8dp"
+                android:hint="Nama Material"
+                android:textColorHint="@color/colorTextHint"
+                android:singleLine="true"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutDlgQtyMaterial"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="2"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDlgQtyMaterial"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp"
+                android:hint="00"
+                android:inputType="number"
+                android:textColorHint="@color/colorTextHint"
+                android:singleLine="true"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="#FFFFFF"
+        android:weightSum="2">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackDlgMaterialService"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="0.5dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/backbtn"
+            android:textColor="@color/colorTextButton"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOkDlgMaterialService"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="0.5dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/okbtn"
+            android:textColor="@color/colorTextButton"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.appcompat.widget.LinearLayoutCompat>

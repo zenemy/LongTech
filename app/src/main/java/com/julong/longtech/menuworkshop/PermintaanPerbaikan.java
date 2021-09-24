@@ -78,6 +78,12 @@ public class PermintaanPerbaikan extends AppCompatActivity {
         adapterLokasi = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listLokasiRKH);
         acLokasiRusak.setAdapter(adapterLokasi);
 
+        if (dbhelper.get_tbl_username(3).equals("OPR")) {
+            selectedVehicle = dbhelper.get_tbl_username(19);
+
+            acVehicle.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
+        }
+
         radioGroupTipePerbaikan.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId) {

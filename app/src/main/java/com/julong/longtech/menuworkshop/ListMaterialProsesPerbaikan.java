@@ -2,44 +2,28 @@ package com.julong.longtech.menuworkshop;
 
 public class ListMaterialProsesPerbaikan {
 
-    private String materialCode;
     private String materialName;
+    private int materialQty;
     private String unitMeasure;
-    private String editTextValue;
-    private boolean isSelected;
 
-    public ListMaterialProsesPerbaikan(String materialCode, String materialName, String unitMeasure) {
-        this.materialCode = materialCode;
+    public ListMaterialProsesPerbaikan(String materialName, int materialQty, String unitMeasure) {
         this.materialName = materialName;
+        this.materialQty = materialQty;
         this.unitMeasure = unitMeasure;
     }
 
-    public String getMaterialCode() {
-        return materialCode;
-    }
 
     public String getMaterialName() {
         return materialName;
+    }
+
+    public int getMaterialQty() {
+        return materialQty;
     }
 
     public String getUnitMeasure() {
         return unitMeasure;
     }
 
-    public void setEditTextValue(String editTextValue) {
-        this.editTextValue = editTextValue;
-    }
-
-    public String getEditTextValue() {
-        return editTextValue;
-    }
-
-    public boolean getChecked() {
-        return isSelected;
-    }
-
-    public void setChecked(boolean isChecked) {
-        isSelected = isChecked;
-    }
 
 }

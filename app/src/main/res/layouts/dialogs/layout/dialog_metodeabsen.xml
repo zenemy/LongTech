@@ -84,11 +84,11 @@
             android:id="@+id/btnApelTidakHadir"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="TIDAK HADIR"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
 
@@ -104,7 +104,7 @@
             android:paddingRight="8dp"
             android:singleLine="true"
             android:text="KEMBALI"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:rippleColor="#007042"

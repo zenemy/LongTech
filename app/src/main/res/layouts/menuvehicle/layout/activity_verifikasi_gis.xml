@@ -30,7 +30,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,30 +40,67 @@
         android:backgroundTint="@color/white"
         android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="6dp"
             android:layout_marginEnd="8dp"
-            app:boxCornerRadiusTopStart="10dp"
-            app:boxCornerRadiusTopEnd="10dp"
-            android:hint="@string/judulvehicle"
-            app:endIconMode="dropdown_menu">
+            android:weightSum="2">
 
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/acVehicleGIS"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:paddingStart="12dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="4dp"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:boxCornerRadiusTopStart="10dp"
+                android:hint="Tanggal Unit Kerja"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_baseline_calendar_24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDateGIS"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:clickable="true"
+                    android:focusableInTouchMode="false"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                android:hint="@string/judulvehicle"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acVehicleGIS"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -73,14 +109,14 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:hint="Driver / Operator"
+            android:hint="@string/judulopr"
             app:endIconMode="dropdown_menu">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/acDriverGIS"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:paddingStart="10dp"
+                android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
@@ -177,6 +213,7 @@
                             android:paddingEnd="12dp"
                             android:paddingBottom="4dp"
                             android:singleLine="true"
+                            android:imeOptions="actionDone"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -349,7 +386,6 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
-            android:visibility="gone"
             app:rippleColor="#DCDCDC"
             app:maxImageSize="32dp"
             app:srcCompat="@drawable/ic_baseline_location_24"
@@ -369,15 +405,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBackGIS"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="KEMBALI"
-            android:textSize="16sp"
+            android:text="@string/backbtn"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
 
@@ -390,8 +425,8 @@
             android:insetTop="0dp"
             android:onClick="eventSubmitVerifikasi"
             android:insetBottom="0dp"
-            android:text="SIMPAN"
-            android:textSize="16sp"
+            android:text="@string/okbtn"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
     </LinearLayout>

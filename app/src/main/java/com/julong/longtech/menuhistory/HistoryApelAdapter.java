@@ -139,8 +139,12 @@ public class HistoryApelAdapter extends RecyclerView.Adapter<HistoryApelAdapter.
         public void setUploaded(int isUploaded) {
             if (isUploaded == 0 ) {
                 imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
-            } else {
+            }
+            else if (isUploaded == 1) {
                 imgUploaded.setImageResource(R.drawable.bluetick);
+            }
+            else {
+                imgUploaded.setVisibility(View.GONE);
             }
         }
     }

@@ -52,7 +52,7 @@ import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryActivity;
 import com.julong.longtech.menuinventory.PenerimaanBBM;
-import com.julong.longtech.menureport.ReportCarLogActivity;
+import com.julong.longtech.menureport.ReportActivity;
 import com.julong.longtech.menusetup.AppSetting;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.UpdateSystem;
@@ -63,7 +63,6 @@ import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuhcm.MesinAbsensi;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PengeluaranBBM;
-import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
@@ -91,13 +90,11 @@ import static com.julong.longtech.DatabaseHelper.url_api;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryApel;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryCarLog;
 import static com.julong.longtech.ui.home.HomeFragment.loadlvinfohome;
+import static com.julong.longtech.ui.home.HomeFragment.lvfragment;
+import static com.julong.longtech.ui.home.HomeFragment.tvPlaceholder;
 
 public class MainActivity extends AppCompatActivity {
 
-    //==============================================================================================
-    //Deklarasi Variable
-    //==============================================================================================
-    //Public
     public static ImageView imgUserNavHeader;
     HashPassword hashPassword;
 
@@ -107,11 +104,7 @@ public class MainActivity extends AppCompatActivity {
     List<String> listGroupMenu;
     HashMap<String, List<String>> listMenu;
     String todayDate;
-    //END===========================================================================================
 
-    //==============================================================================================
-    //Deklarasi Object
-    //==============================================================================================
     //Class / package / Helper
     DatabaseHelper dbhelper;
     SweetAlertDialog proDialog;
@@ -135,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
         hashPassword = new HashPassword(11);
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().hide();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -194,19 +184,26 @@ public class MainActivity extends AppCompatActivity {
                         loadlvinfohome(todayDate);
                         loadLvHistoryCarLog(todayDate);
                         loadLvHistoryApel(todayDate);
+                        tvPlaceholder.setVisibility(View.GONE);
                     }
 
                     if (result.getResultCode() == 3) {
                         loadlvinfohome(todayDate);
                         loadLvHistoryCarLog(todayDate);
+                        tvPlaceholder.setVisibility(View.GONE);
+
                     }
 
                     if (result.getResultCode() == 4) {
                         loadlvinfohome(todayDate);
                         loadLvHistoryApel(todayDate);
+                        tvPlaceholder.setVisibility(View.GONE);
                     }
                     if (result.getResultCode() == 727) {
                         loadlvinfohome(todayDate);
+                        if (lvfragment.getAdapter().getCount() > 0) {
+                            tvPlaceholder.setVisibility(View.GONE);
+                        }
                     }
                 }
         );
@@ -439,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (menuGroupCode.equals("0401") && menuSubCode.equals("040101")) {
-                    Intent intent = new Intent(MainActivity.this, ReportCarLogActivity.class);
+                    Intent intent = new Intent(MainActivity.this, ReportActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     onPause();
@@ -694,6 +691,9 @@ public class MainActivity extends AppCompatActivity {
                     if (dbhelper.check_menufragment("020203").equals("0")) {
                         HomeFragment.linearLayoutCarLog.setVisibility(View.GONE);
                     }
+                    if (dbhelper.check_menufragment("020207").equals("0")) {
+                        HomeFragment.linearLayoutGIS.setVisibility(View.GONE);
+                    }
                     if (dbhelper.check_menufragment("030101").equals("0")) {
                         HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
                     }
@@ -802,17 +802,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-
-                dbhelper.insert_menuGS02("04", "REPORT", "0401",
+                if (!dbhelper.get_tbl_username(3).equals("OPR")) {
+                    dbhelper.insert_menuGS02("04", "REPORT", "0401",
                         "REPORT", "RPRT", "RPRTON",
                         "040101", "Laporan Pekerjaan", null,
                         "1", null, null);
+                }
 
-                dbhelper.insert_menuGS02("04", "REPORT", "0401",
+                if (!dbhelper.get_tbl_username(3).equals("MGR")) {
+                    dbhelper.insert_menuGS02("04", "REPORT", "0401",
                         "REPORT", "RPRT", "HSTROFF",
                         "040102", "Riwayat Pekerjaan", null,
                         "2", null, null);
-
+                }
 
                 dbhelper.insert_menuGS02("05", "DATA", "0501",
                         "UPLOAD & DOWNLOAD", "SYNC", "FETCHDT",
@@ -846,6 +848,9 @@ public class MainActivity extends AppCompatActivity {
             }
             if (dbhelper.check_menufragment("020203").equals("0")) {
                 HomeFragment.linearLayoutCarLog.setVisibility(View.GONE);
+            }
+            if (dbhelper.check_menufragment("020207").equals("0")) {
+                HomeFragment.linearLayoutGIS.setVisibility(View.GONE);
             }
             if (dbhelper.check_menufragment("030101").equals("0")) {
                 HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
@@ -883,10 +888,16 @@ public class MainActivity extends AppCompatActivity {
             loadlvinfohome(todayDate);
             loadLvHistoryCarLog(todayDate);
             loadLvHistoryApel(todayDate);
+            if (lvfragment.getAdapter().getCount() > 0) {
+                tvPlaceholder.setVisibility(View.GONE);
+            }
         }
 
         if (requestCode == 727) {
             loadlvinfohome(todayDate);
+            if (lvfragment.getAdapter().getCount() > 0) {
+                tvPlaceholder.setVisibility(View.GONE);
+            }
         }
 
     }

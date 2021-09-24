@@ -1,10 +1,13 @@
 package com.julong.longtech.menuworkshop;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.GPSTracker;
 import com.julong.longtech.R;
@@ -28,6 +31,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,26 +40,32 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cn.pedant.SweetAlert.Constants;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class LaporanPerbaikan extends AppCompatActivity {
 
     DatabaseHelper dbhelper;
-    String selectedVehicle, nodocLaporanPerbaikan,
-            slectedDate, selectedVehicleGroup, latServiceProcess, longServiceProcess;
-    Dialog dlgServiceCompletionStatus;
+    String selectedVehicle, nodocLaporanPerbaikan, selectedMaterial, materialUOM,
+            selectedVehicleGroup, latServiceProcess, longServiceProcess;
+    Dialog dlgAddMaterial, dlgServiceCompletionStatus;
 
     EditText etKegiatanPerbaikan;
     AutoCompleteTextView acVehicleLaporanService;
     RecyclerView lvMaterialLaporanService, lvMekanikLaporanService;
     Button btnBackLaporanService;
     TabLayout tabLaporanPerbaikan;
+    ConstraintLayout layoutMaterial;
+    TextView tvPlaceholderLvMaterial;
 
     List<String> listVehicle;
     ArrayAdapter<String> adapterVehicle;
 
-    List<ListMaterialProsesPerbaikan> listMaterial;
-    AdapterMaterialProsesPerbaikan adapterMaterial;
+    List<String> listMaterial;
+    ArrayAdapter<String> adapterMaterial;
+
+    List<ListMaterialProsesPerbaikan> listViewMaterial;
+    AdapterMaterialProsesPerbaikan adapterLvMaterial;
 
     List<ListMekanikPerintahService> listMekaniks;
     AdapterMekanikPerintahService adapterLvMekanik;
@@ -73,6 +84,8 @@ public class LaporanPerbaikan extends AppCompatActivity {
         btnBackLaporanService = findViewById(R.id.btnBackLaporanService);
         etKegiatanPerbaikan = findViewById(R.id.etKegiatanLaporanService);
         tabLaporanPerbaikan = findViewById(R.id.tabLaporanPerbaikan);
+        layoutMaterial = findViewById(R.id.layoutMaterialLaporanService);
+        tvPlaceholderLvMaterial = findViewById(R.id.tvPlaceholderLvMaterialService);
 
         btnBackLaporanService.setOnClickListener(view -> onBackPressed());
 
@@ -81,14 +94,12 @@ public class LaporanPerbaikan extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
-                        lvMaterialLaporanService.setVisibility(View.VISIBLE);
+                        layoutMaterial.setVisibility(View.VISIBLE);
                         lvMekanikLaporanService.setVisibility(View.GONE);
                         break;
                     case 1:
                         lvMekanikLaporanService.setVisibility(View.VISIBLE);
-                        lvMaterialLaporanService.setVisibility(View.GONE);
-                        break;
-                    case 2:
+                        layoutMaterial.setVisibility(View.GONE);
                         break;
                 }
             }
@@ -99,8 +110,6 @@ public class LaporanPerbaikan extends AppCompatActivity {
                     case 0:
                         break;
                     case 1:
-                        break;
-                    case 2:
                         break;
                 }
             }
@@ -121,7 +130,7 @@ public class LaporanPerbaikan extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedVehicle = dbhelper.get_vehiclecodeonly(adapterVehicle.getItem(position));
                 selectedVehicleGroup = dbhelper.get_vehiclecodegroup(1, selectedVehicle);
-                loadListViewMaterial(selectedVehicleGroup);
+                loadListViewMaterial();
 
                 Cursor cursorMekanik = dbhelper.view_preparemekanik_service();
                 if (cursorMekanik.moveToFirst()) {
@@ -139,6 +148,68 @@ public class LaporanPerbaikan extends AppCompatActivity {
                 keyboardMgr.hideSoftInputFromWindow(acVehicleLaporanService.getWindowToken(), 0);
             }
         });
+    }
+
+    public void addMaterialService(View v) {
+        dlgAddMaterial = new Dialog(this);
+        dlgAddMaterial.setCanceledOnTouchOutside(false);
+        dlgAddMaterial.setContentView(R.layout.dialog_addmaterial);
+        dlgAddMaterial.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowDlgMaterial = dlgAddMaterial.getWindow();
+        windowDlgMaterial.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        AutoCompleteTextView acAddMaterial = dlgAddMaterial.findViewById(R.id.acDlgMaterialService);
+        TextInputLayout inputLayoutQtyMaterial = dlgAddMaterial.findViewById(R.id.inputLayoutDlgQtyMaterial);
+        EditText etQtyMaterial = dlgAddMaterial.findViewById(R.id.etDlgQtyMaterial);
+        Button btnOkDlgMaterial = dlgAddMaterial.findViewById(R.id.btnOkDlgMaterialService);
+        Button btnBackDlgMaterial = dlgAddMaterial.findViewById(R.id.btnBackDlgMaterialService);
+        dlgAddMaterial.show();
+
+        btnBackDlgMaterial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlgAddMaterial.dismiss();
+                selectedMaterial = null;
+                acAddMaterial.setText(null);
+                etQtyMaterial.setText(null);
+            }
+        });
+
+        listMaterial = dbhelper.get_listmaterialmd();
+        adapterMaterial = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listMaterial);
+        acAddMaterial.setAdapter(adapterMaterial);
+
+        acAddMaterial.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedMaterial = dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 0);
+                materialUOM = dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 1);
+                inputLayoutQtyMaterial.setSuffixText(dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 1));
+            }
+        });
+
+        btnOkDlgMaterial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedMaterial == null) {
+                    Toast.makeText(LaporanPerbaikan.this, "Pilih Material!", Toast.LENGTH_LONG).show();
+                }
+                else if (TextUtils.isEmpty(etQtyMaterial.getText().toString().trim())) {
+                    Toast.makeText(LaporanPerbaikan.this, "Isi kuantitas material!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    dbhelper.insert_prosesperbaikan_detailmaterial(null, selectedMaterial, etQtyMaterial.getText().toString(), materialUOM);
+                    selectedMaterial = null;
+                    acAddMaterial.setText(null);
+                    etQtyMaterial.setText(null);
+                    dlgAddMaterial.dismiss();
+                    tvPlaceholderLvMaterial.setVisibility(View.GONE);
+                    loadListViewMaterial();
+                }
+
+            }
+        });
+
     }
 
     public void submitLaporanPerbaikan(View v) {
@@ -161,7 +232,6 @@ public class LaporanPerbaikan extends AppCompatActivity {
     private void showDlgSubmitPerbaikan() {
         dlgServiceCompletionStatus = new Dialog(this);
         dlgServiceCompletionStatus.setCanceledOnTouchOutside(false);
-        dlgServiceCompletionStatus.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dlgServiceCompletionStatus.setContentView(R.layout.dialog_submitlaporanservice);
         dlgServiceCompletionStatus.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowDlgPerbaikan = dlgServiceCompletionStatus.getWindow();
@@ -187,13 +257,6 @@ public class LaporanPerbaikan extends AppCompatActivity {
         dbhelper.insert_prosesperbaikan_header(nodocLaporanPerbaikan, selectedVehicle, submitType,
                 etKegiatanPerbaikan.getText().toString(), latServiceProcess, longServiceProcess);
 
-        // Inserting selected material
-        for (int i = 0; i < AdapterMaterialProsesPerbaikan.materialList.size(); i++) {
-            dbhelper.insert_prosesperbaikan_detailmaterial(nodocLaporanPerbaikan,
-                    AdapterMaterialProsesPerbaikan.materialList.get(i).getMaterialCode(),
-                    AdapterMaterialProsesPerbaikan.materialList.get(i).getEditTextValue());
-        }
-
         // Delete unselected materials and mekaniks
         dbhelper.update_detail_laporanperbaikan(nodocLaporanPerbaikan);
         dlgServiceCompletionStatus.dismiss();
@@ -212,25 +275,27 @@ public class LaporanPerbaikan extends AppCompatActivity {
         }, 2000);
     }
 
-    public void loadListViewMaterial(String vehicleGroup) {
+    public void loadListViewMaterial() {
 
         LinearLayoutManager layoutMaterial = new LinearLayoutManager(this);
         lvMaterialLaporanService.setLayoutManager(layoutMaterial);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(getDrawable(R.drawable.divider));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                lvMaterialLaporanService.getContext(), layoutMaterial.getOrientation());
         lvMaterialLaporanService.addItemDecoration(dividerItemDecoration);
 
-        listMaterial = new ArrayList<>();
-        listMaterial.clear();
-        final Cursor cursor = dbhelper.listview_material(vehicleGroup);
+        listViewMaterial = new ArrayList<>();
+        listViewMaterial.clear();
+        final Cursor cursor = dbhelper.listview_material();
         if (cursor.moveToFirst()) {
             do {
                 ListMaterialProsesPerbaikan paramsMaterial = new ListMaterialProsesPerbaikan
-                        (cursor.getString(1), cursor.getString(0), cursor.getString(2));
-                listMaterial.add(paramsMaterial);
+                        (cursor.getString(0), cursor.getInt(1), cursor.getString(2));
+                listViewMaterial.add(paramsMaterial);
             } while (cursor.moveToNext());
         }
-        adapterMaterial = new AdapterMaterialProsesPerbaikan(listMaterial, this);
-        lvMaterialLaporanService.setAdapter(adapterMaterial);
+        adapterLvMaterial = new AdapterMaterialProsesPerbaikan(listViewMaterial, this);
+        lvMaterialLaporanService.setAdapter(adapterLvMaterial);
     }
 
     private void loadListViewMekanik() {
@@ -267,6 +332,7 @@ public class LaporanPerbaikan extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
+        db.execSQL("DELETE FROM tr_02 WHERE datatype = 'PSWS' AND itemdata = 'DETAIL2' AND uploaded IS NULL");
         db.execSQL("DELETE FROM tr_02 WHERE datatype = 'PSWS' AND itemdata = 'DETAIL1' AND uploaded IS NULL");
         finish();
     }

@@ -8,10 +8,11 @@
     tools:context=".LoginActivity">
 
     <LinearLayout
+        android:id="@+id/layoutBgLogin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="50dp"
-        android:id="@+id/layoutBgLogin"
+        android:background="@drawable/bgoil"
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -223,7 +224,7 @@
                         android:onClick="eventClickLogin"
                         android:text="LOGIN"
                         android:textColor="@color/colorTextButton"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         app:cornerRadius="10dp" />
 

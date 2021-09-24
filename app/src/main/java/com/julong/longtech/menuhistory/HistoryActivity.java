@@ -186,6 +186,7 @@ public class HistoryActivity extends AppCompatActivity {
             do {
                 ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
                         cursor.getString(cursor.getColumnIndex("documentno")),
+                        cursor.getString(cursor.getColumnIndex("tglinput")),
                         cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
                         cursor.getString(cursor.getColumnIndex("empname")),
                         cursor.getString(cursor.getColumnIndex("activity")),

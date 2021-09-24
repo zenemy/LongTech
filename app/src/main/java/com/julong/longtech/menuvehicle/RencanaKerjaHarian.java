@@ -201,7 +201,6 @@ public class RencanaKerjaHarian extends AppCompatActivity {
         acKegiatanKerjaRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
                 selectedKegiatan = dbHelper.get_singletransportratecode(adapterKegiatan.getItem(position));
                 dbHelper.update_headerKegiatanRKH(nodocRKH, selectedVehicleType, selectedKegiatan);
 
@@ -250,10 +249,10 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
     }
 
+    // Pilih Tipe Kendaraan
     private void showVehicleTypeDlg() {
         dlgVehicleTypeRKH = new Dialog(this);
         dlgVehicleTypeRKH.setCanceledOnTouchOutside(false);
-        dlgVehicleTypeRKH.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dlgVehicleTypeRKH.setContentView(R.layout.dialog_vehicletyperkh);
         dlgVehicleTypeRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowDlgVehicleType = dlgVehicleTypeRKH.getWindow();
@@ -272,7 +271,7 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
         btnCancelDlgVehicleRKH.setOnClickListener(view -> finish());
 
-        dlgVehicleTypeRKH.setOnCancelListener(dialogInterface -> RencanaKerjaHarian.this.finish());
+        dlgVehicleTypeRKH.setOnCancelListener(dialogInterface -> this.finish());
 
         acDlgVehicleType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -297,11 +296,9 @@ public class RencanaKerjaHarian extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     public static void loadListViewRKH() {
-
         List<ListParamRKH> listParamRKH;
         DatabaseHelper dbhelper;
         dbhelper = new DatabaseHelper(listViewRKH.getContext());

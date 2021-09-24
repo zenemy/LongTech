@@ -4,6 +4,7 @@ public class ListHistoryRKH {
 
     private String documentNumber;
     private String tglPelaksanaan;
+    private String inputDate;
     private String employeeName;
     private String activityName;
     private String locationName;
@@ -11,10 +12,11 @@ public class ListHistoryRKH {
     private String shiftcode;
     private int isUploaded;
 
-    public ListHistoryRKH(String documentNumber, String tglPelaksanaan, String employeeName, String activityName,
+    public ListHistoryRKH(String documentNumber, String inputDate, String tglPelaksanaan, String employeeName, String activityName,
                           String locationName, String unitCode, String shiftcode, int isUploaded) {
 
         this.documentNumber = documentNumber;
+        this.inputDate = inputDate;
         this.tglPelaksanaan = tglPelaksanaan;
         this.employeeName = employeeName;
         this.activityName = activityName;
@@ -28,6 +30,9 @@ public class ListHistoryRKH {
         return documentNumber;
     }
 
+    public String getInputDate() {
+        return inputDate;
+    }
     public String getTglPelaksanaan() {
         return tglPelaksanaan;
     }

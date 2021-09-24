@@ -6,7 +6,7 @@
     <color name="colorText">#000000</color>
 
     <color name="colorAccent">#03DAC5</color>
-    <color name="ivory">#FFFFF0</color>
+    <color name="colorTextHint">#808080</color>
     <color name="lightyellow">#FFFFE0</color>
     <color name="yellow">#FFFF00</color>
     <color name="snow">#FFFAFA</color>

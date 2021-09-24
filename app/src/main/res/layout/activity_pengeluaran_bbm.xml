@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#EFECEC"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
     tools:context=".menuinventory.PengeluaranBBM">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -69,7 +70,8 @@
                     android:id="@+id/etTodayDateKeluarBBM"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:inputType="date"
+                    android:inputType="none"
+                    android:editable="false"
                     android:paddingStart="12dp"
                     android:paddingTop="8dp"
                     android:paddingEnd="8dp"
