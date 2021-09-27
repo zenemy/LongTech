@@ -257,42 +257,28 @@ public class MainActivity extends AppCompatActivity {
                     if (menuGroupCode.equals("0101") && menuSubCode.equals("010105")) {
                         if (dbhelper.get_statusapelpagi(0).equals("1")) {
                             Intent intent = new Intent(MainActivity.this, ApelPagi.class);
-                            intent.putExtra("shiftapel", dbhelper.get_statusapelpagi(2));
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intentLaunchMainActivity.launch(intent);
                             onPause();
-                        } else {
-                            String[] arrayShiftApel = {"Shift 1", "Shift 2", "Shift 3"};
-                            ArrayAdapter<String> adapterShiftApel;
-
-                            Dialog dlgStartApel = new Dialog(MainActivity.this);
-                            dlgStartApel.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            dlgStartApel.setContentView(R.layout.dialog_startapel);
-                            dlgStartApel.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                            Window windowStartApel = dlgStartApel.getWindow();
-                            windowStartApel.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                            AutoCompleteTextView acShiftStartApel = dlgStartApel.findViewById(R.id.acShiftStartApel);
-                            Button btnOkStartApel = dlgStartApel.findViewById(R.id.btnOkDlgShiftApel);
-                            Button btnBackStartApel = dlgStartApel.findViewById(R.id.btnBackDlgShiftApel);
-
-                            btnBackStartApel.setOnClickListener(view12 -> dlgStartApel.dismiss());
-                            adapterShiftApel = new ArrayAdapter<>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, arrayShiftApel);
-                            acShiftStartApel.setAdapter(adapterShiftApel);
-
-                            btnOkStartApel.setOnClickListener(new View.OnClickListener() {
+                        }
+                        else {
+                            final SweetAlertDialog startApelDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                            startApelDlg.setTitleText("Mulai apel pagi?");
+                            startApelDlg.setCancelText("KEMBALI");
+                            startApelDlg.setConfirmText("MULAI");
+                            startApelDlg.showCancelButton(true);
+                            startApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                 @Override
-                                public void onClick(View view) {
-                                    dlgStartApel.dismiss();
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.dismiss();
                                     Intent intent = new Intent(MainActivity.this, ApelPagi.class);
-                                    intent.putExtra("shiftapel", acShiftStartApel.getText().toString());
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     intentLaunchMainActivity.launch(intent);
                                     onPause();
                                 }
                             });
-                            dlgStartApel.show();
+                            startApelDlg.show();
                         }
-
                     }
 
                     if (menuGroupCode.equals("0201") && menuSubCode.equals("020101")) {
@@ -341,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
                         Window windowStartCarLog = dlgStartCarLog.getWindow();
                         windowStartCarLog.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
                         AutoCompleteTextView acDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.acDlgVehicleCarLog);
+                        AutoCompleteTextView acDlgShiftCarLog = dlgStartCarLog.findViewById(R.id.acDlgShiftCarLog);
                         Button btnCancelDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.btnCancelDlgVehicleCarLog);
                         Button btnSimpanDlgVehicleCarLog = dlgStartCarLog.findViewById(R.id.btnSimpanDlgVehicleCarLog);
                         dlgStartCarLog.show();
@@ -350,11 +337,19 @@ public class MainActivity extends AppCompatActivity {
                         List<String> listVehicleCarLog;
                         ArrayAdapter<String> adapterVehicleCarLog;
 
+                        String[] arrayShiftCarLog = {"Shift 1", "Shift 2", "Shift 3"};
+                        ArrayAdapter<String> adapterShiftCarLog;
+
                         acDlgVehicleCarLog.setText(dbhelper.get_vehiclename(2, dbhelper.get_tbl_username(19)));
+                        acDlgShiftCarLog.setText(dbhelper.get_tbl_username(20));
 
                         listVehicleCarLog = dbhelper.get_vehiclemasterdata();
-                        adapterVehicleCarLog = new ArrayAdapter<String>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleCarLog);
+                        adapterVehicleCarLog = new ArrayAdapter<>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleCarLog);
                         acDlgVehicleCarLog.setAdapter(adapterVehicleCarLog);
+
+                        adapterShiftCarLog = new ArrayAdapter<>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, arrayShiftCarLog);
+                        acDlgShiftCarLog.setAdapter(adapterShiftCarLog);
+
 
                         acDlgVehicleCarLog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -369,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 dlgStartCarLog.dismiss();
                                 String selectedCarLogVehicle = dbhelper.get_vehiclecodeonly(acDlgVehicleCarLog.getText().toString());
-                                dbhelper.update_ancakcode_user(selectedCarLogVehicle);
+                                dbhelper.update_ancakcode_user(selectedCarLogVehicle, acDlgShiftCarLog.getText().toString());
 
                                 Intent intent = new Intent(MainActivity.this, KartuKerjaVehicle.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -493,7 +488,6 @@ public class MainActivity extends AppCompatActivity {
     public void eventShowQR(View v) {
         //Insert Password before show QR
         Dialog dlgInsertPasswordQR = new Dialog(MainActivity.this);
-        dlgInsertPasswordQR.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dlgInsertPasswordQR.setContentView(R.layout.dialog_passwordqr);
         dlgInsertPasswordQR.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         dlgInsertPasswordQR.setCanceledOnTouchOutside(false);
@@ -525,7 +519,6 @@ public class MainActivity extends AppCompatActivity {
 
                     //Show QR if success
                     Dialog dialogMyQR = new Dialog(MainActivity.this);
-                    dialogMyQR.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialogMyQR.setContentView(R.layout.dialog_myqr);
                     dialogMyQR.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                     dialogMyQR.setCanceledOnTouchOutside(false);

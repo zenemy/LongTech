@@ -357,14 +357,13 @@ public class UploadData extends AppCompatActivity {
         requestQueueTR01.add(stringRequestTR01);
     }
 
-    public static void uploadTR02(Activity context, int id, String nodoc, String datatype, String subdatatype, String itemdata, String subitemdata, String compid, String siteid, String date1, String date2, String date3, String date4,
-                            String date5, String text1, String text2, String text3, String text4, String text5,
-                            String text6, String text7, String text8, String text9, String text10,
-                            String text11, String text12, String text13, String text14,
-                            String text15, String text16, String text17, String text18,
-                            String text19, String text20, String text21, String text22,
-                            String text23, String text24, String text25, String text26,
-                            String text27, String text28, String text29, String text30) {
+    public static void uploadTR02(Activity context, int id, String nodoc, String datatype, String subdatatype,
+        String itemdata, String subitemdata, String compid, String siteid, String date1, String date2, String date3,
+        String date4, String date5, String text1, String text2, String text3, String text4, String text5,
+        String text6, String text7, String text8, String text9, String text10, String text11, String text12,
+        String text13, String text14, String text15, String text16, String text17, String text18,
+        String text19, String text20, String text21, String text22, String text23, String text24,
+        String text25, String text26, String text27, String text28, String text29, String text30) {
 
         DatabaseHelper dbHelper;
         dbHelper = new DatabaseHelper(context);

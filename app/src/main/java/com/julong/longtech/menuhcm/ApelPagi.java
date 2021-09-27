@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.julong.longtech.DatabaseHelper;
+import com.julong.longtech.DialogHelper;
 import com.julong.longtech.GPSTracker;
 import com.julong.longtech.HashPassword;
 import com.julong.longtech.MainActivity;
@@ -60,12 +61,13 @@ public class ApelPagi extends AppCompatActivity {
 
     public static int dataProcess, REQUEST_IMAGE_CAPTURE = 1;
     public static byte[] byteGambarApel, gambarAnggota;
-    public static String selectedEmp, selectedJabatan, selectedUnit, selectedItemData, selectedShift, nodocApel, latApel, longApel;
+    public static String selectedEmp, selectedUnit, selectedItemData, nodocApel, latApel, longApel;
     Handler handler = new Handler();
     DatabaseHelper dbhelper;
     HashPassword hashFunction;
 
     ActivityResultLauncher<Intent> intentLaunchCameraHasil;
+    public static ActivityResultLauncher<Intent> intentLaunchFotoAnggota;
 
     LinearLayout layoutBtnApel;
     EditText etKemandoranApel, etLokasiApel;
@@ -87,7 +89,7 @@ public class ApelPagi extends AppCompatActivity {
         setContentView(R.layout.activity_apelpagi);
 
         dbhelper = new DatabaseHelper(this);
-        String apelDate = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(new Date());
+        String apelDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
 
         nodocApel = dbhelper.get_tbl_username(0) + "/ABSAPL/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
         hashFunction = new HashPassword(11);
@@ -108,10 +110,8 @@ public class ApelPagi extends AppCompatActivity {
         btnBackApelPagi.setOnClickListener(view -> onBackPressed());
 
         // Get selected shift value from intent
-        Bundle bundle = getIntent().getExtras();
-        selectedShift = bundle.getString("shiftapel");
         etKemandoranApel.setText(dbhelper.get_infokemandoranapel(0, dbhelper.get_tbl_username(18)));
-        tvHeaderApel.setText("BRIEFING " + selectedShift + " (" + apelDate + ")");
+        tvHeaderApel.setText("BRIEFING " + apelDate);
 
         prepateTeamData();
         loadlvpimpinan();
@@ -148,7 +148,39 @@ public class ApelPagi extends AppCompatActivity {
                         imgFotoApel.setScaleType(ImageView.ScaleType.FIT_XY);
                         imgFotoApel.setForeground(null);
 
-                        dbhelper.update_fotorame_apel(dbhelper.check_existingapel(1, selectedShift), latApel, longApel, byteGambarApel);
+                        dbhelper.update_fotorame_apel(dbhelper.check_existingapel(1), latApel, longApel, byteGambarApel);
+                    }
+
+                }
+        );
+
+        intentLaunchFotoAnggota = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
+                        getLocation();
+                        Bundle bundleFoto = result.getData().getExtras();
+                        Bitmap photoCamera = (Bitmap) bundleFoto.get("data");
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                        gambarAnggota = stream.toByteArray();
+
+                        DialogHelper.dlgMetodeAbsen.dismiss();
+                        dbhelper.updateapel_fotoanggota(nodocApel, selectedItemData, selectedEmp, latApel, longApel, gambarAnggota);
+                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
+                        dlgStartOK.setTitleText("Berhasil Absen").setContentText(dbhelper.get_empname(selectedEmp)).setConfirmText("OK").show();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dlgStartOK.dismiss();
+
+                                handler.removeCallbacks(this);
+                            }
+                        }, 2000);
+                        loadlvanggota();
+                        loadlvpimpinan();
+
                     }
 
                 }
@@ -187,8 +219,6 @@ public class ApelPagi extends AppCompatActivity {
                         lvAnggota.setVisibility(View.VISIBLE);
                         lvPimpinan.setVisibility(View.GONE);
                         break;
-                    case 2:
-                        break;
                 }
             }
 
@@ -198,8 +228,6 @@ public class ApelPagi extends AppCompatActivity {
                     case 0:
                         break;
                     case 1:
-                        break;
-                    case 2:
                         break;
                 }
             }
@@ -247,33 +275,6 @@ public class ApelPagi extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         final IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Apel foto per person
-        if (dataProcess == 2) {
-            gambarAnggota = null;
-            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                getLocation();
-                Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-                gambarAnggota = stream.toByteArray();
-
-                ApelPagiAdapter.dlgMetodeAbsen.dismiss();
-                dbhelper.updateapel_fotoanggota(nodocApel, selectedItemData, selectedEmp, latApel, longApel, gambarAnggota);
-                final SweetAlertDialog dlgStartOK = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
-                dlgStartOK.setTitleText("Berhasil Absen").setContentText(dbhelper.get_empname(selectedEmp)).setConfirmText("OK").show();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dlgStartOK.dismiss();
-
-                        handler.removeCallbacks(this);
-                    }
-                }, 2000);
-                loadlvanggota();
-                loadlvpimpinan();
-            }
-        }
 
         // Scan QR code employee
         if (dataProcess == 3) {
@@ -335,32 +336,33 @@ public class ApelPagi extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void prepateTeamData() throws SQLiteException {
         dbhelper = new DatabaseHelper(this);
 
-        if (dbhelper.check_existingapel(0, selectedShift).equals("1") && dbhelper.check_existingapel(4, selectedShift).equals("")) {
+        if (dbhelper.check_existingapel(0).equals("1") && dbhelper.check_existingapel(4).equals("")) {
             try {
-                etLokasiApel.setText(dbhelper.check_existingapel(2, selectedShift));
+                etLokasiApel.setText(dbhelper.check_existingapel(2));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (dbhelper.count_fotoapel(dbhelper.check_existingapel(1, selectedShift)).equals("1")) {
-                byteGambarApel = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1, selectedShift));
+            if (dbhelper.count_fotoapel(dbhelper.check_existingapel(1)).equals("1")) {
+                byteGambarApel = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1));
                 Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteGambarApel, 0, byteGambarApel.length);
                 imgFotoApel.setForeground(null);
                 imgFotoApel.setImageBitmap(compressedBitmap);
                 imgFotoApel.setScaleType(ImageView.ScaleType.FIT_XY);
             }
         }
-        else if (dbhelper.check_existingapel(4, selectedShift).equals("0")
-                || dbhelper.check_existingapel(4, selectedShift).equals("1")) {
+        else if (dbhelper.check_existingapel(4).equals("0")
+                || dbhelper.check_existingapel(4).equals("1")) {
             layoutBtnApel.setVisibility(View.GONE);
             imgFotoApel.setEnabled(false);
             etLokasiApel.setFocusable(false);
             lvAnggota.setEnabled(false);
             lvPimpinan.setEnabled(false);
-            etLokasiApel.setText(dbhelper.check_existingapel(2, selectedShift));
-            byteGambarApel = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1, selectedShift));
+            etLokasiApel.setText(dbhelper.check_existingapel(2));
+            byteGambarApel = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1));
             Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteGambarApel, 0, byteGambarApel.length);
             imgFotoApel.setForeground(null);
             imgFotoApel.setImageBitmap(compressedBitmap);
@@ -368,15 +370,16 @@ public class ApelPagi extends AppCompatActivity {
         }
         else {
 
-            dbhelper.insert_apelpagi_header(nodocApel, selectedShift);
+            dbhelper.insert_apelpagi_header(nodocApel);
 
             // Insertin team data into transaction
-            Cursor cursorAnggota = dbhelper.view_prepareanggota_apelpagi(selectedShift);
+            Cursor cursorAnggota = dbhelper.view_prepareanggota_apelpagi();
             if (cursorAnggota.moveToFirst()) {
                 do {
                     dbhelper.insert_apelpagi_anggota(nodocApel, cursorAnggota.getString(cursorAnggota.getColumnIndex("empcode")),
                             cursorAnggota.getString(cursorAnggota.getColumnIndex("positioncode")),
-                            cursorAnggota.getString(cursorAnggota.getColumnIndex("unitcode")));
+                            cursorAnggota.getString(cursorAnggota.getColumnIndex("unitcode")),
+                            cursorAnggota.getString(cursorAnggota.getColumnIndex("shiftcode")));
                 } while (cursorAnggota.moveToNext());
             }
 

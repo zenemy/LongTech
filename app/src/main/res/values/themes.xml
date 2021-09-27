@@ -2,24 +2,18 @@
     <!-- Base application theme. -->
     <style name="Theme.Longtech" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/forestgreen</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-
-        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
     </style>
 
     <style name="Theme.Longtech.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
-        <item name="actionMenuTextColor">#FFFFFF</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Longtech.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Longtech.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
 
     <style name="Theme.Longtech.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

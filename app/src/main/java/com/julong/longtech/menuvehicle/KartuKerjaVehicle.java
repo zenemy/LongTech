@@ -745,10 +745,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
     public void prepareCarLogData() {
 
         if (dbhelper.get_tbl_username(27) != null) {
-            tvInfoUnitCarLog.setText(dbhelper.get_tbl_username(19) + " [" + dbhelper.get_tbl_username(27) + "]");
+            tvInfoUnitCarLog.setText(dbhelper.get_tbl_username(19) + " " +  dbhelper.get_tbl_username(20) + " [" + dbhelper.get_tbl_username(27) + "]");
         }
         else {
-            tvInfoUnitCarLog.setText(dbhelper.get_tbl_username(19));
+            tvInfoUnitCarLog.setText(dbhelper.get_tbl_username(19) + " " +  dbhelper.get_tbl_username(20));
         }
 
         listNewCategoryLoadName = dbhelper.get_loadtype(1, dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)));
@@ -792,7 +792,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
         }
         else {
             //Showing finishDlg
-            dlgSelesaiCarLog = new Dialog(KartuKerjaVehicle.this);
+            dlgSelesaiCarLog = new Dialog(this);
             dlgSelesaiCarLog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dlgSelesaiCarLog.setContentView(R.layout.dlg_selesaicarlog);
             dlgSelesaiCarLog.getWindow().setBackgroundDrawable(new ColorDrawable(0));

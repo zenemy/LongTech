@@ -12,6 +12,7 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="judulvehicle">Kendaraan Kerja</string>
+    <string name="judulshiftvehicle">Shift Kendaraan Kerja</string>
     <string name="hintvehicle">Pilih Kendaraan Kerja</string>
     <string name="juduldesc">Catatan Tambahan</string>
     <string name="bbmgoodang">Gudang BBM</string>

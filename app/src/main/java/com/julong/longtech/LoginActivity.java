@@ -430,10 +430,8 @@ public class LoginActivity extends AppCompatActivity {
                                         .setTitleText("Password Salah").setConfirmText("OK").show();
                                 } else {
                                     pDialog.dismiss();
-                                    DialogHelper.v_dlg_title = "User ID tidak terdaftar, " +
-                                            "silahkan hubungi HRD dan silahkan ulangi.";
-                                    DialogHelper.v_dlg_btn1 = "OK";
-                                    dialogHelper.showDialogInfo();
+                                    dialogHelper.showDialogInfo("User ID tidak terdaftar, " +
+                                            "silahkan hubungi HRD dan silahkan ulangi.");
                                     et_username.setText(null);
                                     et_password.setText(null);
                                 }
@@ -462,9 +460,8 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 return_koneksi = "";
                                 pDialog.dismiss();
-                                DialogHelper.v_dlg_title = "Harap Periksa Jaringan Internet Anda";
-                                DialogHelper.v_dlg_btn1 = "OK";
-                                dialogHelper.showDialogInfo();
+                                dialogHelper.showDialogInfo("User ID tidak terdaftar, " +
+                                        "silahkan hubungi HRD dan silahkan ulangi.");
                             }
                         }
                     });
@@ -576,21 +573,17 @@ public class LoginActivity extends AppCompatActivity {
                                 dbhelper.updatestatusversion(status_update);
                                 tvversion.setTextColor(0xFFD51616);
                                 tvversion.setText("Update System Tersedia");
-                                DialogHelper.v_dlg_title = "Update System Tersedia\n\n" +
+                                dialogHelper.showDialogInfo("Update System Tersedia\n\n" +
                                         dbhelper.get_tbl_version(7) + "\n[" +
                                         dbhelper.get_tbl_version(8) + "]\n\n" +
-                                        dbhelper.get_tbl_version(9);
-                                DialogHelper.v_dlg_btn1 = "OK";
-                                dialogHelper.showDialogInfo();
+                                        dbhelper.get_tbl_version(9));
                                 tvversion.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        DialogHelper.v_dlg_title = "Update System Tersedia\n\n" +
+                                        dialogHelper.showDialogInfo("Update System Tersedia\n\n" +
                                                 dbhelper.get_tbl_version(7) + "\n[" +
                                                 dbhelper.get_tbl_version(8) + "]\n\n" +
-                                                dbhelper.get_tbl_version(9);
-                                        DialogHelper.v_dlg_btn1 = "OK";
-                                        dialogHelper.showDialogInfo();
+                                                dbhelper.get_tbl_version(9));
                                     }
                                 });
                             } else {
@@ -610,9 +603,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     return_koneksi = null;
-                    DialogHelper.v_dlg_title = "Anda berada pada mode offline";
-                    DialogHelper.v_dlg_btn1 = "OK";
-                    dialogHelper.showDialogInfo();
+                    dialogHelper.showDialogInfo("Anda berada pada mode offline");
                     String status_update;
                     status_update = "NO";
                     dbhelper.updatestatusversion(status_update);

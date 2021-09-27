@@ -16,30 +16,77 @@
         android:gravity="center"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
-        android:text="@string/judulvehicle"
+        android:text="@string/judulshiftvehicle"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
         android:background="@color/white"
-        app:hintEnabled="false"
-        app:endIconMode="dropdown_menu">
+        android:orientation="vertical"
+        android:padding="12dp">
 
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/acDlgVehicleCarLog"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="@string/judulvehicle"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hintvehicle"
-            android:textColorHint="#808080"
+            android:layout_marginTop="6dp"
+            app:hintEnabled="false"
+            app:endIconMode="dropdown_menu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acDlgVehicleCarLog"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="@string/hintvehicle"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="16sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="12dp"
+            android:text="Shift Kerja"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            android:layout_marginTop="6dp"
+            app:endIconMode="dropdown_menu">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acDlgShiftCarLog"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:editable="false"
+                android:inputType="none"
+                android:hint="Shift Kerja"
+                android:textColor="@color/black"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,7 +98,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancelDlgVehicleCarLog"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="0.5dp"
             android:layout_marginBottom="1dp"
@@ -60,13 +107,13 @@
             android:insetBottom="0dp"
             android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder"
-            android:text="KEMBALI"
+            android:text="@string/backbtn"
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSimpanDlgVehicleCarLog"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_marginStart="0.5dp"
             android:layout_marginEnd="1dp"
             android:layout_marginBottom="1dp"
@@ -75,7 +122,7 @@
             android:insetBottom="0dp"
             android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomRightRounded"
-            android:text="SIMPAN"
+            android:text="@string/okbtn"
             android:textStyle="bold" />
     </LinearLayout>
 

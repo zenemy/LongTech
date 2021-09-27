@@ -232,63 +232,6 @@ public class AppSetting extends AppCompatActivity {
             }
         });
 
-        btnsimpan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogHelper.v_dlg_title = "Apakah anda yakin akan menyimpan perubahan?";
-                DialogHelper.v_dlg_btn1 = "YA";
-                DialogHelper.v_dlg_btn2 = "TIDAK";
-                dialogHelper.showDialogYesNo();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        handler.postDelayed(this, 500);
-
-                        if (DialogHelper.v_rtn_dlg_string.equals("CANCEL") ||
-                                DialogHelper.v_rtn_dlg_string.equals("NO")) {
-                            DialogHelper.v_rtn_dlg_string = "";
-                            handler.removeCallbacks(this);
-                        }
-
-                        if (DialogHelper.v_rtn_dlg_string.equals("OK")) {
-                            DialogHelper.v_rtn_dlg_string = "";
-                            handler.removeCallbacks(this);
-
-                            if (!previewtvnamasystem.getText().toString().equals("")) {
-                                dbhelper.update_nama_system(previewtvnamasystem.getText().toString());
-                            }
-                            if (dbBgColorHex != null) {
-                                dbhelper.update_bgcolor(dbBgColorHex);
-                            }
-                            if (dbThemeHex != null) {
-                                dbhelper.update_themecolor(dbThemeHex);
-                            }
-                            if (dbTextBaseColor != null) {
-                                dbhelper.update_basetextcolor(dbTextBaseColor);
-                            }
-                            if (dbSystemTextHex != null) {
-                                dbhelper.update_judulcolor(dbSystemTextHex);
-                            }
-                            if (gambar1 != null && gambar1.length > 0 ) {
-                                dbhelper.update_gambar(gambar1);
-                            }
-                            if (gambar2 != null && gambar2.length > 0) {
-                                dbhelper.update_logo(gambar2);
-                            }
-                            if (gambar3 != null && gambar3.length > 0) {
-                                dbhelper.update_background(gambar3);
-                            }
-
-                            Intent intent = new Intent(AppSetting.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                        }
-                    }
-                }, 500);
-
-            }
-        });
-
         takeimagelogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -327,9 +270,7 @@ public class AppSetting extends AppCompatActivity {
                         gambar1 = stream1.toByteArray();
 
                         if (gambar1.length > 500000) {
-                            DialogHelper.v_dlg_title = "Ukuran Gambar Terlalu Besar";
-                            DialogHelper.v_dlg_btn1 = "OK";
-                            dialogHelper.showDialogInfo();
+                            dialogHelper.showDialogInfo("Ukuran Gambar Terlalu Besar");
                         }
                         else {
                             previewimgprofile.setImageURI(result.getUri());
@@ -353,9 +294,7 @@ public class AppSetting extends AppCompatActivity {
                         gambar2 = stream1.toByteArray();
 
                         if (gambar2.length > 500000) {
-                            DialogHelper.v_dlg_title = "Ukuran Gambar Terlalu Besar";
-                            DialogHelper.v_dlg_btn1 = "OK";
-                            dialogHelper.showDialogInfo();
+                            dialogHelper.showDialogInfo("Ukuran Gambar Terlalu Besar");
                         }
                         else {
                             previewimglogo.setImageURI(result.getUri());
@@ -380,9 +319,7 @@ public class AppSetting extends AppCompatActivity {
                         gambar3 = stream1.toByteArray();
 
                         if (gambar3.length > 500000) {
-                            DialogHelper.v_dlg_title = "Ukuran Gambar Terlalu Besar";
-                            DialogHelper.v_dlg_btn1 = "OK";
-                            dialogHelper.showDialogInfo();
+                            dialogHelper.showDialogInfo("Ukuran Gambar Terlalu Besar");
                         }
                         else {
                             previewimgbackground.setImageURI(result.getUri());

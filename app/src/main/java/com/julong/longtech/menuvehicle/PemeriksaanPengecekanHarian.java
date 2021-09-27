@@ -1,7 +1,10 @@
 package com.julong.longtech.menuvehicle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
@@ -11,6 +14,7 @@ import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.GPSTracker;
 import com.julong.longtech.LoginActivity;
 import com.julong.longtech.R;
+import com.julong.longtech.menuhcm.AbsensiMandiri;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -40,6 +44,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -72,6 +79,8 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
     ImageView imgTakePictP2H;
     Button btnCancelP2H;
+
+    ActivityResultLauncher<Intent> intentFotoP2H;
 
     String nodocP2H, latitudeP2H, longitudeP2H, selectedVehicleCode;
     private List<String> listVehicleP2H;
@@ -151,11 +160,26 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleP2H);
         acKendaraanP2H.setAdapter(adapterVehicleP2H);
 
+        intentFotoP2H = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap photoCamera = (Bitmap) bundle.get("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                    byteImgP2H = stream.toByteArray();
+                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteImgP2H, 0, byteImgP2H.length);
+                    imgTakePictP2H.setImageBitmap(compressedBitmap);
+                }
+            }
+        );
+
         imgTakePictP2H.setOnClickListener(v -> {
             byteImgP2H = null;
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePictureIntent.resolveActivity(this.getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                intentFotoP2H.launch(takePictureIntent);
             }
         });
 
@@ -445,20 +469,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 //
 //        String showTime = hourAsText + ":" + minuteAsText;
 //    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            byteImgP2H = stream.toByteArray();
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteImgP2H, 0, byteImgP2H.length);
-            imgTakePictP2H.setImageBitmap(compressedBitmap);
-        }
-    }
 
     private void getLocation() {
         GPSTracker gps = new GPSTracker(this);

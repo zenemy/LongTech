@@ -44,8 +44,6 @@ import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
 public class AbsensiMandiri extends AppCompatActivity {
 
-    private int REQUEST_IMAGE_CAPTURE = 1;
-    protected static int START_INDEX=-2, DEST_INDEX=-1;
     String tipeKeteranganAbsen, nodocAbsensiMandiri, savedate, latAbsenMandiri, longAbsenMandiri;
     DatabaseHelper dbhelper;
 
@@ -57,7 +55,6 @@ public class AbsensiMandiri extends AppCompatActivity {
     byte[] imgAbsensiMandiri;
 
     ActivityResultLauncher<Intent> intentLaunchCamera;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +129,7 @@ public class AbsensiMandiri extends AppCompatActivity {
                         titikAbsen.setPosition(absenPoint);
                         titikAbsen.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                         titikAbsen.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.marker_person, null));
-                        mapAbsenLokasi.getController().setZoom(15);
+                        mapAbsenLokasi.getController().setZoom(15.0);
                         mapAbsenLokasi.getController().setCenter(absenPoint);
                         mapAbsenLokasi.getController().animateTo(absenPoint);
                         mapAbsenLokasi.getOverlays().add(titikAbsen);
@@ -160,29 +157,10 @@ public class AbsensiMandiri extends AppCompatActivity {
                                 }
                             }).show();
                         }
-                        else if (tipeKeteranganAbsen.equals("RESTIN")) {
-                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Absen Mulai Istirahat")
-                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    finish();
-                                }
-                            }).show();
-                        }
-                        else {
-                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Absen Selesai Istirahat")
-                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    finish();
-                                }
-                            }).show();
-                        }
 
                         imgAbsensiMandiri = null;
                         tipeKeteranganAbsen = null;
                         etLokasiAbsensiMandiri.setText(null);
-                        layoutAbsenMandiriCheckInOut.setVisibility(View.VISIBLE);
                         layoutLokasiAbsenMandiri.setVisibility(View.GONE);
                         btnSubmitAbsen.setVisibility(View.GONE);
                     }
