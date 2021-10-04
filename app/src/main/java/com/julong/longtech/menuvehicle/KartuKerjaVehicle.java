@@ -158,7 +158,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                     gambarCarLog = stream.toByteArray();
                     Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambarCarLog, 0, gambarCarLog.length);
-                    btnCameraCarLog.setImageBitmap(compressedBitmap);
+                    btnCameraCarLog.setImageBitmap(photoCamera);
                     btnCameraCarLog.setBackground(null);
 
                 }
@@ -177,8 +177,7 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                     fotoKilometer = stream.toByteArray();
-                    Bitmap bitmapKM = BitmapFactory.decodeByteArray(fotoKilometer, 0, fotoKilometer.length);
-                    btnFotoKilometer.setImageBitmap(bitmapKM);
+                    btnFotoKilometer.setImageBitmap(photoCamera);
                     btnFotoKilometer.setBackground(null);
 
                 }

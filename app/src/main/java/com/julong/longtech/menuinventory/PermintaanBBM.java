@@ -104,8 +104,7 @@ public class PermintaanBBM extends AppCompatActivity {
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                         byteFotoMintaBBM = stream.toByteArray();
-                        Bitmap bitmapBensin = BitmapFactory.decodeByteArray(byteFotoMintaBBM, 0, byteFotoMintaBBM.length);
-                        btnFotoPermintaanBBM.setImageBitmap(bitmapBensin);
+                        btnFotoPermintaanBBM.setImageBitmap(photoCamera);
 
                     }
 

@@ -1,4 +1,4 @@
-package com.julong.longtech.menuhistory;
+package com.julong.longtech.menureport;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,19 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.julong.longtech.R;
+import com.julong.longtech.menuhistory.ListHistoryRKH;
 
 import org.w3c.dom.Text;
 
 import java.util.List;
 
-public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.HolderRKH> {
+public class AdapterReportRKH extends RecyclerView.Adapter<AdapterReportRKH.HolderRKH> {
 
     // List to store all the contact details
     private List<ListHistoryRKH> historyPlans;
     private Context mContext;
 
     // Counstructor for the Class
-    public HistoryAdapterRKH(List historyPlans, Context context) {
+    public AdapterReportRKH(List historyPlans, Context context) {
         this.historyPlans = historyPlans;
         this.mContext = context;
     }
@@ -35,7 +36,7 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the layout view you have created for the list rows here
-        View view = layoutInflater.inflate(R.layout.fragment_historyrkh, parent, false);
+        View view = layoutInflater.inflate(R.layout.listview_historyrkh, parent, false);
         return new HolderRKH(view);
     }
 

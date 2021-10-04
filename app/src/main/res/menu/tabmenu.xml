@@ -11,10 +11,4 @@
         android:color="@color/white"
         android:icon="@drawable/ic_baseline_history_24"
         android:title="Riwayat" />
-
-    <item
-        android:id="@+id/feedback"
-        android:color="@color/white"
-        android:icon="@drawable/ic_baseline_feedback_24"
-        android:title="Kendala" />
 </menu>

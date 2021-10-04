@@ -86,8 +86,7 @@
                     android:gravity="center"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
-                    android:singleLine="true"
-                    android:text="TUNE-UP"
+                    android:text="SERVICE\nBERKALA"
                     android:textColor="@drawable/radio_textcolor"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -107,8 +106,7 @@
                     android:gravity="center"
                     android:paddingBottom="8dp"
                     android:paddingTop="12dp"
-                    android:singleLine="true"
-                    android:text="RINGAN"
+                    android:text="SERVICE\nRINGAN"
                     android:textColor="@drawable/radio_textcolor"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -155,10 +153,11 @@
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/acVehicleMintaServicer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:hint="Pilih Kendaraan"
                     android:textColorHint="#808080"
                     android:singleLine="true"
+
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -182,7 +181,7 @@
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/acLokasiMintaService"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:hint="Pilih Blok"
                     android:textColorHint="#808080"
                     android:singleLine="true"
@@ -193,7 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
-                android:text="Detail Lokasi Kerusakan"
+                android:text="Detail Lokasi dan Kerusakan"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -215,33 +214,22 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNoteMintaService"
                         android:layout_width="match_parent"
-                        android:layout_height="85dp"
+                        android:layout_height="70dp"
                         android:gravity="top|start"
-                        android:hint="Masukkan detail lokasi kerusakan"
+                        android:hint="Masukkan detail lokasi dan kerusakan"
                         android:textColorHint="#808080"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgTakePictPermintaanPerbaikan"
+                    android:layout_width="70dp"
                     android:layout_height="match_parent"
-                    app:cardElevation="0dp"
-                    android:layout_marginStart="6dp"
-                    android:background="@drawable/ic_baseline_photo_32"
-                    app:cardCornerRadius="10dp">
-
-                    <ImageButton
-                        android:id="@+id/imgTakePictPermintaanPerbaikan"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:clickable="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_baseline_photo_32"
-                        android:scaleType="centerCrop" />
-
-                </com.google.android.material.card.MaterialCardView>
-
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_baseline_photo_32"
+                    android:scaleType="fitXY"
+                    app:shapeAppearance="@style/roundedMiniCorner"/>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
             
@@ -252,7 +240,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="4dp"
         android:orientation="horizontal">
 
@@ -260,7 +248,7 @@
             android:id="@+id/btnBackMintaService"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:insetTop="0dp"
@@ -274,7 +262,7 @@
             android:id="@+id/btnSubmitMintaService"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:insetTop="0dp"

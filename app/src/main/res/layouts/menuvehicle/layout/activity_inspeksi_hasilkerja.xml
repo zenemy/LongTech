@@ -132,7 +132,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:hint="Hasil Temuan Inspeksi"
+                    android:hint="Hasil Temuan / Kesesuaian SOP"
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText

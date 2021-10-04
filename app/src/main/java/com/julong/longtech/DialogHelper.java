@@ -18,6 +18,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,10 +32,14 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.menuhcm.ApelPagi;
+import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
+import com.julong.longtech.menuworkshop.LaporanPerbaikan;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -44,6 +52,7 @@ import static com.julong.longtech.menuhcm.ApelPagi.scanBarcode;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedEmp;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedItemData;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedUnit;
+import static com.julong.longtech.menuworkshop.LaporanPerbaikan.loadListViewMaterial;
 
 public class DialogHelper extends Dialog {
 
@@ -57,6 +66,10 @@ public class DialogHelper extends Dialog {
 
     // Dialog GIS
     private Dialog dlgSelesaiVerifikasi;
+
+    //Dialog Workshop
+    private Dialog dlgAddMaterialService;
+    private String selectedMaterial, materialUOM;
 
     public DialogHelper(Context context) {
         super(context);
@@ -105,12 +118,15 @@ public class DialogHelper extends Dialog {
         tvKegiatanSummary.setText(VerifikasiGIS.acKegiatanGIS.getText().toString());
         tvHasilSummary.setText(VerifikasiGIS.etHasilVerifikasi.getText());
         tvTotalKoordinat.setText(dbhelper.get_count_totalkoordinatgis(VerifikasiGIS.nodocVerifikasiGIS));
+
         btnDoneSummary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dlgSelesaiVerifikasi.dismiss();
                 dbhelper.updatestatus_verifikasigis(VerifikasiGIS.nodocVerifikasiGIS,
-                        VerifikasiGIS.etHasilVerifikasi.getText().toString(), VerifikasiGIS.byteFotoGIS);
+                        VerifikasiGIS.etHasilVerifikasi.getText().toString(),
+                        VerifikasiGIS.byteFotoGIS, VerifikasiGIS.etSesuaiSOP.getText().toString());
+
                 SweetAlertDialog sweetDlgVerifikasiDone = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
                 sweetDlgVerifikasiDone.setTitleText("Verifikasi Selesai");
                 sweetDlgVerifikasiDone.setConfirmText("SELESAI");
@@ -309,4 +325,76 @@ public class DialogHelper extends Dialog {
         });
     }
 
+    public Dialog showDlgAddMaterialService(TextView tvPlaceholderLvMaterial) {
+
+        selectedMaterial = null;
+        List<String> listMaterial;
+        ArrayAdapter<String> adapterMaterial;
+
+        dlgAddMaterialService = new Dialog(activityContext);
+        dlgAddMaterialService.setCanceledOnTouchOutside(false);
+        dlgAddMaterialService.setContentView(R.layout.dialog_addmaterial);
+        dlgAddMaterialService.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowDlgMaterial = dlgAddMaterialService.getWindow();
+        windowDlgMaterial.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        AutoCompleteTextView acAddMaterial = dlgAddMaterialService.findViewById(R.id.acDlgMaterialService);
+        TextInputLayout inputLayoutQtyMaterial = dlgAddMaterialService.findViewById(R.id.inputLayoutDlgQtyMaterial);
+        EditText etQtyMaterial = dlgAddMaterialService.findViewById(R.id.etDlgQtyMaterial);
+        Button btnOkDlgMaterial = dlgAddMaterialService.findViewById(R.id.btnOkDlgMaterialService);
+        Button btnBackDlgMaterial = dlgAddMaterialService.findViewById(R.id.btnBackDlgMaterialService);
+        dlgAddMaterialService.show();
+
+        btnBackDlgMaterial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlgAddMaterialService.dismiss();
+                selectedMaterial = null;
+                acAddMaterial.setText(null);
+                etQtyMaterial.setText(null);
+            }
+        });
+
+        listMaterial = dbhelper.get_listmaterialmd();
+        adapterMaterial = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listMaterial);
+        acAddMaterial.setAdapter(adapterMaterial);
+
+        acAddMaterial.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedMaterial = dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 0);
+                materialUOM = dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 1);
+                inputLayoutQtyMaterial.setSuffixText(dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 1));
+
+                // Hide keyboard after vehicle selected
+                InputMethodManager keyboardMgr = (InputMethodManager) activityContext.getSystemService(activityContext.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acAddMaterial.getWindowToken(), 0);
+            }
+        });
+
+        btnOkDlgMaterial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedMaterial == null) {
+                    Toast.makeText(activityContext, "Pilih Material!", Toast.LENGTH_LONG).show();
+                }
+                else if (TextUtils.isEmpty(etQtyMaterial.getText().toString().trim())) {
+                    Toast.makeText(activityContext, "Isi kuantitas material!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    dbhelper.insert_prosesperbaikan_detailmaterial(null, selectedMaterial,
+                            etQtyMaterial.getText().toString(), materialUOM);
+                    selectedMaterial = null;
+                    acAddMaterial.setText(null);
+                    etQtyMaterial.setText(null);
+                    dlgAddMaterialService.dismiss();
+                    tvPlaceholderLvMaterial.setVisibility(View.GONE);
+                    loadListViewMaterial(activityContext);
+                }
+
+            }
+        });
+
+        return dlgAddMaterialService;
+    }
 }

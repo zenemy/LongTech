@@ -172,11 +172,6 @@ public class MainActivity extends AppCompatActivity {
                                 intentLaunchMainActivity.launch(intentDownload);
                             });
                             warningExitDlg.show();
-                        } else {
-                            listKendalaCode = dbhelper.get_menukendala(0);
-                            listKendalaName = dbhelper.get_menukendala(1);
-                            adapterKendala = new ArrayAdapter<String>(MainActivity.this, R.layout.spinnerlist, R.id.spinnerItem, listKendalaName);
-                            HomeFragment.ackendala.setAdapter(adapterKendala);
                         }
                     }
 
@@ -455,27 +450,6 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, UploadData.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intentLaunchMainActivity.launch(intent);
-                    onPause();
-                }
-
-                if (groupPosition == 6 && childPosition == 0) {
-                    Intent intent = new Intent(MainActivity.this, MyAccount.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
-
-                if (groupPosition == 6 && childPosition == 1) {
-                    Intent intent = new Intent(MainActivity.this, AppSetting.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    onPause();
-                }
-
-                if (groupPosition == 6 && childPosition == 2) {
-                    Intent intent = new Intent(MainActivity.this, UpdateSystem.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
                     onPause();
                 }
 
@@ -802,13 +776,6 @@ public class MainActivity extends AppCompatActivity {
                         "1", null, null);
                 }
 
-                if (!dbhelper.get_tbl_username(3).equals("MGR")) {
-                    dbhelper.insert_menuGS02("04", "REPORT", "0401",
-                        "REPORT", "RPRT", "HSTROFF",
-                        "040102", "Riwayat Pekerjaan", null,
-                        "2", null, null);
-                }
-
                 dbhelper.insert_menuGS02("05", "DATA", "0501",
                         "UPLOAD & DOWNLOAD", "SYNC", "FETCHDT",
                         "050101", "Download Data", null,
@@ -874,6 +841,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void logoutApp(View v) {
+
+        final SweetAlertDialog warningExitDlg = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        warningExitDlg.setTitleText("Keluar dari akun ini?");
+        warningExitDlg.setCancelText("KEMBALI");
+        warningExitDlg.setConfirmText("YA");
+        warningExitDlg.showCancelButton(true);
+        warningExitDlg.setConfirmClickListener(sDialog  -> {
+            sDialog.dismiss();
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            loginIntent.addCategory( Intent.CATEGORY_HOME );
+            loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            loginIntent.putExtra("currentuser", dbhelper.get_tbl_username(1));
+            startActivity(loginIntent);
+        });
+        warningExitDlg.show();
+
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -902,7 +890,13 @@ public class MainActivity extends AppCompatActivity {
         warningExitDlg.setCancelText("KEMBALI");
         warningExitDlg.setConfirmText("YA");
         warningExitDlg.showCancelButton(true);
-        warningExitDlg.setConfirmClickListener(sDialog -> finish());
+        warningExitDlg.setConfirmClickListener(sDialog  -> {
+            sDialog.dismiss();
+            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+            homeIntent.addCategory( Intent.CATEGORY_HOME );
+            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(homeIntent);
+        });
         warningExitDlg.show();
     }
 }

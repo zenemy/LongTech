@@ -155,6 +155,10 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             acKendaraanP2H.setText(dbHelper.get_vehiclename(2, dbHelper.get_tbl_username(19)));
         }
 
+        if (dbHelper.get_tbl_username(27) != null) {
+            etKMHM.setText(dbHelper.get_tbl_username(27));
+        }
+
         // Vehicle list adapter for acVehicle
         listVehicleP2H = dbHelper.get_vehiclemasterdata();
         adapterVehicleP2H = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleP2H);
@@ -169,8 +173,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                     byteImgP2H = stream.toByteArray();
-                    Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteImgP2H, 0, byteImgP2H.length);
-                    imgTakePictP2H.setImageBitmap(compressedBitmap);
+                    imgTakePictP2H.setImageBitmap(photoCamera);
                 }
             }
         );
@@ -350,8 +353,8 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
             }
             else {
 
-                String newValue = etKMHM.getText().toString().replace(".",",");
-                etKMHM.setText(newValue);
+                String newValueKM = etKMHM.getText().toString().replace(".",",");
+                etKMHM.setText(newValueKM);
 
                 dbHelper.insert_dataP2H_header(nodocP2H, dbHelper.get_vehiclecodegroup(1, selectedVehicleCode), selectedVehicleCode,
                         etDescPengecekan.getText().toString(), latitudeP2H, longitudeP2H, byteImgP2H);
@@ -416,7 +419,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                     dbHelper.insert_dataP2H_detail(nodocP2H, "P2H16", "SPION KANAN DAN SPION KIRI", "CHECK", etSpionKendaraan.getText().toString());
                 }
 
-                dbHelper.update_kmhm(etKMHM.getText().toString());
+                dbHelper.update_kmhm(newValueKM);
 
                 new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Menyelesaikan P2H")
                         .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> {

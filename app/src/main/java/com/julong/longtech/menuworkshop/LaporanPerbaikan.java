@@ -6,15 +6,23 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.CompositeDateValidator;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
+import com.julong.longtech.DialogHelper;
 import com.julong.longtech.GPSTracker;
 import com.julong.longtech.R;
 import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
+import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,28 +39,41 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.Constants;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.julong.longtech.ui.home.HomeFragment.lvfragment;
+
 public class LaporanPerbaikan extends AppCompatActivity {
 
     DatabaseHelper dbhelper;
-    String selectedVehicle, nodocLaporanPerbaikan, selectedMaterial, materialUOM,
-            selectedVehicleGroup, latServiceProcess, longServiceProcess;
-    Dialog dlgAddMaterial, dlgServiceCompletionStatus;
+    DialogHelper dlgHelper;
+    String selectedVehicle, nodocLaporanPerbaikan, selectedVehicleGroup,
+            latServiceProcess, longServiceProcess, selectedETA;
+
+    //Dialog submit service
+    Dialog dlgServiceCompletionStatus;
+    EditText etLokasiService, etDlgServiceETA;
+    MaterialDatePicker.Builder<Long> materialDatePickerBuilder;
+    MaterialDatePicker<Long> datepickerETA;
 
     EditText etKegiatanPerbaikan;
     AutoCompleteTextView acVehicleLaporanService;
-    RecyclerView lvMaterialLaporanService, lvMekanikLaporanService;
+    public static RecyclerView lvMaterialLaporanService, lvMekanikLaporanService;
     Button btnBackLaporanService;
     TabLayout tabLaporanPerbaikan;
     ConstraintLayout layoutMaterial;
@@ -64,9 +85,6 @@ public class LaporanPerbaikan extends AppCompatActivity {
     List<String> listMaterial;
     ArrayAdapter<String> adapterMaterial;
 
-    List<ListMaterialProsesPerbaikan> listViewMaterial;
-    AdapterMaterialProsesPerbaikan adapterLvMaterial;
-
     List<ListMekanikPerintahService> listMekaniks;
     AdapterMekanikPerintahService adapterLvMekanik;
 
@@ -76,6 +94,7 @@ public class LaporanPerbaikan extends AppCompatActivity {
         setContentView(R.layout.activity_laporan_perbaikan);
 
         dbhelper = new DatabaseHelper(this);
+        dlgHelper = new DialogHelper(this);
 
         // Declare design ID
         acVehicleLaporanService = findViewById(R.id.acVehicleLaporanService);
@@ -83,6 +102,7 @@ public class LaporanPerbaikan extends AppCompatActivity {
         lvMekanikLaporanService = findViewById(R.id.lvMekanikLaporanService);
         btnBackLaporanService = findViewById(R.id.btnBackLaporanService);
         etKegiatanPerbaikan = findViewById(R.id.etKegiatanLaporanService);
+        etLokasiService = findViewById(R.id.etLokLaporanService);
         tabLaporanPerbaikan = findViewById(R.id.tabLaporanPerbaikan);
         layoutMaterial = findViewById(R.id.layoutMaterialLaporanService);
         tvPlaceholderLvMaterial = findViewById(R.id.tvPlaceholderLvMaterialService);
@@ -130,7 +150,7 @@ public class LaporanPerbaikan extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedVehicle = dbhelper.get_vehiclecodeonly(adapterVehicle.getItem(position));
                 selectedVehicleGroup = dbhelper.get_vehiclecodegroup(1, selectedVehicle);
-                loadListViewMaterial();
+                loadListViewMaterial(LaporanPerbaikan.this);
 
                 Cursor cursorMekanik = dbhelper.view_preparemekanik_service();
                 if (cursorMekanik.moveToFirst()) {
@@ -148,68 +168,40 @@ public class LaporanPerbaikan extends AppCompatActivity {
                 keyboardMgr.hideSoftInputFromWindow(acVehicleLaporanService.getWindowToken(), 0);
             }
         });
+
+        // Setting min date
+        materialDatePickerBuilder = MaterialDatePicker.Builder.datePicker();
+        CalendarConstraints.Builder constraintsBuilderRange = new CalendarConstraints.Builder();
+        CalendarConstraints.DateValidator dateValidatorMin = DateValidatorPointForward.from(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
+        ArrayList<CalendarConstraints.DateValidator> listValidators = new ArrayList<>();
+        listValidators.add(dateValidatorMin);
+        CalendarConstraints.DateValidator validators = CompositeDateValidator.allOf(listValidators);
+        constraintsBuilderRange.setValidator(validators);
+        materialDatePickerBuilder.setCalendarConstraints(constraintsBuilderRange.build());
+        datepickerETA = materialDatePickerBuilder.setTitleText("Estimasi Tanggal Selesai Perbaikan").build();
+
+        datepickerETA.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+
+                // Get the offset from our timezone and UTC.
+                TimeZone timeZoneUTC = TimeZone.getDefault();
+                // It will be negative, so that's the -1
+                int offsetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * -1;
+                // Create a date format, then a date object with our offset
+                SimpleDateFormat simpleFormatView = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
+                SimpleDateFormat formatSave = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+                Date date = new Date(selection + offsetFromUTC);
+                selectedETA = formatSave.format(date);
+                etDlgServiceETA.setText(simpleFormatView.format(date));
+                dlgServiceCompletionStatus.show();
+            }
+        });
     }
 
     public void addMaterialService(View v) {
-        dlgAddMaterial = new Dialog(this);
-        dlgAddMaterial.setCanceledOnTouchOutside(false);
-        dlgAddMaterial.setContentView(R.layout.dialog_addmaterial);
-        dlgAddMaterial.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        Window windowDlgMaterial = dlgAddMaterial.getWindow();
-        windowDlgMaterial.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-
-        AutoCompleteTextView acAddMaterial = dlgAddMaterial.findViewById(R.id.acDlgMaterialService);
-        TextInputLayout inputLayoutQtyMaterial = dlgAddMaterial.findViewById(R.id.inputLayoutDlgQtyMaterial);
-        EditText etQtyMaterial = dlgAddMaterial.findViewById(R.id.etDlgQtyMaterial);
-        Button btnOkDlgMaterial = dlgAddMaterial.findViewById(R.id.btnOkDlgMaterialService);
-        Button btnBackDlgMaterial = dlgAddMaterial.findViewById(R.id.btnBackDlgMaterialService);
-        dlgAddMaterial.show();
-
-        btnBackDlgMaterial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dlgAddMaterial.dismiss();
-                selectedMaterial = null;
-                acAddMaterial.setText(null);
-                etQtyMaterial.setText(null);
-            }
-        });
-
-        listMaterial = dbhelper.get_listmaterialmd();
-        adapterMaterial = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listMaterial);
-        acAddMaterial.setAdapter(adapterMaterial);
-
-        acAddMaterial.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedMaterial = dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 0);
-                materialUOM = dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 1);
-                inputLayoutQtyMaterial.setSuffixText(dbhelper.get_single_materialcode(adapterMaterial.getItem(position), 1));
-            }
-        });
-
-        btnOkDlgMaterial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedMaterial == null) {
-                    Toast.makeText(LaporanPerbaikan.this, "Pilih Material!", Toast.LENGTH_LONG).show();
-                }
-                else if (TextUtils.isEmpty(etQtyMaterial.getText().toString().trim())) {
-                    Toast.makeText(LaporanPerbaikan.this, "Isi kuantitas material!", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    dbhelper.insert_prosesperbaikan_detailmaterial(null, selectedMaterial, etQtyMaterial.getText().toString(), materialUOM);
-                    selectedMaterial = null;
-                    acAddMaterial.setText(null);
-                    etQtyMaterial.setText(null);
-                    dlgAddMaterial.dismiss();
-                    tvPlaceholderLvMaterial.setVisibility(View.GONE);
-                    loadListViewMaterial();
-                }
-
-            }
-        });
-
+        dlgHelper.showDlgAddMaterialService(tvPlaceholderLvMaterial);
     }
 
     public void submitLaporanPerbaikan(View v) {
@@ -230,32 +222,92 @@ public class LaporanPerbaikan extends AppCompatActivity {
     }
 
     private void showDlgSubmitPerbaikan() {
+
         dlgServiceCompletionStatus = new Dialog(this);
         dlgServiceCompletionStatus.setCanceledOnTouchOutside(false);
         dlgServiceCompletionStatus.setContentView(R.layout.dialog_submitlaporanservice);
         dlgServiceCompletionStatus.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowDlgPerbaikan = dlgServiceCompletionStatus.getWindow();
         windowDlgPerbaikan.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        selectedETA = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
+        TextInputLayout inputLayoutDlgServiceETA = dlgServiceCompletionStatus.findViewById(R.id.inputLayoutServiceETA);
+        etDlgServiceETA = dlgServiceCompletionStatus.findViewById(R.id.etDateDlgServiceETA);
+
+        LinearLayout layoutDlgServiceDelayed = dlgServiceCompletionStatus.findViewById(R.id.layoutDlgServiceDelayed);
         Button btnDoneVehicleService = dlgServiceCompletionStatus.findViewById(R.id.btnDoneServiceProcess);
         Button btnNotCompleteService = dlgServiceCompletionStatus.findViewById(R.id.btnNotCompleteServiceProcess);
-        Button btnWaitSparepartServiceProcess = dlgServiceCompletionStatus.findViewById(R.id.btnWaitSparepartServiceProcess);
-        Button btnCancelDlgService = dlgServiceCompletionStatus.findViewById(R.id.btnBackDlgServiceProcess);
+        Button btnWaitSparepartService = dlgServiceCompletionStatus.findViewById(R.id.btnWaitSparepartServiceProcess);
+        Button btnCancelDlgService = dlgServiceCompletionStatus.findViewById(R.id.btnBackDlgLaporanService);
+        Button btnSimpanDlgService = dlgServiceCompletionStatus.findViewById(R.id.btnSimpanDlgLaporanService);
+        View dividerBtnDlg = dlgServiceCompletionStatus.findViewById(R.id.dividerBtnDlgService);
         dlgServiceCompletionStatus.show();
 
         btnCancelDlgService.setOnClickListener(view -> dlgServiceCompletionStatus.dismiss());
 
+        etDlgServiceETA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlgServiceCompletionStatus.hide();
+                datepickerETA.show(getSupportFragmentManager(), "ETASERVICE");
+            }
+        });
+
         // Insert transaction into database
         btnDoneVehicleService.setOnClickListener(view ->  insertTransactionData("Service Selesai"));
-        btnWaitSparepartServiceProcess.setOnClickListener(view -> insertTransactionData("Menunggu Sparepart"));
-        btnNotCompleteService.setOnClickListener(view -> insertTransactionData("Service belum selesai"));
+
+        btnWaitSparepartService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnDoneVehicleService.setVisibility(View.GONE);
+                layoutDlgServiceDelayed.setVisibility(View.GONE);
+                inputLayoutDlgServiceETA.setVisibility(View.VISIBLE);
+                dividerBtnDlg.setVisibility(View.VISIBLE);
+                btnSimpanDlgService.setVisibility(View.VISIBLE);
+
+                btnSimpanDlgService.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(etDlgServiceETA.getText().toString().trim())) {
+                            Toast.makeText(LaporanPerbaikan.this, "Tentukan Estimasi Selesai!", Toast.LENGTH_LONG).show();
+                        } else {
+                            insertTransactionData("Menunggu Sparepart");
+                        }
+                    }
+                });
+
+            }
+        });
+
+        btnNotCompleteService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnDoneVehicleService.setVisibility(View.GONE);
+                layoutDlgServiceDelayed.setVisibility(View.GONE);
+                inputLayoutDlgServiceETA.setVisibility(View.VISIBLE);
+                dividerBtnDlg.setVisibility(View.VISIBLE);
+                btnSimpanDlgService.setVisibility(View.VISIBLE);
+                btnSimpanDlgService.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (TextUtils.isEmpty(etDlgServiceETA.getText().toString().trim())) {
+                            Toast.makeText(LaporanPerbaikan.this, "Tentukan Estimasi Selesai!", Toast.LENGTH_LONG).show();
+                        } else {
+                            insertTransactionData("Service Belum Selesai");
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void insertTransactionData(String submitType) {
         getLocation();
+
         nodocLaporanPerbaikan = dbhelper.get_tbl_username(0) + "/PSWS/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-        dbhelper.insert_prosesperbaikan_header(nodocLaporanPerbaikan, selectedVehicle, submitType,
-                etKegiatanPerbaikan.getText().toString(), latServiceProcess, longServiceProcess);
+        dbhelper.insert_prosesperbaikan_header(nodocLaporanPerbaikan, selectedETA, selectedVehicle, submitType,
+                etKegiatanPerbaikan.getText().toString(), latServiceProcess,
+                longServiceProcess, etLokasiService.getText().toString());
 
         // Delete unselected materials and mekaniks
         dbhelper.update_detail_laporanperbaikan(nodocLaporanPerbaikan);
@@ -273,16 +325,23 @@ public class LaporanPerbaikan extends AppCompatActivity {
             setResult(727, backIntent);
             finish();
         }, 2000);
+
     }
 
-    public void loadListViewMaterial() {
+    public static void loadListViewMaterial(Context activityContext) {
 
-        LinearLayoutManager layoutMaterial = new LinearLayoutManager(this);
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(lvfragment.getContext());
+
+        LinearLayoutManager layoutMaterial = new LinearLayoutManager(activityContext);
         lvMaterialLaporanService.setLayoutManager(layoutMaterial);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 lvMaterialLaporanService.getContext(), layoutMaterial.getOrientation());
         lvMaterialLaporanService.addItemDecoration(dividerItemDecoration);
+
+        List<ListMaterialProsesPerbaikan> listViewMaterial;
+        AdapterMaterialProsesPerbaikan adapterLvMaterial;
 
         listViewMaterial = new ArrayList<>();
         listViewMaterial.clear();
@@ -294,7 +353,7 @@ public class LaporanPerbaikan extends AppCompatActivity {
                 listViewMaterial.add(paramsMaterial);
             } while (cursor.moveToNext());
         }
-        adapterLvMaterial = new AdapterMaterialProsesPerbaikan(listViewMaterial, this);
+        adapterLvMaterial = new AdapterMaterialProsesPerbaikan(listViewMaterial, activityContext);
         lvMaterialLaporanService.setAdapter(adapterLvMaterial);
     }
 

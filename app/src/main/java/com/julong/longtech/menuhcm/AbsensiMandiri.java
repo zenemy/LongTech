@@ -124,15 +124,22 @@ public class AbsensiMandiri extends AppCompatActivity {
                         //Show map location of user
                         layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
                         layoutMap.setVisibility(View.VISIBLE);
-                        GeoPoint absenPoint = new GeoPoint(Double.parseDouble(latAbsenMandiri), Double.parseDouble(longAbsenMandiri));
-                        Marker titikAbsen = new Marker(mapAbsenLokasi);
-                        titikAbsen.setPosition(absenPoint);
-                        titikAbsen.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                        titikAbsen.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.marker_person, null));
-                        mapAbsenLokasi.getController().setZoom(15.0);
-                        mapAbsenLokasi.getController().setCenter(absenPoint);
-                        mapAbsenLokasi.getController().animateTo(absenPoint);
-                        mapAbsenLokasi.getOverlays().add(titikAbsen);
+
+                        try {
+                            GeoPoint absenPoint = new GeoPoint(Double.parseDouble(latAbsenMandiri), Double.parseDouble(longAbsenMandiri));
+                            Marker titikAbsen = new Marker(mapAbsenLokasi);
+                            titikAbsen.setPosition(absenPoint);
+                            titikAbsen.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                            titikAbsen.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.marker_person, null));
+                            mapAbsenLokasi.getController().setZoom(15.0);
+                            mapAbsenLokasi.getController().setCenter(absenPoint);
+                            mapAbsenLokasi.getController().animateTo(absenPoint);
+                            mapAbsenLokasi.getOverlays().add(titikAbsen);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            layoutMap.setVisibility(View.GONE);
+                        }
+
 
                         //Absen Status
                         if (tipeKeteranganAbsen.equals("CHECKIN")) {
@@ -171,7 +178,7 @@ public class AbsensiMandiri extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(etLokasiAbsensiMandiri.getText().toString().trim())) {
-                    new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Masukkan User ID").setConfirmText("OK").show();
+                    new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Masukkan Lokasi Absen").setConfirmText("OK").show();
                 }
                 else {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

@@ -39,8 +39,10 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -49,8 +51,9 @@ import static com.julong.longtech.DatabaseHelper.url_api;
 
 public class ReportActivity extends AppCompatActivity {
 
-    DatabaseHelper dbhelper;
 
+    DatabaseHelper dbhelper;
+    SweetAlertDialog progressDialog;
     String selectedReportGroup, selectedReportMenu, selectedDate, selectedTeamCode;
 
     EditText etDateReport;
@@ -66,7 +69,7 @@ public class ReportActivity extends AppCompatActivity {
     HistoryApelAdapter adapterLvApel;
 
     private List<ListHistoryRKH> listReportRKH;
-    HistoryAdapterRKH adapterLvRKH;
+    AdapterReportRKH adapterLvRKH;
 
     private List<ListReportP2H> listReportP2H;
     AdapterReportP2H adapterLvP2H;
@@ -88,6 +91,9 @@ public class ReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report);
 
         dbhelper = new DatabaseHelper(this);
+        progressDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        progressDialog.setTitleText("Loading");
+        progressDialog.setCancelable(false);
 
         etDateReport = findViewById(R.id.etDateReportActivity);
         acVehicleReport = findViewById(R.id.acUnitReportActivity);
@@ -104,9 +110,11 @@ public class ReportActivity extends AppCompatActivity {
             public void onClick(View view) {
                 selectedDate = null;
                 selectedReportGroup = null;
-                selectedReportMenu= null;
+                selectedReportMenu = null;
+                selectedTeamCode = null;
                 etDateReport.setText(null);
                 acSelectReportMenu.setText(null);
+                acTeamSelect.setText(null);
                 acVehicleReport.setText(null);
                 lvReport.setAdapter(null);
             }
@@ -169,6 +177,8 @@ public class ReportActivity extends AppCompatActivity {
 
 
     public void showReport(View v) {
+        progressDialog.show();
+        lvReport.setAdapter(null);
         if (selectedReportMenu == null && TextUtils.isEmpty(etDateReport.getText().toString().trim())) {
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Masukkan filter").setConfirmText("OK").show();
@@ -271,11 +281,17 @@ public class ReportActivity extends AppCompatActivity {
                     }
                     adapterLvCarlog = new AdapterReportCarLog(listReportCarLogs, ReportActivity.this);
                     lvReport.setAdapter(adapterLvCarlog);
+                    progressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, error -> error.printStackTrace());
+        }, error -> {
+            error.printStackTrace();
+            progressDialog.dismiss();
+            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
+                    .setContentText("Empty Data").show();
+        });
         requestQueue.add(jsonRequest);
     }
 
@@ -316,15 +332,22 @@ public class ReportActivity extends AppCompatActivity {
                         }
                         adapterLvApel = new HistoryApelAdapter(listReportApels, ReportActivity.this);
                         lvReport.setAdapter(adapterLvApel);
+
                     } else {
                         lvReport.setAdapter(null);
-                    }
 
+                    }
+                    progressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, error -> error.printStackTrace());
+        }, error -> {
+            error.printStackTrace();
+            progressDialog.dismiss();
+            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
+                    .setContentText("Empty Data").show();
+        });
         requestQueue.add(jsonRequest);
     }
 
@@ -362,18 +385,24 @@ public class ReportActivity extends AppCompatActivity {
                             listReportRKH.add(paramsReportRKH);
                             i++;
                         }
-                        adapterLvRKH = new HistoryAdapterRKH(listReportRKH, ReportActivity.this);
+                        adapterLvRKH = new AdapterReportRKH(listReportRKH, ReportActivity.this);
                         lvReport.setAdapter(adapterLvRKH);
+
                     }
                     else {
                         lvReport.setAdapter(null);
                     }
-
+                    progressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, error -> error.printStackTrace());
+        }, error -> {
+            error.printStackTrace();
+            progressDialog.dismiss();
+            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
+                    .setContentText("Empty Data").show();
+        });
         requestQueue.add(jsonRequest);
     }
 
@@ -385,9 +414,16 @@ public class ReportActivity extends AppCompatActivity {
         listReportP2H = new ArrayList<>();
         listReportP2H.clear();
 
+        Map<String, String> paramsP2H = new HashMap();
+        paramsP2H.put("compid", dbhelper.get_tbl_username(14));
+        paramsP2H.put("selectdate", selectedDate);
+        paramsP2H.put("vehiclecode", vehicleCode);
+        JSONObject postParametersP2H = new JSONObject(paramsP2H);
+
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url_data = url_api + "fetchdata/reportmenu/report_p2h.php?selectdate=" + selectedDate + "&vehiclecode=" + vehicleCode;
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+        String url_data = url_api + "fetchdata/reportmenu/report_p2h_new.php";
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url_data, postParametersP2H, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -410,16 +446,23 @@ public class ReportActivity extends AppCompatActivity {
                         }
                         adapterLvP2H = new AdapterReportP2H(listReportP2H, ReportActivity.this);
                         lvReport.setAdapter(adapterLvP2H);
+                        progressDialog.dismiss();
                     }
                     else {
                         lvReport.setAdapter(null);
+                        progressDialog.dismiss();
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, error -> error.printStackTrace());
+        }, error -> {
+            error.printStackTrace();
+            progressDialog.dismiss();
+            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
+                    .setContentText("Empty Data").show();
+        });
         requestQueue.add(jsonRequest);
     }
 

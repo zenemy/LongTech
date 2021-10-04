@@ -3,6 +3,7 @@ package com.julong.longtech;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -58,6 +60,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.menuinventory.PenerimaanBBM;
+import com.julong.longtech.menusetup.AESEnkrip;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.RegistrasiKaryawan;
 import com.julong.longtech.menuvehicle.AdjustmentUnit;
@@ -115,7 +118,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Class / package / Helper
         dbhelper = new DatabaseHelper(this);
         hashPassword = new HashPassword(11);
         dialogHelper = new DialogHelper(this);
@@ -191,11 +193,15 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.setTitleText("Pengecekan Akun");
+        pDialog.setCancelable(false);
+
         //Setup Bahasa
         if (!dbhelper.get_count_tbl_username().equals("0")) {
 
             languages = dbhelper.get_loginlanguage();
-            adapterMenuLanguage = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, languages);
+            adapterMenuLanguage = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, languages);
             adapterMenuLanguage.setDropDownViewResource(R.layout.spinnerlist);
             imgChangeLanguage.setAdapter(adapterMenuLanguage);
 
@@ -208,13 +214,36 @@ public class LoginActivity extends AppCompatActivity {
             });
 
             et_username.setText(dbhelper.get_tbl_username(1));
-            if (dbhelper.get_tbl_username(26).equals("INDONESIA")) {
-                tvKeteranganBahasa.setText("ID");
-            } else if (dbhelper.get_tbl_username(26).equals("ENGLISH")) {
-                tvKeteranganBahasa.setText("EN");
-            } else if (dbhelper.get_tbl_username(26).equals("CHINA")) {
-                tvKeteranganBahasa.setText("CN");
+
+
+            if (getIntent().hasExtra("currentuser")) {
+                Bundle bundle = getIntent().getExtras();
+                et_username.setText(bundle.getString("currentuser"));
+                pDialog.dismiss();
             }
+            else {
+                pDialog.show();
+                try {
+                    String[] decryptedValue = AESEnkrip.decrypt(dbhelper.get_tbl_username(5)).split(";");
+
+                    boolean checkDecryptPassword = hashPassword.CheckPassword(decryptedValue[1], dbhelper.get_tbl_username(4));
+
+                    if (decryptedValue[0].equals(dbhelper.get_tbl_username(0)) && checkDecryptPassword) {
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pDialog.dismiss();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        }, 2000);
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
 
         //Event OnClick Tampilkan User Profile
@@ -285,10 +314,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void eventClickLogin(View view) {
-
-        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.setTitleText("Pengecekan Akun");
-        pDialog.setCancelable(false);
 
         if (TextUtils.isEmpty(et_username.getText().toString().trim())) {
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setContentText("Masukkan User ID").setConfirmText("OK").show();
@@ -422,7 +447,6 @@ public class LoginActivity extends AppCompatActivity {
                                     });
                                     btnBackDlgPassword.setOnClickListener(v12 -> dialoginsertpassword.dismiss());
                                 } else if (checkuser.equals("SUCCESS")) {
-                                    et_password.setText(null);
                                     new JsonAsyncLogin().execute(response, null, null);
                                 } else if (checkuser.equals("WRONGPASSWORD")) {
                                     pDialog.dismiss();
@@ -493,26 +517,30 @@ public class LoginActivity extends AppCompatActivity {
                     dbhelper.delete_data_username();
                 }
 
-                dbhelper.insert_tblusername(
-                        jsonPost.getString("USERID"),
-                        jsonPost.getString("USERNAME"),
-                        jsonPost.getString("USERTYPE"),
-                        jsonPost.getString("USERROLE"),
-                        jsonPost.getString("POSITION_ID"),
-                        jsonPost.getString("POSITION_NAME"),
-                        jsonPost.getString("COMP_ID"),
-                        jsonPost.getString("SITE_ID"),
-                        jsonPost.getString("DEPTCODE"),
-                        jsonPost.getString("DIVCODE"),
-                        jsonPost.getString("GANGCODE"),
-                        jsonPost.getString("ANCAKCODE"),
-                        jsonPost.getString("SHIFTCODE"),
-                        jsonPost.getString("NO_TELP"),
-                        jsonPost.getString("EMAILUSER"),
-                        jsonPost.getString("EMPNAME"),
-                        jsonPost.getString("EMPCODE"),
-                        jsonPost.getString("USERPASSWORD"),
-                        jsonPost.getString("USERLANGUAGE"));
+                try {
+                    dbhelper.insert_tblusername(
+                            jsonPost.getString("USERID"),
+                            jsonPost.getString("USERNAME"),
+                            jsonPost.getString("USERTYPE"),
+                            jsonPost.getString("USERROLE"),
+                            jsonPost.getString("POSITION_ID"),
+                            jsonPost.getString("POSITION_NAME"),
+                            jsonPost.getString("COMP_ID"),
+                            jsonPost.getString("SITE_ID"),
+                            jsonPost.getString("DEPTCODE"),
+                            jsonPost.getString("DIVCODE"),
+                            jsonPost.getString("GANGCODE"),
+                            jsonPost.getString("ANCAKCODE"),
+                            jsonPost.getString("SHIFTCODE"),
+                            jsonPost.getString("NO_TELP"),
+                            jsonPost.getString("EMAILUSER"),
+                            jsonPost.getString("EMPNAME"),
+                            jsonPost.getString("EMPCODE"),
+                            jsonPost.getString("USERPASSWORD"),
+                            AESEnkrip.encrypt(jsonPost.getString("EMPCODE") + ";" + et_password.getText().toString() + ";"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 if (!jsonPost.getString("USERPHOTO").equals("")) {
                     byte[] decodedUserPhoto = Base64.decode(
@@ -528,6 +556,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer integer) {
+            et_password.setText(null);
             try {
                 Bitmap compressedBitmap = BitmapFactory.decodeByteArray(
                         dbhelper.get_gambar_user(), 0,

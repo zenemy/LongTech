@@ -37,6 +37,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,6 +59,8 @@ import com.fxn.BubbleTabBar;
 import com.fxn.OnBubbleClickListener;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
+import com.julong.longtech.menuhistory.HistoryAdapterRKH;
+import com.julong.longtech.menuhistory.ListHistoryRKH;
 import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
@@ -96,27 +99,26 @@ public class HomeFragment extends Fragment {
     ActivityResultLauncher<Intent> intentLaunchActivity;
 
     DatabaseHelper dbhelper;
-    public static TextView tvjabatanuser, tvnamauser, tvPlaceholder;
+    public static TextView tvPlaceholder;
     BubbleTabBar bubbleTabBar;
     public static ListView lvfragment;
-    public static RecyclerView lvHistoryApel, lvHistoryCarLog;
-    byte[] gambar1;
-    public static AutoCompleteTextView ackendala, acMenuRiwayatHome;
-    EditText etdesckendala, etpanjangkendala, etlebarkendala, etluaskendala, aclokasikendala, filtertglhistory;
-    Button btnsimpankendala, btnDateLvInfo;
-    ImageButton btnrefresh, openDrawerBtn, imgcamkendala;
-    String lat_awal, long_awal, todayDate, todayDateTime, selectedKendala;
-    ScrollView scrollkendala;
+    public static RecyclerView lvHistory;
+
+    public static AutoCompleteTextView acMenuRiwayatHome;
+    EditText filtertglhistory;
+    Button btnDateLvInfo;
+    ImageButton btnrefresh, openDrawerBtn;
+    String todayDate, todayDateTime;
+
     ConstraintLayout clBgMainActivity, layoutInfoFragment;
     public static LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
             linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel, linearLayoutGIS;
 
-
-    List<String> arrayMenuHistory = Arrays.asList("APEL KERJA", "CAR LOG");
+    List<String> arrayMenuHistory;
     ArrayAdapter<String> adapterMenuHistory;
 
-    private List<String> listKendalaCode, listKendalaName;
-    ArrayAdapter<String> adapterKendala;
+    private List<ListHistoryRKH> listHistoriesRKH;
+    HistoryAdapterRKH adapterLvRKH;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -125,29 +127,16 @@ public class HomeFragment extends Fragment {
         dbhelper = new DatabaseHelper(getContext());
         hashPassword = new HashPassword(11);
 
-        tvnamauser = root.findViewById(R.id.tvNamaUser);
         layoutInfoFragment = root.findViewById(R.id.layoutInfoFragment);
         tvPlaceholder = root.findViewById(R.id.tvPlaceholderInfoHome);
         btnDateLvInfo = root.findViewById(R.id.btnDateLvInfoHome);
         clBgMainActivity = root.findViewById(R.id.clBgMainActivity);
-        tvjabatanuser = root.findViewById(R.id.tvJabatanUser);
         bubbleTabBar = root.findViewById(R.id.bubbleTabBar);
         openDrawerBtn =  root.findViewById(R.id.openDrawerBtn);
-        scrollkendala = root.findViewById(R.id.scrollViewKendala);
         lvfragment = root.findViewById(R.id.lvInfoFragment);
         btnrefresh = root.findViewById(R.id.btnRefreshHome);
-        lvHistoryApel = root.findViewById(R.id.lvHistoryHomeApel);
-        lvHistoryCarLog = root.findViewById(R.id.lvHistoryHomeCarLog);
-        ackendala = root.findViewById(R.id.acKategoriKendala);
-        etdesckendala = root.findViewById(R.id.etDescKendala);
-        btnsimpankendala = root.findViewById(R.id.btnKnedalaOk);
-        imgcamkendala = root.findViewById(R.id.imgKendala);
-        aclokasikendala = root.findViewById(R.id.etLokasiKendala);
+        lvHistory = root.findViewById(R.id.lvHistoryHome);
         acMenuRiwayatHome = root.findViewById(R.id.acMenuRiwayatHome);
-        aclokasikendala.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-        etpanjangkendala = root.findViewById(R.id.etPanjangKendala);
-        etlebarkendala = root.findViewById(R.id.etLebarKendala);
-        etluaskendala = root.findViewById(R.id.etLuasKendala);
         layoutRiwayatFragment = root.findViewById(R.id.layoutRiwayatFragment);
 
         filtertglhistory = root.findViewById(R.id.etDateHomeHistory);
@@ -172,15 +161,18 @@ public class HomeFragment extends Fragment {
             tvPlaceholder.setVisibility(View.GONE);
         }
 
+        if (dbhelper.get_tbl_username(3).equals("OPR")) {
+            arrayMenuHistory = Arrays.asList("CAR LOG");
+        }
+        else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
+            arrayMenuHistory = Arrays.asList("APEL", "RKH");
+        }
+        else {
+            arrayMenuHistory = Arrays.asList("");
+        }
+
         adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistory);
         acMenuRiwayatHome.setAdapter(adapterMenuHistory);
-
-        listKendalaCode = dbhelper.get_menukendala(0);
-        listKendalaName = dbhelper.get_menukendala(1);
-        adapterKendala = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, listKendalaName);
-        ackendala.setAdapter(adapterKendala);
-
-        ackendala.setOnItemClickListener((adapterView, view, position, l) -> selectedKendala = listKendalaCode.get(position));
 
         openDrawerBtn.setOnClickListener(v -> ((MainActivity) getActivity()).openDrawer());
 
@@ -189,18 +181,20 @@ public class HomeFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 String selected = (String) adapterView.getItemAtPosition(position);
 
-                if (selected.equals("APEL KERJA")) {
-                    lvHistoryApel.setVisibility(View.VISIBLE);
-                    lvHistoryCarLog.setVisibility(View.GONE);
-                    lvHistoryApel.setAdapter(null);
+                filtertglhistory.setText(todayDate);
+
+                if (selected.equals("APEL")) {
+                    lvHistory.setAdapter(null);
+                    loadLvHistoryApel(todayDate);
                 }
-                else {
-                    lvHistoryApel.setVisibility(View.GONE);
-                    lvHistoryCarLog.setVisibility(View.VISIBLE);
-                    lvHistoryCarLog.setAdapter(null);
+                else if (selected.equals("RKH")) {
+                    lvHistory.setAdapter(null);
+                    loadListViewHistoryRKH(todayDate);
+                } else {
+                    lvHistory.setAdapter(null);
+                    loadLvHistoryCarLog(todayDate);
                 }
 
-                filtertglhistory.setText(null);
             }
         });
 
@@ -235,7 +229,11 @@ public class HomeFragment extends Fragment {
 
                 if (acMenuRiwayatHome.getText().toString().equals("APEL KERJA")) {
                     loadLvHistoryApel(simpleFormat.format(date));
-                } else {
+                }
+                else if (acMenuRiwayatHome.getText().toString().equals("RKH")) {
+                    loadListViewHistoryRKH(simpleFormat.format(date));
+                }
+                else {
                     loadLvHistoryCarLog(simpleFormat.format(date));
                 }
             }
@@ -264,122 +262,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        imgcamkendala.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gambar1 = null;
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, 1);
-                }
-            }
-        });
-
         bubbleTabBar.addBubbleListener(new OnBubbleClickListener() {
             @Override
             public void onBubbleClick(int id) {
                 switch (id) {
                     case R.id.homefragment:
                         layoutInfoFragment.setVisibility(View.VISIBLE);
-                        scrollkendala.setVisibility(View.GONE);
                         layoutRiwayatFragment.setVisibility(View.GONE);
                         break;
                     case R.id.log:
                         layoutRiwayatFragment.setVisibility(View.VISIBLE);
                         layoutInfoFragment.setVisibility(View.GONE);
-                        scrollkendala.setVisibility(View.GONE);
-                        break;
-                    case R.id.feedback:
-                        layoutInfoFragment.setVisibility(View.GONE);
-                        layoutRiwayatFragment.setVisibility(View.GONE);
-                        scrollkendala.setVisibility(View.VISIBLE);
                         break;
                 }
 
-            }
-        });
-
-        btnsimpankendala.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(ackendala.getText().toString().trim())) {
-                    ackendala.setError("Harap Pilih Kendala");
-                    aclokasikendala.setError(null);
-                }
-                else if (TextUtils.isEmpty(aclokasikendala.getText().toString().trim())) {
-                    aclokasikendala.setError("Harap Pilih Kendala");
-                    Toast.makeText(getActivity(),"Harap Input Lokasi", Toast.LENGTH_LONG).show();
-                    ackendala.setError(null);
-                }
-                else if (gambar1 == null) {
-                    Toast.makeText(getActivity(),"Harap Ambil Gambar Kendala", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    getLocation();
-                    String nodocKendala = dbhelper.get_tbl_username(0) + "/KDL/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-
-                    String base64Kendala = android.util.Base64.encodeToString(gambar1,  android.util.Base64.DEFAULT);
-
-                    RequestQueue requestQueueKendala = Volley.newRequestQueue(getActivity());
-                    String server_url = url_api + "dataupload/uploadkendala.php";
-                    StringRequest stringRequestKendala = new StringRequest(Request.Method.POST, server_url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonPostKendala = new JSONObject(response.toString());
-                                if (jsonPostKendala.getString("UPLOADKENDALA").equals("SUCCESS")) {
-                                    gambar1 = null;
-                                    aclokasikendala.setText(null);
-                                    selectedKendala = null;
-                                    ackendala.setText(null);
-                                    etlebarkendala.setText(null);
-                                    etpanjangkendala.setText(null);
-                                    etluaskendala.setText(null);
-                                    etdesckendala.setText(null);
-                                    imgcamkendala.setImageResource(R.drawable.ic_menu_camera);
-                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Submit Kendala").setConfirmText("OK").show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            requestQueueKendala.stop();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            dbhelper.insert_kendala(nodocKendala, ackendala.getText().toString(), aclokasikendala.getText().toString(),
-                                    etpanjangkendala.getText().toString(), etlebarkendala.getText().toString(), etluaskendala.getText().toString(),
-                                    etdesckendala.getText().toString(), lat_awal, long_awal, gambar1, 0);
-                            error.printStackTrace();
-                            requestQueueKendala.stop();
-                        }
-                    })  {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("nodoc", nodocKendala);
-                            params.put("datatype", "KDL");
-                            params.put("subdatatype", dbhelper.get_tbl_username(0));
-                            params.put("itemdata", "HEADER");
-                            params.put("subitemdata", "HEADER");
-                            params.put("compid", dbhelper.get_tbl_username(14));
-                            params.put("siteid", dbhelper.get_tbl_username(15));
-                            params.put("date1", todayDateTime);
-                            params.put("text1", selectedKendala);
-                            params.put("text2", aclokasikendala.getText().toString());
-                            params.put("text3", etpanjangkendala.getText().toString());
-                            params.put("text4", etlebarkendala.getText().toString());
-                            params.put("text5", etlebarkendala.getText().toString());
-                            params.put("text6", etdesckendala.getText().toString());
-                            params.put("text7", lat_awal);
-                            params.put("text8", long_awal);
-                            params.put("userid", dbhelper.get_tbl_username(0));
-                            params.put("kendalaimg", base64Kendala);
-                            return params;
-                        }
-                    };
-                    requestQueueKendala.add(stringRequestKendala);
-                }
             }
         });
 
@@ -388,15 +284,6 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            Bitmap photoCamera = (Bitmap) data.getExtras().get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-            gambar1 = stream.toByteArray();
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(gambar1, 0, gambar1.length);
-            imgcamkendala.setImageBitmap(compressedBitmap);
-            imgcamkendala.setBackground(null);
-        }
 
         if (requestCode == 727) {
             loadlvinfohome(todayDate);
@@ -413,9 +300,6 @@ public class HomeFragment extends Fragment {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == 3) {
-
-                    acMenuRiwayatHome.setText(arrayMenuHistory.get(1));
-                    acMenuRiwayatHome.setSelection(1);
                     loadlvinfohome(todayDate);
                     loadLvHistoryCarLog(todayDate);
                     if (lvfragment.getAdapter().getCount() > 0) {
@@ -423,8 +307,6 @@ public class HomeFragment extends Fragment {
                     }
                 }
                 if (result.getResultCode() == 4) {
-                    acMenuRiwayatHome.setText(arrayMenuHistory.get(0));
-                    acMenuRiwayatHome.setSelection(0);
                     loadlvinfohome(todayDate);
                     loadLvHistoryApel(todayDate);
                     if (lvfragment.getAdapter().getCount() > 0) {
@@ -707,12 +589,14 @@ public class HomeFragment extends Fragment {
         List<ListHistoryHomeApel> listApelHistories;
         HistoryHomeApelAdapter adapterLvHistory;
         DatabaseHelper dbhelper;
-        dbhelper = new DatabaseHelper(lvHistoryApel.getContext());
+        dbhelper = new DatabaseHelper(lvHistory.getContext());
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(lvHistoryApel.getContext());
-        lvHistoryApel.setLayoutManager(layoutManager);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(lvHistoryApel.getContext(), R.drawable.divider));
-        lvHistoryApel.addItemDecoration(dividerItemDecoration);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(lvHistory.getContext());
+        lvHistory.setLayoutManager(layoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                lvHistory.getContext(), layoutManager.getOrientation());
+        lvHistory.addItemDecoration(dividerItemDecoration);
 
         listApelHistories = new ArrayList<>();
         listApelHistories.clear();
@@ -733,8 +617,8 @@ public class HomeFragment extends Fragment {
                 listApelHistories.add(paramsApelHistory);
             } while (cursor.moveToNext());
         }
-        adapterLvHistory = new HistoryHomeApelAdapter(listApelHistories, lvHistoryApel.getContext());
-        lvHistoryApel.setAdapter(adapterLvHistory);
+        adapterLvHistory = new HistoryHomeApelAdapter(listApelHistories, lvHistory.getContext());
+        lvHistory.setAdapter(adapterLvHistory);
     }
 
     public static void loadLvHistoryCarLog(String selectedDate) {
@@ -742,12 +626,14 @@ public class HomeFragment extends Fragment {
         List<ListHistoryHomeCarLog> listHistoryCarLogs;
         HistoryHomeCarLogAdapter carlogAdapter;
         DatabaseHelper dbhelper;
-        dbhelper = new DatabaseHelper(lvHistoryCarLog.getContext());
+        dbhelper = new DatabaseHelper(lvHistory.getContext());
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(lvHistoryCarLog.getContext());
-        lvHistoryCarLog.setLayoutManager(layoutManager);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(lvHistoryCarLog.getContext(), R.drawable.divider));
-        lvHistoryCarLog.addItemDecoration(dividerItemDecoration);
+        LinearLayoutManager layoutCarLog = new LinearLayoutManager(lvHistory.getContext());
+        lvHistory.setLayoutManager(layoutCarLog);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                lvHistory.getContext(), layoutCarLog.getOrientation());
+        lvHistory.addItemDecoration(dividerItemDecoration);
 
         listHistoryCarLogs = new ArrayList<>();
         listHistoryCarLogs.clear();
@@ -769,16 +655,41 @@ public class HomeFragment extends Fragment {
                 listHistoryCarLogs.add(paramsCarLogHistory);
             } while (cursor.moveToNext());
         }
-        carlogAdapter = new HistoryHomeCarLogAdapter(listHistoryCarLogs, lvHistoryCarLog.getContext());
-        lvHistoryCarLog.setAdapter(carlogAdapter);
+        carlogAdapter = new HistoryHomeCarLogAdapter(listHistoryCarLogs, lvHistory.getContext());
+        lvHistory.setAdapter(carlogAdapter);
     }
 
-    private void getLocation() {
-        GPSTracker gps = new GPSTracker(getActivity());
-        double latitude = gps.getLatitude();
-        double longitude = gps.getLongitude();
-        lat_awal = String.valueOf(latitude);
-        long_awal = String.valueOf(longitude);
+    private void loadListViewHistoryRKH(String selectedDate) {
+
+        LinearLayoutManager layoutRKH = new LinearLayoutManager(lvHistory.getContext());
+        lvHistory.setLayoutManager(layoutRKH);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                lvHistory.getContext(), layoutRKH.getOrientation());
+        lvHistory.addItemDecoration(dividerItemDecoration);
+
+        listHistoriesRKH = new ArrayList<>();
+        listHistoriesRKH.clear();
+
+        final Cursor cursor = dbhelper.listview_historyRKH(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
+                        cursor.getString(cursor.getColumnIndex("documentno")),
+                        cursor.getString(cursor.getColumnIndex("tglinput")),
+                        cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
+                        cursor.getString(cursor.getColumnIndex("empname")),
+                        cursor.getString(cursor.getColumnIndex("activity")),
+                        cursor.getString(cursor.getColumnIndex("blok")),
+                        cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("shiftcode")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+                );
+                listHistoriesRKH.add(paramsHistoryRKH);
+            } while (cursor.moveToNext());
+        }
+        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, getContext());
+        lvHistory.setAdapter(adapterLvRKH);
     }
 
 }
