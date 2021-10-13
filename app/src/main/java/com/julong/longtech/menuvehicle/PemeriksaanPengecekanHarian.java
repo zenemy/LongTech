@@ -66,16 +66,16 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
     AutoCompleteTextView acKendaraanP2H;
     LinearLayout layoutKebocoranOli, layoutBautMur, layoutKonsidiOliMesin, layoutKonsidiOliTransmisi, layoutKonsidiOliHidrolik,
-            layoutKonsidiOliRem, layoutKonsidiOliBBM, layoutKonsidiAirflow, layoutKonsidiRadiator,
-            layoutKondisiBan, layoutKerusakan, layoutSabukKipas, layoutSuaraMesin, layoutLampuKendaraan, layoutSpionKendaraan;
+            layoutKonsidiOliRem, layoutKonsidiOliBBM, layoutKonsidiAirflow, layoutKonsidiRadiator, layoutKondisiBan,
+            layoutKerusakan, layoutSabukKipas, layoutSuaraMesin, layoutLampuKendaraan, layoutSpionKendaraan, layoutGrease;
 
     CheckBox checkKebocoranOli, checkBautMur, checkKonsidiOliMesin, checkKonsidiOliTransmisi, checkKonsidiOliHidrolik,
-            checkKonsidiOliRem, checkKonsidiOliBBM, checkKonsidiAirflow, checkKonsidiRadiator,
-            checkKondisiBan, checkKerusakan, checkSabukKipas, checkSuaraMesin, checkLampuKendaraan, checkSpionKendaraan;
+            checkKonsidiOliRem, checkKonsidiOliBBM, checkKonsidiAirflow, checkKonsidiRadiator, checkKondisiBan,
+            checkKerusakan, checkSabukKipas, checkSuaraMesin, checkLampuKendaraan, checkSpionKendaraan, checkGrease;
 
     EditText etKebocoranOli, etBautMur, etKonsidiOliMesin, etKonsidiOliTransmisi, etKonsidiOliHidrolik,
-            etKonsidiOliRem, etKonsidiOliBBM, etKonsidiAirflow, etKonsidiRadiator, etKMHM,
-            etKondisiBan, etKerusakan, etSabukKipas, etSuaraMesin, etLampuKendaraan, etSpionKendaraan, etDescPengecekan;
+            etKonsidiOliRem, etKonsidiOliBBM, etKonsidiAirflow, etKonsidiRadiator, etKMHM, etKondisiBan,
+            etKerusakan, etSabukKipas, etSuaraMesin, etLampuKendaraan, etSpionKendaraan, etDescPengecekan, etGrease;
 
     ImageView imgTakePictP2H;
     Button btnCancelP2H;
@@ -114,6 +114,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         layoutSuaraMesin = findViewById(R.id.layoutSuaraMesin);
         layoutLampuKendaraan = findViewById(R.id.layoutLampuP2H);
         layoutSpionKendaraan = findViewById(R.id.layoutSpionP2H);
+        layoutGrease = findViewById(R.id.layoutGreaseP2H);
 
         checkKebocoranOli = findViewById(R.id.checkboxKebocoranOli);
         checkBautMur = findViewById(R.id.checkboxBautMur);
@@ -130,6 +131,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         checkSuaraMesin = findViewById(R.id.cbSuaraMesin);
         checkLampuKendaraan = findViewById(R.id.cbLampuP2H);
         checkSpionKendaraan = findViewById(R.id.cbSpionP2H);
+        checkGrease = findViewById(R.id.cbGreaseP2H);
 
         etKebocoranOli = findViewById(R.id.etKebocoranOli);
         etBautMur = findViewById(R.id.etBautMur);
@@ -146,6 +148,7 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
         etSuaraMesin = findViewById(R.id.etSuaraMesin);
         etLampuKendaraan = findViewById(R.id.etLampuP2H);
         etSpionKendaraan = findViewById(R.id.etSpionP2H);
+        etGrease = findViewById(R.id.etGreaseP2H);
 
         btnCancelP2H.setOnClickListener(v -> finish());
 
@@ -171,7 +174,6 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                     Bundle bundle = result.getData().getExtras();
                     Bitmap photoCamera = (Bitmap) bundle.get("data");
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                     byteImgP2H = stream.toByteArray();
                     imgTakePictP2H.setImageBitmap(photoCamera);
                 }
@@ -335,6 +337,15 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
                 checkSpionKendaraan.setChecked(true);
             }
         });
+
+        layoutGrease.setOnClickListener(v -> {
+            if (checkGrease.isChecked()) {
+                checkGrease.setChecked(false);
+            }
+            else {
+                checkGrease.setChecked(true);
+            }
+        });
     }
 
     public void eventSubmitP2H(View v) {
@@ -417,6 +428,10 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
                 if (checkSpionKendaraan.isChecked()) {
                     dbHelper.insert_dataP2H_detail(nodocP2H, "P2H16", "SPION KANAN DAN SPION KIRI", "CHECK", etSpionKendaraan.getText().toString());
+                }
+
+                if (checkGrease.isChecked()) {
+                    dbHelper.insert_dataP2H_detail(nodocP2H, "P2H17", "KONDISI SUDAH GREASE ATAU BELUM", "CHECK", etSpionKendaraan.getText().toString());
                 }
 
                 dbHelper.update_kmhm(newValueKM);

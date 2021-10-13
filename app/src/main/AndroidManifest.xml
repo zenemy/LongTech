@@ -33,7 +33,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Longtech.NoActionBar">
-        <activity android:name=".menuvehicle.ListViewUnit"></activity>
+        <activity android:name=".menuvehicle.NewMethodRKH"></activity>
         <activity android:name=".menureport.ReportActivity" />
         <activity android:name=".menuworkshop.LaporanPerbaikan" />
         <activity android:name=".menuinventory.PenerimaanBBM" />
@@ -53,18 +53,11 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".menuvehicle.InspeksiHasilKerja" />
         <activity android:name=".menuvehicle.VerifikasiGIS" />
-        <activity android:name=".menuworkshop.SelesaiPerbaikanBA" />
-        <activity android:name=".menuworkshop.PerintahPerbaikan" />
         <activity android:name=".menuworkshop.PermintaanPerbaikan" />
         <activity android:name=".menuinventory.PengeluaranBBM" />
         <activity android:name=".menuinventory.PermintaanBBM" />
-        <activity android:name=".menuvehicle.GantiUnitKendaraan" />
-        <activity android:name=".menuhcm.AbsensiBekerjaUnit" />
         <activity android:name=".menuhcm.ApelPagi" />
-        <activity android:name=".menuhcm.MesinAbsensi" />
-        <activity android:name=".menuhcm.BiodataKaryawan" />
         <activity android:name=".menuvehicle.PemeriksaanPengecekanHarian" />
-        <activity android:name=".menuvehicle.InputRincianRKH" />
         <activity android:name=".menuvehicle.RencanaKerjaHarian" />
         <activity android:name=".MainActivity" />
         <activity

@@ -199,6 +199,7 @@ public class ReportActivity extends AppCompatActivity {
     }
 
     private void populateDropdownReportMenu(String usertype) {
+        progressDialog.show();
         String url_reportmenu = url_api + "fetchdata/reportmenu/get_reportmenu.php?rolecode=" + usertype;
         JsonObjectRequest jsonRequestUserType = new JsonObjectRequest(Request.Method.GET, url_reportmenu, null, new Response.Listener<JSONObject>() {
             @Override
@@ -220,6 +221,7 @@ public class ReportActivity extends AppCompatActivity {
 
                     adapterReportMenu = new ArrayAdapter<>(ReportActivity.this, R.layout.spinnerlist, R.id.spinnerItem, listReportMenuName);
                     acSelectReportMenu.setAdapter(adapterReportMenu);
+                    progressDialog.dismiss();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -229,6 +231,7 @@ public class ReportActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                progressDialog.dismiss();
                 new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                         .setContentText("Periksa Jaringan").show();
             }

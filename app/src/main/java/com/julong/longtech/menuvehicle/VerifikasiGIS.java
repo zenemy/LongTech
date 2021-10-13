@@ -152,7 +152,6 @@ public class VerifikasiGIS extends AppCompatActivity {
                             .setAnchorView(layoutBtnVerifikasi).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
                     }
                     else {
-
                         nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
                         dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedDate, selectedVehicleGIS, selectedDriverGIS,
                                 selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
@@ -270,7 +269,7 @@ public class VerifikasiGIS extends AppCompatActivity {
 
     private void prepareHeaderData() throws SQLiteException {
 
-        listDriverGIS = dbhelper.get_employee();
+        listDriverGIS = dbhelper.get_operatoronly();
         adapterDriverGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listDriverGIS);
         acDriverGIS.setAdapter(adapterDriverGIS);
 
@@ -394,7 +393,7 @@ public class VerifikasiGIS extends AppCompatActivity {
     // Finish verification work
     public void eventSubmitVerifikasi(View v) {
         if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
-            || TextUtils.isEmpty(etSesuaiSOP.getText().toString().trim())
+            || byteFotoGIS == null
             || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())
             || TextUtils.isEmpty(etHasilVerifikasi.getText().toString().trim())) {
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)

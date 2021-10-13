@@ -63,10 +63,10 @@ import com.julong.longtech.menuhistory.HistoryAdapterRKH;
 import com.julong.longtech.menuhistory.ListHistoryRKH;
 import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
+import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
-import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 import com.julong.longtech.menuworkshop.LaporanPerbaikan;
@@ -346,30 +346,22 @@ public class HomeFragment extends Fragment {
         }
 
         linearLayoutApel.setOnClickListener(v -> {
-            if (dbhelper.get_statusapelpagi(0).equals("1")) {
-                Intent intent = new Intent(getContext(), ApelPagi.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intentLaunchActivity.launch(intent);
-                onPause();
-            }
-            else {
-                final SweetAlertDialog startApelDlg = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE);
-                startApelDlg.setTitleText("Mulai apel pagi?");
-                startApelDlg.setCancelText("KEMBALI");
-                startApelDlg.setConfirmText("MULAI");
-                startApelDlg.showCancelButton(true);
-                startApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                        sweetAlertDialog.dismiss();
-                        Intent intent = new Intent(getActivity(), ApelPagi.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchActivity.launch(intent);
-                        onPause();
-                    }
-                });
-                startApelDlg.show();
-            }
+            final SweetAlertDialog startApelDlg = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE);
+            startApelDlg.setTitleText("Mulai briefing?");
+            startApelDlg.setCancelText("KEMBALI");
+            startApelDlg.setConfirmText("MULAI");
+            startApelDlg.showCancelButton(true);
+            startApelDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    sweetAlertDialog.dismiss();
+                    Intent intent = new Intent(getActivity(), ApelPagi.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intentLaunchActivity.launch(intent);
+                    onPause();
+                }
+            });
+            startApelDlg.show();
         });
 
         linearLayoutAbsen.setOnClickListener(v -> {
@@ -378,7 +370,7 @@ public class HomeFragment extends Fragment {
         });
 
         linearLayoutRKH.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), RencanaKerjaHarian.class);
+            Intent intent = new Intent(getActivity(), NewMethodRKH.class);
             intentLaunchActivity.launch(intent);
         });
 
@@ -633,6 +625,7 @@ public class HomeFragment extends Fragment {
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 lvHistory.getContext(), layoutCarLog.getOrientation());
+
         lvHistory.addItemDecoration(dividerItemDecoration);
 
         listHistoryCarLogs = new ArrayList<>();

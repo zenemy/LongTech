@@ -1,17 +1,12 @@
 package com.julong.longtech.ui.home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,17 +16,8 @@ import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
 import com.julong.longtech.menusetup.UploadData;
-import com.julong.longtech.menuvehicle.InputRincianRKH;
-import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 
-import org.w3c.dom.Text;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
 
@@ -68,10 +54,14 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
 
         // Keterangan tambahan
         if (listInfo.getMenucode().equals("010104")) {
-            if (dbhelper.get_statuscheckinout_absmdr(listInfo.getDocumentnumber()).equals("CHECKIN")) {
-                tvNoteTambahan.setText("ABSEN MASUK");
-            } else {
-                tvNoteTambahan.setText("ABSEN PULANG");
+            try {
+                if (dbhelper.get_statuscheckinout_absmdr(listInfo.getDocumentnumber()).equals("CHECKIN")) {
+                    tvNoteTambahan.setText("ABSEN MASUK");
+                } else {
+                    tvNoteTambahan.setText("ABSEN PULANG");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         }

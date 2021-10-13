@@ -64,7 +64,6 @@ import com.julong.longtech.menusetup.AESEnkrip;
 import com.julong.longtech.menusetup.DownloadData;
 import com.julong.longtech.menusetup.RegistrasiKaryawan;
 import com.julong.longtech.menuvehicle.AdjustmentUnit;
-import com.julong.longtech.menuworkshop.PerintahPerbaikan;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -484,8 +483,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 return_koneksi = "";
                                 pDialog.dismiss();
-                                dialogHelper.showDialogInfo("User ID tidak terdaftar, " +
-                                        "silahkan hubungi HRD dan silahkan ulangi.");
+                                dialogHelper.showDialogInfo("Koneksi Error");
                             }
                         }
                     });
@@ -631,8 +629,6 @@ public class LoginActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    return_koneksi = null;
-                    dialogHelper.showDialogInfo("Anda berada pada mode offline");
                     String status_update;
                     status_update = "NO";
                     dbhelper.updatestatusversion(status_update);

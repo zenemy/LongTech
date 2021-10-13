@@ -361,6 +361,7 @@ public class LaporanPerbaikan extends AppCompatActivity {
 
         LinearLayoutManager layoutMekanik = new LinearLayoutManager(this);
         lvMekanikLaporanService.setLayoutManager(layoutMekanik);
+
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(getDrawable(R.drawable.divider));
         lvMekanikLaporanService.addItemDecoration(dividerItemDecoration);
 

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#EFECEC"
+    tools:context=".menuvehicle.NewMethodRKH">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="94dp"
+        android:paddingTop="14dp"
+        android:gravity="center_horizontal"
+        android:text="RENCANA KERJA HARIAN"
+        android:textAllCaps="true"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-40dp"
+        android:layout_marginHorizontal="4dp"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="6dp"
+        android:orientation="vertical"
+        android:background="@drawable/tombol"
+        android:backgroundTint="@color/white">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:endIconDrawable="@drawable/ic_baseline_calendar_24"
+            app:endIconMode="custom"
+            android:hint="Tanggal Pelaksanaan">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etWorkDateNewRKH"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:clickable="true"
+                android:focusableInTouchMode="false"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:inputType="date"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:weightSum="2">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:hint="@string/judulvehicle"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acVehicleNewRKH"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:hint="Kondisi Unit"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acKondisiUnitNewRKH"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="Keterangan"
+            android:visibility="gone"
+            app:endIconDrawable="@drawable/ic_baseline_note_24"
+            app:endIconMode="custom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBreakdownDescNewRKH"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:clickable="true"
+                android:focusableInTouchMode="false"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:inputType="date"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:hint="Estimasi Tanggal Unit Ready"
+            android:visibility="gone"
+            app:endIconDrawable="@drawable/ic_baseline_calendar_24"
+            app:endIconMode="custom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDateUnitReadyNewRKH"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:clickable="true"
+                android:focusableInTouchMode="false"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:inputType="date"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutNewRKH"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginHorizontal="4dp"
+        android:background="@drawable/tbl_lr_top"
+        android:backgroundTint="@color/white">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lokasi &amp; Kegiatan" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/judulopr" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutLokasiKegiatanUniRKH"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:layout_weight="1"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="@color/white"
+        android:visibility="visible">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvPlaceholderLvMaterialService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_baseline_find_in_page_48"
+            android:drawablePadding="12dp"
+            android:gravity="center"
+            android:text="Anda belum\nmenginput RKH"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/btnAddLokasiKegiatanUnitRKH"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lineHeight="25dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lvLokasiKegiatanUnitRKH"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnAddLokasiKegiatanUnitRKH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            app:backgroundTint="#007042"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:maxImageSize="40dp"
+            app:rippleColor="#DCDCDC"
+            app:srcCompat="@android:drawable/ic_input_add"
+            app:tint="@color/white" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lvDriverNewRKH"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:visibility="gone"
+        android:layout_marginHorizontal="4dp"
+        android:background="@drawable/tbl_lr_bottom"
+        android:backgroundTint="@color/white"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginVertical="4dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackNewRKH"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="@string/backbtn"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmitNewRKH"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:textSize="16sp"
+            android:text="@string/okbtn"
+            android:textStyle="bold"
+            app:cornerRadius="10dp" />
+    </LinearLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

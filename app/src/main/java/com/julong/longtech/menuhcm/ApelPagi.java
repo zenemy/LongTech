@@ -4,8 +4,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -23,6 +28,7 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -60,27 +66,21 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class ApelPagi extends AppCompatActivity {
 
     public static int dataProcess, REQUEST_IMAGE_CAPTURE = 1;
-    public static byte[] byteGambarApel, gambarAnggota;
+    public static byte[] byteGambarApel;
     public static String selectedEmp, selectedUnit, selectedItemData, nodocApel, latApel, longApel;
-    Handler handler = new Handler();
     DatabaseHelper dbhelper;
-    HashPassword hashFunction;
 
     ActivityResultLauncher<Intent> intentLaunchCameraHasil;
-    public static ActivityResultLauncher<Intent> intentLaunchFotoAnggota;
 
-    LinearLayout layoutBtnApel;
+    List<ApelPagiList> listApels;
+    public static ApelPagiAdapter adapterApel;
+
     EditText etKemandoranApel, etLokasiApel;
     TextView tvHeaderApel;
     ImageView imgFotoApel;
-    ListView lvPimpinan, lvAnggota;
+    public static RecyclerView lvAnggotaApel;
     public static Button btnActionApel;
-    Button btnSubmitApel, btnBackApelPagi;
-    TabLayout tabApelPagi;
-
-    private List<ApelPagiList> listsPimpinan;
-    private List<ApelPagiList> listsAnggota;
-    private ApelPagiAdapter apelAdapter;
+    Button btnBackApelPagi;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -91,20 +91,12 @@ public class ApelPagi extends AppCompatActivity {
         dbhelper = new DatabaseHelper(this);
         String apelDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
 
-        nodocApel = dbhelper.get_tbl_username(0) + "/ABSAPL/" + new SimpleDateFormat("ddMMyy", Locale.getDefault()).format(new Date());
-        hashFunction = new HashPassword(11);
-
         // Declare design ID
-        tvHeaderApel = findViewById(R.id.tvHeaderApelPagi);
-        imgFotoApel = findViewById(R.id.imgCaptureApel);
-        etKemandoranApel = findViewById(R.id.etKemandoranApel);
         etLokasiApel = findViewById(R.id.etLokasiApel);
-        lvPimpinan = findViewById(R.id.lvPimpinanApelPagi);
-        lvAnggota = findViewById(R.id.lvAnggotaApelPagi);
-        btnSubmitApel = findViewById(R.id.btnSimpanApelPagi);
-        layoutBtnApel = findViewById(R.id.layoutBtnApel);
-        tabApelPagi = findViewById(R.id.tabApelPagi);
-        btnActionApel = findViewById(R.id.btnActionApel);
+        imgFotoApel = findViewById(R.id.imgCaptureApel);
+        tvHeaderApel = findViewById(R.id.tvHeaderApelPagi);
+        etKemandoranApel = findViewById(R.id.etKemandoranApel);
+        lvAnggotaApel = findViewById(R.id.lvAnggotaApelPagi);
         btnBackApelPagi = findViewById(R.id.btnBackApelPagi);
 
         btnBackApelPagi.setOnClickListener(view -> onBackPressed());
@@ -113,77 +105,25 @@ public class ApelPagi extends AppCompatActivity {
         etKemandoranApel.setText(dbhelper.get_infokemandoranapel(0, dbhelper.get_tbl_username(18)));
         tvHeaderApel.setText("BRIEFING " + apelDate);
 
-        prepateTeamData();
-        loadlvpimpinan();
-        loadlvanggota();
-
-        // Checking if the leader have checkin this morning,
-        // so the leaders wont have to checkin again at middle shift briefing
-        if (lvPimpinan.getAdapter().getCount() == 0) {
-            Cursor cursorPimpinan = dbhelper.view_preparepimpinan_apelpagi();
-            if (cursorPimpinan.moveToFirst()) {
-                do {
-                    dbhelper.insert_apelpagi_pimpinan(nodocApel, cursorPimpinan.getString(cursorPimpinan.getColumnIndex("empcode")),
-                            cursorPimpinan.getString(cursorPimpinan.getColumnIndex("positioncode")),
-                            cursorPimpinan.getString(cursorPimpinan.getColumnIndex("groupcode")));
-                } while (cursorPimpinan.moveToNext());
-            }
-            loadlvpimpinan();
-        } else {
-            loadlvpimpinan();
-        }
-
         intentLaunchCameraHasil = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
 
-                        Bundle bundleFoto = result.getData().getExtras();
-                        Bitmap photoCamera = (Bitmap) bundleFoto.get("data");
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-                        byteGambarApel = stream.toByteArray();
-                        Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteGambarApel, 0, byteGambarApel.length);
-                        imgFotoApel.setImageBitmap(compressedBitmap);
-                        imgFotoApel.setScaleType(ImageView.ScaleType.FIT_XY);
-                        imgFotoApel.setForeground(null);
+                    getLocation();
 
-                        dbhelper.update_fotorame_apel(dbhelper.check_existingapel(1), latApel, longApel, byteGambarApel);
-                    }
+                    Bundle bundleFoto = result.getData().getExtras();
+                    Bitmap photoCamera = (Bitmap) bundleFoto.get("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                    byteGambarApel = stream.toByteArray();
+                    imgFotoApel.setImageBitmap(photoCamera);
+                    imgFotoApel.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imgFotoApel.setForeground(null);
 
                 }
-        );
 
-        intentLaunchFotoAnggota = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-
-                        getLocation();
-                        Bundle bundleFoto = result.getData().getExtras();
-                        Bitmap photoCamera = (Bitmap) bundleFoto.get("data");
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-                        gambarAnggota = stream.toByteArray();
-
-                        DialogHelper.dlgMetodeAbsen.dismiss();
-                        dbhelper.updateapel_fotoanggota(nodocApel, selectedItemData, selectedEmp, latApel, longApel, gambarAnggota);
-                        final SweetAlertDialog dlgStartOK = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
-                        dlgStartOK.setTitleText("Berhasil Absen").setContentText(dbhelper.get_empname(selectedEmp)).setConfirmText("OK").show();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                dlgStartOK.dismiss();
-
-                                handler.removeCallbacks(this);
-                            }
-                        }, 2000);
-                        loadlvanggota();
-                        loadlvpimpinan();
-
-                    }
-
-                }
+            }
         );
 
         imgFotoApel.setOnClickListener(new View.OnClickListener() {
@@ -197,269 +137,82 @@ public class ApelPagi extends AppCompatActivity {
             }
         });
 
-        btnActionApel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadlvpimpinan();
-                loadlvanggota();
-            }
-        });
+        loadListViewEmp();
 
-        tabApelPagi.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        lvPimpinan.setVisibility(View.VISIBLE);
-                        lvAnggota.setVisibility(View.GONE);
-                        loadlvpimpinan();
-                        break;
-                    case 1:
-                        loadlvanggota();
-                        lvAnggota.setVisibility(View.VISIBLE);
-                        lvPimpinan.setVisibility(View.GONE);
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-
-        });
-
-        // Finish apel
-        btnSubmitApel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (TextUtils.isEmpty(etLokasiApel.getText().toString().trim()) || byteGambarApel == null) {
-                    new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").setConfirmText("OK").show();
-                }
-                else {
-                    final SweetAlertDialog warningExitDlg = new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.WARNING_TYPE);
-                    warningExitDlg.setTitleText("Selesaikan apel pagi?");
-                    warningExitDlg.setCancelText("KEMBALI");
-                    warningExitDlg.setConfirmText("SELESAI");
-                    warningExitDlg.showCancelButton(true);
-                    warningExitDlg.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                        @Override
-                        public void onClick(SweetAlertDialog dlgExit) {
-                            dbhelper.updateselesai_apelpagi(nodocApel, etLokasiApel.getText().toString());
-                            dlgExit.dismiss();
-                            SweetAlertDialog dlgFinishApel = new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE);
-                            dlgFinishApel.setCancelable(false);
-                            dlgFinishApel.setTitleText("Apel Pagi selesai");
-                            dlgFinishApel.setConfirmClickListener(sweetAlertDialog -> onBackPressed());
-                            dlgFinishApel.setConfirmText("OK").show();
-                        }
-                    });
-                    warningExitDlg.show();
-                }
-            }
-        });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Scan QR code employee
-        if (dataProcess == 3) {
-            if (result != null) {
-                if (result.getContents() == null) {
-                    Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
-                } else {
-                    String v_resultbarcode = result.getContents();
-
-                    String hashedResult = v_resultbarcode.substring(0, v_resultbarcode.lastIndexOf("longtech"));
-                    String originalContent = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()) + selectedEmp;
-
-                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-                    String timeResult = v_resultbarcode.substring(v_resultbarcode.indexOf("longtech")+8, v_resultbarcode.length());
-
-                    Date dateResult = null;
-                    try {
-                        dateResult = format.parse(timeResult);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    Date currentDate = null;
-                    try {
-                        currentDate = format.parse(new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    long calcDifferences = currentDate.getTime() - dateResult.getTime();
-                    long diffMinute = calcDifferences / (60 * 1000) % 60;
-
-                    // Checkin does the QR code match the selected employee
-                    boolean checkPassword = hashFunction.CheckPassword(originalContent, hashedResult);
-                    if (checkPassword) {
-                        if (diffMinute <= 5) {
-                            getLocation();
-                            dbhelper.updateapel_scananggota(nodocApel, selectedItemData, selectedEmp, latApel, longApel);
-                            final SweetAlertDialog dlgStartOK = new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.SUCCESS_TYPE);
-                            dlgStartOK.setTitleText("Berhasil Absen").setContentText(dbhelper.get_empname(selectedEmp)).setConfirmText("OK").show();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dlgStartOK.dismissWithAnimation();
-
-                                    handler.removeCallbacks(this);
-                                }
-                            }, 2000);
-                            loadlvanggota();
-                            loadlvpimpinan();
-                        }
-                        else {
-                            new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.ERROR_TYPE).setTitleText("QR Code expired!").setConfirmText("OK").show();
-                        }
-                    }
-                    else {
-                        new SweetAlertDialog(ApelPagi.this, SweetAlertDialog.ERROR_TYPE).setTitleText("QR Code error!").setConfirmText("OK").show();
-                    }
-                }
-            }
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void prepateTeamData() throws SQLiteException {
-        dbhelper = new DatabaseHelper(this);
-
-        if (dbhelper.check_existingapel(0).equals("1") && dbhelper.check_existingapel(4).equals("")) {
-            try {
-                etLokasiApel.setText(dbhelper.check_existingapel(2));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (dbhelper.count_fotoapel(dbhelper.check_existingapel(1)).equals("1")) {
-                byteGambarApel = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1));
-                Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteGambarApel, 0, byteGambarApel.length);
-                imgFotoApel.setForeground(null);
-                imgFotoApel.setImageBitmap(compressedBitmap);
-                imgFotoApel.setScaleType(ImageView.ScaleType.FIT_XY);
-            }
-        }
-        else if (dbhelper.check_existingapel(4).equals("0")
-                || dbhelper.check_existingapel(4).equals("1")) {
-            layoutBtnApel.setVisibility(View.GONE);
-            imgFotoApel.setEnabled(false);
-            etLokasiApel.setFocusable(false);
-            lvAnggota.setEnabled(false);
-            lvPimpinan.setEnabled(false);
-            etLokasiApel.setText(dbhelper.check_existingapel(2));
-            byteGambarApel = dbhelper.get_fotoapelrame(dbhelper.check_existingapel(1));
-            Bitmap compressedBitmap = BitmapFactory.decodeByteArray(byteGambarApel, 0, byteGambarApel.length);
-            imgFotoApel.setForeground(null);
-            imgFotoApel.setImageBitmap(compressedBitmap);
-            imgFotoApel.setScaleType(ImageView.ScaleType.FIT_XY);
+    public void submitBriefing(View v) {
+        if (TextUtils.isEmpty(etLokasiApel.getText().toString().trim())) {
+            Snackbar.make(v, "Harap isi Lokasi Briefing", Snackbar.LENGTH_LONG).setAnchorView(btnBackApelPagi)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
+                    .setAction("OKAY", view -> etLokasiApel.requestFocus()).show();
+        } else if (byteGambarApel == null) {
+            Snackbar.make(v, "Harap foto kegiatan briefing", Snackbar.LENGTH_LONG).setAnchorView(btnBackApelPagi)
+                .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).setAction("OKAY", null).show();
         }
         else {
+            nodocApel = dbhelper.get_tbl_username(0) + "/ABSAPL/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+            dbhelper.updateselesai_apelpagi(nodocApel, etLokasiApel.getText().toString(), latApel, longApel, byteGambarApel);
 
-            dbhelper.insert_apelpagi_header(nodocApel);
+            SweetAlertDialog dlgSuccess = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
+            dlgSuccess.setTitleText("APEL SELESAI");
+            dlgSuccess.setCancelable(false);
+            dlgSuccess.setConfirmClickListener(sweetAlertDialog -> {
+                Intent backIntent = new Intent();
+                setResult(4, backIntent);
+                finish();
+            });
+            dlgSuccess.show();
 
-            // Insertin team data into transaction
-            Cursor cursorAnggota = dbhelper.view_prepareanggota_apelpagi();
-            if (cursorAnggota.moveToFirst()) {
-                do {
-                    dbhelper.insert_apelpagi_anggota(nodocApel, cursorAnggota.getString(cursorAnggota.getColumnIndex("empcode")),
-                            cursorAnggota.getString(cursorAnggota.getColumnIndex("positioncode")),
-                            cursorAnggota.getString(cursorAnggota.getColumnIndex("unitcode")),
-                            cursorAnggota.getString(cursorAnggota.getColumnIndex("shiftcode")));
-                } while (cursorAnggota.moveToNext());
-            }
-
+            new Handler().postDelayed(() -> {
+                Intent backIntent = new Intent();
+                setResult(4, backIntent);
+                finish();
+            }, 2000);
         }
-
-        tabApelPagi.getTabAt(1).select();
-
     }
 
-    public void loadlvpimpinan() {
-        listsPimpinan = new ArrayList<>();
-        listsPimpinan.clear();
-        Cursor cursor = dbhelper.listview_apelpagi_pimpinan();
+    // Load RecylerView of team member
+    public void loadListViewEmp() {
+        LinearLayoutManager layoutApel = new LinearLayoutManager(this);
+        lvAnggotaApel.setLayoutManager(layoutApel);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                lvAnggotaApel.getContext(), layoutApel.getOrientation());
+        lvAnggotaApel.addItemDecoration(dividerItemDecoration);
+
+        listApels = new ArrayList<>();
+        listApels.clear();
+        final Cursor cursor = dbhelper.listview_apelpagi_anggota();
         if (cursor.moveToFirst()) {
             do {
-                ApelPagiList pimpinanLists = new ApelPagiList(
-                        cursor.getString(cursor.getColumnIndex("empname")),
-                        cursor.getString(cursor.getColumnIndex("empcode")),
-                        cursor.getString(cursor.getColumnIndex("positioncode")),
-                        cursor.getString(cursor.getColumnIndex("positionname")),
-                        cursor.getString(cursor.getColumnIndex("groupcode")),
-                        cursor.getString(cursor.getColumnIndex("shiftcode")),
-                        cursor.getString(cursor.getColumnIndex("metodeabsen")),
-                        cursor.getString(cursor.getColumnIndex("waktuabsen")),
-                        cursor.getString(cursor.getColumnIndex("itemdata")),
-                        cursor.getBlob(cursor.getColumnIndex("fotoabsen"))
-                );
-                listsPimpinan.add(pimpinanLists);
+                ApelPagiList paramsApel = new ApelPagiList(cursor.getString(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(4), cursor.getString(3), cursor.getString(5));
+                listApels.add(paramsApel);
             } while (cursor.moveToNext());
         }
-        apelAdapter = new ApelPagiAdapter(this, listsPimpinan);
-        lvPimpinan.setAdapter(apelAdapter);
-
+        adapterApel = new ApelPagiAdapter(listApels, this);
+        lvAnggotaApel.setAdapter(adapterApel);
     }
 
-    public void loadlvanggota() {
-        listsAnggota = new ArrayList<>();
-        listsAnggota.clear();
-        Cursor cursor = dbhelper.listview_apelpagi_anggota();
-        if (cursor.moveToFirst()) {
-            do {
-                ApelPagiList anggotaLists = new ApelPagiList(
-                        cursor.getString(cursor.getColumnIndex("empname")),
-                        cursor.getString(cursor.getColumnIndex("empcode")),
-                        cursor.getString(cursor.getColumnIndex("positioncode")),
-                        cursor.getString(cursor.getColumnIndex("positionname")),
-                        cursor.getString(cursor.getColumnIndex("unitcode")),
-                        cursor.getString(cursor.getColumnIndex("shiftcode")),
-                        cursor.getString(cursor.getColumnIndex("metodeabsen")),
-                        cursor.getString(cursor.getColumnIndex("waktuabsen")),
-                        cursor.getString(cursor.getColumnIndex("itemdata")),
-                        cursor.getBlob(cursor.getColumnIndex("fotoabsen"))
-                );
-                listsAnggota.add(anggotaLists);
-            } while (cursor.moveToNext());
-        }
-        apelAdapter = new ApelPagiAdapter(this, listsAnggota);
-        lvAnggota.setAdapter(apelAdapter);
-    }
-
-    public static void scanBarcode(Activity activity) {
-        IntentIntegrator intentIntegrator = new IntentIntegrator(activity);
-        intentIntegrator.setOrientationLocked(false);
-        intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        intentIntegrator.setPrompt("Scan Employee QR Code");
-        intentIntegrator.initiateScan();
-    }
 
     private void getLocation() {
-        GPSTracker gps = new GPSTracker(ApelPagi.this);
-        double latitude = gps.getLatitude();
-        double longitude = gps.getLongitude();
-        latApel = String.valueOf(latitude);
-        longApel = String.valueOf(longitude);
+        GPSTracker gpsTracker = new GPSTracker(this);
+        if (gpsTracker.getIsGPSTrackingEnabled()){
+            double latitude = gpsTracker.getLatitude();
+            double longitude = gpsTracker.getLongitude();
+            latApel = String.valueOf(latitude);
+            longApel = String.valueOf(longitude);
+        } else {
+            gpsTracker.showSettingsAlert();
+        }
     }
 
     @Override
     public void onBackPressed() {
-        Intent backIntent = new Intent();
-        setResult(4, backIntent);
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+        db.execSQL("DELETE FROM tr_02 WHERE datatype = 'ABSAPL' AND itemdata = 'DETAIL2' " +
+                "AND date(date1) = date('now', 'localtime') AND uploaded IS NULL");
         finish();
     }
 }

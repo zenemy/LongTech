@@ -47,7 +47,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.julong.longtech.menuhcm.AbsensiBekerjaUnit;
 import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryActivity;
@@ -60,17 +59,14 @@ import com.julong.longtech.menusetup.UploadData;
 import com.julong.longtech.menuvehicle.AdjustmentUnit;
 import com.julong.longtech.menuvehicle.InspeksiHasilKerja;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
-import com.julong.longtech.menuhcm.MesinAbsensi;
+import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PengeluaranBBM;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
 import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 import com.julong.longtech.menuworkshop.LaporanPerbaikan;
-import com.julong.longtech.menuworkshop.SelesaiPerbaikanBA;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
-import com.julong.longtech.menuhcm.BiodataKaryawan;
-import com.julong.longtech.menusetup.MyAccount;
 import com.julong.longtech.ui.home.HomeFragment;
 
 import org.json.JSONArray;
@@ -221,27 +217,6 @@ public class MainActivity extends AppCompatActivity {
                             listMenu.get(listGroupMenu.get(groupPosition)).get(childPosition), 1);
                 try {
 
-                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010101")) {
-                        Intent intent = new Intent(MainActivity.this, BiodataKaryawan.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        onPause();
-                    }
-
-                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010102")) {
-                        Intent intent = new Intent(MainActivity.this, MesinAbsensi.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchMainActivity.launch(intent);
-                        onPause();
-                    }
-
-                    if (menuGroupCode.equals("0101") && menuSubCode.equals("010103")) {
-                        Intent intent = new Intent(MainActivity.this, AbsensiBekerjaUnit.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intentLaunchMainActivity.launch(intent);
-                        onPause();
-                    }
-
                     if (menuGroupCode.equals("0101") && menuSubCode.equals("010104")) {
                         Intent intent = new Intent(MainActivity.this, AbsensiMandiri.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -290,17 +265,10 @@ public class MainActivity extends AppCompatActivity {
                         onPause();
                     }
 
-                    if (menuGroupCode.equals("0201") && menuSubCode.equals("020103")) {
-                        Intent intent = new Intent(MainActivity.this, SelesaiPerbaikanBA.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        onPause();
-                    }
-
 
                     // Vehicle Menu
                     if (menuGroupCode.equals("0202") && menuSubCode.equals("020201")) {
-                        Intent intent = new Intent(MainActivity.this, RencanaKerjaHarian.class);
+                        Intent intent = new Intent(MainActivity.this, NewMethodRKH.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intentLaunchMainActivity.launch(intent);
                         onPause();

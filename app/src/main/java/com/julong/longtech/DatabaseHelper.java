@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
     public static int versionNumber = 1;
-    public static String versionName = "Version 0.9";
+    public static String versionName = "Version 0.10";
 
     public DatabaseHelper(Context context) {
         super(context, "db_dsi.db", null, 37);
@@ -230,30 +230,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public byte[] get_fotoapelrame(String documentno) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT blob1 FROM bl_01 " +
-                "WHERE documentno = '"+documentno+"' AND itemdata = 'HEADER'", null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToPosition(0);
-            return cursor.getBlob(0);
-        } else {
-            return null;
-        }
-    }
-
-    public String count_fotoapel(String documentno) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM bl_01 " +
-                "WHERE documentno = '"+documentno+"' AND itemdata = 'HEADER'", null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToPosition(0);
-            return cursor.getString(0);
-        } else {
-            return null;
-        }
-    }
-
     public byte[] get_companyimg(int index) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT logocomp, backgroundimg FROM tbl_companyurl;", null);
@@ -335,6 +311,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         } else {
             return "0";
+        }
+    }
+
+    public String get_infokehadiran_apel(String employeeCode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT gs.parameterdesc FROM tr_02 tr " +
+                "INNER JOIN gs_01 gs ON gs.parametercode = tr.text4 " +
+                "WHERE gs.groupparamcode = 'GS14' AND tr.datatype = 'ABSAPL' " +
+                "AND tr.subitemdata = '"+employeeCode+"' AND DATE(tr.date1) = DATE('now', 'localtime');", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            if (cursor.isNull(0)) {
+                return "N/A";
+            } else {
+                return cursor.getString(0);
+            }
+        } else {
+            return "N/A";
         }
     }
 
@@ -466,47 +461,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long insert = db.insert("tbl_username", null, contentValues);
         if (insert == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public boolean insert_kendala(String nodoc, String kategorikendala, String lokasi, String panjang, String lebar,
-                                  String luas, String desckendala, String latitude, String longitude,
-                                  byte[] fotokendala, int uploaded) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("documentno", nodoc);
-        contentValues.put("datatype", "KDL");
-        contentValues.put("subdatatype", get_tbl_username(0));
-        contentValues.put("comp_id", get_tbl_username(14));
-        contentValues.put("site_id", get_tbl_username(15));
-        contentValues.put("date1", savedate);
-        contentValues.put("text1", kategorikendala);
-        contentValues.put("text2", lokasi);
-        contentValues.put("text3", panjang);
-        contentValues.put("text4", lebar);
-        contentValues.put("text5", luas);
-        contentValues.put("text6", desckendala);
-        contentValues.put("text7", latitude);
-        contentValues.put("text8", longitude);
-        contentValues.put("uploaded", uploaded);
-
-        ContentValues contentValuesPhoto = new ContentValues();
-        contentValuesPhoto.put("documentno", nodoc);
-        contentValuesPhoto.put("datatype", "KDL");
-        contentValuesPhoto.put("subdatatype", get_tbl_username(0));
-        contentValuesPhoto.put("itemdata", "HEADER");
-        contentValuesPhoto.put("comp_id", get_tbl_username(14));
-        contentValuesPhoto.put("site_id", get_tbl_username(15));
-        contentValuesPhoto.put("blob1", fotokendala);
-        contentValuesPhoto.put("uploaded", uploaded);
-
-        long insert = db.insert("tr_01", null, contentValues);
-        long insertPhoto = db.insert("bl_01", null, contentValuesPhoto);
-        if (insert == -1 && insertPhoto == -1) {
             return false;
         } else {
             return true;
@@ -848,7 +802,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(i).toString();
+            return cursor.getString(i);
         } else {
             return null;
         }
@@ -957,52 +911,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_apelpagi_header(String nodoc) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        contentValues.put("documentno", nodoc);
-        contentValues.put("datatype", "ABSAPL");
-        contentValues.put("subdatatype", get_tbl_username(0));
-        contentValues.put("comp_id", get_tbl_username(14));
-        contentValues.put("site_id", get_tbl_username(15));
-        contentValues.put("date1", savedate);
-        contentValues.put("text1", get_tbl_username(18));
-        contentValues.put("text2", get_infokemandoranapel(1, get_tbl_username(18)));
-        contentValues.put("text3", get_infokemandoranapel(3, get_tbl_username(18)));
-        contentValues.put("text4", get_infokemandoranapel(6, get_tbl_username(18)));
-        contentValues.put("text5", get_infokemandoranapel(4, get_tbl_username(18)));
-
-        long insert = db.insert("tr_01", null, contentValues);
-        if (insert == -1) {
-            return false;
+    public int getExistingEmpBriefing(String employeeCode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE subitemdata = '"+employeeCode+"' " +
+                "AND DATE(date1) = DATE('now', 'localtime') AND uploaded IS NULL", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getInt(0);
         } else {
-            return true;
+            return 0;
         }
     }
 
-    public boolean insert_apelpagi_anggota(String nodoc, String empcode, String jabatancode,
-                                           String unitcode, String shiftcode) {
+    public void insert_briefing_anggota(String empcode, String jabatancode,
+                                        String unitcode, String absenMethod,
+                                        String absencode, String keteranganAbsen,
+                                        String latitudeApel, String longitudeApel) {
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("documentno", nodoc);
-        contentValues.put("datatype", "ABSAPL");
-        contentValues.put("subdatatype", get_tbl_username(0));
-        contentValues.put("itemdata", "DETAIL2");
-        contentValues.put("subitemdata", empcode);
-        contentValues.put("comp_id", get_tbl_username(14));
-        contentValues.put("site_id", get_tbl_username(15));
-        contentValues.put("text1", jabatancode);
-        contentValues.put("text2", unitcode);
-        contentValues.put("text3", "N/A");
-        contentValues.put("text8", shiftcode);
 
-        long insert = db.insert("tr_02", null, contentValues);
-        if (insert == -1) {
-            return false;
+        if (getExistingEmpBriefing(empcode) == 0) {
+            ContentValues contentValuesInsert = new ContentValues();
+            contentValuesInsert.put("datatype", "ABSAPL");
+            contentValuesInsert.put("subdatatype", get_tbl_username(0));
+            contentValuesInsert.put("itemdata", "DETAIL2");
+            contentValuesInsert.put("subitemdata", empcode);
+            contentValuesInsert.put("comp_id", get_tbl_username(14));
+            contentValuesInsert.put("site_id", get_tbl_username(15));
+            contentValuesInsert.put("date1", savedate);
+            contentValuesInsert.put("text1", jabatancode);
+            contentValuesInsert.put("text2", unitcode);
+            contentValuesInsert.put("text3", absenMethod);
+            contentValuesInsert.put("text4", absencode);
+            contentValuesInsert.put("text5", keteranganAbsen);
+            contentValuesInsert.put("text6", latitudeApel);
+            contentValuesInsert.put("text7", longitudeApel);
+            db.insert("tr_02", null, contentValuesInsert);
         } else {
-            return true;
+            ContentValues contentValuesUpdate = new ContentValues();
+            contentValuesUpdate.put("date1", savedate);
+            contentValuesUpdate.put("text3", absenMethod);
+            contentValuesUpdate.put("text4", absencode);
+            db.update("tr_02", contentValuesUpdate, "datatype = 'ABSAPL' AND " +
+                "subitemdata = '"+empcode+"' AND DATE(date1) = DATE('now', 'localtime') AND uploaded IS NULL", null);
         }
+
+
     }
 
     public Boolean updatesubmit_perintahservice(String vehicleCode, String estimasiHari) {
@@ -1088,28 +1043,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text1", gangcode);
         contentValues.put("text2", empcode);
         contentValues.putNull("text3");
-
-        long insert = db.insert("tr_02", null, contentValues);
-        if (insert == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public boolean insert_apelpagi_pimpinan(String nodoc, String empcode, String jabatancode, String groupcode) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("documentno", nodoc);
-        contentValues.put("datatype", "ABSAPL");
-        contentValues.put("subdatatype", get_tbl_username(0));
-        contentValues.put("itemdata", "DETAIL1");
-        contentValues.put("subitemdata", empcode);
-        contentValues.put("comp_id", get_tbl_username(14));
-        contentValues.put("site_id", get_tbl_username(15));
-        contentValues.put("text1", jabatancode);
-        contentValues.put("text2", groupcode);
-        contentValues.put("text3", "N/A");
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -1424,17 +1357,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor listview_apelpagi_pimpinan() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT md1.text2 AS empname, tr2.text1 AS positioncode, md1.text20 AS positionname, " +
-                "tr2.subitemdata AS empcode, tr2.text2 AS groupcode,  '' AS shiftcode, tr2.date1 AS waktuabsen, tr2.text3 AS metodeabsen, " +
-                "tr2.itemdata, bl.blob1 AS fotoabsen FROM tr_02 tr2 INNER JOIN md_01 md1 ON md1.text1 = tr2.subitemdata " +
-                "LEFT JOIN bl_01 bl ON bl.documentno = tr2.documentno AND bl.subitemdata = tr2.subitemdata " +
-                "WHERE md1.datatype = 'EMPLOYEE' AND tr2.datatype = 'ABSAPL' AND tr2.itemdata = 'DETAIL1' " +
-                "AND (DATE(tr2.date1) = DATE('NOW', 'localtime') OR tr2.date1 IS NULL);", null);
-        return cursor;
-    }
-
     public Cursor listview_mekanik_mintaservice() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT md.text2 AS empname, tr2.text2 AS empcode " +
@@ -1445,12 +1367,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_apelpagi_anggota() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT md1.text2 AS empname, tr2.text1 AS positioncode, " +
-                "md1.text20 AS positionname, tr2.subitemdata AS empcode, tr2.text2 AS unitcode,  ' (' || md2.text2 || ')' AS shiftcode, " +
-                "TIME(tr2.date1) AS waktuabsen, tr2.text3 AS metodeabsen, tr2.itemdata, bl.blob1 AS fotoabsen FROM tr_02 tr2 " +
-                "INNER JOIN md_02 md2 ON md2.subitemdata = tr2.subitemdata INNER JOIN md_01 md1 ON md1.text1 = tr2.subitemdata " +
-                "AND md1.datatype = 'EMPLOYEE' LEFT JOIN bl_01 bl ON bl.documentno = tr2.documentno AND bl.subitemdata = tr2.subitemdata " +
-                "WHERE tr2.datatype = 'ABSAPL' AND tr2.itemdata = 'DETAIL2' AND (DATE(tr2.date1) = DATE('NOW', 'localtime') OR tr2.date1 IS NULL)", null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT mdgang.subdatatype AS teamcode, " +
+            "mdemp.text1 AS empcode, mdemp.text2 AS empname, mdemp.text20 AS position_name, " +
+            "mdemp.text19 AS positioncode, '' AS vehicle FROM md_01 mdemp INNER JOIN " +
+            "md_01 mdgang ON mdgang.text10 = mdemp.text1 WHERE mdemp.datatype = 'EMPLOYEE' " +
+            "AND mdgang.datatype = 'GANG' AND mdgang.subdatatype = '"+get_tbl_username(18)+"' " +
+            "UNION ALL " +
+            "SELECT mdgang.subdatatype AS teamcode, mdemp.text1 AS empcode, mdemp.text2 AS empname, " +
+            "mdemp.text20 AS position_name, mdemp.text19 AS positioncode, '' AS vehicle " +
+            "FROM md_01 mdemp INNER JOIN md_01 mdgang ON mdgang.text9 = mdemp.text1 " +
+            "WHERE mdemp.datatype = 'EMPLOYEE' AND mdgang.datatype = 'GANG' " +
+            "UNION ALL " +
+            "SELECT mdgang.subdatatype AS teamcode, mdemp.text1 AS empcode, mdemp.text2 AS empname, " +
+            "mdemp.text20 AS position_name, mdemp.text19 AS positioncode, mdgang.text1 AS vehicle " +
+            "FROM md_01 mdemp INNER JOIN md_02 mdgang ON mdgang.subitemdata = mdemp.text1 " +
+            "WHERE mdemp.datatype = 'EMPLOYEE' AND mdgang.datatype = 'GANG' AND mdemp.text1 NOT IN " +
+            "(SELECT subitemdata FROM tr_02 WHERE datatype = 'ABSAPL' AND date(date1) = " +
+                "date('now', 'localtime') AND uploaded IS NOT NULL);", null);
         return cursor;
     }
 
@@ -1495,10 +1428,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_carlog(String nodoc, String kmawal, String jenismuatan, String kategorimuatan, String helper1, String helper2,
-                                 String asalkebun, String asaldivisi, String asallokasi, String tujuankebun, String tujuandivisi,
-                                 String tujuanlokasi, String tujuankegiatan, String satuanmuata, String ritasemuata, String hasilkerja,
-                                 String keterangan, String latitude, String longitude, String kmakhir, byte[] fotohasilkerja, byte[] fotokm) {
+    public boolean insert_carlog(String nodoc, String kmawal, String jenismuatan, String kategorimuatan,
+                                 String tujuankebun, String tujuandivisi, String tujuanlokasi,
+                                 String tujuankegiatan, String satuanmuata, String ritasemuata,
+                                 String hasilkerja, String keterangan, String latitude,
+                                 String longitude, String kmakhir, byte[] fotohasilkerja, byte[] fotokm) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
@@ -1514,9 +1448,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text4", kategorimuatan);
         contentValues.putNull("text5");
         contentValues.putNull("text6");
-        contentValues.put("text7", asalkebun);
-        contentValues.put("text8", asaldivisi);
-        contentValues.put("text9", asallokasi);
         contentValues.put("text10", tujuankebun);
         contentValues.put("text11", tujuandivisi);
         contentValues.put("text12", tujuanlokasi);
@@ -1585,7 +1516,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(0).toString();
+            return cursor.getString(0);
         } else {
             return "0";
         }
@@ -1598,7 +1529,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(0).toString();
+            return cursor.getString(0);
         } else {
             return null;
         }
@@ -1610,7 +1541,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(0).toString();
+            return cursor.getString(0);
         } else {
             return "0";
         }
@@ -1622,7 +1553,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(0).toString();
+            return cursor.getString(0);
         } else {
             return "0";
         }
@@ -1634,7 +1565,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(index).toString();
+            return cursor.getString(index);
         } else {
             return null;
         }
@@ -1702,33 +1633,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT DISTINCT  md2.subitemdata AS empcode, md2.text1 AS gangcode FROM md_02 md2 " +
                 "INNER JOIN tbl_username u ON u.gangcode = md2.subdatatype INNER JOIN md_01 md1emp ON md1emp.text1 = md2.subitemdata " +
                 "INNER JOIN md_01 md1post ON md1post.subdatatype = md1emp.text19 WHERE md1emp.datatype = 'EMPLOYEE'", null);
-        return cursor;
-    }
-
-    public Cursor view_prepareanggota_apelpagi() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT md1emp.text2 AS empname, md1emp.text19 AS positioncode, md1post.text1 AS positionname, " +
-                "md2.subitemdata AS empcode, md2.text1 AS unitcode, md2.text2 AS shiftcode FROM md_02 md2 INNER JOIN md_01 md1emp ON md1emp.text1 = md2.subitemdata " +
-                "INNER JOIN md_01 md1post ON md1post.subdatatype = md1emp.text19 WHERE md1emp.datatype = 'EMPLOYEE'", null);
-        return cursor;
-    }
-
-    public Cursor view_preparepimpinan_apelpagi() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT md1emp.text2 AS empname, md1emp.text19 positioncode, " +
-                "md1emp.text20 AS positionname, md1gang.text8 AS empcode, md1gang.subdatatype AS groupcode " +
-                "FROM md_01 md1gang LEFT JOIN md_01 md1emp ON md1emp.text1 = md1gang.text8 " +
-                "WHERE md1gang.datatype = 'GANG' AND md1gang.subdatatype = '"+get_tbl_username(18)+"' " +
-                "UNION ALL " +
-                "SELECT DISTINCT md1emp.text2 AS empname, md1emp.text19 positioncode, md1emp.text20 AS positionname, " +
-                "md1gang.text9 AS empcode, md1gang.subdatatype AS groupcode " +
-                "FROM md_01 md1gang LEFT JOIN md_01 md1emp ON md1emp.text1 = md1gang.text9 " +
-                "WHERE md1gang.datatype = 'GANG' AND md1gang.subdatatype = '"+get_tbl_username(18)+"' " +
-                "UNION ALL " +
-                "SELECT DISTINCT md1emp.text2 AS empname, md1emp.text19 positioncode, md1emp.text20 AS positionname, " +
-                "md1gang.text10 AS empcode, md1gang.subdatatype AS groupcode " +
-                "FROM md_01 md1gang LEFT JOIN md_01 md1emp ON md1emp.text1 = md1gang.text10 " +
-                "WHERE md1gang.datatype = 'GANG' AND md1gang.subdatatype = '"+get_tbl_username(18)+"';", null);
         return cursor;
     }
 
@@ -2408,20 +2312,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dataList;
     }
 
-    public List<String> get_emp_mygang(String selectedShift) {
+    public List<String> get_operatoronly() {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT md1.text1 || ' - ' || md1.text2 AS employee FROM md_01 md1 " +
-                "INNER JOIN md_02 md2 ON md2.subitemdata = md1.text1 AND md2.text2 NOT IN ('"+selectedShift+"')" +
-                "WHERE md1.datatype = 'EMPLOYEE' AND md2.datatype = 'GANG' " +
-                "AND md2.subdatatype = '"+get_tbl_username(18)+"'";
+        String query = "SELECT DISTINCT text1 || ' - ' || text2 AS employee FROM md_01 " +
+                "WHERE DATATYPE = 'EMPLOYEE' AND text20 = 'DRIVER / OPERATOR'";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
             do {
                 dataList.add(cursor.getString(0));
             }
-
             while (cursor.moveToNext());
             cursor.close();
         }
@@ -2768,7 +2669,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         contentValuesTR01.put("date2", savedate);
         contentValuesTR01.put("text6", hasilkerja);
-        contentValuesTR01.put("text6", catatanSOP);
+        contentValuesTR01.put("text7", catatanSOP);
         contentValuesTR01.put("uploaded", 0);
 
         ContentValues contentValuesTR02 = new ContentValues();
@@ -2893,64 +2794,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean update_fotorame_apel(String nodoc, String latitude, String longitude, byte[] fotorame) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("date1", savedate);
-        contentValues.put("text8", latitude);
-        contentValues.put("text9", longitude);
-
-        ContentValues contentValuesFoto = new ContentValues();
-        contentValuesFoto.put("documentno", nodoc);
-        contentValuesFoto.put("datatype", "ABSAPL");
-        contentValuesFoto.put("subdatatype", get_tbl_username(0));
-        contentValuesFoto.put("itemdata", "HEADER");
-        contentValuesFoto.put("subitemdata", "HEADER");
-        contentValuesFoto.put("comp_id", get_tbl_username(14));
-        contentValuesFoto.put("site_id", get_tbl_username(15));
-        contentValuesFoto.put("blob1", fotorame);
-
-        long update = db.update("tr_01", contentValues, "documentno = '"+nodoc+"'", null);
-        long insert = db.insert("bl_01", null, contentValuesFoto);
-        if (update == -1 && insert == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public Boolean updateapel_fotoanggota(String nodoc, String itemdata, String empcode,
-                                               String latitude, String longitude, byte[] fotoPribadi) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("date1", savedate);
-        contentValues.put("text3", "FOTO");
-        contentValues.put("text4", "KJ");
-        contentValues.put("text6", latitude);
-        contentValues.put("text7", longitude);
-
-        ContentValues contentValuesFoto = new ContentValues();
-        contentValuesFoto.put("documentno", nodoc);
-        contentValuesFoto.put("datatype", "ABSAPL");
-        contentValuesFoto.put("subdatatype", get_tbl_username(0));
-        contentValuesFoto.put("itemdata", itemdata);
-        contentValuesFoto.put("subitemdata", empcode);
-        contentValuesFoto.put("comp_id", get_tbl_username(14));
-        contentValuesFoto.put("site_id", get_tbl_username(15));
-        contentValuesFoto.put("blob1", fotoPribadi);
-
-        long update = db.update("tr_02", contentValues, "documentno = '"+nodoc+"' AND itemdata = '"+itemdata+"' AND subitemdata = '"+ empcode +"'", null);
-        long insert = db.insert("bl_01", null, contentValuesFoto);
-        if (update == -1 && insert == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
 
 
@@ -2980,69 +2823,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean updateselesai_apelpagi(String nodoc, String lokasiAbsen) {
+    public Boolean updateselesai_apelpagi(String nodoc, String lokasiAbsen, String latitude,
+                                          String longitude, byte[] fotorame) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
         ContentValues contentValuesTR01 = new ContentValues();
-        contentValuesTR01.put("date2", savedate);
+        contentValuesTR01.put("documentno", nodoc);
+        contentValuesTR01.put("datatype", "ABSAPL");
+        contentValuesTR01.put("subdatatype", get_tbl_username(0));
+        contentValuesTR01.put("comp_id", get_tbl_username(14));
+        contentValuesTR01.put("site_id", get_tbl_username(15));
+        contentValuesTR01.put("date1", savedate);
+        contentValuesTR01.put("text1", get_tbl_username(18));
+        contentValuesTR01.put("text2", get_infokemandoranapel(1, get_tbl_username(18)));
+        contentValuesTR01.put("text3", get_infokemandoranapel(3, get_tbl_username(18)));
+        contentValuesTR01.put("text4", get_infokemandoranapel(6, get_tbl_username(18)));
+        contentValuesTR01.put("text5", get_infokemandoranapel(4, get_tbl_username(18)));
         contentValuesTR01.put("text6", lokasiAbsen);
+        contentValuesTR01.put("text8", latitude);
+        contentValuesTR01.put("text9", longitude);
         contentValuesTR01.put("uploaded", 0);
 
         ContentValues contentValuesTR02 = new ContentValues();
+        contentValuesTR02.put("documentno", nodoc);
         contentValuesTR02.put("uploaded", 0);
 
-        ContentValues contentValuesBL1 = new ContentValues();
-        contentValuesBL1.put("uploaded", 0);
+        ContentValues contentValuesFoto = new ContentValues();
+        contentValuesFoto.put("documentno", nodoc);
+        contentValuesFoto.put("datatype", "ABSAPL");
+        contentValuesFoto.put("subdatatype", get_tbl_username(0));
+        contentValuesFoto.put("itemdata", "HEADER");
+        contentValuesFoto.put("subitemdata", "HEADER");
+        contentValuesFoto.put("comp_id", get_tbl_username(14));
+        contentValuesFoto.put("site_id", get_tbl_username(15));
+        contentValuesFoto.put("blob1", fotorame);
+        contentValuesFoto.put("uploaded", 0);
 
-        long updateTR01 = db.update("tr_01", contentValuesTR01, "documentno = '"+nodoc+"'", null);
-        long updateTR02 = db.update("tr_02", contentValuesTR02, "documentno = '"+nodoc+"' AND date1 IS NOT NULL", null);
-        long updateBL01 = db.update("bl_01", contentValuesBL1, "documentno = '"+nodoc+"'", null);
+        long insertTR01 = db.insert("tr_01", null, contentValuesTR01);
+        long updateTR02 = db.update("tr_02", contentValuesTR02, "datatype = 'ABSAPL' AND documentno IS NULL AND uploaded IS NULL", null);
+        long insertBL = db.insert("bl_01", null, contentValuesFoto);
 
         db.execSQL("DELETE FROM tr_02 WHERE documentno = '"+nodoc+"' AND date1 IS NULL");
-        if (updateTR01 == -1 && updateTR02 == -1 && updateBL01 == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public Boolean updateapel_scananggota(String nodoc, String itemdata, String empcode,
-                                          String latitude, String longitude) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("date1", savedate);
-        contentValues.put("text3", "SCAN");
-        contentValues.put("text4", "KJ");
-        contentValues.put("text6", latitude);
-        contentValues.put("text7", longitude);
-
-        long update = db.update("tr_02", contentValues, "documentno = '"+nodoc+"' AND itemdata = '"+itemdata+"' AND subitemdata = '"+ empcode +"'", null);
-        if (update == -1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public Boolean updateapel_tidakhadir(String nodoc, String itemdata, String empcode, String jenisTdkHadir, String keteranganTdkHadir) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        contentValues.put("date1", savedate);
-        contentValues.put("text3", jenisTdkHadir);
-        contentValues.put("text4", jenisTdkHadir);
-        contentValues.put("text5", keteranganTdkHadir);
-        contentValues.putNull("text6");
-        contentValues.putNull("text7");
-
-        db.execSQL("DELETE FROM bl_01 WHERE documentno = '"+nodoc+"' AND itemdata = '"+itemdata+"' AND subitemdata = '"+empcode+"'");
-
-        long update = db.update("tr_02", contentValues, "documentno = '"+nodoc+"' AND itemdata = '"+itemdata+"' AND subitemdata = '"+ empcode +"'", null);
-        if (update == -1) {
+        if (insertTR01 == -1 && updateTR02 == -1 && insertBL == -1) {
             return false;
         } else {
             return true;

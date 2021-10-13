@@ -463,18 +463,6 @@ public class AppSetting extends AppCompatActivity {
         btn.setBackgroundTintList(ColorStateList.valueOf(color));
     }
 
-    private void getLocation() {
-        GPSTracker gps = new GPSTracker (AppSetting.this);
-        double latitude = gps.getLatitude();
-        double longitude = gps.getLongitude();
-        Date date = new Date(gps.getElapsedRealtimeNanos());
-
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+07:00"));
-
-        String myDate = sdf.format(date);
-        tvThemeColorPicker.setText(myDate);
-    }
 
     public byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();

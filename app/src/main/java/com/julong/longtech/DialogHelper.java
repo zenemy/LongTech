@@ -31,12 +31,16 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.menuhcm.ApelPagi;
+import com.julong.longtech.menuhcm.ApelPagiAdapter;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuworkshop.LaporanPerbaikan;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -46,9 +50,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.julong.longtech.menuhcm.ApelPagi.REQUEST_IMAGE_CAPTURE;
 import static com.julong.longtech.menuhcm.ApelPagi.btnActionApel;
 import static com.julong.longtech.menuhcm.ApelPagi.dataProcess;
-import static com.julong.longtech.menuhcm.ApelPagi.intentLaunchFotoAnggota;
 import static com.julong.longtech.menuhcm.ApelPagi.nodocApel;
-import static com.julong.longtech.menuhcm.ApelPagi.scanBarcode;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedEmp;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedItemData;
 import static com.julong.longtech.menuhcm.ApelPagi.selectedUnit;
@@ -61,7 +63,7 @@ public class DialogHelper extends Dialog {
     DatabaseHelper dbhelper;
 
     // Dialog Apel
-    public static Dialog dlgMetodeAbsen, dlgTidakHadir;
+    public static Dialog dlgTidakHadir;
     String tipeTidakHadir;
 
     // Dialog GIS
@@ -144,187 +146,6 @@ public class DialogHelper extends Dialog {
         return dlgSelesaiVerifikasi;
     }
 
-    public void dlgApelAnggota(String employeeName, String employeeCode, String itemData) {
-        //Show method dialog
-        dlgMetodeAbsen = new Dialog(activityContext);
-        dlgMetodeAbsen.setContentView(R.layout.dialog_metodeabsen);
-        dlgMetodeAbsen.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        Window windowMetodeAbsen = dlgMetodeAbsen.getWindow();
-        windowMetodeAbsen.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        TextView tvHeaderDlgMetode = dlgMetodeAbsen.findViewById(R.id.tvHeaderDlgMetodeApel);
-        Button btnApelQR = dlgMetodeAbsen.findViewById(R.id.btnApelQR);
-        Button btnApelFoto = dlgMetodeAbsen.findViewById(R.id.btnApelFoto);
-        Button btnApelTidakHadir = dlgMetodeAbsen.findViewById(R.id.btnApelTidakHadir);
-        Button btnBackDlgApel = dlgMetodeAbsen.findViewById(R.id.btnBackDlgApel);
-        tvHeaderDlgMetode.setText(employeeName);
-        dlgMetodeAbsen.show();
-
-        btnBackDlgApel.setOnClickListener(view1 -> dlgMetodeAbsen.dismiss());
-
-        // Metode Foto
-        btnApelFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataProcess = 2;
-                selectedEmp = employeeCode;
-                selectedItemData = itemData;
-                dlgMetodeAbsen.dismiss();
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(activityContext.getPackageManager()) != null) {
-                    intentLaunchFotoAnggota.launch(takePictureIntent);
-                }
-            }
-        });
-
-        // Metode Scan
-        btnApelQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataProcess = 3;
-                selectedEmp = employeeCode;
-                selectedItemData = itemData;
-                dlgMetodeAbsen.dismiss();
-                scanBarcode((ApelPagi) activityContext);
-            }
-        });
-
-        // Tidak Hadir
-        btnApelTidakHadir.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dlgMetodeAbsen.dismiss();
-
-                // Show dialog tidak hadir
-                dlgTidakHadir = new Dialog(activityContext);
-                dlgTidakHadir.setContentView(R.layout.dialog_apeltdkhadir);
-                dlgTidakHadir.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                Window windowTdkHadir = dlgTidakHadir.getWindow();
-                windowTdkHadir.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                TextView tvHeaderDlgMetode = dlgTidakHadir.findViewById(R.id.tvHeaderDlgTdkHadirApel);
-
-                // Radio selection tdk hadir
-                RadioButton radioApelCuti = dlgTidakHadir.findViewById(R.id.radioApelCuti);
-                RadioButton radioApelP1 = dlgTidakHadir.findViewById(R.id.radioApelP1);
-                RadioButton radioApelTK = dlgTidakHadir.findViewById(R.id.radioApelTK);
-                RadioButton radioApelSakit = dlgTidakHadir.findViewById(R.id.radioApelSakit);
-                RadioButton radioApelP2 = dlgTidakHadir.findViewById(R.id.radioApelP2);
-                RadioButton radioApelMangkir = dlgTidakHadir.findViewById(R.id.radioApelMangkir);
-
-                EditText etNoteDlgTdkHadir = dlgTidakHadir.findViewById(R.id.etNoteDlgTdkHadir);
-                Button btnKonfirmTdkHadir = dlgTidakHadir.findViewById(R.id.btnApelConfirmTdkHadir);
-                Button btnBackTdkHadir = dlgTidakHadir.findViewById(R.id.btnBackDlgApelTdkHadir);
-                tvHeaderDlgMetode.setText(employeeName);
-                dlgTidakHadir.show();
-
-                selectedEmp = employeeCode;
-                selectedItemData = itemData;
-
-                radioApelCuti.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tipeTidakHadir = "CT";
-                        radioApelCuti.setChecked(true);
-                        radioApelP1.setChecked(false);
-                        radioApelMangkir.setChecked(false);
-                        radioApelTK.setChecked(false);
-                        radioApelP2.setChecked(false);
-                        radioApelSakit.setChecked(false);
-                    }
-                });
-
-                radioApelP1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tipeTidakHadir = "P1";
-                        radioApelP1.setChecked(true);
-                        radioApelCuti.setChecked(false);
-                        radioApelMangkir.setChecked(false);
-                        radioApelTK.setChecked(false);
-                        radioApelP2.setChecked(false);
-                        radioApelSakit.setChecked(false);
-                    }
-                });
-
-                radioApelP2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tipeTidakHadir = "P2";
-                        radioApelP2.setChecked(true);
-                        radioApelP1.setChecked(false);
-                        radioApelMangkir.setChecked(false);
-                        radioApelTK.setChecked(false);
-                        radioApelCuti.setChecked(false);
-                        radioApelSakit.setChecked(false);
-                    }
-                });
-
-                radioApelSakit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tipeTidakHadir = "S1";
-                        radioApelSakit.setChecked(true);
-                        radioApelP1.setChecked(false);
-                        radioApelMangkir.setChecked(false);
-                        radioApelTK.setChecked(false);
-                        radioApelP2.setChecked(false);
-                        radioApelCuti.setChecked(false);
-                    }
-                });
-
-                radioApelMangkir.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tipeTidakHadir = "MK";
-                        radioApelMangkir.setChecked(true);
-                        radioApelP1.setChecked(false);
-                        radioApelCuti.setChecked(false);
-                        radioApelTK.setChecked(false);
-                        radioApelP2.setChecked(false);
-                        radioApelSakit.setChecked(false);
-                    }
-                });
-
-                radioApelTK.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        tipeTidakHadir = "TK";
-                        radioApelTK.setChecked(true);
-                        radioApelP1.setChecked(false);
-                        radioApelMangkir.setChecked(false);
-                        radioApelCuti.setChecked(false);
-                        radioApelP2.setChecked(false);
-                        radioApelSakit.setChecked(false);
-                    }
-                });
-
-                btnKonfirmTdkHadir.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (tipeTidakHadir != null) {
-                            dbhelper.updateapel_tidakhadir(nodocApel, selectedItemData, selectedEmp,
-                                    tipeTidakHadir, etNoteDlgTdkHadir.getText().toString());
-                            btnActionApel.performClick();
-                            dlgTidakHadir.dismiss();
-
-                            final SweetAlertDialog dlgStartOK = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
-                            dlgStartOK.setTitleText("Tidak Hadir").setContentText(dbhelper.get_empname(selectedEmp)).setConfirmText("OK").show();
-                        }
-                        else {
-                            Toast.makeText(activityContext, "Pilih alasan tidak hadir", Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-                });
-
-                btnBackTdkHadir.setOnClickListener(view12 -> {
-                    dlgTidakHadir.dismiss();
-                    dlgMetodeAbsen.show();
-                });
-            }
-        });
-    }
-
     public Dialog showDlgAddMaterialService(TextView tvPlaceholderLvMaterial) {
 
         selectedMaterial = null;
@@ -396,5 +217,130 @@ public class DialogHelper extends Dialog {
         });
 
         return dlgAddMaterialService;
+    }
+
+    public Dialog showDlgBriefingTdkHadir(String empCode, String empName, String positionCode,
+                                          String vehicleCode, String latApel, String longApel) {
+
+        dlgTidakHadir = new Dialog(activityContext);
+        dlgTidakHadir.setContentView(R.layout.dialog_apeltdkhadir);
+        dlgTidakHadir.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowTdkHadir = dlgTidakHadir.getWindow();
+        windowTdkHadir.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        TextView tvHeaderDlgTdkHadir = dlgTidakHadir.findViewById(R.id.tvHeaderDlgTdkHadirApel);
+        Button btnBackDlgTdkHadir = dlgTidakHadir.findViewById(R.id.btnBackDlgApelTdkHadir);
+        Button btnConfirmTdkHadir = dlgTidakHadir.findViewById(R.id.btnApelConfirmTdkHadir);
+        RadioButton radioApelCuti = dlgTidakHadir.findViewById(R.id.radioApelCuti);
+        RadioButton radioApelP1 = dlgTidakHadir.findViewById(R.id.radioApelP1);
+        RadioButton radioApelTK = dlgTidakHadir.findViewById(R.id.radioApelTK);
+        RadioButton radioApelSakit = dlgTidakHadir.findViewById(R.id.radioApelSakit);
+        RadioButton radioApelP2 = dlgTidakHadir.findViewById(R.id.radioApelP2);
+        RadioButton radioApelMangkir = dlgTidakHadir.findViewById(R.id.radioApelMangkir);
+        EditText etNoteDlgTdkHadir = dlgTidakHadir.findViewById(R.id.etNoteDlgTdkHadir);
+
+        tvHeaderDlgTdkHadir.setText(empName);
+        btnBackDlgTdkHadir.setOnClickListener(view1 -> dlgTidakHadir.dismiss());
+
+        radioApelCuti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipeTidakHadir = "CT";
+                radioApelCuti.setChecked(true);
+                radioApelP1.setChecked(false);
+                radioApelMangkir.setChecked(false);
+                radioApelTK.setChecked(false);
+                radioApelP2.setChecked(false);
+                radioApelSakit.setChecked(false);
+            }
+        });
+
+        radioApelP1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipeTidakHadir = "P1";
+                radioApelP1.setChecked(true);
+                radioApelCuti.setChecked(false);
+                radioApelMangkir.setChecked(false);
+                radioApelTK.setChecked(false);
+                radioApelP2.setChecked(false);
+                radioApelSakit.setChecked(false);
+            }
+        });
+
+        radioApelP2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipeTidakHadir = "P2";
+                radioApelP2.setChecked(true);
+                radioApelP1.setChecked(false);
+                radioApelMangkir.setChecked(false);
+                radioApelTK.setChecked(false);
+                radioApelCuti.setChecked(false);
+                radioApelSakit.setChecked(false);
+            }
+        });
+
+        radioApelSakit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipeTidakHadir = "S1";
+                radioApelSakit.setChecked(true);
+                radioApelP1.setChecked(false);
+                radioApelMangkir.setChecked(false);
+                radioApelTK.setChecked(false);
+                radioApelP2.setChecked(false);
+                radioApelCuti.setChecked(false);
+            }
+        });
+
+        radioApelMangkir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipeTidakHadir = "MK";
+                radioApelMangkir.setChecked(true);
+                radioApelP1.setChecked(false);
+                radioApelCuti.setChecked(false);
+                radioApelTK.setChecked(false);
+                radioApelP2.setChecked(false);
+                radioApelSakit.setChecked(false);
+            }
+        });
+
+        radioApelTK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipeTidakHadir = "TK";
+                radioApelTK.setChecked(true);
+                radioApelP1.setChecked(false);
+                radioApelMangkir.setChecked(false);
+                radioApelCuti.setChecked(false);
+                radioApelP2.setChecked(false);
+                radioApelSakit.setChecked(false);
+            }
+        });
+
+        btnConfirmTdkHadir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (tipeTidakHadir != null) {
+                    dlgTidakHadir.dismiss();
+
+                    dbhelper.insert_briefing_anggota(empCode, positionCode, vehicleCode, tipeTidakHadir,
+                            tipeTidakHadir, etNoteDlgTdkHadir.getText().toString(), latApel, longApel);
+                    ApelPagi.adapterApel.notifyDataSetChanged();
+
+                    final SweetAlertDialog dlgOK = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
+                    dlgOK.setTitleText("Tidak Hadir").setContentText(empName).setConfirmText("OK").show();
+                }
+                else {
+                    Toast.makeText(activityContext, "Pilih alasan tidak hadir", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        dlgTidakHadir.show();
+
+        return dlgTidakHadir;
     }
 }

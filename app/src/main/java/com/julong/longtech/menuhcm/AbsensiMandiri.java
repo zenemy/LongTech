@@ -50,8 +50,7 @@ public class AbsensiMandiri extends AppCompatActivity {
     TextView tvEmpName, tvEmpPosition, tvTodayDate;
     Button btnAbsensiMandiriMasuk, btnAbsensiMandiriPulang, btnSubmitAbsen;
     EditText etLokasiAbsensiMandiri;
-    LinearLayout layoutAbsenMandiriCheckInOut, layoutLokasiAbsenMandiri, layoutMap;
-    MapView mapAbsenLokasi;
+    LinearLayout layoutAbsenMandiriCheckInOut, layoutLokasiAbsenMandiri;
     byte[] imgAbsensiMandiri;
 
     ActivityResultLauncher<Intent> intentLaunchCamera;
@@ -59,10 +58,6 @@ public class AbsensiMandiri extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IConfigurationProvider provider = Configuration.getInstance();
-        provider.setUserAgentValue(BuildConfig.APPLICATION_ID);
-        provider.setOsmdroidBasePath(getStorage());
-        provider.setOsmdroidTileCache(getStorage());
         setContentView(R.layout.activity_absensi_mandiri);
 
         dbhelper = new DatabaseHelper(this);
@@ -77,15 +72,11 @@ public class AbsensiMandiri extends AppCompatActivity {
         btnAbsensiMandiriPulang = findViewById(R.id.btnAbsensiMandiriPulang);
         btnSubmitAbsen = findViewById(R.id.btnSubmitAbsensiMandiri);
         etLokasiAbsensiMandiri = findViewById(R.id.etLokasiAbsensiMandiri);
-        mapAbsenLokasi = findViewById(R.id.mapViewAbsensiMandiri);
-        layoutMap = findViewById(R.id.layoutMapAbsensiMandiri);
         tvTodayDate = findViewById(R.id.tvTodayDateAbsensiMandiri);
 
         tvEmpName.setText(dbhelper.get_tbl_username(10));
         tvEmpPosition.setText(dbhelper.get_tbl_username(13));
         todayDate();
-
-        mapAbsenLokasi.setTileSource(TileSourceFactory.MAPNIK);
 
         btnAbsensiMandiriMasuk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,70 +99,69 @@ public class AbsensiMandiri extends AppCompatActivity {
         });
 
         intentLaunchCamera = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Bundle bundle = result.getData().getExtras();
-                        getLocation();
-                        nodocAbsensiMandiri = dbhelper.get_tbl_username(0) + "/ABSMDR/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-                        Bitmap photoCamera = (Bitmap) bundle.get("data");
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-                        imgAbsensiMandiri = stream.toByteArray();
-                        dbhelper.insert_absmdr(nodocAbsensiMandiri, tipeKeteranganAbsen, "FOTO",
-                                etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Bundle bundle = result.getData().getExtras();
+                    getLocation();
+                    nodocAbsensiMandiri = dbhelper.get_tbl_username(0) + "/ABSMDR/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+                    Bitmap photoCamera = (Bitmap) bundle.get("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                    imgAbsensiMandiri = stream.toByteArray();
+                    dbhelper.insert_absmdr(nodocAbsensiMandiri, tipeKeteranganAbsen, "FOTO",
+                            etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
 
-                        //Show map location of user
-                        layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
-                        layoutMap.setVisibility(View.VISIBLE);
+                    //Show map location of user
+                    layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
 
-                        try {
-                            GeoPoint absenPoint = new GeoPoint(Double.parseDouble(latAbsenMandiri), Double.parseDouble(longAbsenMandiri));
-                            Marker titikAbsen = new Marker(mapAbsenLokasi);
-                            titikAbsen.setPosition(absenPoint);
-                            titikAbsen.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                            titikAbsen.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.marker_person, null));
-                            mapAbsenLokasi.getController().setZoom(15.0);
-                            mapAbsenLokasi.getController().setCenter(absenPoint);
-                            mapAbsenLokasi.getController().animateTo(absenPoint);
-                            mapAbsenLokasi.getOverlays().add(titikAbsen);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            layoutMap.setVisibility(View.GONE);
-                        }
+//                    try {
+//                        layoutMap.setVisibility(View.VISIBLE);
+//                        GeoPoint absenPoint = new GeoPoint(Double.parseDouble(latAbsenMandiri), Double.parseDouble(longAbsenMandiri));
+//                        Marker titikAbsen = new Marker(mapAbsenLokasi);
+//                        titikAbsen.setPosition(absenPoint);
+//                        titikAbsen.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+//                        titikAbsen.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.marker_person, null));
+//                        mapAbsenLokasi.getController().setZoom(15.0);
+//                        mapAbsenLokasi.getController().setCenter(absenPoint);
+//                        mapAbsenLokasi.getController().animateTo(absenPoint);
+//                        mapAbsenLokasi.getOverlays().add(titikAbsen);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        layoutMap.setVisibility(View.GONE);
+//                    }
 
-
-                        //Absen Status
-                        if (tipeKeteranganAbsen.equals("CHECKIN")) {
-                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Masuk")
-                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    Intent backIntent = new Intent();
-                                    setResult(727, backIntent);
-                                    finish();
-                                }
-                            }).show();
-                        }
-                        else if (tipeKeteranganAbsen.equals("CHECKOUT")) {
-                            new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
-                                    .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    Intent backIntent = new Intent();
-                                    setResult(727, backIntent);
-                                    finish();
-                                }
-                            }).show();
-                        }
-
-                        imgAbsensiMandiri = null;
-                        tipeKeteranganAbsen = null;
-                        etLokasiAbsensiMandiri.setText(null);
-                        layoutLokasiAbsenMandiri.setVisibility(View.GONE);
-                        btnSubmitAbsen.setVisibility(View.GONE);
+                    //Absen Status
+                    if (tipeKeteranganAbsen.equals("CHECKIN")) {
+                        new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Masuk")
+                                .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                Intent backIntent = new Intent();
+                                setResult(727, backIntent);
+                                finish();
+                            }
+                        }).show();
                     }
+                    else if (tipeKeteranganAbsen.equals("CHECKOUT")) {
+                        new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
+                                .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                Intent backIntent = new Intent();
+                                setResult(727, backIntent);
+                                finish();
+                            }
+                        }).show();
+                    }
+
+                    imgAbsensiMandiri = null;
+                    tipeKeteranganAbsen = null;
+                    etLokasiAbsensiMandiri.setText(null);
+                    layoutLokasiAbsenMandiri.setVisibility(View.GONE);
+                    btnSubmitAbsen.setVisibility(View.GONE);
                 }
+            }
         );
 
         btnSubmitAbsen.setOnClickListener(new View.OnClickListener() {
@@ -183,9 +173,6 @@ public class AbsensiMandiri extends AppCompatActivity {
                 else {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
-                        takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
-                        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
                         intentLaunchCamera.launch(takePictureIntent);
                     }
                 }
@@ -229,11 +216,15 @@ public class AbsensiMandiri extends AppCompatActivity {
     }
 
     private void getLocation() {
-        GPSTracker gps = new GPSTracker(this);
-        double latitude = gps.getLatitude();
-        double longitude = gps.getLongitude();
-        latAbsenMandiri = String.valueOf(latitude);
-        longAbsenMandiri = String.valueOf(longitude);
+        GPSTracker gpsTracker = new GPSTracker(this);
+        if (gpsTracker.getIsGPSTrackingEnabled()) {
+            double latitude = gpsTracker.getLatitude();
+            double longitude = gpsTracker.getLongitude();
+            latAbsenMandiri = String.valueOf(latitude);
+            longAbsenMandiri = String.valueOf(longitude);
+        } else{
+            gpsTracker.showSettingsAlert();
+        }
     }
 
     @Override

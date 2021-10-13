@@ -2,60 +2,54 @@ package com.julong.longtech.menuhcm;
 
 public class ApelPagiList {
 
-    private String employeeName;
+    private String teamCode;
     private String employeeCode;
-    private String positionCode;
+    private String employeeName;
     private String positionName;
-    private String unitCode;
-    private String shiftcode;
-    private String metodeAbsen;
-    private String waktuAbsem;
-    private String itemData;
-    private byte[] imgApel;
+    private String positionCode;
+    private String vehicleCode;
+    private String absenValue;
 
-    public ApelPagiList(String employeeName, String employeeCode, String positionCode, String positionName, String unitCode,
-                        String shiftcode, String metodeAbsen, String waktuAbsem, String itemData, byte[] imgApel) {
-        this.employeeName = employeeName;
+    public ApelPagiList(String teamCode, String employeeCode, String employeeName,
+                        String positionCode, String positionName, String vehicleCode) {
+        this.teamCode = teamCode;
         this.employeeCode = employeeCode;
-        this.positionCode = positionCode;
+        this.employeeName = employeeName;
         this.positionName = positionName;
-        this.unitCode = unitCode;
-        this.shiftcode = shiftcode;
-        this.metodeAbsen = metodeAbsen;
-        this.waktuAbsem = waktuAbsem;
-        this.itemData = itemData;
-        this.imgApel = imgApel;
+        this.positionCode = positionCode;
+        this.vehicleCode = vehicleCode;
+    }
+
+    public String getTeamCode() {
+        return teamCode;
+    }
+
+    public String getEmployeeCode() {
+        return employeeCode;
     }
 
     public String getEmployeeName() {
         return employeeName;
     }
-    public String getEmployeeCode() {
-        return employeeCode;
-    }
-    public String getPositionCode() {
-        return positionCode;
-    }
+
     public String getPositionName() {
         return positionName;
     }
-    public String getUnitCode() {
-        return unitCode;
+
+    public String getPositionCode() {
+        return positionCode;
     }
-    public String getShiftcode() {
-        return shiftcode;
+
+    public String getVehicleCode() {
+        return vehicleCode;
     }
-    public String getMetodeAbsen() {
-        return metodeAbsen;
+
+    public void setAbsenValue(String absenValue) {
+        this.absenValue = absenValue;
     }
-    public String getWaktuAbsem() {
-        return waktuAbsem;
-    }
-    public String getItemData() {
-        return itemData;
-    }
-    public byte[] getImgApel() {
-        return imgApel;
+
+    public String getAbsenValue() {
+        return absenValue;
     }
 
 }
