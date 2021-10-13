@@ -38,7 +38,7 @@
                 app:endIconMode="dropdown_menu">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/acWorkPlaceRincianRKH"
+                    android:id="@+id/acLocationRincianRKH"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:imeOptions="actionNext"
@@ -58,7 +58,7 @@
                 app:endIconMode="dropdown_menu">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/acKegiatanKerjaRincianRKH"
+                    android:id="@+id/acActivityRincianRKH"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:inputType="none"
@@ -70,7 +70,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputLayoutTargetRincianRKH"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +101,7 @@
         android:backgroundTint="@color/white">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDlgCancelInputRincianRKH"
+            android:id="@+id/btnDlgCancelRincianRKH"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="1dp"
@@ -118,7 +117,7 @@
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnDlgSimpanInputRincianRKH"
+            android:id="@+id/btnDlgSimpanRincianRKH"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginStart="0.5dp"

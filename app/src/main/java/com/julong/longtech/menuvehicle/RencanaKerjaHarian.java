@@ -246,7 +246,6 @@ public class RencanaKerjaHarian extends AppCompatActivity {
 
         btnBackRKH.setOnClickListener(view -> onBackPressed());
 
-
     }
 
     // Pilih Tipe Kendaraan

@@ -343,4 +343,39 @@ public class DialogHelper extends Dialog {
 
         return dlgTidakHadir;
     }
+
+    public Dialog addLocationActivityRKH(String vehicleType) {
+
+        List<String> listActivity, listBlok;
+        ArrayAdapter<String> adapterActivity, adapterBlok;
+
+        Dialog dlgAddDetailRKH = new Dialog(activityContext);
+        dlgAddDetailRKH.setContentView(R.layout.dialog_inputrincianrkh);
+        dlgAddDetailRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window windowTdkHadir = dlgAddDetailRKH.getWindow();
+        windowTdkHadir.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        AutoCompleteTextView acWorkLocation = dlgAddDetailRKH.findViewById(R.id.acLocationRincianRKH);
+        AutoCompleteTextView acWorkActivity = dlgAddDetailRKH.findViewById(R.id.acActivityRincianRKH);
+        Button btnDlgDismiss = dlgAddDetailRKH.findViewById(R.id.btnDlgCancelRincianRKH);
+        Button btnDlgSimpan = dlgAddDetailRKH.findViewById(R.id.btnDlgSimpanRincianRKH);
+
+        btnDlgDismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlgAddDetailRKH.dismiss();
+            }
+        });
+        listActivity = dbhelper.get_activitysap_filtered(vehicleType);
+        adapterActivity = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listActivity);
+        acWorkActivity.setAdapter(adapterActivity);
+
+        listBlok = dbhelper.get_fieldcrop(1);
+        adapterBlok = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listBlok);
+        acWorkLocation.setAdapter(adapterBlok);
+
+        dlgAddDetailRKH.show();
+        return dlgAddDetailRKH;
+
+    }
 }

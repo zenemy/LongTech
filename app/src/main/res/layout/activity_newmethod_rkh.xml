@@ -75,6 +75,8 @@
                     android:layout_height="40dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="4dp"
+                    android:inputType="none"
+                    android:editable="false"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -220,6 +222,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:maxImageSize="40dp"
             app:rippleColor="#DCDCDC"
+            android:onClick="addLocationActivityRKH"
             app:srcCompat="@android:drawable/ic_input_add"
             app:tint="@color/white" />
 
