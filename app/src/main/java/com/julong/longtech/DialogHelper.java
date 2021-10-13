@@ -37,6 +37,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhcm.ApelPagiAdapter;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
+import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuworkshop.LaporanPerbaikan;
 
@@ -72,6 +73,10 @@ public class DialogHelper extends Dialog {
     //Dialog Workshop
     private Dialog dlgAddMaterialService;
     private String selectedMaterial, materialUOM;
+
+    //Dialog Rkh
+    private Dialog dlgAddDetailRKH;
+    private String selectedBlockRKH, selectedActivityRKH;
 
     public DialogHelper(Context context) {
         super(context);
@@ -349,7 +354,7 @@ public class DialogHelper extends Dialog {
         List<String> listActivity, listBlok;
         ArrayAdapter<String> adapterActivity, adapterBlok;
 
-        Dialog dlgAddDetailRKH = new Dialog(activityContext);
+        dlgAddDetailRKH = new Dialog(activityContext);
         dlgAddDetailRKH.setContentView(R.layout.dialog_inputrincianrkh);
         dlgAddDetailRKH.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window windowTdkHadir = dlgAddDetailRKH.getWindow();
@@ -357,6 +362,7 @@ public class DialogHelper extends Dialog {
 
         AutoCompleteTextView acWorkLocation = dlgAddDetailRKH.findViewById(R.id.acLocationRincianRKH);
         AutoCompleteTextView acWorkActivity = dlgAddDetailRKH.findViewById(R.id.acActivityRincianRKH);
+        EditText etTargetRincian = dlgAddDetailRKH.findViewById(R.id.etTargetRincianRKH);
         Button btnDlgDismiss = dlgAddDetailRKH.findViewById(R.id.btnDlgCancelRincianRKH);
         Button btnDlgSimpan = dlgAddDetailRKH.findViewById(R.id.btnDlgSimpanRincianRKH);
 
@@ -366,6 +372,17 @@ public class DialogHelper extends Dialog {
                 dlgAddDetailRKH.dismiss();
             }
         });
+
+        btnDlgSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbhelper.insert_newrkh_detail(NewMethodRKH.rkhWorkdate,
+                        selectedBlockRKH, selectedActivityRKH, etTargetRincian.getText().toString());
+                dlgAddDetailRKH.dismiss();
+                new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil").setConfirmText("OK").show();
+            }
+        });
+
         listActivity = dbhelper.get_activitysap_filtered(vehicleType);
         adapterActivity = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listActivity);
         acWorkActivity.setAdapter(adapterActivity);
@@ -373,6 +390,20 @@ public class DialogHelper extends Dialog {
         listBlok = dbhelper.get_fieldcrop(1);
         adapterBlok = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listBlok);
         acWorkLocation.setAdapter(adapterBlok);
+
+        acWorkActivity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedActivityRKH = dbhelper.get_singlekegiatancode(adapterActivity.getItem(position));
+            }
+        });
+
+        acWorkLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedBlockRKH = dbhelper.get_singlelokasiCode(adapterBlok.getItem(position));
+            }
+        });
 
         dlgAddDetailRKH.show();
         return dlgAddDetailRKH;

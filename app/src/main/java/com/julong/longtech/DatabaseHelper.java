@@ -1170,19 +1170,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_newrkh_detail(String nodoc, String tglPelaksanaan, String vehicleType) {
+    public boolean insert_newrkh_detail(String workDate, String blockcode,
+                                        String eworkactivity, String workOutput) {
 
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("documentno", nodoc);
         contentValues.put("datatype", "RKHVH");
         contentValues.put("subdatatype", get_tbl_username(0));
         contentValues.put("comp_id", get_tbl_username(14));
         contentValues.put("site_id", get_tbl_username(15));
-        contentValues.put("date2", tglPelaksanaan);
-        contentValues.put("text1", get_tbl_username(18));
-        contentValues.put("text2", get_infokemandoranapel(1, get_tbl_username(18)));
-        contentValues.put("text3", vehicleType);
+        contentValues.put("date1", savedate);
+        contentValues.put("date2", workDate);
+        contentValues.put("text1", blockcode);
+        contentValues.put("text2", eworkactivity);
+        contentValues.put("text3", workOutput);
 
         long insert = db.insert("tr_01", null, contentValues);
         if (insert == -1) {

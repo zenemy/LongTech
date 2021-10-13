@@ -103,6 +103,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutBreakdownDescNewRKH"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,16 +117,14 @@
                 android:id="@+id/etBreakdownDescNewRKH"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:clickable="true"
-                android:focusableInTouchMode="false"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:inputType="date"
+                android:imeOptions="actionDone"
                 android:paddingTop="8dp"
                 android:paddingBottom="4dp"
                 android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutDateUnitReadyNewRKH"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
