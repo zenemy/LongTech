@@ -186,7 +186,7 @@
         android:visibility="visible">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvPlaceholderLvMaterialService"
+            android:id="@+id/tvPlaceholderDetailRKH"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_baseline_find_in_page_48"

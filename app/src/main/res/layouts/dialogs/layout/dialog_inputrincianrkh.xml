@@ -61,8 +61,7 @@
                     android:id="@+id/acActivityRincianRKH"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:inputType="none"
-                    android:editable="false"
+                    android:imeOptions="actionNext"
                     android:paddingTop="8dp"
                     android:paddingBottom="4dp"
                     android:singleLine="true"
@@ -70,6 +69,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayoutTargetRKH"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

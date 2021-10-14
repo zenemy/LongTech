@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -198,6 +199,7 @@ public class DialogHelper extends Dialog {
             }
         });
 
+        // Submit material
         btnOkDlgMaterial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -349,7 +351,7 @@ public class DialogHelper extends Dialog {
         return dlgTidakHadir;
     }
 
-    public Dialog addLocationActivityRKH(String vehicleType) {
+    public Dialog addLocationActivityRKH(String vehicleType, TextView tvPlaceHolderDetailRKH) {
 
         List<String> listActivity, listBlok;
         ArrayAdapter<String> adapterActivity, adapterBlok;
@@ -362,28 +364,14 @@ public class DialogHelper extends Dialog {
 
         AutoCompleteTextView acWorkLocation = dlgAddDetailRKH.findViewById(R.id.acLocationRincianRKH);
         AutoCompleteTextView acWorkActivity = dlgAddDetailRKH.findViewById(R.id.acActivityRincianRKH);
+        TextInputLayout inputLayoutTarget = dlgAddDetailRKH.findViewById(R.id.inputLayoutTargetRKH);
         EditText etTargetRincian = dlgAddDetailRKH.findViewById(R.id.etTargetRincianRKH);
         Button btnDlgDismiss = dlgAddDetailRKH.findViewById(R.id.btnDlgCancelRincianRKH);
         Button btnDlgSimpan = dlgAddDetailRKH.findViewById(R.id.btnDlgSimpanRincianRKH);
 
-        btnDlgDismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dlgAddDetailRKH.dismiss();
-            }
-        });
+        btnDlgDismiss.setOnClickListener(view -> dlgAddDetailRKH.dismiss());
 
-        btnDlgSimpan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dbhelper.insert_newrkh_detail(NewMethodRKH.rkhWorkdate,
-                        selectedBlockRKH, selectedActivityRKH, etTargetRincian.getText().toString());
-                dlgAddDetailRKH.dismiss();
-                new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil").setConfirmText("OK").show();
-            }
-        });
-
-        listActivity = dbhelper.get_activitysap_filtered(vehicleType);
+        listActivity = dbhelper.get_transportactivity(vehicleType);
         adapterActivity = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listActivity);
         acWorkActivity.setAdapter(adapterActivity);
 
@@ -395,6 +383,10 @@ public class DialogHelper extends Dialog {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedActivityRKH = dbhelper.get_singlekegiatancode(adapterActivity.getItem(position));
+                inputLayoutTarget.setSuffixText(dbhelper.get_singlekegiatanname(selectedActivityRKH, 1));
+                InputMethodManager keyboardMgr = (InputMethodManager) activityContext
+                        .getSystemService(activityContext.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acWorkActivity.getWindowToken(), 0);
             }
         });
 
@@ -402,6 +394,36 @@ public class DialogHelper extends Dialog {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedBlockRKH = dbhelper.get_singlelokasiCode(adapterBlok.getItem(position));
+                InputMethodManager keyboardMgr = (InputMethodManager) activityContext
+                        .getSystemService(activityContext.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acWorkActivity.getWindowToken(), 0);
+            }
+        });
+
+        btnDlgSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedBlockRKH == null) {
+                    Toast.makeText(activityContext, "Pilih Lokasi Kerja!", Toast.LENGTH_LONG).show();
+                }
+                else if (selectedActivityRKH == null) {
+                    Toast.makeText(activityContext, "Pilih Kegiatan Kerja!", Toast.LENGTH_LONG).show();
+                }
+                else if (TextUtils.isEmpty(etTargetRincian.getText().toString().trim())) {
+                    Toast.makeText(activityContext, "Isi Target Kerja!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    dbhelper.insert_newrkh_detail(NewMethodRKH.rkhWorkdate,
+                            selectedBlockRKH, selectedActivityRKH, etTargetRincian.getText().toString());
+                    selectedBlockRKH = null;
+                    acWorkActivity.setText(null);
+                    selectedActivityRKH = null;
+                    etTargetRincian.setText(null);
+                    dlgAddDetailRKH.dismiss();
+                    tvPlaceHolderDetailRKH.setVisibility(View.GONE);
+                    NewMethodRKH.loadListViewDetailRKH(activityContext);
+                }
+
             }
         });
 
@@ -409,4 +431,6 @@ public class DialogHelper extends Dialog {
         return dlgAddDetailRKH;
 
     }
+
+
 }

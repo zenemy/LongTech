@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="8dp"
-            android:text="Employee Name"
+            android:text="Employee Code"
             android:textColor="@color/black" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
