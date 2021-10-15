@@ -1173,7 +1173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean insert_newrkh_detail(String workDate, String blockcode,
-                                        String eworkactivity, String workOutput) {
+                                        String eworkactivity, String workOutput, String satuanKerja) {
 
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1189,6 +1189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text1", blockcode);
         contentValues.put("text2", eworkactivity);
         contentValues.put("text3", workOutput);
+        contentValues.put("text4", satuanKerja);
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -1198,11 +1199,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor view_tbl_operatorlist() {
+    public Cursor view_tbl_operatorlist(String vehiclecode) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT md1.text1 AS empcode, md1.text2 AS empname, md2.text1 AS unitcode " +
-                        "FROM md_01 md1 INNER JOIN md_02 md2 ON md2.subitemdata = md1.text1 " +
-                        "WHERE md1.datatype = 'EMPLOYEE' AND md2.datatype = 'GANG'", null);
+        Cursor cursor = db.rawQuery("SELECT md1.text1 AS empcode, md1.text2 AS empname, " +
+                "md2.text1 AS unitcode, md2.text2 AS shiftcode " +
+                "FROM md_01 md1 INNER JOIN md_02 md2 ON md2.subitemdata = md1.text1 " +
+                "WHERE md1.datatype = 'EMPLOYEE' AND md2.datatype = 'GANG' AND " +
+                "md2.text1 = '"+vehiclecode+"'", null);
         return cursor;
     }
 
@@ -2464,21 +2467,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean update_checkedRKH(String nodoc, String unitcode, String shiftcode, String empcode,
-                                     String lokasiCode, String kegiatanCode, String checkvalue) {
+    public void submitNewRKH(String nodoc, String unitcode, String workDate,
+                             String dateReady, String unitStatus, String unitKeterangan) {
+
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValuesTR02 = new ContentValues();
-        contentValuesTR02.put("text4", lokasiCode);
-        contentValuesTR02.put("text5", kegiatanCode);
-        contentValuesTR02.put("text7", checkvalue);
+        contentValuesTR02.put("documentno", nodoc);
+        contentValuesTR02.put("uploaded", 0);
 
-        long update = db.update("tr_02", contentValuesTR02, "documentno = '"+nodoc+"' AND " +
-                "text1 = '"+unitcode+"' AND text2 = '"+shiftcode+"' AND text3 = '"+empcode+"'", null);
-        if (update == -1) {
-            return false;
-        } else {
-            return true;
-        }
+        ContentValues contentValuesTR01 = new ContentValues();
+        contentValuesTR01.put("documentno", nodoc);
+        contentValuesTR01.put("datatype", "RKHVH");
+        contentValuesTR01.put("subdatatype", get_tbl_username(0));
+        contentValuesTR01.put("comp_id", get_tbl_username(14));
+        contentValuesTR01.put("site_id", get_tbl_username(15));
+        contentValuesTR01.put("date1", savedate);
+        contentValuesTR01.put("date2", workDate);
+        contentValuesTR01.put("date3", dateReady);
+        contentValuesTR01.put("text1", unitcode);
+        contentValuesTR01.put("text2", unitStatus);
+        contentValuesTR01.put("text3", unitKeterangan);
+        contentValuesTR01.put("uploaded", 0);
+
+        db.insert("tr_01", null, contentValuesTR01);
+        db.update("tr_02", contentValuesTR02, "datatype = 'RKHVH' AND uploaded IS NULL", null);
+
     }
 
     public Boolean updateCheckedMekanik(String mekanikCode, String checkvalue) {
@@ -2495,16 +2509,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String getCheckRKH(String nodoc, String unitcode, String shiftcode, String empcode) {
+    public Boolean updateCheckedOperator(String operatorCode, String workDate, String unitCode, String shiftCode) {
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("datatype", "RKHVH");
+        contentValues.put("subdatatype", get_tbl_username(0));
+        contentValues.put("itemdata", "DETAIL2");
+        contentValues.put("subitemdata", operatorCode);
+        contentValues.put("comp_id", get_tbl_username(14));
+        contentValues.put("site_id", get_tbl_username(15));
+        contentValues.put("date1", savedate);
+        contentValues.put("date2", workDate);
+        contentValues.put("text1", operatorCode);
+        contentValues.put("text2", unitCode);
+        contentValues.put("text3", shiftCode);
+
+        long insertTR02 = db.insert("tr_02", null, contentValues);
+        if (insertTR02 == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public int getCheckRKH(String unitcode, String shiftcode, String empcode) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT IFNULL(text7, '') AS rkhcheck FROM tr_02 WHERE documentno ='"+nodoc+"' " +
-                "AND text1 = '"+unitcode+"' AND text2 = '"+shiftcode+"' AND text3 = '"+empcode+"';", null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE itemdata = 'DETAIL2' AND " +
+                "text1 = '"+empcode+"' AND text2 = '"+unitcode+"' " +
+                "AND text3 = '"+shiftcode+"' AND uploaded IS NULL;", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
-            return cursor.getString(0).toString();
+            return cursor.getInt(0);
         } else {
-            return null;
+            return 0;
         }
     }
 

@@ -1,163 +1,158 @@
 package com.julong.longtech.menuvehicle;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.julong.longtech.R;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.julong.longtech.DatabaseHelper;
+import com.julong.longtech.R;
+import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterRKH extends ArrayAdapter<ListParamRKH> {
+public class AdapterRKH extends RecyclerView.Adapter<AdapterRKH.operatorHolder> {
 
-    private List<ListParamRKH> rkhParams;
-    private final Context context;
-    private String checkedRKH;
-    DatabaseHelper dbhelper;
+    // List to store all the contact details
+    private final List<ListOperatorNewRKH> operatorList;
+    private final Context mContext;
 
-    public AdapterRKH(Context context, List<ListParamRKH> rkhParams) {
-        super(context, R.layout.item_lvrkh, rkhParams);
-        this.context = context;
-        this.rkhParams = rkhParams;
+    // Counstructor for the Class
+    public AdapterRKH(List operatorList, Context context) {
+        this.operatorList = operatorList;
+        this.mContext = context;
     }
 
-    static class ViewHolder {
-        protected LinearLayout layoutItemLvRKH;
-        protected TextView tvVehicleCodeLvRKH, tvShiftLvRKH, tvDriverNameLvRKH, tvDriverCodeLvRKH;
-        protected CheckBox checkBoxLvRKH;
-    }
-
-    @SuppressLint("SetTextI18n")
+    // This method creates views for the RecyclerView by inflating the layout
+    // Into the viewHolders which helps to display the items in the RecyclerView
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        dbhelper = new DatabaseHelper(getContext());
-        if (convertView == null) {
-            LayoutInflater inflator = LayoutInflater.from(context);
-            convertView = inflator.inflate(R.layout.item_lvrkh, null);
+    public operatorHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.layoutItemLvRKH = convertView.findViewById(R.id.layoutItemLvRKH);
-            viewHolder.tvVehicleCodeLvRKH = convertView.findViewById(R.id.tvVehicleCodeLvRKH);
-            viewHolder.tvDriverNameLvRKH = convertView.findViewById(R.id.tvDriverNameLvRKH);
-            viewHolder.tvShiftLvRKH = convertView.findViewById(R.id.tvShiftLvRKH);
-            viewHolder.tvDriverCodeLvRKH = convertView.findViewById(R.id.tvDriverCodeLvRKH);
-            viewHolder.checkBoxLvRKH = convertView.findViewById(R.id.checkBoxLvRKH);
-
-            convertView.setTag(viewHolder);
-            convertView.setTag(R.id.tvVehicleCodeLvRKH, viewHolder.tvVehicleCodeLvRKH);
-            convertView.setTag(R.id.tvDriverNameLvRKH, viewHolder.tvDriverNameLvRKH);
-            convertView.setTag(R.id.tvShiftLvRKH, viewHolder.tvShiftLvRKH);
-            convertView.setTag(R.id.tvDriverCodeLvRKH, viewHolder.tvDriverCodeLvRKH);
-            convertView.setTag(R.id.checkBoxLvRKH, viewHolder.checkBoxLvRKH);
-
-        }
-
-        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-
-        viewHolder.tvVehicleCodeLvRKH.setText(rkhParams.get(position).getVehicleCode());
-        viewHolder.tvShiftLvRKH.setText(rkhParams.get(position).getShiftkerja());
-        viewHolder.tvDriverNameLvRKH.setText(dbhelper.get_empname(rkhParams.get(position).getDrivername()));
-        viewHolder.tvDriverCodeLvRKH.setText(rkhParams.get(position).getDrivername());
-
-        viewHolder.checkBoxLvRKH.setTag(position);
-        viewHolder.checkBoxLvRKH.setChecked(rkhParams.get(position).isChecked());
-
-        if (RencanaKerjaHarian.selectedLokasi != null && RencanaKerjaHarian.selectedKegiatan != null) {
-            viewHolder.checkBoxLvRKH.setVisibility(View.VISIBLE);
-        }
-
-        // Set checked checkBoxLvRKH
-        viewHolder.layoutItemLvRKH.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (RencanaKerjaHarian.selectedLokasi == null && RencanaKerjaHarian.selectedKegiatan == null) {
-                    Snackbar.make(v, "Harap pilih lokasi dan kegiatan", Snackbar.LENGTH_LONG).setAnchorView(((RencanaKerjaHarian) context).layoutBtnRKH)
-                            .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
-                }
-                else {
-                    if (viewHolder.checkBoxLvRKH.isChecked()) {
-                        viewHolder.checkBoxLvRKH.setChecked(false);
-                        checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
-                        notifyDataSetChanged();
-                        if (checkedRKH != null) {
-                            dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                                    rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
-                                    null, null, "");
-                            viewHolder.checkBoxLvRKH.setChecked(false);
-                            notifyDataSetChanged();
-                        }
-                    }
-                    else {
-                        viewHolder.checkBoxLvRKH.setChecked(true);
-                        dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
-                                RencanaKerjaHarian.selectedLokasi,RencanaKerjaHarian.selectedKegiatan,"Checked");
-                        notifyDataSetChanged();
-                    }
-                }
-
-            }
-        });
-
-        // Set checked checkBoxLvRKH
-        viewHolder.checkBoxLvRKH.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (viewHolder.checkBoxLvRKH.isChecked()) {
-                    dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
-                            RencanaKerjaHarian.selectedLokasi,RencanaKerjaHarian.selectedKegiatan,"Checked");
-                    notifyDataSetChanged();
-                } else {
-                    checkedRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                            rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
-                    notifyDataSetChanged();
-                    if (checkedRKH != null) {
-                        dbhelper.update_checkedRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername(),
-                                null, null, "");
-                        viewHolder.checkBoxLvRKH.setChecked(false);
-                        notifyDataSetChanged();
-                    }
-                }
-            }
-        });
-
-        // Get checked vaue
-        String checkRKH = dbhelper.getCheckRKH(RencanaKerjaHarian.nodocRKH, rkhParams.get(position).getVehicleCode(),
-                rkhParams.get(position).getShiftkerja(),rkhParams.get(position).getDrivername());
-
-        if (checkRKH.equals("Checked")) {
-            viewHolder.checkBoxLvRKH.setChecked(true);
-        }
-        else  {
-            viewHolder.checkBoxLvRKH.setChecked(false);
-
-        }
-
-        return convertView;
+        // Inflate the layout view you have created for the list rows here
+        View view = layoutInflater.inflate(R.layout.item_lvrkh, parent, false);
+        return new operatorHolder(view);
     }
 
+    @Override
+    public int getItemCount() {
+        return operatorList == null? 0: operatorList.size();
+    }
+
+    // This method is called when binding the data to the views being created in RecyclerView
+    @Override
+    public void onBindViewHolder(@NonNull operatorHolder holder, final int position) {
+        final ListOperatorNewRKH operatorServices = operatorList.get(position);
+
+        // Set the data to the views here
+        holder.setOperatorName(operatorServices.getEmployeeName());
+        holder.setOperatorCode(operatorServices.getEmployeeCode());
+        holder.setVehicleCode(operatorServices.getUnitCode());
+
+        holder.checkBoxLvRKH.setOnClickListener(view -> {
+            holder.setCheckboxOperator(operatorServices.getEmployeeCode(),
+                    operatorServices.getUnitCode(), operatorServices.getShiftCode());
+
+        });
+
+        holder.layoutItemLvRKH.setOnClickListener(view -> {
+            holder.setCheckedLayout(operatorServices.getEmployeeCode(),
+                    operatorServices.getUnitCode(), operatorServices.getShiftCode());
+
+        });
+
+        holder.getCheckedValue(operatorServices.getUnitCode(), operatorServices.getEmployeeCode(), operatorServices.getShiftCode());
+    }
+
+    // This class that helps to populate data to the view
+    public class operatorHolder extends RecyclerView.ViewHolder {
+
+        DatabaseHelper dbhelper;
+
+        private TextView tvOperatorName, tvOperatorCode, tvVehicleCode;
+        private LinearLayout layoutItemLvRKH;
+        private CheckBox checkBoxLvRKH;
+        private int checkedOperatorValue;
+
+        public operatorHolder(View itemView) {
+            super(itemView);
+
+            dbhelper = new DatabaseHelper(mContext);
+            tvOperatorCode = itemView.findViewById(R.id.tvDriverCodeLvRKH);
+            tvOperatorName = itemView.findViewById(R.id.tvDriverNameLvRKH);
+            layoutItemLvRKH = itemView.findViewById(R.id.layoutItemLvRKH);
+            checkBoxLvRKH = itemView.findViewById(R.id.checkBoxLvRKH);
+            tvVehicleCode = itemView.findViewById(R.id.tvVehicleCodeLvRKH);
+
+        }
+
+        public void setOperatorName(String mekanikName) {
+            tvOperatorName.setText(mekanikName);
+        }
+
+        public void setVehicleCode(String vehicleCode) {
+            tvVehicleCode.setText(vehicleCode);
+        }
+
+        public void setOperatorCode(String operatorCode) {
+            tvOperatorCode.setText(operatorCode);
+        }
+
+        public void setCheckboxOperator(String operatorCode,String unitCode,String shiftCode) {
+            if (checkBoxLvRKH.isChecked()) {
+                dbhelper.updateCheckedOperator(operatorCode, NewMethodRKH.rkhWorkdate, unitCode, shiftCode);
+                checkBoxLvRKH.setChecked(true);
+                notifyDataSetChanged();
+            }
+            else {
+                SQLiteDatabase db = dbhelper.getWritableDatabase();
+                db.execSQL("DELETE FROM tr_02 WHERE datatype = 'RKHVH' AND itemdata = 'DETAIL2' AND text1 = '" + operatorCode + "'" +
+                        "AND text2 = '" + unitCode + "' AND text3 = '" + shiftCode + "'  AND uploaded IS NULL");
+                checkBoxLvRKH.setChecked(false);
+                checkedOperatorValue = dbhelper.getCheckRKH(unitCode,shiftCode,operatorCode);
+                notifyDataSetChanged();
+            }
+
+        }
+
+
+        public void getCheckedValue(String unitCode, String shiftCode, String operatorCode) {
+            int getCheckedOperator = dbhelper.getCheckRKH(unitCode,shiftCode,operatorCode);
+            if (getCheckedOperator > 0) {
+                checkBoxLvRKH.setChecked(true);
+            }
+
+        }
+
+        public void setCheckedLayout (String operatorCode,String unitCode,String shiftCode) {
+            if (checkBoxLvRKH.isChecked()) {
+                checkBoxLvRKH.setChecked(false);
+                SQLiteDatabase db = dbhelper.getWritableDatabase();
+                db.execSQL("DELETE FROM tr_02 WHERE datatype = 'RKHVH' AND itemdata = 'DETAIL2' AND text1 = '" + operatorCode + "'" +
+                        "AND text2 = '" + unitCode + "' AND text3 = '" + shiftCode + "'  AND uploaded IS NULL");
+                checkBoxLvRKH.setChecked(false);
+                checkedOperatorValue = dbhelper.getCheckRKH(unitCode,shiftCode,operatorCode);
+                notifyDataSetChanged();
+            }
+            else {
+                checkBoxLvRKH.setChecked(true);
+                dbhelper.updateCheckedOperator(operatorCode, NewMethodRKH.rkhWorkdate, unitCode, shiftCode);
+                notifyDataSetChanged();
+            }
+        }
+    }
 }

@@ -413,8 +413,8 @@ public class DialogHelper extends Dialog {
                     Toast.makeText(activityContext, "Isi Target Kerja!", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    dbhelper.insert_newrkh_detail(NewMethodRKH.rkhWorkdate,
-                            selectedBlockRKH, selectedActivityRKH, etTargetRincian.getText().toString());
+                    dbhelper.insert_newrkh_detail(NewMethodRKH.rkhWorkdate, selectedBlockRKH, selectedActivityRKH,
+                            etTargetRincian.getText().toString(), dbhelper.get_singlekegiatanname(selectedActivityRKH, 1));
                     selectedBlockRKH = null;
                     acWorkActivity.setText(null);
                     selectedActivityRKH = null;

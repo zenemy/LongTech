@@ -21,14 +21,18 @@ import com.julong.longtech.DialogHelper;
 import com.julong.longtech.LoginActivity;
 import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
+import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuworkshop.AdapterMaterialProsesPerbaikan;
+import com.julong.longtech.menuworkshop.AdapterMekanikPerintahService;
 import com.julong.longtech.menuworkshop.ListMaterialProsesPerbaikan;
+import com.julong.longtech.menuworkshop.ListMekanikPerintahService;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -63,7 +67,7 @@ public class NewMethodRKH extends AppCompatActivity {
     public static RecyclerView lvLokasiKegiatanUnit;
 
     public static String rkhWorkdate;
-    String selectedDateUnitReady, selectedVehicle, selectedVehicleGroup;
+    String selectedDateUnitReady, selectedVehicle, selectedVehicleGroup, nodocNewRKH, submitNewRKH;
     MaterialDatePicker<Long> datePickerRKH, datePickerUnitReady;
 
     List<String> listVehicle;
@@ -71,6 +75,9 @@ public class NewMethodRKH extends AppCompatActivity {
 
     String[] arrayMenuKondisi = {"Normal", "Breakdown", "Standby"};
     ArrayAdapter<String> adapterMenuKondisi;
+
+    List<ListOperatorNewRKH> listOperator;
+    AdapterRKH adapterLvOperator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +192,9 @@ public class NewMethodRKH extends AppCompatActivity {
             }
         });
         etDateUnitReady.setOnClickListener(v -> datePickerUnitReady.show(getSupportFragmentManager(), "RKHUNITREADY"));
+
+
+
         loadListViewDetailRKH(this);
     }
 
@@ -204,6 +214,7 @@ public class NewMethodRKH extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedVehicle = adapterVehicle.getItem(position);
                 selectedVehicleGroup = dbhelper.get_vehiclecodegroup(1, selectedVehicle);
+                loadListViewOperator();
             }
         });
         acKondisiUnitNewRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -229,6 +240,15 @@ public class NewMethodRKH extends AppCompatActivity {
         else if (selectedVehicle == null) {
             Snackbar.make(v, "Harap pilih kendaraan", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+        }
+        else if (TextUtils.isEmpty(acKondisiUnitNewRKH.getText().toString().trim())) {
+            Snackbar.make(v, "Harap Tentukan Kondisi", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+        }
+        else if (selectedVehicle != null && !acKondisiUnitNewRKH.getText().toString().equals("Normal")) {
+            Snackbar.make(v, "Unit Sedang Breakdown", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+
         }
         else {
             dlgHelper.addLocationActivityRKH(selectedVehicleGroup, tvPlaceholderDetailRKH);
@@ -268,6 +288,60 @@ public class NewMethodRKH extends AppCompatActivity {
         lvLokasiKegiatanUnit.setAdapter(adapterLvMaterial);
     }
 
+    private void loadListViewOperator() {
+
+        LinearLayoutManager layoutMekanik = new LinearLayoutManager(this);
+        lvDriver.setLayoutManager(layoutMekanik);
+
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(getDrawable(R.drawable.divider));
+        lvDriver.addItemDecoration(dividerItemDecoration);
+
+        listOperator = new ArrayList<>();
+        listOperator.clear();
+        final Cursor cursor = dbhelper.view_tbl_operatorlist(selectedVehicle);
+        if (cursor.moveToFirst()) {
+            do {
+                ListOperatorNewRKH paramsOperator = new ListOperatorNewRKH(
+                        cursor.getString(cursor.getColumnIndex("empname")),
+                        cursor.getString(cursor.getColumnIndex("empcode")),
+                        cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("shiftcode"))
+
+                );
+                listOperator.add(paramsOperator);
+            } while (cursor.moveToNext());
+        }
+        adapterLvOperator = new AdapterRKH( listOperator, this);
+        lvDriver.setAdapter(adapterLvOperator);
+    }
+
+    public void submitNewRKH(View view) {
+        if (!acKondisiUnitNewRKH.getText().toString().equals("Normal")
+                && lvLokasiKegiatanUnit.getAdapter().getItemCount() == 0) {
+            Snackbar.make(view, "Harap Tambah Lokasi dan Kegiatan!", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+        }
+        else {
+            SweetAlertDialog submitDlg = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+            submitDlg.setTitleText("SIMPAN RKH?");
+            submitDlg.setCancelText("TIDAK");
+            submitDlg.setConfirmText("YA");
+            submitDlg.showCancelButton(true);
+            submitDlg.setConfirmClickListener(sDialog  -> {
+                nodocNewRKH = dbhelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+                dbhelper.submitNewRKH(nodocNewRKH, selectedVehicle, rkhWorkdate, selectedDateUnitReady,
+                        acKondisiUnitNewRKH.getText().toString(), etBreakdownDesc.getText().toString());
+
+                submitDlg.dismiss();
+                Intent backIntent = new Intent();
+                setResult(727, backIntent);
+                finish();
+            });
+            submitDlg.show();
+        }
+
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -288,5 +362,6 @@ public class NewMethodRKH extends AppCompatActivity {
 
 
     }
+
 
 }

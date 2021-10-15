@@ -298,23 +298,23 @@ public class RencanaKerjaHarian extends AppCompatActivity {
     }
 
     public static void loadListViewRKH() {
-        List<ListParamRKH> listParamRKH;
-        DatabaseHelper dbhelper;
-        dbhelper = new DatabaseHelper(listViewRKH.getContext());
-
-        listParamRKH = new ArrayList<>();
-        listParamRKH.clear();
-        final Cursor cursor = dbhelper.listview_rkh(nodocRKH);
-        if (cursor.moveToFirst()) {
-            do {
-                ListParamRKH listParamRKHS = new ListParamRKH(cursor.getString(0),
-                        cursor.getString(1), cursor.getString(2)
-                );
-                listParamRKH.add(listParamRKHS);
-            } while (cursor.moveToNext());
-        }
-        adapterRKH = new AdapterRKH(listViewRKH.getContext(), listParamRKH);
-        listViewRKH.setAdapter(adapterRKH);
+//        List<ListParamRKH> listParamRKH;
+//        DatabaseHelper dbhelper;
+//        dbhelper = new DatabaseHelper(listViewRKH.getContext());
+//
+//        listParamRKH = new ArrayList<>();
+//        listParamRKH.clear();
+//        final Cursor cursor = dbhelper.listview_rkh(nodocRKH);
+//        if (cursor.moveToFirst()) {
+//            do {
+//                ListParamRKH listParamRKHS = new ListParamRKH(cursor.getString(0),
+//                        cursor.getString(1), cursor.getString(2)
+//                );
+//                listParamRKH.add(listParamRKHS);
+//            } while (cursor.moveToNext());
+//        }
+//        adapterRKH = new AdapterRKH(listViewRKH.getContext(), listParamRKH);
+//        listViewRKH.setAdapter(adapterRKH);
     }
 
     @Override

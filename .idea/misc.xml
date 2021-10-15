@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/drawable/divider.xml" value="0.2703125" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/activity_app_setting.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/activity_download.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/activity_history.xml" value="0.13020833333333334" />
@@ -20,6 +21,7 @@
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/dlg_newrkh.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/list_group_menu.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/list_sub_menu.xml" value="0.11367753623188406" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/listview_operator.xml" value="0.21510416666666668" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/listview_workdetail_newrkh.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/nav_header_main.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/spinnerlist.xml" value="0.25416666666666665" />
@@ -32,7 +34,8 @@
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/dialogs/layout/dlg_selesaicarlog.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/dialogs/layout/dlg_startcarlog.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/apelpagi_adapter.xml" value="0.13020833333333334" />
-        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvrkh.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvdetailrkh.xml" value="0.22" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvrkh.xml" value="0.22" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvworkinfohome.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_carlog_toverify.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_historyapelpagi.xml" value="0.11367753623188406" />
@@ -54,4 +57,11 @@
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
+  </component>
 </project>
