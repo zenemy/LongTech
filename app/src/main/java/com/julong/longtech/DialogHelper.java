@@ -602,8 +602,14 @@ public class DialogHelper extends Dialog {
                             etNoteDlgCarLog.getText().toString(), NewMethodCarLog.byteFotoKilometer);
 
                     dlgSelesaiCarLog.dismiss();
-                    new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
-                            .setConfirmClickListener(sweetAlertDialog -> onBackPressed()).setConfirmText("OK").show();
+
+                    SweetAlertDialog okCarLogDlg = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai");
+                    okCarLogDlg.setCanceledOnTouchOutside(false);
+                    okCarLogDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        Intent backIntent = new Intent();
+                        ((Activity) activityContext).setResult(727, backIntent);
+                        ((Activity) activityContext).finish();
+                    }).setConfirmText("OK").show();
 
 
                 }
