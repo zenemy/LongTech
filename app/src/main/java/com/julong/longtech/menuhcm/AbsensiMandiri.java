@@ -44,7 +44,7 @@ import static org.osmdroid.tileprovider.util.StorageUtils.getStorage;
 
 public class AbsensiMandiri extends AppCompatActivity {
 
-    String tipeKeteranganAbsen, nodocAbsensiMandiri, savedate, latAbsenMandiri, longAbsenMandiri;
+    String nodocAbsensiMandiri, savedate, latAbsenMandiri, longAbsenMandiri;
     DatabaseHelper dbhelper;
 
     TextView tvEmpName, tvEmpPosition, tvTodayDate;
@@ -52,6 +52,8 @@ public class AbsensiMandiri extends AppCompatActivity {
     EditText etLokasiAbsensiMandiri;
     LinearLayout layoutAbsenMandiriCheckInOut, layoutLokasiAbsenMandiri;
     byte[] imgAbsensiMandiri;
+
+    Integer tipeKeteranganAbsen;
 
     ActivityResultLauncher<Intent> intentLaunchCamera;
 
@@ -81,7 +83,7 @@ public class AbsensiMandiri extends AppCompatActivity {
         btnAbsensiMandiriMasuk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tipeKeteranganAbsen = "CHECKIN";
+                tipeKeteranganAbsen = 1;
                 layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
                 layoutLokasiAbsenMandiri.setVisibility(View.VISIBLE);
                 btnSubmitAbsen.setVisibility(View.VISIBLE);
@@ -91,7 +93,7 @@ public class AbsensiMandiri extends AppCompatActivity {
         btnAbsensiMandiriPulang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tipeKeteranganAbsen = "CHECKOUT";
+                tipeKeteranganAbsen = 2;
                 layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
                 layoutLokasiAbsenMandiri.setVisibility(View.VISIBLE);
                 btnSubmitAbsen.setVisibility(View.VISIBLE);
@@ -109,8 +111,15 @@ public class AbsensiMandiri extends AppCompatActivity {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                     imgAbsensiMandiri = stream.toByteArray();
-                    dbhelper.insert_absmdr(nodocAbsensiMandiri, tipeKeteranganAbsen, "FOTO",
-                            etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
+
+                    if (tipeKeteranganAbsen == 1) {
+                        dbhelper.insert_absmdr(nodocAbsensiMandiri, "CHECKIN", "FOTO",
+                                etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
+                    }
+                    else if (tipeKeteranganAbsen == 2) {
+                        dbhelper.insert_absmdr(nodocAbsensiMandiri, "CHECKOUT", "FOTO",
+                                etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
+                    }
 
                     //Show map location of user
                     layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
@@ -132,7 +141,7 @@ public class AbsensiMandiri extends AppCompatActivity {
 //                    }
 
                     //Absen Status
-                    if (tipeKeteranganAbsen.equals("CHECKIN")) {
+                    if (tipeKeteranganAbsen == 1) {
                         new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Masuk")
                                 .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
@@ -143,7 +152,7 @@ public class AbsensiMandiri extends AppCompatActivity {
                             }
                         }).show();
                     }
-                    else if (tipeKeteranganAbsen.equals("CHECKOUT")) {
+                    else if (tipeKeteranganAbsen == 2) {
                         new SweetAlertDialog(AbsensiMandiri.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Berhasil Absen Pulang")
                                 .setConfirmText("OK").setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
@@ -156,7 +165,6 @@ public class AbsensiMandiri extends AppCompatActivity {
                     }
 
                     imgAbsensiMandiri = null;
-                    tipeKeteranganAbsen = null;
                     etLokasiAbsensiMandiri.setText(null);
                     layoutLokasiAbsenMandiri.setVisibility(View.GONE);
                     btnSubmitAbsen.setVisibility(View.GONE);

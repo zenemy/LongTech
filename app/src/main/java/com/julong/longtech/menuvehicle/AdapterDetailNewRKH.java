@@ -48,7 +48,7 @@ public class AdapterDetailNewRKH extends RecyclerView.Adapter<AdapterDetailNewRK
     public void onBindViewHolder(@NonNull AdapterDetailNewRKH.WorkDetailHolder holder, final int position) {
         final ListDetailNewRKH workDetailPlans = workDetailList.get(position);
 
-        holder.setLokasi(workDetailPlans.getLokasiKerja());
+        holder.setLokasi(workDetailPlans.getDivision(), workDetailPlans.getLokasiKerja());
         holder.setAktivitas(workDetailPlans.getKegiatanKerja());
         holder.setTarget(workDetailPlans.getTargetKerja(), workDetailPlans.getSatuanKerja());
 
@@ -72,8 +72,8 @@ public class AdapterDetailNewRKH extends RecyclerView.Adapter<AdapterDetailNewRK
 
         }
 
-        public void setLokasi(String setLokasi) {
-            tvlokasi.setText("Blok " + setLokasi);
+        public void setLokasi(String division, String setLokasi) {
+            tvlokasi.setText(division + " (" + setLokasi + ")");
         }
 
         public void setAktivitas(String setAktifitas) {

@@ -23,6 +23,4 @@ public class ListParamGIS {
         return tagTime;
     }
 
-
-
 }

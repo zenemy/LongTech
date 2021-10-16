@@ -7,6 +7,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 
 import com.julong.longtech.menuhcm.ApelPagi;
@@ -25,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static String url_api = "http://longtech.julongindonesia.com/longtech/mobilesync/";
@@ -32,9 +36,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String systemName = "LONG TECH";
     public static int versionNumber = 1;
     public static String versionName = "Version 0.10";
+    Context activityContext;
 
     public DatabaseHelper(Context context) {
         super(context, "db_dsi.db", null, 37);
+        activityContext = context;
     }
 
     @Override
@@ -1172,7 +1178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_newrkh_detail(String workDate, String blockcode,
+    public boolean insert_newrkh_detail(String workDate, String estatecode, String divisoncode, String blockcode,
                                         String eworkactivity, String workOutput, String satuanKerja) {
 
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -1186,10 +1192,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("date1", savedate);
         contentValues.put("date2", workDate);
-        contentValues.put("text1", blockcode);
-        contentValues.put("text2", eworkactivity);
-        contentValues.put("text3", workOutput);
-        contentValues.put("text4", satuanKerja);
+        contentValues.put("text1", estatecode);
+        contentValues.put("text2", divisoncode);
+        contentValues.put("text3", blockcode);
+        contentValues.put("text4", eworkactivity);
+        contentValues.put("text5", workOutput);
+        contentValues.put("text6", satuanKerja);
 
         long insert = db.insert("tr_02", null, contentValues);
         if (insert == -1) {
@@ -1345,13 +1353,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor listview_new_carlogs() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.text1 AS unitcode, strftime('%H:%M', tr.date1) AS timetr, " +
+                "mdactivity.text6 AS activity, mdestate.text4 AS divisi, mdblok.text2 AS blok, " +
+                "tr.text16 AS hasilkerja, mdactivity.text7 AS satuankerja FROM tr_01 tr " +
+                "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 AND mdactivity.datatype = 'TRANSPORTRATE' " +
+                "INNER JOIN md_01 mdestate ON mdestate.text3 = tr.text11 AND mdestate.datatype = 'ORG_STRUCTURE' " +
+                "INNER JOIN md_01 mdblok ON mdblok.text1 = tr.text12 AND mdblok.datatype = 'FIELDCROP' " +
+                "WHERE tr.datatype = 'CARLOG' AND DATE(tr.date1) = DATE('now', 'localtime');", null);
+        return cursor;
+    }
+
     public Cursor listview_activitylocation_newrkh() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT mdlokasi.text2 AS lokasi, mdactivity.text6 AS activity, " +
-                "tr.text3 AS targetkerja, mdactivity.text7 AS satuankerja FROM tr_02 tr " +
-                "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text2 " +
-                "INNER JOIN md_01 mdlokasi ON mdlokasi.text1 = tr.text1 " +
-                "WHERE mdactivity.datatype = 'TRANSPORTRATE' AND mdlokasi.datatype = 'FIELDCROP' " +
+        Cursor cursor = db.rawQuery("SELECT DISTINCT mdivision.text4 AS division, " +
+                "mdlokasi.text2 AS lokasi, mdactivity.text6 AS activity, " +
+                "tr.text5 AS targetkerja, mdactivity.text7 AS satuankerja FROM tr_02 tr " +
+                "INNER JOIN md_01 mdivision ON mdivision.text3 = tr.text2 " +
+                "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 " +
+                "INNER JOIN md_01 mdlokasi ON mdlokasi.text1 = tr.text3 " +
+                "WHERE mdivision.datatype = 'ORG_STRUCTURE' AND " +
+                "mdactivity.datatype = 'TRANSPORTRATE' AND mdlokasi.datatype = 'FIELDCROP' " +
                 "AND tr.DATATYPE = 'RKHVH' AND tr.uploaded IS NULL", null);
         return cursor;
     }
@@ -1376,6 +1399,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "(SELECT subitemdata FROM tr_02 WHERE datatype = 'ABSAPL' AND date(date1) = " +
                 "date('now', 'localtime') AND uploaded IS NOT NULL);", null);
         return cursor;
+    }
+
+    public boolean submitNewCarLog(String nodoc, String kilometerAwal, String kilometerAkhir,
+                                   String carLogDesc, byte[] fotoKilometer) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValuesTR01 = new ContentValues();
+        contentValuesTR01.put("documentno", nodoc);
+        contentValuesTR01.put("text2", kilometerAwal);
+        contentValuesTR01.put("text17", carLogDesc);
+        contentValuesTR01.put("text18", kilometerAkhir);
+        contentValuesTR01.put("uploaded", 0);
+
+        ContentValues contentValuesBL01 = new ContentValues();
+        contentValuesBL01.put("documentno", nodoc);
+        contentValuesBL01.put("blob2", fotoKilometer);
+        contentValuesBL01.put("uploaded", 0);
+
+        long updateTR01 = db.update("tr_01", contentValuesTR01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
+        long updateBL01 = db.update("tr_01", contentValuesTR01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
+        if (updateTR01 == -1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public boolean insert_carlog(String nodoc, String kmawal, String jenismuatan, String kategorimuatan,
@@ -1433,6 +1481,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (insert == -1 && insertPhoto == -1) {
             return false;
         } else {
+            return true;
+        }
+    }
+
+    public boolean insert_new_carlog(String jenismuatan, String kategorimuatan, String tujuankebun,
+                                     String tujuandivisi, String tujuanlokasi, String hasilkerja,
+                                     String latitude, String longitude, byte[] fotohasilkerja) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("datatype", "CARLOG");
+        contentValues.put("subdatatype", get_tbl_username(0));
+        contentValues.put("comp_id", get_tbl_username(14));
+        contentValues.put("site_id", get_tbl_username(15));
+        contentValues.put("date1", savedate);
+        contentValues.put("text1", get_tbl_username(19));
+        contentValues.put("text3", jenismuatan);
+        contentValues.put("text4", kategorimuatan);
+        contentValues.put("text10", tujuankebun);
+        contentValues.put("text11", tujuandivisi);
+        contentValues.put("text12", tujuanlokasi);
+        contentValues.put("text16", hasilkerja);
+        contentValues.put("text19", latitude);
+        contentValues.put("text20", longitude);
+        contentValues.put("text21", get_tbl_username(20));
+
+        ContentValues contentValuesPhoto = new ContentValues();
+        contentValuesPhoto.put("datatype", "CARLOG");
+        contentValuesPhoto.put("subdatatype", get_tbl_username(0));
+        contentValuesPhoto.put("itemdata", "HEADER");
+        contentValuesPhoto.put("subitemdata", "HEADER");
+        contentValuesPhoto.put("comp_id", get_tbl_username(14));
+        contentValuesPhoto.put("site_id", get_tbl_username(15));
+
+        if (fotohasilkerja != null) {
+            contentValuesPhoto.put("blob1", fotohasilkerja);
+        }
+
+        long insert = db.insert("tr_01", null, contentValues);
+        long insertPhoto = db.insert("bl_01", null, contentValuesPhoto);
+        if (insert == -1 || insertPhoto == -1) {
+            return false;
+        } else {
+            SweetAlertDialog dlgError = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
+            dlgError.setTitleText("BERHASIL").setConfirmText("OK").show();
+            new Handler(Looper.getMainLooper()).postDelayed(() -> dlgError.dismiss(), 3000);
             return true;
         }
     }
@@ -1564,6 +1659,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
+    }
+
+    public int count_checkeddriver_newrkh() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE datatype = 'RKHVH' " +
+                "AND itemdata = 'DETAIL2' AND uploaded IS NULL", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getInt(0);
+        } else {
+            return 0;
+        }
     }
 
     public Cursor view_preparemekanik_service() {
@@ -1975,7 +2083,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_itemdivisi(String estate, int index) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text3, text4 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' AND text2 = '"+estate+"' ORDER BY text4 ASC;";
+        String query = "SELECT DISTINCT text3, text4 FROM md_01 WHERE datatype = 'ORG_STRUCTURE' " +
+                "AND text1 = '"+estate+"' ORDER BY text4 ASC;";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {

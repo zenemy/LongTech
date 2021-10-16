@@ -143,10 +143,6 @@ public class ApelPagiAdapter extends RecyclerView.Adapter<ApelPagiAdapter.Materi
             dbhelper.insert_briefing_anggota(employeeCode,
                     positionCode, vehicleCode, "BRIEFING", "KJ", null, latAbsen, longAbsen);
             notifyDataSetChanged();
-
-            final SweetAlertDialog dlgOK = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE);
-            dlgOK.setTitleText("ABSEN MASUK").setContentText(employeeName).setConfirmText("OK").show();
-            new Handler(Looper.getMainLooper()).postDelayed(() -> dlgOK.dismiss(), 2000);
         }
 
         public void absenAnggotaTdkMasuk(String empCode, String empName,

@@ -56,25 +56,25 @@ public class NewMethodRKH extends AppCompatActivity {
     DatabaseHelper dbhelper;
     DialogHelper dlgHelper;
 
-    AutoCompleteTextView acVehicleRKH, acKondisiUnitNewRKH;
+    AutoCompleteTextView acVehicleRKH;
     TabLayout tabNewRKH;
     Button btnBackRKH;
     EditText etDateRKH, etBreakdownDesc, etDateUnitReady;
     TextInputLayout inputLayoutBreakdownDesc, inputLayoutDateUnitReady;
     TextView tvPlaceholderDetailRKH;
     RecyclerView lvDriver;
+    View dividerNewRKH;
     ConstraintLayout layoutLokasiKegiatanUnit;
     public static RecyclerView lvLokasiKegiatanUnit;
+    public static AutoCompleteTextView acKondisiUnitNewRKH;
 
     public static String rkhWorkdate;
     String selectedDateUnitReady, selectedVehicle, selectedVehicleGroup, nodocNewRKH, submitNewRKH;
     MaterialDatePicker<Long> datePickerRKH, datePickerUnitReady;
 
     List<String> listVehicle;
-    ArrayAdapter<String> adapterVehicle;
-
     String[] arrayMenuKondisi = {"Normal", "Breakdown", "Standby"};
-    ArrayAdapter<String> adapterMenuKondisi;
+    ArrayAdapter<String> adapterMenuKondisi, adapterVehicle;
 
     List<ListOperatorNewRKH> listOperator;
     AdapterRKH adapterLvOperator;
@@ -87,11 +87,13 @@ public class NewMethodRKH extends AppCompatActivity {
         dbhelper = new DatabaseHelper(this);
         dlgHelper = new DialogHelper(this);
 
+        // Declare design ID
         acVehicleRKH = findViewById(R.id.acVehicleNewRKH);
         tabNewRKH = findViewById(R.id.tabLayoutNewRKH);
         btnBackRKH = findViewById(R.id.btnBackNewRKH);
         etDateRKH = findViewById(R.id.etWorkDateNewRKH);
         lvDriver = findViewById(R.id.lvDriverNewRKH);
+        dividerNewRKH = findViewById(R.id.dividerNewRKH);
         lvLokasiKegiatanUnit = findViewById(R.id.lvLokasiKegiatanUnitRKH);
         acKondisiUnitNewRKH = findViewById(R.id.acKondisiUnitNewRKH);
         etDateUnitReady = findViewById(R.id.etDateUnitReadyNewRKH);
@@ -135,7 +137,14 @@ public class NewMethodRKH extends AppCompatActivity {
             }
         });
 
-        etDateRKH.setOnClickListener(view -> datePickerRKH.show(getSupportFragmentManager(), "TGLNEWRKH"));
+        etDateRKH.setOnClickListener(view -> {
+            if (lvLokasiKegiatanUnit.getAdapter().getItemCount() > 0) {
+                Snackbar.make(view, "Selesaikan RKH terlebih dahulu", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+                        .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+            } else {
+                datePickerRKH.show(getSupportFragmentManager(), "TGLNEWRKH");
+            }
+        });
 
         prepareData();
 
@@ -200,6 +209,8 @@ public class NewMethodRKH extends AppCompatActivity {
 
     private void prepareData() {
 
+        datePickerRKH.show(getSupportFragmentManager(), "TGLNEWRKH");
+
         //Setting dropdown vehicle data
         listVehicle = dbhelper.get_vehiclecodelist();
         adapterVehicle = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicle);
@@ -215,6 +226,7 @@ public class NewMethodRKH extends AppCompatActivity {
                 selectedVehicle = adapterVehicle.getItem(position);
                 selectedVehicleGroup = dbhelper.get_vehiclecodegroup(1, selectedVehicle);
                 loadListViewOperator();
+                adapterLvOperator.notifyDataSetChanged();
             }
         });
         acKondisiUnitNewRKH.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -223,21 +235,41 @@ public class NewMethodRKH extends AppCompatActivity {
                 if (!adapterMenuKondisi.getItem(position).equals("Normal")){
                     inputLayoutBreakdownDesc.setVisibility(View.VISIBLE);
                     inputLayoutDateUnitReady.setVisibility(View.VISIBLE);
+
+                    tabNewRKH.setVisibility(View.GONE);
+                    dividerNewRKH.setVisibility(View.GONE);
+                    layoutLokasiKegiatanUnit.setVisibility(View.GONE);
+                    lvDriver.setVisibility(View.GONE);
                 }
                 else {
                     inputLayoutBreakdownDesc.setVisibility(View.GONE);
                     inputLayoutDateUnitReady.setVisibility(View.GONE);
+
+                    switch (tabNewRKH.getSelectedTabPosition()) {
+                        case 0:
+                            tabNewRKH.setVisibility(View.VISIBLE);
+                            dividerNewRKH.setVisibility(View.VISIBLE);
+                            layoutLokasiKegiatanUnit.setVisibility(View.VISIBLE);
+                            lvDriver.setVisibility(View.GONE);
+                            break;
+                        case 1:
+                            tabNewRKH.setVisibility(View.VISIBLE);
+                            dividerNewRKH.setVisibility(View.VISIBLE);
+                            layoutLokasiKegiatanUnit.setVisibility(View.GONE);
+                            lvDriver.setVisibility(View.VISIBLE);
+                            break;
+                    }
                 }
             }
         });
     }
 
     public void addLocationActivityRKH(View v) {
-        if (rkhWorkdate == null) {
+        if (rkhWorkdate == null) { // Jika belum memilih tanggal
             Snackbar.make(v, "Harap pilih tanggal", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
         }
-        else if (selectedVehicle == null) {
+        else if (selectedVehicle == null) { // Jika belum memilih kendaraan
             Snackbar.make(v, "Harap pilih kendaraan", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
         }
@@ -246,26 +278,56 @@ public class NewMethodRKH extends AppCompatActivity {
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
         }
         else if (selectedVehicle != null && !acKondisiUnitNewRKH.getText().toString().equals("Normal")) {
-            Snackbar.make(v, "Unit Sedang Breakdown", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+            Snackbar.make(v, "Unit Sedang " + acKondisiUnitNewRKH.getText().toString(), Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
 
         }
         else {
+            // Show dialog to input unit location and activity
             dlgHelper.addLocationActivityRKH(selectedVehicleGroup, tvPlaceholderDetailRKH);
         }
     }
 
-    public static void loadListViewDetailRKH(Context activityContext) {
+    public void submitNewRKH(View view) {
+        if (rkhWorkdate == null || selectedVehicle == null || TextUtils.isEmpty(acKondisiUnitNewRKH.getText().toString().trim())) {
+            Snackbar.make(view, "Input data terlebih dahulu", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+        }
+        else if (acKondisiUnitNewRKH.getText().toString().equals("Normal")
+                && lvLokasiKegiatanUnit.getAdapter().getItemCount() == 0) {
+            Snackbar.make(view, "Harap Tambah Lokasi dan Kegiatan", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+        }
+        else if (dbhelper.count_checkeddriver_newrkh() == 0) {
+            Snackbar.make(view, "Tentukan driver yang akan bekerja", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
+        }
+        else {
+            SweetAlertDialog submitDlg = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+            submitDlg.setTitleText("Simpan RKH?");
+            submitDlg.setCancelText("TIDAK");
+            submitDlg.setConfirmText("YA");
+            submitDlg.showCancelButton(true);
+            submitDlg.setConfirmClickListener(sDialog  -> {
+                nodocNewRKH = dbhelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+                dbhelper.submitNewRKH(nodocNewRKH, selectedVehicle, rkhWorkdate, selectedDateUnitReady,
+                        acKondisiUnitNewRKH.getText().toString(), etBreakdownDesc.getText().toString());
 
-       DatabaseHelper dbhelper;
-       dbhelper = new DatabaseHelper(activityContext);
+                submitDlg.dismiss();
+                Intent backIntent = new Intent();
+                setResult(727, backIntent);
+                finish();
+            });
+            submitDlg.show();
+        }
+    }
+
+    public static void loadListViewDetailRKH(Context activityContext) {
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(activityContext);
 
         LinearLayoutManager layoutMaterial = new LinearLayoutManager(activityContext);
         lvLokasiKegiatanUnit.setLayoutManager(layoutMaterial);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                activityContext, layoutMaterial.getOrientation());
-        lvLokasiKegiatanUnit.addItemDecoration(dividerItemDecoration);
 
         List<ListDetailNewRKH> listViewRKH;
         AdapterDetailNewRKH adapterLvMaterial;
@@ -276,6 +338,7 @@ public class NewMethodRKH extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             do {
                 ListDetailNewRKH paramsMaterial = new ListDetailNewRKH(
+                        cursor.getString(cursor.getColumnIndex("division")),
                         cursor.getString(cursor.getColumnIndex("lokasi")),
                         cursor.getString(cursor.getColumnIndex("activity")),
                         cursor.getString(cursor.getColumnIndex("targetkerja")),
@@ -292,9 +355,6 @@ public class NewMethodRKH extends AppCompatActivity {
 
         LinearLayoutManager layoutMekanik = new LinearLayoutManager(this);
         lvDriver.setLayoutManager(layoutMekanik);
-
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(getDrawable(R.drawable.divider));
-        lvDriver.addItemDecoration(dividerItemDecoration);
 
         listOperator = new ArrayList<>();
         listOperator.clear();
@@ -314,34 +374,6 @@ public class NewMethodRKH extends AppCompatActivity {
         adapterLvOperator = new AdapterRKH( listOperator, this);
         lvDriver.setAdapter(adapterLvOperator);
     }
-
-    public void submitNewRKH(View view) {
-        if (!acKondisiUnitNewRKH.getText().toString().equals("Normal")
-                && lvLokasiKegiatanUnit.getAdapter().getItemCount() == 0) {
-            Snackbar.make(view, "Harap Tambah Lokasi dan Kegiatan!", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
-                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
-        }
-        else {
-            SweetAlertDialog submitDlg = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
-            submitDlg.setTitleText("SIMPAN RKH?");
-            submitDlg.setCancelText("TIDAK");
-            submitDlg.setConfirmText("YA");
-            submitDlg.showCancelButton(true);
-            submitDlg.setConfirmClickListener(sDialog  -> {
-                nodocNewRKH = dbhelper.get_tbl_username(0) + "/RKHVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-                dbhelper.submitNewRKH(nodocNewRKH, selectedVehicle, rkhWorkdate, selectedDateUnitReady,
-                        acKondisiUnitNewRKH.getText().toString(), etBreakdownDesc.getText().toString());
-
-                submitDlg.dismiss();
-                Intent backIntent = new Intent();
-                setResult(727, backIntent);
-                finish();
-            });
-            submitDlg.show();
-        }
-
-    }
-
 
     @Override
     public void onBackPressed() {

@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -64,15 +65,21 @@ public class AdapterRKH extends RecyclerView.Adapter<AdapterRKH.operatorHolder> 
         holder.setVehicleCode(operatorServices.getUnitCode());
 
         holder.checkBoxLvRKH.setOnClickListener(view -> {
-            holder.setCheckboxOperator(operatorServices.getEmployeeCode(),
-                    operatorServices.getUnitCode(), operatorServices.getShiftCode());
-
+            if (!NewMethodRKH.acKondisiUnitNewRKH.getText().toString().equals("Normal")) {
+                Toast.makeText(mContext, "Unit Sedang " + NewMethodRKH.acKondisiUnitNewRKH.getText().toString(), Toast.LENGTH_LONG).show();
+            } else {
+                holder.setCheckboxOperator(operatorServices.getEmployeeCode(),
+                        operatorServices.getUnitCode(), operatorServices.getShiftCode());
+            }
         });
 
         holder.layoutItemLvRKH.setOnClickListener(view -> {
-            holder.setCheckedLayout(operatorServices.getEmployeeCode(),
-                    operatorServices.getUnitCode(), operatorServices.getShiftCode());
-
+            if (!NewMethodRKH.acKondisiUnitNewRKH.getText().toString().equals("Normal")) {
+                Toast.makeText(mContext, "Unit Sedang " + NewMethodRKH.acKondisiUnitNewRKH.getText().toString(), Toast.LENGTH_LONG).show();
+            } else {
+                holder.setCheckedLayout(operatorServices.getEmployeeCode(),
+                        operatorServices.getUnitCode(), operatorServices.getShiftCode());
+            }
         });
 
         holder.getCheckedValue(operatorServices.getUnitCode(), operatorServices.getEmployeeCode(), operatorServices.getShiftCode());

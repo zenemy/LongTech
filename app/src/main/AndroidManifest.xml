@@ -33,7 +33,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Longtech.NoActionBar">
-        <activity android:name=".menuvehicle.NewMethodRKH"></activity>
+        <activity android:name=".menuvehicle.NewMethodCarLog"></activity>
+        <activity android:name=".menuvehicle.NewMethodRKH" />
         <activity android:name=".menureport.ReportActivity" />
         <activity android:name=".menuworkshop.LaporanPerbaikan" />
         <activity android:name=".menuinventory.PenerimaanBBM" />

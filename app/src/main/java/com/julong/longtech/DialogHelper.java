@@ -14,11 +14,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +41,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhcm.ApelPagiAdapter;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
+import com.julong.longtech.menuvehicle.NewMethodCarLog;
 import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuworkshop.LaporanPerbaikan;
@@ -45,7 +49,10 @@ import com.julong.longtech.menuworkshop.LaporanPerbaikan;
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -75,9 +82,15 @@ public class DialogHelper extends Dialog {
     private Dialog dlgAddMaterialService;
     private String selectedMaterial, materialUOM;
 
-    //Dialog Rkh
+    //Dialog RKH
     private Dialog dlgAddDetailRKH;
-    private String selectedBlockRKH, selectedActivityRKH;
+    private String selectedEstateRKH, selectedDivisionRKH, selectedBlockRKH, selectedActivityRKH;
+    private List<String> listDivisionNameRKH, listDivisionCodeRKH, listBlokRKH;
+    ArrayAdapter<String> adapterDivisionRKH, adapterBlok;
+
+    // Dialog CarLog
+    private Dialog dlgSelesaiCarLog;
+    public static ImageView btnFotoKilometer;
 
     public DialogHelper(Context context) {
         super(context);
@@ -353,8 +366,8 @@ public class DialogHelper extends Dialog {
 
     public Dialog addLocationActivityRKH(String vehicleType, TextView tvPlaceHolderDetailRKH) {
 
-        List<String> listActivity, listBlok;
-        ArrayAdapter<String> adapterActivity, adapterBlok;
+        List<String> listActivity, listEstateName, listEstateCode, listBlok;
+        ArrayAdapter<String> adapterActivity, adapterEstate;
 
         dlgAddDetailRKH = new Dialog(activityContext);
         dlgAddDetailRKH.setContentView(R.layout.dialog_inputrincianrkh);
@@ -362,6 +375,8 @@ public class DialogHelper extends Dialog {
         Window windowTdkHadir = dlgAddDetailRKH.getWindow();
         windowTdkHadir.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
+        AutoCompleteTextView acEstate = dlgAddDetailRKH.findViewById(R.id.acEstateRincianRKH);
+        AutoCompleteTextView acDivision = dlgAddDetailRKH.findViewById(R.id.acDivisionRincianRKH);
         AutoCompleteTextView acWorkLocation = dlgAddDetailRKH.findViewById(R.id.acLocationRincianRKH);
         AutoCompleteTextView acWorkActivity = dlgAddDetailRKH.findViewById(R.id.acActivityRincianRKH);
         TextInputLayout inputLayoutTarget = dlgAddDetailRKH.findViewById(R.id.inputLayoutTargetRKH);
@@ -370,23 +385,47 @@ public class DialogHelper extends Dialog {
         Button btnDlgSimpan = dlgAddDetailRKH.findViewById(R.id.btnDlgSimpanRincianRKH);
 
         btnDlgDismiss.setOnClickListener(view -> dlgAddDetailRKH.dismiss());
+        acEstate.setKeyListener(null);
+        acDivision.setKeyListener(null);
 
+        // Start setting up dropdown data
         listActivity = dbhelper.get_transportactivity(vehicleType);
         adapterActivity = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listActivity);
         acWorkActivity.setAdapter(adapterActivity);
 
-        listBlok = dbhelper.get_fieldcrop(1);
-        adapterBlok = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listBlok);
-        acWorkLocation.setAdapter(adapterBlok);
+        listEstateName = dbhelper.get_itemkebun(1);
+        listEstateCode = dbhelper.get_itemkebun(0);
+        adapterEstate = new ArrayAdapter<String>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listEstateName);
+        acEstate.setAdapter(adapterEstate);
 
-        acWorkActivity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        acEstate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedActivityRKH = dbhelper.get_singlekegiatancode(adapterActivity.getItem(position));
-                inputLayoutTarget.setSuffixText(dbhelper.get_singlekegiatanname(selectedActivityRKH, 1));
-                InputMethodManager keyboardMgr = (InputMethodManager) activityContext
-                        .getSystemService(activityContext.INPUT_METHOD_SERVICE);
-                keyboardMgr.hideSoftInputFromWindow(acWorkActivity.getWindowToken(), 0);
+                selectedEstateRKH = listEstateCode.get(position);
+                selectedDivisionRKH = null;
+                selectedBlockRKH = null;
+                acDivision.setText(null);
+                acWorkLocation.setText(null);
+                acDivision.setAdapter(null);
+
+                listDivisionNameRKH = dbhelper.get_itemdivisi(selectedEstateRKH, 1);
+                listDivisionCodeRKH = dbhelper.get_itemdivisi(selectedEstateRKH, 0);
+                adapterDivisionRKH = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listDivisionNameRKH);
+                acDivision.setAdapter(adapterDivisionRKH);
+            }
+        });
+
+        acDivision.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedDivisionRKH = listDivisionCodeRKH.get(position);
+                selectedBlockRKH = null;
+                acWorkLocation.setText(null);
+                acWorkLocation.setAdapter(null);
+
+                listBlokRKH = dbhelper.get_fieldcrop_filtered(selectedEstateRKH, selectedDivisionRKH, 1);
+                adapterBlok = new ArrayAdapter<>(activityContext, R.layout.spinnerlist, R.id.spinnerItem, listBlokRKH);
+                acWorkLocation.setAdapter(adapterBlok);
             }
         });
 
@@ -400,9 +439,21 @@ public class DialogHelper extends Dialog {
             }
         });
 
+        acWorkActivity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                selectedActivityRKH = dbhelper.get_singlekegiatancode(adapterActivity.getItem(position));
+                inputLayoutTarget.setSuffixText(dbhelper.get_singlekegiatanname(selectedActivityRKH, 1));
+                InputMethodManager keyboardMgr = (InputMethodManager) activityContext
+                        .getSystemService(activityContext.INPUT_METHOD_SERVICE);
+                keyboardMgr.hideSoftInputFromWindow(acWorkActivity.getWindowToken(), 0);
+            }
+        });
+        // Setting up dropdown data done
+
         btnDlgSimpan.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) { // Checking empty text field first
                 if (selectedBlockRKH == null) {
                     Toast.makeText(activityContext, "Pilih Lokasi Kerja!", Toast.LENGTH_LONG).show();
                 }
@@ -413,13 +464,21 @@ public class DialogHelper extends Dialog {
                     Toast.makeText(activityContext, "Isi Target Kerja!", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    dbhelper.insert_newrkh_detail(NewMethodRKH.rkhWorkdate, selectedBlockRKH, selectedActivityRKH,
-                            etTargetRincian.getText().toString(), dbhelper.get_singlekegiatanname(selectedActivityRKH, 1));
+                    dbhelper.insert_newrkh_detail(NewMethodRKH.rkhWorkdate, selectedEstateRKH, selectedDivisionRKH,
+                            selectedBlockRKH, selectedActivityRKH, etTargetRincian.getText().toString(),
+                            dbhelper.get_singlekegiatanname(selectedActivityRKH, 1));
+
+                    selectedEstateRKH = null;
+                    selectedDivisionRKH = null;
                     selectedBlockRKH = null;
-                    acWorkActivity.setText(null);
                     selectedActivityRKH = null;
+
+                    acEstate.setText(null);
+                    acDivision.setText(null);
+                    acWorkActivity.setText(null);
                     etTargetRincian.setText(null);
                     dlgAddDetailRKH.dismiss();
+
                     tvPlaceHolderDetailRKH.setVisibility(View.GONE);
                     NewMethodRKH.loadListViewDetailRKH(activityContext);
                 }
@@ -430,6 +489,129 @@ public class DialogHelper extends Dialog {
         dlgAddDetailRKH.show();
         return dlgAddDetailRKH;
 
+    }
+
+    public Dialog submitSelesaiCarLog(ActivityResultLauncher<Intent> intentFotoKM) {
+        //Showing finishDlg
+        dlgSelesaiCarLog = new Dialog(activityContext);
+        dlgSelesaiCarLog.setContentView(R.layout.dlg_selesaicarlog);
+        dlgSelesaiCarLog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window dlgDoneCarLogWindow = dlgSelesaiCarLog.getWindow();
+        dlgDoneCarLogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        Button btnCancelDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnCancelDlgCarLog);
+        Button btnDoneDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnDoneDlgCarLog);
+        EditText etDateDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etDateDlgCarLog);
+        EditText tvJamAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.tvJamAkhirDlgCarLog);
+        EditText etKMHMAwalDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAwalDlgCarLog);
+        EditText etKMHMAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirDlgCarLog);
+        EditText etNoteDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etNoteDlgCarLog);
+        TextView tvJudulFotoKM = dlgSelesaiCarLog.findViewById(R.id.tvJudulFotoKM);
+        TextInputLayout inputlayoutDlgKmAkhir = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhir);
+        btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
+
+        String currenttdate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+        String currenttime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        etDateDlgCarLog.setText(currenttdate);
+        tvJamAkhirDlgCarLog.setText(currenttime);
+
+        if (dbhelper.get_tbl_username(27) != null) {
+            etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
+        }
+
+        dlgSelesaiCarLog.show();
+
+        etKMHMAkhirDlgCarLog.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // TODO Auto-generated method stub
+                if (etKMHMAkhirDlgCarLog.getText().toString().length() > 0) {
+                    inputlayoutDlgKmAkhir.setHelperTextEnabled(true);
+                    inputlayoutDlgKmAkhir.setHelperText("Max. 6 Digit");
+                    inputlayoutDlgKmAkhir.setErrorEnabled(false);
+                    inputlayoutDlgKmAkhir.setError(null);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                // TODO Auto-generated method stub
+            }
+        });
+
+        btnCancelDlgCarLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlgSelesaiCarLog.dismiss();
+                NewMethodCarLog.byteFotoKilometer = null;
+                etKMHMAkhirDlgCarLog.setText(null);
+                etNoteDlgCarLog.setText(null);
+            }
+        });
+
+        btnFotoKilometer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(activityContext.getPackageManager()) != null) {
+                    intentFotoKM.launch(takePictureIntent);
+                }
+            }
+        });
+
+        btnDoneDlgCarLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String currentValue = etKMHMAwalDlgCarLog.getText().toString().replace(",",".");
+
+                if (TextUtils.isEmpty(etKMHMAwalDlgCarLog.getText().toString().trim()) || TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim())) {
+
+                    inputlayoutDlgKmAkhir.setHelperTextEnabled(false);
+                    inputlayoutDlgKmAkhir.setHelperText(null);
+                    inputlayoutDlgKmAkhir.setErrorEnabled(true);
+                    inputlayoutDlgKmAkhir.setError("Wajib diisi!");
+                    Toast.makeText(activityContext, "Isi info kilometer!", Toast.LENGTH_LONG).show();
+
+                }
+                else if (NewMethodCarLog.byteFotoKilometer == null) {
+                    btnFotoKilometer.startAnimation(AnimationUtils.loadAnimation(activityContext, R.anim.errorshake));
+                    tvJudulFotoKM.startAnimation(AnimationUtils.loadAnimation(activityContext, R.anim.errorshake));
+                    Toast.makeText(activityContext, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
+                }
+                else if (Float.parseFloat(currentValue) >= Float.parseFloat(etKMHMAkhirDlgCarLog.getText().toString())) {
+                    Toast.makeText(activityContext, "Kilometer akhir salah", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    //Replace dot with comma
+                    String newStartValue = etKMHMAwalDlgCarLog.getText().toString().replace(".",",");
+                    etKMHMAwalDlgCarLog.setText(newStartValue);
+                    String newEndValue = etKMHMAkhirDlgCarLog.getText().toString().replace(".",",");
+                    etKMHMAkhirDlgCarLog.setText(newEndValue);
+
+                    String nodocCarLog = dbhelper.get_tbl_username(0) + "/CARLOG/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+
+                    dbhelper.update_kmhm(etKMHMAkhirDlgCarLog.getText().toString());
+                    dbhelper.submitNewCarLog(nodocCarLog, etKMHMAwalDlgCarLog.getText().toString(), etKMHMAkhirDlgCarLog.getText().toString(),
+                            etNoteDlgCarLog.getText().toString(), NewMethodCarLog.byteFotoKilometer);
+
+                    dlgSelesaiCarLog.dismiss();
+                    new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai")
+                            .setConfirmClickListener(sweetAlertDialog -> onBackPressed()).setConfirmText("OK").show();
+
+
+                }
+
+            }
+        });
+
+        return dlgSelesaiCarLog;
     }
 
 

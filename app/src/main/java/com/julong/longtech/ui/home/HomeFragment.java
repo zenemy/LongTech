@@ -63,6 +63,7 @@ import com.julong.longtech.menuhistory.HistoryAdapterRKH;
 import com.julong.longtech.menuhistory.ListHistoryRKH;
 import com.julong.longtech.menusetup.DividerItemDecorator;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
+import com.julong.longtech.menuvehicle.NewMethodCarLog;
 import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
@@ -420,7 +421,7 @@ public class HomeFragment extends Fragment {
                     String selectedCarLogVehicle = dbhelper.get_vehiclecodeonly(acDlgVehicleCarLog.getText().toString());
                     dbhelper.update_ancakcode_user(selectedCarLogVehicle, acDlgShiftCarLog.getText().toString());
 
-                    Intent intent = new Intent(getActivity(), KartuKerjaVehicle.class);
+                    Intent intent = new Intent(getActivity(), NewMethodCarLog.class);
                     intentLaunchActivity.launch(intent);
                 }
             });

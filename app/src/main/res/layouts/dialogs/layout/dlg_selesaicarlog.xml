@@ -169,7 +169,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                app:helperText="Max. 6 Digit"
                 app:helperTextEnabled="true"
                 app:hintEnabled="false">
 
@@ -196,6 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Keterangan Tambahan"
+            android:layout_marginTop="8dp"
             android:textColor="@color/black" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -242,14 +242,15 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <ImageButton
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgKilometerDlgCarLog"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="4dp"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_baseline_add_photo_100" />
+            android:src="@drawable/ic_baseline_add_photo_100"
+            app:shapeAppearance="@style/roundedMiniCorner"/>
 
     </LinearLayout>
 

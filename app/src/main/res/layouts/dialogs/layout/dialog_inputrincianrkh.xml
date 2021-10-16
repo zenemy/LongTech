@@ -32,8 +32,51 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginHorizontal="8dp"
+                android:hint="Kebun"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acEstateRincianRKH"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:editable="false"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="8dp"
+                android:hint="Divisi"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acDivisionRincianRKH"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:imeOptions="actionNext"
+                    android:editable="false"
+                    android:inputType="none"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="8dp"
                 android:hint="Lokasi Kerja"
                 app:endIconMode="dropdown_menu">
 
@@ -74,8 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginHorizontal="8dp"
                 android:layout_marginVertical="8dp"
                 android:hint="Target Hasil Kerja">
 
@@ -112,7 +154,7 @@
             android:insetTop="0dp"
             android:textSize="16sp"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.MaterialComponents.Button.BottomLeftRounder"
-            android:text="Cancel"
+            android:text="@string/backbtn"
             android:textColor="@color/white"
             android:textStyle="bold" />
 

@@ -6,7 +6,7 @@
     android:paddingTop="8dp">
 
     <TextView
-        android:id="@+id/tvNewActivityRKH"
+        android:id="@+id/tvActivityLvCarLog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
@@ -15,7 +15,7 @@
         android:text="TextView" />
 
     <TextView
-        android:id="@+id/tvNewLokasiRKH"
+        android:id="@+id/tvLokasiKerjaCarLog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="Target Kerja" />
+            android:text="Hasil Kerja" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -43,13 +43,23 @@
             android:text=":" />
 
         <TextView
-            android:id="@+id/tvNewTargetKerjaRKH"
+            android:id="@+id/tvHasilKerjaLvCarLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:layout_marginStart="4dp"
             android:text="TextView"
             android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvInputDateLvNewCarLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="@color/black"
+            android:layout_marginStart="4dp"
+            android:text="TextView" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
