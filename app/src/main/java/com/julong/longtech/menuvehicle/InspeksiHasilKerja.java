@@ -107,8 +107,7 @@ public class InspeksiHasilKerja extends AppCompatActivity {
 
             if (selectedVehicle == null || selectedDriver == null
                     || selectedLokasiInspeksi == null || byteImgInspeksi == null
-                    || TextUtils.isEmpty(etHasilTemuan.getText().toString().trim())
-                    || TextUtils.isEmpty(etTindakLanjut.getText().toString().trim())) {
+                    || TextUtils.isEmpty(etHasilTemuan.getText().toString().trim())) {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
             }
             else if (locOutput.indexOf(acLokasiInspeksi.getText().toString()) == -1

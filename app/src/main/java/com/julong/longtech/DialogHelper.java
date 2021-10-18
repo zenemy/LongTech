@@ -520,31 +520,6 @@ public class DialogHelper extends Dialog {
 
         dlgSelesaiCarLog.show();
 
-        etKMHMAkhirDlgCarLog.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-                if (etKMHMAkhirDlgCarLog.getText().toString().length() > 0) {
-                    inputlayoutDlgKmAkhir.setHelperTextEnabled(true);
-                    inputlayoutDlgKmAkhir.setHelperText("Max. 6 Digit");
-                    inputlayoutDlgKmAkhir.setErrorEnabled(false);
-                    inputlayoutDlgKmAkhir.setError(null);
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                // TODO Auto-generated method stub
-            }
-        });
-
         btnCancelDlgCarLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,7 @@ public class AdapterRKH extends RecyclerView.Adapter<AdapterRKH.operatorHolder> 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the layout view you have created for the list rows here
-        View view = layoutInflater.inflate(R.layout.item_lvrkh, parent, false);
+        View view = layoutInflater.inflate(R.layout.listview_mekanik, parent, false);
         return new operatorHolder(view);
     }
 
@@ -62,27 +63,26 @@ public class AdapterRKH extends RecyclerView.Adapter<AdapterRKH.operatorHolder> 
         // Set the data to the views here
         holder.setOperatorName(operatorServices.getEmployeeName());
         holder.setOperatorCode(operatorServices.getEmployeeCode());
-        holder.setVehicleCode(operatorServices.getUnitCode());
 
         holder.checkBoxLvRKH.setOnClickListener(view -> {
-            if (!NewMethodRKH.acKondisiUnitNewRKH.getText().toString().equals("Normal")) {
-                Toast.makeText(mContext, "Unit Sedang " + NewMethodRKH.acKondisiUnitNewRKH.getText().toString(), Toast.LENGTH_LONG).show();
+            if (TextUtils.isEmpty(NewMethodRKH.acKondisiUnitNewRKH.getText().toString().trim())) {
+                Toast.makeText(mContext, "Pilih Kondisi Unit", Toast.LENGTH_LONG).show();
+                holder.checkBoxLvRKH.setChecked(false);
             } else {
-                holder.setCheckboxOperator(operatorServices.getEmployeeCode(),
-                        operatorServices.getUnitCode(), operatorServices.getShiftCode());
+                holder.setCheckboxOperator(operatorServices.getEmployeeCode(), NewMethodRKH.selectedVehicle);
             }
         });
 
         holder.layoutItemLvRKH.setOnClickListener(view -> {
-            if (!NewMethodRKH.acKondisiUnitNewRKH.getText().toString().equals("Normal")) {
-                Toast.makeText(mContext, "Unit Sedang " + NewMethodRKH.acKondisiUnitNewRKH.getText().toString(), Toast.LENGTH_LONG).show();
+            if (TextUtils.isEmpty(NewMethodRKH.acKondisiUnitNewRKH.getText().toString().trim())) {
+                Toast.makeText(mContext, "Pilih Kondisi Unit", Toast.LENGTH_LONG).show();
+                holder.checkBoxLvRKH.setChecked(false);
             } else {
-                holder.setCheckedLayout(operatorServices.getEmployeeCode(),
-                        operatorServices.getUnitCode(), operatorServices.getShiftCode());
+                holder.setCheckedLayout(operatorServices.getEmployeeCode(), NewMethodRKH.selectedVehicle);
             }
         });
 
-        holder.getCheckedValue(operatorServices.getUnitCode(), operatorServices.getEmployeeCode(), operatorServices.getShiftCode());
+        holder.getCheckedValue(operatorServices.getEmployeeCode());
     }
 
     // This class that helps to populate data to the view
@@ -90,8 +90,8 @@ public class AdapterRKH extends RecyclerView.Adapter<AdapterRKH.operatorHolder> 
 
         DatabaseHelper dbhelper;
 
-        private TextView tvOperatorName, tvOperatorCode, tvVehicleCode;
-        private LinearLayout layoutItemLvRKH;
+        private TextView tvOperatorName, tvOperatorCode;
+        private ConstraintLayout layoutItemLvRKH;
         private CheckBox checkBoxLvRKH;
         private int checkedOperatorValue;
 
@@ -99,65 +99,61 @@ public class AdapterRKH extends RecyclerView.Adapter<AdapterRKH.operatorHolder> 
             super(itemView);
 
             dbhelper = new DatabaseHelper(mContext);
-            tvOperatorCode = itemView.findViewById(R.id.tvDriverCodeLvRKH);
-            tvOperatorName = itemView.findViewById(R.id.tvDriverNameLvRKH);
-            layoutItemLvRKH = itemView.findViewById(R.id.layoutItemLvRKH);
-            checkBoxLvRKH = itemView.findViewById(R.id.checkBoxLvRKH);
-            tvVehicleCode = itemView.findViewById(R.id.tvVehicleCodeLvRKH);
-
+            tvOperatorName = itemView.findViewById(R.id.tvMekanikLvMintaService);
+            tvOperatorCode = itemView.findViewById(R.id.tvMekanikCodeMintaService);
+            layoutItemLvRKH = itemView.findViewById(R.id.layoutLvMekanik);
+            checkBoxLvRKH = itemView.findViewById(R.id.checkBoxMekanikLv);
         }
 
         public void setOperatorName(String mekanikName) {
             tvOperatorName.setText(mekanikName);
         }
 
-        public void setVehicleCode(String vehicleCode) {
-            tvVehicleCode.setText(vehicleCode);
-        }
-
         public void setOperatorCode(String operatorCode) {
             tvOperatorCode.setText(operatorCode);
         }
 
-        public void setCheckboxOperator(String operatorCode,String unitCode,String shiftCode) {
+        public void setCheckboxOperator(String operatorCode,String unitCode) {
             if (checkBoxLvRKH.isChecked()) {
-                dbhelper.updateCheckedOperator(operatorCode, NewMethodRKH.rkhWorkdate, unitCode, shiftCode);
+                dbhelper.updateCheckedOperator(operatorCode, NewMethodRKH.rkhWorkdate, unitCode);
                 checkBoxLvRKH.setChecked(true);
                 notifyDataSetChanged();
             }
             else {
                 SQLiteDatabase db = dbhelper.getWritableDatabase();
                 db.execSQL("DELETE FROM tr_02 WHERE datatype = 'RKHVH' AND itemdata = 'DETAIL2' AND text1 = '" + operatorCode + "'" +
-                        "AND text2 = '" + unitCode + "' AND text3 = '" + shiftCode + "'  AND uploaded IS NULL");
+                        "AND text2 = '" + unitCode + "' AND uploaded IS NULL");
                 checkBoxLvRKH.setChecked(false);
-                checkedOperatorValue = dbhelper.getCheckRKH(unitCode,shiftCode,operatorCode);
+                checkedOperatorValue = dbhelper.getCheckRKH(operatorCode);
                 notifyDataSetChanged();
             }
 
         }
 
 
-        public void getCheckedValue(String unitCode, String shiftCode, String operatorCode) {
-            int getCheckedOperator = dbhelper.getCheckRKH(unitCode,shiftCode,operatorCode);
+        public void getCheckedValue(String operatorCode) {
+            int getCheckedOperator = dbhelper.getCheckRKH(operatorCode);
+            Log.d("cukvale", operatorCode +  " " + getCheckedOperator);
             if (getCheckedOperator > 0) {
                 checkBoxLvRKH.setChecked(true);
+            } else if (getCheckedOperator == 0) {
+                checkBoxLvRKH.setChecked(false);
             }
-
         }
 
-        public void setCheckedLayout (String operatorCode,String unitCode,String shiftCode) {
+        public void setCheckedLayout (String operatorCode, String unitCode) {
             if (checkBoxLvRKH.isChecked()) {
                 checkBoxLvRKH.setChecked(false);
                 SQLiteDatabase db = dbhelper.getWritableDatabase();
                 db.execSQL("DELETE FROM tr_02 WHERE datatype = 'RKHVH' AND itemdata = 'DETAIL2' AND text1 = '" + operatorCode + "'" +
-                        "AND text2 = '" + unitCode + "' AND text3 = '" + shiftCode + "'  AND uploaded IS NULL");
+                        "AND text2 = '" + unitCode + "' AND uploaded IS NULL");
                 checkBoxLvRKH.setChecked(false);
-                checkedOperatorValue = dbhelper.getCheckRKH(unitCode,shiftCode,operatorCode);
+                checkedOperatorValue = dbhelper.getCheckRKH(operatorCode);
                 notifyDataSetChanged();
             }
             else {
                 checkBoxLvRKH.setChecked(true);
-                dbhelper.updateCheckedOperator(operatorCode, NewMethodRKH.rkhWorkdate, unitCode, shiftCode);
+                dbhelper.updateCheckedOperator(operatorCode, NewMethodRKH.rkhWorkdate, unitCode);
                 notifyDataSetChanged();
             }
         }

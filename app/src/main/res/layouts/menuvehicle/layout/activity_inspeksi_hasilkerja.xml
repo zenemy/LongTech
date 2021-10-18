@@ -58,9 +58,7 @@
                     android:id="@+id/acVehicleInspeksi"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
@@ -81,9 +79,7 @@
                     android:id="@+id/acDriverInspeksi"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
@@ -103,9 +99,7 @@
                     android:id="@+id/acLokasiKerjaInspeksi"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:paddingStart="12dp"
                     android:paddingTop="8dp"
-                    android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
                     android:singleLine="true"
                     android:textColor="@color/black"
@@ -140,9 +134,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="top"
-                        android:paddingStart="12dp"
                         android:paddingTop="12dp"
-                        android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
@@ -181,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="Tindak Lanjut Inspeksi"
+                android:hint="Solusi Hasil Inspeksi"
                 app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -189,9 +181,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
                     android:gravity="top"
-                    android:paddingStart="12dp"
                     android:paddingTop="12dp"
-                    android:paddingEnd="8dp"
                     android:paddingBottom="4dp"
                     android:singleLine="true"
                     android:textColor="@color/black"

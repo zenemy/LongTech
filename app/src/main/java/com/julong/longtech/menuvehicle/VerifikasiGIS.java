@@ -393,7 +393,6 @@ public class VerifikasiGIS extends AppCompatActivity {
     // Finish verification work
     public void eventSubmitVerifikasi(View v) {
         if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
-            || byteFotoGIS == null
             || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())
             || TextUtils.isEmpty(etHasilVerifikasi.getText().toString().trim())) {
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)

@@ -107,6 +107,8 @@ public class NewMethodCarLog extends AppCompatActivity {
         layoutListWorkResult = findViewById(R.id.layoutListWorkResultCarLog);
         inputLayoutWorkResult = findViewById(R.id.inputLayoutWorkResultCarLog);
 
+        btnBack.setOnClickListener(view -> onBackPressed());
+
         tabNewCarLog.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -282,6 +284,13 @@ public class NewMethodCarLog extends AppCompatActivity {
     }
 
     public void addNewCarLog(View v) {
+
+        ArrayList<String> blokOutput = (ArrayList<String>) listBlokName;
+
+        if (blokOutput.indexOf(acWorkLocation.getText().toString()) == -1) {
+            selectedBlok = null;
+        }
+
         if (selectedCategory == null) {
             SweetAlertDialog dlgError = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
             dlgError.setContentText("Pilih tipe pekerjaan").setConfirmText("OK").show();

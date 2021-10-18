@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
     public static int versionNumber = 1;
-    public static String versionName = "Version 0.10";
+    public static String versionName = "Version 0.12";
     Context activityContext;
 
     public DatabaseHelper(Context context) {
@@ -407,19 +407,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String get_empcode(int index, String employee) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT text1, text2 FROM md_01 WHERE text1 || ' - ' || text2 = '"+employee+"' AND datatype = 'EMPLOYEE'", null);
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            cursor.moveToPosition(0);
-            return cursor.getString(index).toString();
-        } else {
-            return "0";
-        }
-    }
-
-    public String get_position_ancakcode(int index, String employee) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT md1.text1, md1.text19, md2.text1 FROM md_01 md1 LEFT JOIN md_02 md2 " +
-                "ON md2.subitemdata = md1.text1 AND md2.datatype = 'GANG' WHERE md1.text1 || ' - ' || md1.text2 = '"+employee+"' AND md1.datatype = 'EMPLOYEE'", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
@@ -1207,13 +1194,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor view_tbl_operatorlist(String vehiclecode) {
+    public Cursor view_tbl_operatorlist() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT md1.text1 AS empcode, md1.text2 AS empname, " +
-                "md2.text1 AS unitcode, md2.text2 AS shiftcode " +
+        Cursor cursor = db.rawQuery("SELECT md1.text1 AS empcode, md1.text2 AS empname " +
                 "FROM md_01 md1 INNER JOIN md_02 md2 ON md2.subitemdata = md1.text1 " +
-                "WHERE md1.datatype = 'EMPLOYEE' AND md2.datatype = 'GANG' AND " +
-                "md2.text1 = '"+vehiclecode+"'", null);
+                "WHERE md1.datatype = 'EMPLOYEE' AND md2.datatype = 'GANG' ORDER BY md1.text2 ASC", null);
         return cursor;
     }
 
@@ -1356,11 +1341,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor listview_new_carlogs() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT DISTINCT tr.text1 AS unitcode, strftime('%H:%M', tr.date1) AS timetr, " +
-                "mdactivity.text6 AS activity, mdestate.text4 AS divisi, mdblok.text2 AS blok, " +
+                "mdactivity.text6 AS activity, mdestate.text4 AS divisi, IFNULL(mdblok.text2, '') AS blok, " +
                 "tr.text16 AS hasilkerja, mdactivity.text7 AS satuankerja FROM tr_01 tr " +
                 "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 AND mdactivity.datatype = 'TRANSPORTRATE' " +
                 "INNER JOIN md_01 mdestate ON mdestate.text3 = tr.text11 AND mdestate.datatype = 'ORG_STRUCTURE' " +
-                "INNER JOIN md_01 mdblok ON mdblok.text1 = tr.text12 AND mdblok.datatype = 'FIELDCROP' " +
+                "LEFT JOIN md_01 mdblok ON mdblok.text1 = tr.text12 AND mdblok.datatype = 'FIELDCROP' " +
                 "WHERE tr.datatype = 'CARLOG' AND DATE(tr.date1) = DATE('now', 'localtime');", null);
         return cursor;
     }
@@ -2150,7 +2135,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_employee() {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text1 || ' - ' || text2 AS employee FROM md_01 WHERE DATATYPE = 'EMPLOYEE'";
+        String query = "SELECT DISTINCT text1 || ' - ' || text2 AS employee " +
+                "FROM md_01 WHERE DATATYPE = 'EMPLOYEE' ORDER BY text2 ASC";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -2167,8 +2153,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> get_operatoronly() {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT DISTINCT text1 || ' - ' || text2 AS employee FROM md_01 " +
-                "WHERE DATATYPE = 'EMPLOYEE' AND text20 = 'DRIVER / OPERATOR'";
+        String query = "SELECT DISTINCT text1 || ' - ' || text2 AS employee FROM md_01 WHERE " +
+                "DATATYPE = 'EMPLOYEE' AND text20 IN ('DRIVER / OPERATOR', 'OPERATOR') ORDER BY text2 ASC;";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -2618,7 +2604,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Boolean updateCheckedOperator(String operatorCode, String workDate, String unitCode, String shiftCode) {
+    public Boolean updateCheckedOperator(String operatorCode, String workDate, String unitCode) {
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -2632,7 +2618,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("date2", workDate);
         contentValues.put("text1", operatorCode);
         contentValues.put("text2", unitCode);
-        contentValues.put("text3", shiftCode);
 
         long insertTR02 = db.insert("tr_02", null, contentValues);
         if (insertTR02 == -1) {
@@ -2642,11 +2627,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int getCheckRKH(String unitcode, String shiftcode, String empcode) {
+    public int getCheckRKH(String empcode) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE itemdata = 'DETAIL2' AND " +
-                "text1 = '"+empcode+"' AND text2 = '"+unitcode+"' " +
-                "AND text3 = '"+shiftcode+"' AND uploaded IS NULL;", null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tr_02 WHERE datatype = 'RKHVH' AND " +
+                "itemdata = 'DETAIL2' AND text1 = '"+empcode+"' AND uploaded IS NULL;", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);

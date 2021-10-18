@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment {
             arrayMenuHistory = Arrays.asList("CAR LOG");
         }
         else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
-            arrayMenuHistory = Arrays.asList("APEL", "RKH");
+            arrayMenuHistory = Arrays.asList("APEL");
         }
         else {
             arrayMenuHistory = Arrays.asList("");
@@ -188,10 +188,7 @@ public class HomeFragment extends Fragment {
                     lvHistory.setAdapter(null);
                     loadLvHistoryApel(todayDate);
                 }
-                else if (selected.equals("RKH")) {
-                    lvHistory.setAdapter(null);
-                    loadListViewHistoryRKH(todayDate);
-                } else {
+                else {
                     lvHistory.setAdapter(null);
                     loadLvHistoryCarLog(todayDate);
                 }
@@ -230,11 +227,7 @@ public class HomeFragment extends Fragment {
 
                 if (acMenuRiwayatHome.getText().toString().equals("APEL KERJA")) {
                     loadLvHistoryApel(simpleFormat.format(date));
-                }
-                else if (acMenuRiwayatHome.getText().toString().equals("RKH")) {
-                    loadListViewHistoryRKH(simpleFormat.format(date));
-                }
-                else {
+                } else {
                     loadLvHistoryCarLog(simpleFormat.format(date));
                 }
             }
@@ -651,39 +644,6 @@ public class HomeFragment extends Fragment {
         }
         carlogAdapter = new HistoryHomeCarLogAdapter(listHistoryCarLogs, lvHistory.getContext());
         lvHistory.setAdapter(carlogAdapter);
-    }
-
-    private void loadListViewHistoryRKH(String selectedDate) {
-
-        LinearLayoutManager layoutRKH = new LinearLayoutManager(lvHistory.getContext());
-        lvHistory.setLayoutManager(layoutRKH);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                lvHistory.getContext(), layoutRKH.getOrientation());
-        lvHistory.addItemDecoration(dividerItemDecoration);
-
-        listHistoriesRKH = new ArrayList<>();
-        listHistoriesRKH.clear();
-
-        final Cursor cursor = dbhelper.listview_historyRKH(selectedDate);
-        if (cursor.moveToFirst()) {
-            do {
-                ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
-                        cursor.getString(cursor.getColumnIndex("documentno")),
-                        cursor.getString(cursor.getColumnIndex("tglinput")),
-                        cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
-                        cursor.getString(cursor.getColumnIndex("empname")),
-                        cursor.getString(cursor.getColumnIndex("activity")),
-                        cursor.getString(cursor.getColumnIndex("blok")),
-                        cursor.getString(cursor.getColumnIndex("unitcode")),
-                        cursor.getString(cursor.getColumnIndex("shiftcode")),
-                        cursor.getInt(cursor.getColumnIndex("uploaded"))
-                );
-                listHistoriesRKH.add(paramsHistoryRKH);
-            } while (cursor.moveToNext());
-        }
-        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, getContext());
-        lvHistory.setAdapter(adapterLvRKH);
     }
 
 }

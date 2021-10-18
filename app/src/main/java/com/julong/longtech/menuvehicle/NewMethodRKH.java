@@ -68,12 +68,12 @@ public class NewMethodRKH extends AppCompatActivity {
     public static RecyclerView lvLokasiKegiatanUnit;
     public static AutoCompleteTextView acKondisiUnitNewRKH;
 
-    public static String rkhWorkdate;
-    String selectedDateUnitReady, selectedVehicle, selectedVehicleGroup, nodocNewRKH, submitNewRKH;
+    public static String rkhWorkdate, selectedVehicle;
+    String selectedDateUnitReady, selectedVehicleGroup, nodocNewRKH;
     MaterialDatePicker<Long> datePickerRKH, datePickerUnitReady;
 
     List<String> listVehicle;
-    String[] arrayMenuKondisi = {"Normal", "Breakdown", "Standby"};
+    String[] arrayMenuKondisi = {"Normal", "Rusak", "Standby"};
     ArrayAdapter<String> adapterMenuKondisi, adapterVehicle;
 
     List<ListOperatorNewRKH> listOperator;
@@ -225,7 +225,6 @@ public class NewMethodRKH extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 selectedVehicle = adapterVehicle.getItem(position);
                 selectedVehicleGroup = dbhelper.get_vehiclecodegroup(1, selectedVehicle);
-                loadListViewOperator();
                 adapterLvOperator.notifyDataSetChanged();
             }
         });
@@ -262,6 +261,8 @@ public class NewMethodRKH extends AppCompatActivity {
                 }
             }
         });
+
+        loadListViewOperator();
     }
 
     public void addLocationActivityRKH(View v) {
@@ -298,7 +299,7 @@ public class NewMethodRKH extends AppCompatActivity {
             Snackbar.make(view, "Harap Tambah Lokasi dan Kegiatan", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
         }
-        else if (dbhelper.count_checkeddriver_newrkh() == 0) {
+        else if (dbhelper.count_checkeddriver_newrkh() == 0 && acKondisiUnitNewRKH.getText().toString().equals("Normal")) {
             Snackbar.make(view, "Tentukan driver yang akan bekerja", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
         }
@@ -358,14 +359,12 @@ public class NewMethodRKH extends AppCompatActivity {
 
         listOperator = new ArrayList<>();
         listOperator.clear();
-        final Cursor cursor = dbhelper.view_tbl_operatorlist(selectedVehicle);
+        final Cursor cursor = dbhelper.view_tbl_operatorlist();
         if (cursor.moveToFirst()) {
             do {
                 ListOperatorNewRKH paramsOperator = new ListOperatorNewRKH(
                         cursor.getString(cursor.getColumnIndex("empname")),
-                        cursor.getString(cursor.getColumnIndex("empcode")),
-                        cursor.getString(cursor.getColumnIndex("unitcode")),
-                        cursor.getString(cursor.getColumnIndex("shiftcode"))
+                        cursor.getString(cursor.getColumnIndex("empcode"))
 
                 );
                 listOperator.add(paramsOperator);

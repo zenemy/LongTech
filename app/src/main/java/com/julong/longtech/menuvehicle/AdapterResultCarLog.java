@@ -78,7 +78,11 @@ public class AdapterResultCarLog extends RecyclerView.Adapter<AdapterResultCarLo
         }
 
         public void setLokasi(String divison, String blokLocation) {
-            tvLokasi.setText(divison + " (" + blokLocation + ")");
+            if (blokLocation.length() > 0) {
+                tvLokasi.setText(divison + " (" + blokLocation + ")");
+            } else {
+                tvLokasi.setText(divison);
+            }
         }
 
         public void setTarget(String setTarget, String satuanKerja) {
