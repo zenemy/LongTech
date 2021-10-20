@@ -115,7 +115,8 @@ public class HomeFragment extends Fragment {
     public static LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
             linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel, linearLayoutGIS;
 
-    List<String> arrayMenuHistory;
+    List<String> arrayMenuHistoryName, arrayMenuHistoryCode;
+
     ArrayAdapter<String> adapterMenuHistory;
 
     private List<ListHistoryRKH> listHistoriesRKH;
@@ -162,17 +163,10 @@ public class HomeFragment extends Fragment {
             tvPlaceholder.setVisibility(View.GONE);
         }
 
-        if (dbhelper.get_tbl_username(3).equals("OPR")) {
-            arrayMenuHistory = Arrays.asList("CAR LOG");
-        }
-        else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
-            arrayMenuHistory = Arrays.asList("APEL");
-        }
-        else {
-            arrayMenuHistory = Arrays.asList("");
-        }
+        arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
+        arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
 
-        adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistory);
+        adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistoryName);
         acMenuRiwayatHome.setAdapter(adapterMenuHistory);
 
         openDrawerBtn.setOnClickListener(v -> ((MainActivity) getActivity()).openDrawer());
@@ -183,15 +177,6 @@ public class HomeFragment extends Fragment {
                 String selected = (String) adapterView.getItemAtPosition(position);
 
                 filtertglhistory.setText(todayDate);
-
-                if (selected.equals("APEL")) {
-                    lvHistory.setAdapter(null);
-                    loadLvHistoryApel(todayDate);
-                }
-                else {
-                    lvHistory.setAdapter(null);
-                    loadLvHistoryCarLog(todayDate);
-                }
 
             }
         });
@@ -645,5 +630,40 @@ public class HomeFragment extends Fragment {
         carlogAdapter = new HistoryHomeCarLogAdapter(listHistoryCarLogs, lvHistory.getContext());
         lvHistory.setAdapter(carlogAdapter);
     }
+
+    private void loadListViewHistoryRKH(String selectedDate) {
+
+        LinearLayoutManager layoutRKH = new LinearLayoutManager(lvHistory.getContext());
+        lvHistory.setLayoutManager(layoutRKH);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                lvHistory.getContext(), layoutRKH.getOrientation());
+        lvHistory.addItemDecoration(dividerItemDecoration);
+
+        listHistoriesRKH = new ArrayList<>();
+        listHistoriesRKH.clear();
+
+        final Cursor cursor = dbhelper.listview_historyRKH(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
+                        cursor.getString(cursor.getColumnIndex("documentno")),
+                        cursor.getString(cursor.getColumnIndex("tglinput")),
+                        cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
+                        cursor.getString(cursor.getColumnIndex("empname")),
+                        cursor.getString(cursor.getColumnIndex("activity")),
+                        cursor.getString(cursor.getColumnIndex("blok")),
+                        cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("shiftcode")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+                );
+                listHistoriesRKH.add(paramsHistoryRKH);
+            } while (cursor.moveToNext());
+        }
+        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, getContext());
+        lvHistory.setAdapter(adapterLvRKH);
+    }
+
+
 
 }

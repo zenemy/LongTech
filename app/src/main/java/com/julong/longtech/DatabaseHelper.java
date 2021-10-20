@@ -2654,6 +2654,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList ;
+    }
 
 
 
@@ -2682,6 +2687,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public List<String> get_menuInfoHome(int index) {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT gs2.submodulecode AS MENUCODE, gs2.submoduledesc AS MENUNAME FROM gs_08 gs8 " +
+                        "INNER JOIN gs_02 gs2 ON gs2.SUBMODULECODE = gs8.SUBMODULECODE WHERE gs8.AUTHORIZED_REPORT = 1 ";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(index));
+            }
 
     public Boolean updateselesai_apelpagi(String nodoc, String lokasiAbsen, String latitude,
                                           String longitude, byte[] fotorame) {
