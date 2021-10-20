@@ -31,25 +31,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5">
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_baseline_directions_car_40" />
+
                 <TextView
                     android:id="@+id/tvVehicleHistoryRKH"
-                    android:layout_width="80dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="EXC-006"
+                    android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvShiftHistoryRKH"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:text="Shift 1"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <View
@@ -80,6 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Document"
+                    android:singleLine="true"
                     android:layout_marginEnd="4dp"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
@@ -112,22 +110,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5">
 
                 <TextView
-                    android:id="@+id/tvDriverHistoryRKH"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableStart="@drawable/ic_twotone_person_20"
-                    android:drawablePadding="6dp"
-                    android:gravity="center_vertical"
-                    android:text="Employee Name"
-                    android:textColor="@color/black" />
-
-                <TextView
                     android:id="@+id/tvWorkDateHistoryRKH"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginTop="4dp"
                     android:paddingStart="2dp"
                     android:drawableStart="@drawable/ic_baseline_calendar_16"
                     android:drawablePadding="6dp"
@@ -148,20 +134,33 @@
                     android:text="Activity Name"
                     android:textColor="@color/black" />
 
+                <TextView
+                    android:id="@+id/tvLokasiHistoryRKH"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_baseline_location_on_16"
+                    android:drawablePadding="6dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:text="Location Name"
+                    android:textColor="@color/black" />
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp">
 
                     <TextView
-                        android:id="@+id/tvLokasiHistoryRKH"
+                        android:id="@+id/tvTargetKerjaReportRKH"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:drawableStart="@drawable/ic_baseline_location_on_16"
+                        android:drawableStart="@drawable/ic_baseline_target_24"
                         android:drawablePadding="6dp"
                         android:gravity="center_vertical"
-                        android:text="Location Name"
+                        android:text="Target Kerja"
+                        android:textStyle="bold"
                         android:textColor="@color/black" />
 
                     <ImageView

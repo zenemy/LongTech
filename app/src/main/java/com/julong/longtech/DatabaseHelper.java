@@ -2472,18 +2472,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public String layoutsetting_carlog(int index, String activityLoad) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT text8, text9, text10, text11, text12, text13, text14, text15, text16, text17 FROM md_01 WHERE text5 = '"+activityLoad+"'", null);
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            cursor.moveToPosition(0);
-            return cursor.getString(index).toString();
-        } else {
-            return null;
-        }
-    }
-
     public List<String> get_menuname(String groupparamdesc, String controlsystem) {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
