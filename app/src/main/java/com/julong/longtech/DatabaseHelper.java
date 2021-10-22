@@ -1293,14 +1293,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor listview_historycarlog(String date) {
+    public Cursor listview_historycarlog(String selectedDate) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.documentno, strftime('%d-%m-%Y %H:%M', tr.date1) AS tglawal, " +
-                "tr.text1 AS unitcode, md.text4 AS jenismuatan, " +
-                "md.text6 AS kategorimuatan, tr.text2 AS kmawal, tr.text18 AS kmakhir, tr.text16 AS hasilkerja, " +
-                "md.text7 AS satuankerja, tr.uploaded AS uploaded FROM tr_01 tr LEFT JOIN md_01 md ON tr.text4 = md.text5 " +
-                "AND md.datatype = 'TRANSPORTRATE' WHERE tr.datatype = 'CARLOG' " +
-                "AND DATE(tr.date1) = DATE('"+date+"') AND tr.uploaded IS NOT NULL;", null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.text1 AS unitcode, strftime('%H:%M', tr.date1) AS timetr, " +
+                "mdactivity.text6 AS activity, mdestate.text4 AS divisi, IFNULL(mdblok.text2, '') AS blok, tr.text16 AS hasilkerja, " +
+                "mdactivity.text7 AS satuankerja, tr.text2 AS kmawal, tr.text18 AS kmakhir, tr.uploaded AS uploaded FROM tr_01 tr " +
+                "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 AND mdactivity.datatype = 'TRANSPORTRATE' " +
+                "INNER JOIN md_01 mdestate ON mdestate.text3 = tr.text11 AND mdestate.datatype = 'ORG_STRUCTURE' " +
+                "LEFT JOIN md_01 mdblok ON mdblok.text1 = tr.text12 AND mdblok.datatype = 'FIELDCROP' " +
+                "WHERE tr.datatype = 'CARLOG' AND DATE(tr.date1) = DATE('"+selectedDate+"') AND tr.uploaded IS NOT NULL;", null);
         return cursor;
     }
 
@@ -2654,13 +2655,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-            while (cursor.moveToNext());
-            cursor.close();
-        }
-        return dataList ;
-    }
-
-
 
     public Boolean updateselesai_rkh(String nodoc, String note, String vehiclegroup) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -2698,6 +2692,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 dataList.add(cursor.getString(index));
             }
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList ;
+    }
 
     public Boolean updateselesai_apelpagi(String nodoc, String lokasiAbsen, String latitude,
                                           String longitude, byte[] fotorame) {

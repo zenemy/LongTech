@@ -12,6 +12,7 @@ public class ListResultCarLog {
 
     public ListResultCarLog(String activityType, String division, String blokLocation, String hasilKerja,
                             String satuanKerja, String vehicleCode, String inputDate) {
+
         this.activityType = activityType;
         this.division = division;
         this.blokLocation = blokLocation;

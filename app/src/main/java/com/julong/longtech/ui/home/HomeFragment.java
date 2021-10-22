@@ -106,17 +106,16 @@ public class HomeFragment extends Fragment {
     public static RecyclerView lvHistory;
 
     public static AutoCompleteTextView acMenuRiwayatHome;
-    EditText filtertglhistory;
+    EditText etDatepickerHistory;
     Button btnDateLvInfo;
     ImageButton btnrefresh, openDrawerBtn;
-    String todayDate, todayDateTime;
+    String todayDate, todayDateTime, selectedHistoryMenu;
 
     ConstraintLayout clBgMainActivity, layoutInfoFragment;
     public static LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
             linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel, linearLayoutGIS;
 
     List<String> arrayMenuHistoryName, arrayMenuHistoryCode;
-
     ArrayAdapter<String> adapterMenuHistory;
 
     private List<ListHistoryRKH> listHistoriesRKH;
@@ -141,7 +140,7 @@ public class HomeFragment extends Fragment {
         acMenuRiwayatHome = root.findViewById(R.id.acMenuRiwayatHome);
         layoutRiwayatFragment = root.findViewById(R.id.layoutRiwayatFragment);
 
-        filtertglhistory = root.findViewById(R.id.etDateHomeHistory);
+        etDatepickerHistory = root.findViewById(R.id.etDateHomeHistory);
         linearLayoutApel = root.findViewById(R.id.linearLayoutApel);
         linearLayoutAbsen = root.findViewById(R.id.linearLayoutAbsen);
         linearLayoutRKH = root.findViewById(R.id.linearLayoutRKH);
@@ -154,7 +153,7 @@ public class HomeFragment extends Fragment {
 
         todayDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        filtertglhistory.setText(todayDate);
+        etDatepickerHistory.setText(todayDate);
         btnDateLvInfo.setText(todayDate);
 
         eventClickMenu();
@@ -174,9 +173,17 @@ public class HomeFragment extends Fragment {
         acMenuRiwayatHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String selected = (String) adapterView.getItemAtPosition(position);
+                selectedHistoryMenu = arrayMenuHistoryCode.get(position);
 
-                filtertglhistory.setText(todayDate);
+                etDatepickerHistory.setText(todayDate);
+
+                if (selectedHistoryMenu.equals("010105")) {
+                    loadLvHistoryApel(etDatepickerHistory.getText().toString());
+                } else if (selectedHistoryMenu.equals("020203")) {
+                    loadLvHistoryCarLog(etDatepickerHistory.getText().toString());
+                } else if (selectedHistoryMenu.equals("020201")) {
+//                    loadListViewHistoryRKH(etDatepickerHistory.getText().toString());
+                }
 
             }
         });
@@ -184,7 +191,7 @@ public class HomeFragment extends Fragment {
         MaterialDatePicker<Long> datePickerLvHistory = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
         MaterialDatePicker<Long> datePickerLvInfo = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
 
-        filtertglhistory.setOnClickListener(new View.OnClickListener() {
+        etDatepickerHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(acMenuRiwayatHome.getText().toString().trim())) {
@@ -208,12 +215,14 @@ public class HomeFragment extends Fragment {
                 SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 Date date = new Date(selection + offsetFromUTC);
 
-                filtertglhistory.setText(simpleFormat.format(date));
+                etDatepickerHistory.setText(simpleFormat.format(date));
 
-                if (acMenuRiwayatHome.getText().toString().equals("APEL KERJA")) {
+                if (selectedHistoryMenu.equals("010105")) {
                     loadLvHistoryApel(simpleFormat.format(date));
-                } else {
+                } else if (selectedHistoryMenu.equals("020203")) {
                     loadLvHistoryCarLog(simpleFormat.format(date));
+                } else if (selectedHistoryMenu.equals("020201")) {
+//                    loadListViewHistoryRKH(simpleFormat.format(date));
                 }
             }
         });
@@ -602,24 +611,19 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutCarLog = new LinearLayoutManager(lvHistory.getContext());
         lvHistory.setLayoutManager(layoutCarLog);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                lvHistory.getContext(), layoutCarLog.getOrientation());
-
-        lvHistory.addItemDecoration(dividerItemDecoration);
-
         listHistoryCarLogs = new ArrayList<>();
         listHistoryCarLogs.clear();
         final Cursor cursor = dbhelper.listview_historycarlog(selectedDate);
         if (cursor.moveToFirst()) {
             do {
                 ListHistoryHomeCarLog paramsCarLogHistory = new ListHistoryHomeCarLog(
-                        cursor.getString(cursor.getColumnIndex("documentno")),
-                        cursor.getString(cursor.getColumnIndex("tglawal")),
+                        cursor.getString(cursor.getColumnIndex("timetr")),
                         cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("divisi")),
+                        cursor.getString(cursor.getColumnIndex("blok")),
                         cursor.getString(cursor.getColumnIndex("kmawal")),
                         cursor.getString(cursor.getColumnIndex("kmakhir")),
-                        cursor.getString(cursor.getColumnIndex("kategorimuatan")),
-                        cursor.getString(cursor.getColumnIndex("jenismuatan")),
+                        cursor.getString(cursor.getColumnIndex("activity")),
                         cursor.getString(cursor.getColumnIndex("hasilkerja")),
                         cursor.getString(cursor.getColumnIndex("satuankerja")),
                         cursor.getInt(cursor.getColumnIndex("uploaded"))

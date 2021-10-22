@@ -113,9 +113,6 @@ public class MainActivity extends AppCompatActivity {
     View hView;
     ConstraintLayout clnavheader;
 
-    private List<String> listKendalaCode, listKendalaName;
-    ArrayAdapter<String> adapterKendala;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -662,14 +659,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected  void onPreExecute() {
-
             dbhelper.delete_menuGS02("HCM");
             dbhelper.delete_menuGS02("WORKSHOP");
             dbhelper.delete_menuGS02("VEHICLE");
             dbhelper.delete_menuGS02("INVENTORY");
             dbhelper.delete_menuGS02("REPORT");
             dbhelper.delete_menuGS02("UPLOAD & DOWNLOAD");
-
         }
 
         protected Integer doInBackground(JSONObject... jsonObjectsGS) {

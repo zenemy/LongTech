@@ -53,12 +53,18 @@ public class HistoryHomeCarLogAdapter extends RecyclerView.Adapter<HistoryHomeCa
         final ListHistoryHomeCarLog historyCarLogs = carLogs.get(position);
 
         // Set the data to the views here
-        holder.setDocumentNumber(historyCarLogs.getDocumentNumber());
-        holder.setLogTime(historyCarLogs.getWaktuAwal());
-        holder.setVehicle(historyCarLogs.getUnitCarLog());
+        holder.setActivity(historyCarLogs.getActivity());
+
+        holder.setLogTime(historyCarLogs.getTimeInput());
+
+        holder.setLocation(historyCarLogs.getDivision(), historyCarLogs.getBlokLocation());
+
+        holder.setVehicle(historyCarLogs.getVehicleCode());
+
         holder.setKMHM(historyCarLogs.getKmAwal(), historyCarLogs.getKmAkhir());
-        holder.setLoadType(historyCarLogs.getJenisMuatan(), historyCarLogs.getKategoriMuatan());
+
         holder.setResult(historyCarLogs.getHasilPekerjaan(), historyCarLogs.getSatuanPekerjaan());
+
         holder.setUploaded(historyCarLogs.getIsUploaded());
 
     }
@@ -66,43 +72,48 @@ public class HistoryHomeCarLogAdapter extends RecyclerView.Adapter<HistoryHomeCa
     // This is your ViewHolder class that helps to populate data to the view
     public class CarLogHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvNoDoc, tvTglHistory, tvUnitCarLog, tvKmCarLog,
-        tvLoadType, tvHasilHistory, tvSatuanHasil;
+        private TextView tvActivity, tvTimeHistory, tvLocation,
+                tvUnitCarLog, tvKmCarLog, tvHasilHistory, tvSatuanHasil;
 
         private ImageView imgUploaded;
 
         public CarLogHolder(View itemView) {
             super(itemView);
 
-            tvNoDoc = (TextView) itemView.findViewById(R.id.tvNodocHistoryHomeCarLog);
-            tvTglHistory = (TextView) itemView.findViewById(R.id.tvHistoryHomeDateCarLog);
-            tvUnitCarLog = (TextView) itemView.findViewById(R.id.tvHistoryHomeVehicleCarLog);
-            tvKmCarLog = (TextView) itemView.findViewById(R.id.tvHistoryHomeKMHMCarLog);
-            tvLoadType = (TextView) itemView.findViewById(R.id.tvHistoryHomeMuatanCarLog);
-            tvHasilHistory = (TextView) itemView.findViewById(R.id.tvHasilHistoryHomeCarLog);
-            tvSatuanHasil = (TextView) itemView.findViewById(R.id.tvSatuanHistoryHomeCarLog);
-            imgUploaded = (ImageView) itemView.findViewById(R.id.imgUploadHistoryHomeCarLog);
+            tvActivity = itemView.findViewById(R.id.tvHistoryHomeActivityCarLog);
+            tvLocation = itemView.findViewById(R.id.tvHistoryHomeLocationCarLog);
+            tvTimeHistory = itemView.findViewById(R.id.tvTimeHistoryCarLog);
+            tvUnitCarLog = itemView.findViewById(R.id.tvHistoryHomeVehicleCarLog);
+            tvKmCarLog = itemView.findViewById(R.id.tvHistoryHomeKMHMCarLog);
+            tvHasilHistory = itemView.findViewById(R.id.tvHasilHistoryHomeCarLog);
+            tvSatuanHasil = itemView.findViewById(R.id.tvSatuanHistoryHomeCarLog);
+
+            imgUploaded = itemView.findViewById(R.id.imgUploadHistoryHomeCarLog);
 
         }
 
-        public void setDocumentNumber(String nodoc) {
-            tvNoDoc.setText(nodoc);
+        public void setActivity(String activity) {
+            tvActivity.setText(activity);
         }
 
         public void setLogTime(String startTime) {
-            tvTglHistory.setText(startTime);
+            tvTimeHistory.setText(startTime);
+        }
+
+        public void setLocation(String divisi, String blok) {
+            if (blok.length() > 0) {
+                tvLocation.setText(divisi + " (" + blok + ")");
+            } else {
+                tvLocation.setText(divisi);
+            }
         }
 
         public void setVehicle(String vehicle) {
-            tvUnitCarLog.setText("(" + vehicle + ")");
+            tvUnitCarLog.setText(vehicle);
         }
 
         public void setKMHM(String kmhmAwal, String kmhmAkhir) {
             tvKmCarLog.setText(kmhmAwal + " — " + kmhmAkhir);
-        }
-
-        public void setLoadType(String loadType, String loadCategory) {
-            tvLoadType.setText(loadType + " (" + loadCategory + ")");
         }
 
         public void setResult(String hasilkerja, String satuankerja) {

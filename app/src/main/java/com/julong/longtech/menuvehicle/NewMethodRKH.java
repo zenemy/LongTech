@@ -390,8 +390,6 @@ public class NewMethodRKH extends AppCompatActivity {
             finish();
         });
         warningExitDlg.show();
-
-
     }
 
 
