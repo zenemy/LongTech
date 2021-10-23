@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+
+    <TextView
+        android:id="@+id/tvNoteTambahanLvInfo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/tvWorkTypeInfoHome"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tvWorkStatusInfoHome"
         android:layout_width="wrap_content"

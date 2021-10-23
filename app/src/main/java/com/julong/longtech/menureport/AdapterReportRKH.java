@@ -51,13 +51,13 @@ public class AdapterReportRKH extends RecyclerView.Adapter<AdapterReportRKH.Hold
         final ListHistoryRKH historyDailyPlans = historyPlans.get(position);
 
         // Set the data to the views here
-        holderRKH.setDocumentNumber(historyDailyPlans.getDocumentNumber());
-        holderRKH.setTglHistory(historyDailyPlans.getInputDate(), historyDailyPlans.getTglPelaksanaan());
-        holderRKH.setVehicle(historyDailyPlans.getUnitCode());
-        holderRKH.setEmployeeName(historyDailyPlans.getEmployeeName());
-        holderRKH.setActivity(historyDailyPlans.getActivityName());
-        holderRKH.setLocation(historyDailyPlans.getLocationName());
-        holderRKH.setUploaded(historyDailyPlans.getIsUploaded());
+//        holderRKH.setDocumentNumber(historyDailyPlans.getDocumentNumber());
+//        holderRKH.setTglHistory(historyDailyPlans.getInputDate(), historyDailyPlans.getTglPelaksanaan());
+//        holderRKH.setVehicle(historyDailyPlans.getUnitCode());
+//        holderRKH.setEmployeeName(historyDailyPlans.getEmployeeName());
+//        holderRKH.setActivity(historyDailyPlans.getActivityName());
+//        holderRKH.setLocation(historyDailyPlans.getLocationName());
+//        holderRKH.setUploaded(historyDailyPlans.getIsUploaded());
 
     }
 
@@ -75,7 +75,7 @@ public class AdapterReportRKH extends RecyclerView.Adapter<AdapterReportRKH.Hold
             tvNoDoc = (TextView) itemView.findViewById(R.id.tvNodocHistoryRKH);
             tvInputDate = (TextView) itemView.findViewById(R.id.tvInputDateHistoryRKH);
             tvTglPelaksanaan = (TextView) itemView.findViewById(R.id.tvWorkDateHistoryRKH);
-            tvEmployeeName = (TextView) itemView.findViewById(R.id.tvDriverHistoryRKH);
+      //      tvEmployeeName = (TextView) itemView.findViewById(R.id.tvDriverHistoryRKH);
             tvUnitRKH = (TextView) itemView.findViewById(R.id.tvVehicleHistoryRKH);
             tvActivityName = (TextView) itemView.findViewById(R.id.tvKegiatanHistoryRKH);
             tvLocationName = (TextView) itemView.findViewById(R.id.tvLokasiHistoryRKH);

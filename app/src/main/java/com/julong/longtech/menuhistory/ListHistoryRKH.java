@@ -2,60 +2,51 @@ package com.julong.longtech.menuhistory;
 
 public class ListHistoryRKH {
 
-    private String documentNumber;
-    private String tglPelaksanaan;
-    private String inputDate;
-    private String employeeName;
-    private String activityName;
-    private String locationName;
     private String unitCode;
-    private String shiftcode;
+    private String division;
+    private String blokCode;
+    private String activityName;
+    private String targetKerja;
+    private String satuanKerja;
+    private String inputTime;
+
     private int isUploaded;
 
-    public ListHistoryRKH(String documentNumber, String inputDate, String tglPelaksanaan, String employeeName, String activityName,
-                          String locationName, String unitCode, String shiftcode, int isUploaded) {
+    public ListHistoryRKH(String unitCode, String division, String blokCode, String activityName, String targetKerja,
+                          String satuanKerja, String inputTime, int isUploaded) {
 
-        this.documentNumber = documentNumber;
-        this.inputDate = inputDate;
-        this.tglPelaksanaan = tglPelaksanaan;
-        this.employeeName = employeeName;
-        this.activityName = activityName;
-        this.locationName = locationName;
         this.unitCode = unitCode;
-        this.shiftcode = shiftcode;
+        this.division = division;
+        this.blokCode = blokCode;
+        this.activityName = activityName;
+        this.targetKerja = targetKerja;
+        this.satuanKerja = satuanKerja;
+        this.inputTime = inputTime;
         this.isUploaded = isUploaded;
-    }
-
-    public String getDocumentNumber() {
-        return documentNumber;
-    }
-
-    public String getInputDate() {
-        return inputDate;
-    }
-    public String getTglPelaksanaan() {
-        return tglPelaksanaan;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public String getActivityName() {
-        return activityName;
-    }
-
-    public String getLocationName() {
-        return locationName;
     }
 
     public String getUnitCode() {
         return unitCode;
     }
-
-    public String getShiftcode() {
-        return shiftcode;
+    public String getDivision() {
+        return division;
     }
+
+    public String getBlokCode() {
+        return blokCode;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+    public String getTargetKerja() {
+        return targetKerja;
+    }
+
+    public String getSatuanKerja() {
+        return satuanKerja;
+    }
+    public String getInputTime() {return inputTime;}
 
     public int getIsUploaded() {
         return isUploaded;

@@ -186,9 +186,9 @@ public class ReportActivity extends AppCompatActivity {
         else if (selectedReportMenu.equals("010105")) {
             loadLvReportApel(selectedTeamCode);
         }
-        else if (selectedReportMenu.equals("020201")) {
-            loadLvReportRKH(selectedTeamCode);
-        }
+//        else if (selectedReportMenu.equals("020201")) {
+//            loadLvReportRKH(selectedTeamCode);
+//        }
         else if (selectedReportMenu.equals("020202")) {
             loadLvReportP2H(acVehicleReport.getText().toString());
         }
@@ -354,60 +354,60 @@ public class ReportActivity extends AppCompatActivity {
         requestQueue.add(jsonRequest);
     }
 
-    private void loadLvReportRKH(String teamcode) {
-
-        LinearLayoutManager layoutReport = new LinearLayoutManager(this);
-        lvReport.setLayoutManager(layoutReport);
-
-        listReportRKH = new ArrayList<>();
-        listReportRKH.clear();
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url_data = url_api + "fetchdata/reportmenu/report_rkh.php?teamcode="+ teamcode + "&selectdate=" + selectedDate;
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if (response.has("REPORTRKH")) {
-                        JSONArray jsonArrayApel = response.getJSONArray("REPORTRKH");
-                        int i = 0;
-                        while (i < jsonArrayApel.length()) {
-                            JSONObject jsonObjectApel = jsonArrayApel.getJSONObject(i);
-
-                            ListHistoryRKH paramsReportRKH = new ListHistoryRKH(
-                                    jsonObjectApel.getString("DOCUMENTNO"),
-                                    jsonObjectApel.getString("TGLINPUT"),
-                                    jsonObjectApel.getString("TGLPELAKSANAAN"),
-                                    jsonObjectApel.getString("EMPNAME"),
-                                    jsonObjectApel.getString("ACTIVITY"),
-                                    jsonObjectApel.getString("BLOK"),
-                                    jsonObjectApel.getString("UNITCODE"),
-                                    jsonObjectApel.getString("SHIFTCODE"),
-                                    2
-                            );
-                            listReportRKH.add(paramsReportRKH);
-                            i++;
-                        }
-                        adapterLvRKH = new AdapterReportRKH(listReportRKH, ReportActivity.this);
-                        lvReport.setAdapter(adapterLvRKH);
-
-                    }
-                    else {
-                        lvReport.setAdapter(null);
-                    }
-                    progressDialog.dismiss();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, error -> {
-            error.printStackTrace();
-            progressDialog.dismiss();
-            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
-                    .setContentText("Empty Data").show();
-        });
-        requestQueue.add(jsonRequest);
-    }
+//    private void loadLvReportRKH(String teamcode) {
+//
+//        LinearLayoutManager layoutReport = new LinearLayoutManager(this);
+//        lvReport.setLayoutManager(layoutReport);
+//
+//        listReportRKH = new ArrayList<>();
+//        listReportRKH.clear();
+//
+//        RequestQueue requestQueue = Volley.newRequestQueue(this);
+//        String url_data = url_api + "fetchdata/reportmenu/report_rkh.php?teamcode="+ teamcode + "&selectdate=" + selectedDate;
+//        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                try {
+//                    if (response.has("REPORTRKH")) {
+//                        JSONArray jsonArrayApel = response.getJSONArray("REPORTRKH");
+//                        int i = 0;
+//                        while (i < jsonArrayApel.length()) {
+//                            JSONObject jsonObjectApel = jsonArrayApel.getJSONObject(i);
+//
+//                            ListHistoryRKH paramsReportRKH = new ListHistoryRKH(
+//                                    jsonObjectApel.getString("DOCUMENTNO"),
+//                                    jsonObjectApel.getString("TGLINPUT"),
+//                                    jsonObjectApel.getString("TGLPELAKSANAAN"),
+//                                    jsonObjectApel.getString("EMPNAME"),
+//                                    jsonObjectApel.getString("ACTIVITY"),
+//                                    jsonObjectApel.getString("BLOK"),
+//                                    jsonObjectApel.getString("UNITCODE"),
+//                                    jsonObjectApel.getString("SHIFTCODE"),
+//                                    2
+//                            );
+//                            listReportRKH.add(paramsReportRKH);
+//                            i++;
+//                        }
+//                        adapterLvRKH = new AdapterReportRKH(listReportRKH, ReportActivity.this);
+//                        lvReport.setAdapter(adapterLvRKH);
+//
+//                    }
+//                    else {
+//                        lvReport.setAdapter(null);
+//                    }
+//                    progressDialog.dismiss();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, error -> {
+//            error.printStackTrace();
+//            progressDialog.dismiss();
+//            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
+//                    .setContentText("Empty Data").show();
+//        });
+//        requestQueue.add(jsonRequest);
+//    }
 
     private void loadLvReportP2H(String vehicleCode) {
 

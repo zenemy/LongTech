@@ -105,7 +105,7 @@ public class HistoryActivity extends AppCompatActivity {
                     lvHistoryApel.setVisibility(View.GONE);
                     lvHistoryCarLog.setVisibility(View.GONE);
                     lvHistoryRKH.setVisibility(View.VISIBLE);
-                    loadListViewHistoryRKH(simpleFormat.format(date));
+ //                   loadListViewHistoryRKH(simpleFormat.format(date));
                 }
             }
         });
@@ -174,31 +174,31 @@ public class HistoryActivity extends AppCompatActivity {
         lvHistoryApel.setAdapter(adapterLvHistory);
     }
 
-    private void loadListViewHistoryRKH(String selectedDate) {
-
-        LinearLayoutManager layoutRKH = new LinearLayoutManager(this);
-        lvHistoryRKH.setLayoutManager(layoutRKH);
-
-        listHistoriesRKH = new ArrayList<>();
-        listHistoriesRKH.clear();
-        final Cursor cursor = dbhelper.listview_historyRKH(selectedDate);
-        if (cursor.moveToFirst()) {
-            do {
-                ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
-                        cursor.getString(cursor.getColumnIndex("documentno")),
-                        cursor.getString(cursor.getColumnIndex("tglinput")),
-                        cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
-                        cursor.getString(cursor.getColumnIndex("empname")),
-                        cursor.getString(cursor.getColumnIndex("activity")),
-                        cursor.getString(cursor.getColumnIndex("blok")),
-                        cursor.getString(cursor.getColumnIndex("unitcode")),
-                        cursor.getString(cursor.getColumnIndex("shiftcode")),
-                        cursor.getInt(cursor.getColumnIndex("uploaded"))
-                );
-                listHistoriesRKH.add(paramsHistoryRKH);
-            } while (cursor.moveToNext());
-        }
-        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, this);
-        lvHistoryRKH.setAdapter(adapterLvRKH);
-    }
+//    private void loadListViewHistoryRKH(String selectedDate) {
+//
+//        LinearLayoutManager layoutRKH = new LinearLayoutManager(this);
+//        lvHistoryRKH.setLayoutManager(layoutRKH);
+//
+//        listHistoriesRKH = new ArrayList<>();
+//        listHistoriesRKH.clear();
+//        final Cursor cursor = dbhelper.listview_historyRKH(selectedDate);
+//        if (cursor.moveToFirst()) {
+//            do {
+//                ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
+//                        cursor.getString(cursor.getColumnIndex("documentno")),
+//                        cursor.getString(cursor.getColumnIndex("tglinput")),
+//                        cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
+//                        cursor.getString(cursor.getColumnIndex("empname")),
+//                        cursor.getString(cursor.getColumnIndex("activity")),
+//                        cursor.getString(cursor.getColumnIndex("blok")),
+//                        cursor.getString(cursor.getColumnIndex("unitcode")),
+//                        cursor.getString(cursor.getColumnIndex("shiftcode")),
+//                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+//                );
+//                listHistoriesRKH.add(paramsHistoryRKH);
+//            } while (cursor.moveToNext());
+//        }
+//        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, this);
+//        lvHistoryRKH.setAdapter(adapterLvRKH);
+//    }
 }

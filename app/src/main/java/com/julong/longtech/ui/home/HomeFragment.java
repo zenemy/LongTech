@@ -182,7 +182,7 @@ public class HomeFragment extends Fragment {
                 } else if (selectedHistoryMenu.equals("020203")) {
                     loadLvHistoryCarLog(etDatepickerHistory.getText().toString());
                 } else if (selectedHistoryMenu.equals("020201")) {
-//                    loadListViewHistoryRKH(etDatepickerHistory.getText().toString());
+                    loadListViewHistoryRKH(etDatepickerHistory.getText().toString());
                 }
 
             }
@@ -222,7 +222,7 @@ public class HomeFragment extends Fragment {
                 } else if (selectedHistoryMenu.equals("020203")) {
                     loadLvHistoryCarLog(simpleFormat.format(date));
                 } else if (selectedHistoryMenu.equals("020201")) {
-//                    loadListViewHistoryRKH(simpleFormat.format(date));
+                    loadListViewHistoryRKH(simpleFormat.format(date));
                 }
             }
         });
@@ -247,6 +247,10 @@ public class HomeFragment extends Fragment {
 
                 btnDateLvInfo.setText(simpleFormat.format(date));
                 loadlvinfohome(simpleFormat.format(date));
+
+                if (lvfragment.getAdapter().getCount() > 0) {
+                    tvPlaceholder.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -564,6 +568,7 @@ public class HomeFragment extends Fragment {
         adapterHomeInfo.notifyDataSetChanged();
     }
 
+    //populate data listview apel
     public static void loadLvHistoryApel(String selectedDate) {
 
         List<ListHistoryHomeApel> listApelHistories;
@@ -601,6 +606,7 @@ public class HomeFragment extends Fragment {
         lvHistory.setAdapter(adapterLvHistory);
     }
 
+    //populate data list view car log
     public static void loadLvHistoryCarLog(String selectedDate) {
 
         List<ListHistoryHomeCarLog> listHistoryCarLogs;
@@ -635,14 +641,11 @@ public class HomeFragment extends Fragment {
         lvHistory.setAdapter(carlogAdapter);
     }
 
+    //Populate data list view rkh
     private void loadListViewHistoryRKH(String selectedDate) {
 
         LinearLayoutManager layoutRKH = new LinearLayoutManager(lvHistory.getContext());
         lvHistory.setLayoutManager(layoutRKH);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                lvHistory.getContext(), layoutRKH.getOrientation());
-        lvHistory.addItemDecoration(dividerItemDecoration);
 
         listHistoriesRKH = new ArrayList<>();
         listHistoriesRKH.clear();
@@ -651,14 +654,13 @@ public class HomeFragment extends Fragment {
         if (cursor.moveToFirst()) {
             do {
                 ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
-                        cursor.getString(cursor.getColumnIndex("documentno")),
-                        cursor.getString(cursor.getColumnIndex("tglinput")),
-                        cursor.getString(cursor.getColumnIndex("tglpelaksannaan")),
-                        cursor.getString(cursor.getColumnIndex("empname")),
-                        cursor.getString(cursor.getColumnIndex("activity")),
-                        cursor.getString(cursor.getColumnIndex("blok")),
                         cursor.getString(cursor.getColumnIndex("unitcode")),
-                        cursor.getString(cursor.getColumnIndex("shiftcode")),
+                        cursor.getString(cursor.getColumnIndex("division")),
+                        cursor.getString(cursor.getColumnIndex("blokcode")),
+                        cursor.getString(cursor.getColumnIndex("activity")),
+                        cursor.getString(cursor.getColumnIndex("targetkerja")),
+                        cursor.getString(cursor.getColumnIndex("satuankerja")),
+                        cursor.getString(cursor.getColumnIndex("timeinput")),
                         cursor.getInt(cursor.getColumnIndex("uploaded"))
                 );
                 listHistoriesRKH.add(paramsHistoryRKH);

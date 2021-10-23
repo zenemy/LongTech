@@ -83,6 +83,7 @@ import java.util.Locale;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.julong.longtech.DatabaseHelper.url_api;
+import static com.julong.longtech.ui.home.HomeFragment.acMenuRiwayatHome;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryApel;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryCarLog;
 import static com.julong.longtech.ui.home.HomeFragment.loadlvinfohome;
@@ -112,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
     ExpandableListView expandableListView;
     View hView;
     ConstraintLayout clnavheader;
+
+    List<String> arrayMenuHistoryName, arrayMenuHistoryCode;
+    ArrayAdapter<String> adapterMenuHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (result.getResultCode() == 1) {
                         if (dbhelper.count_tablemd().equals("0")) {
-                            final SweetAlertDialog warningExitDlg = new SweetAlertDialog(MainActivity.this, SweetAlertDialog.WARNING_TYPE);
+                            final SweetAlertDialog warningExitDlg = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
                             warningExitDlg.setContentText("Download data dahulu!");
                             warningExitDlg.setConfirmText("YA");
                             warningExitDlg.showCancelButton(false);
@@ -165,6 +169,13 @@ public class MainActivity extends AppCompatActivity {
                                 intentLaunchMainActivity.launch(intentDownload);
                             });
                             warningExitDlg.show();
+                        }
+                        else {
+                            arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
+                            arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
+
+                            adapterMenuHistory = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistoryName);
+                            acMenuRiwayatHome.setAdapter(adapterMenuHistory);
                         }
                     }
 

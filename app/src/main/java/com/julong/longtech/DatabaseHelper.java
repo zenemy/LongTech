@@ -1231,18 +1231,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_historyRKH(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT tr2.documentno, strftime('%d-%m-%Y', tr2.date1) AS tglinput, " +
-                "strftime('%d', tr2.date2) || ' ' || CASE strftime('%m', date(tr2.date2)) WHEN '01' THEN 'January' " +
-                "WHEN '02' THEN 'Febuary' WHEN '03' THEN 'March' WHEN '04' THEN 'April' WHEN '05' THEN 'May' " +
-                "WHEN '06' THEN 'June' WHEN '07' THEN 'July' WHEN '08' THEN 'August' WHEN '09' THEN 'September' " +
-                "WHEN '10' THEN 'October' WHEN '11' THEN 'November' WHEN '12' THEN 'December' " +
-                "ELSE '' END || ' ' || strftime('%Y', tr2.date2) AS tglpelaksannaan, mdemp.text2 AS empname, " +
-                "mdactivity.text6 AS activity, mdblok.text2 AS blok, tr2.text1 AS unitcode, " +
-                "tr2.text2 AS shiftcode, tr2.uploaded AS uploaded FROM tr_02 tr2 " +
-                "LEFT JOIN md_01 mdemp ON mdemp.text1 = tr2.text3 AND mdemp.datatype = 'EMPLOYEE' " +
-                "LEFT JOIN md_01 mdactivity ON mdactivity.text5 = tr2.text5 AND mdactivity.datatype = 'TRANSPORTRATE' " +
-                "LEFT JOIN md_01 mdblok ON mdblok.text1 = tr2.text4 AND mdblok.datatype = 'FIELDCROP' " +
-                "WHERE tr2.datatype = 'RKHVH' AND DATE(tr2.date1) = DATE('"+date+"') and tr2.uploaded IS NOT NULL", null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT strftime('%H:%M', tr.date1) AS timeinput, rkhheader.text1 AS unitcode, mdivision.text4 AS division, " +
+                "mdlokasi.text2 AS blokcode, mdactivity.text6 AS activity, " +
+                "tr.text5 AS targetkerja, mdactivity.text7 AS satuankerja, tr.uploaded FROM tr_02 tr " +
+                "INNER JOIN md_01 mdivision ON mdivision.text3 = tr.text2 AND mdivision.datatype = 'ORG_STRUCTURE' " +
+                "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 AND mdactivity.datatype = 'TRANSPORTRATE' " +
+                "INNER JOIN md_01 mdlokasi ON mdlokasi.text1 = tr.text3 AND mdlokasi.datatype = 'FIELDCROP' " +
+                "INNER JOIN tr_01 rkhheader ON rkhheader.documentno = tr.documentno " +
+                "WHERE rkhheader.datatype = 'RKHVH' AND tr.DATATYPE = 'RKHVH' AND DATE(tr.date1) = ('"+date+"') " +
+                "AND tr.uploaded IS NOT NULL AND rkhheader.uploaded IS NOT NULL; ", null);
         return cursor;
     }
 
@@ -1956,6 +1953,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);
             return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String get_permintaanbbm_fragmentinfo(String documentno, int index) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text1, text4 FROM tr_01 WHERE datatype = 'PRBBM' AND documentno = '"+documentno+"';", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(index).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String get_penerimaanbbm_fragmentinfo(String documentno, int index) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text1, text3 FROM tr_01 WHERE datatype = 'RCVBBM' AND documentno = '"+documentno+"';", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(index).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String get_permintaanperbaikan_fragmentinfo(String documentno, int index) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT PERBAIKAN.text3, SERVICE.parameterdesc FROM tr_01 PERBAIKAN " +
+                "INNER JOIN gs_01 SERVICE ON PERBAIKAN.text4 = SERVICE.parametercode " +
+                "WHERE PERBAIKAN.datatype = 'SRWS' AND SERVICE.groupparamcode = 'GS18' " +
+                "AND PERBAIKAN.documentno = '"+documentno+"';", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(index).toString();
         } else {
             return null;
         }

@@ -19,7 +19,10 @@
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/app_bar_main.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/content_main.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/dlg_newrkh.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/fragment_apelhistory.xml" value="0.20104166666666667" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/fragment_carloghistory.xml" value="0.20104166666666667" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/fragment_historyrkh.xml" value="0.25" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/fragment_home.xml" value="0.20104166666666667" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/list_group_menu.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/list_sub_menu.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layout/listview_operator.xml" value="0.21510416666666668" />
@@ -37,11 +40,11 @@
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/apelpagi_adapter.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvdetailrkh.xml" value="0.22" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvrkh.xml" value="0.22" />
-        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvworkinfohome.xml" value="0.11367753623188406" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/item_lvworkinfohome.xml" value="0.33" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_carlog_toverify.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_historyapelpagi.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_historycarlog.xml" value="0.11367753623188406" />
-        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_historyrkh.xml" value="0.25" />
+        <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_historyrkh.xml" value="0.1" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_koordinatgis.xml" value="0.11367753623188406" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_material.xml" value="0.264" />
         <entry key="..\:/Users/SIS-PC/StudioProjects/LongTech/app/src/main/res/layouts/listview/layout/listview_mekanik.xml" value="0.536" />

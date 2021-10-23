@@ -5,6 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <View
+        android:id="@+id/dividerHistoryRKH"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
     <TextView
         android:id="@+id/tvVehicleHistoryRKH"
         android:layout_width="80dp"
@@ -15,132 +25,106 @@
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dividerHistoryRKH"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvVehicleHistoryRKH"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/linearLayoutCompat5"
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvVehicleHistoryRKH"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linearLayoutCompat3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/dividerHistoryRKH"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvActivityNewRKH"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bottomborderonly"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_twotone_briefcase_16"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:paddingStart="2dp"
+            android:text="Activity Name"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvLokNewRKH"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_baseline_location_on_16"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:text="Lokasi"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvKegiatanHistoryRKH"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_twotone_briefcase_16"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="2dp"
+            android:text="Activity Name"
+            android:textColor="@color/black"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
 
             <TextView
-                android:id="@+id/tvNodocHistoryRKH"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvTargetKerjaReportRKH"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Document"
-                android:layout_marginEnd="4dp"
+                android:drawableStart="@drawable/ic_baseline_target_24"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:text="Target Kerja"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvInputDateHistoryRKH"
+                android:id="@+id/tvTimeNewRKH"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="00.00" />
+
+            <ImageView
+                android:id="@+id/imgUploadHistoryRKH"
                 android:layout_marginStart="4dp"
-                android:text="21-08-1970"
-                android:textColor="@color/black" />
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/bluetick" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/linearLayoutCompat3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/view"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat5">
-
-            <TextView
-                android:id="@+id/tvDriverHistoryRKH"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableStart="@drawable/ic_twotone_person_20"
-                android:drawablePadding="6dp"
-                android:gravity="center_vertical"
-                android:text="Employee Name"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/tvWorkDateHistoryRKH"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="4dp"
-                android:paddingStart="2dp"
-                android:drawableStart="@drawable/ic_baseline_calendar_16"
-                android:drawablePadding="6dp"
-                android:gravity="center_vertical"
-                android:text="Date NYA"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/tvKegiatanHistoryRKH"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:paddingStart="2dp"
-                android:drawableStart="@drawable/ic_twotone_briefcase_16"
-                android:drawablePadding="8dp"
-                android:visibility="gone"
-                android:gravity="center_vertical"
-                android:text="Activity Name"
-                android:textColor="@color/black" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
-
-                <TextView
-                    android:id="@+id/tvTargetKerjaReportRKH"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableStart="@drawable/ic_baseline_target_24"
-                    android:drawablePadding="6dp"
-                    android:gravity="center_vertical"
-                    android:text="Target Kerja"
-                    android:textStyle="bold"
-                    android:textColor="@color/black" />
-
-                <ImageView
-                    android:id="@+id/imgUploadHistoryRKH"
-                    android:layout_width="20dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/bluetick" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
