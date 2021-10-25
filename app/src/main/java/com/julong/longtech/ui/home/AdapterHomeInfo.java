@@ -66,14 +66,17 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
             }
 
         }
+
         //p2h
         if (listInfo.getMenucode().equals("020202")) {
             tvNoteTambahan.setText(dbhelper.get_unitP2H_fragmentinfo(listInfo.getDocumentnumber()));
         }
+
         //carlog
         if (listInfo.getMenucode().equals("020203")) {
             tvNoteTambahan.setText(dbhelper.get_unitcarlog_fragmentinfo(listInfo.getDocumentnumber()));
         }
+
         //permintaan bbm
         if (listInfo.getMenucode().equals("030101")) {
             tvNoteTambahan.setText(dbhelper.get_permintaanbbm_fragmentinfo(listInfo.getDocumentnumber(),0));
@@ -84,6 +87,7 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
             tvNoteTambahan.setText(dbhelper.get_penerimaanbbm_fragmentinfo(listInfo.getDocumentnumber(), 0));
             tvInfoNoteTambahan.setText(dbhelper.get_penerimaanbbm_fragmentinfo(listInfo.getDocumentnumber(), 1) + " Liter");
         }
+
         //permintaanperbaikan
         if (listInfo.getMenucode().equals("020101")) {
             tvNoteTambahan.setText(dbhelper.get_permintaanperbaikan_fragmentinfo(listInfo.getDocumentnumber(), 0));

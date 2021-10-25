@@ -582,7 +582,7 @@ public class DialogHelper extends Dialog {
                     okCarLogDlg.setCanceledOnTouchOutside(false);
                     okCarLogDlg.setConfirmClickListener(sweetAlertDialog -> {
                         Intent backIntent = new Intent();
-                        ((Activity) activityContext).setResult(727, backIntent);
+                        ((Activity) activityContext).setResult(3, backIntent);
                         ((Activity) activityContext).finish();
                     }).setConfirmText("OK").show();
 

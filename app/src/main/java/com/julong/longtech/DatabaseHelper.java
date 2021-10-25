@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
     public static int versionNumber = 1;
-    public static String versionName = "Version 0.12";
+    public static String versionName = "Version 0.13";
     Context activityContext;
 
     public DatabaseHelper(Context context) {
@@ -1231,15 +1231,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_historyRKH(String date) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT strftime('%H:%M', tr.date1) AS timeinput, rkhheader.text1 AS unitcode, mdivision.text4 AS division, " +
-                "mdlokasi.text2 AS blokcode, mdactivity.text6 AS activity, " +
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.itemdata, strftime('%d', tr.date2) || ' ' || CASE strftime('%m', date(tr.date2)) " +
+                "WHEN '01' THEN 'Jan' WHEN '02' THEN 'February' WHEN '03' THEN 'March' WHEN '04' THEN 'April' " +
+                "WHEN '05' THEN 'May'  WHEN '06' THEN 'June' WHEN '07' THEN 'July' WHEN '08' THEN 'August' WHEN '09' " +
+                "THEN 'Sept' WHEN '10' THEN 'Oct' WHEN '11' THEN 'Nov' WHEN '12' THEN 'Dec' ELSE '' END  AS workdate, " +
+                "rkhheader.text1 AS unitcode, mdivision.text4 AS division, mdlokasi.text2 AS blokcode, mdactivity.text6 AS activity, " +
                 "tr.text5 AS targetkerja, mdactivity.text7 AS satuankerja, tr.uploaded FROM tr_02 tr " +
                 "INNER JOIN md_01 mdivision ON mdivision.text3 = tr.text2 AND mdivision.datatype = 'ORG_STRUCTURE' " +
                 "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 AND mdactivity.datatype = 'TRANSPORTRATE' " +
                 "INNER JOIN md_01 mdlokasi ON mdlokasi.text1 = tr.text3 AND mdlokasi.datatype = 'FIELDCROP' " +
                 "INNER JOIN tr_01 rkhheader ON rkhheader.documentno = tr.documentno " +
-                "WHERE rkhheader.datatype = 'RKHVH' AND tr.DATATYPE = 'RKHVH' AND DATE(tr.date1) = ('"+date+"') " +
-                "AND tr.uploaded IS NOT NULL AND rkhheader.uploaded IS NOT NULL; ", null);
+                "WHERE rkhheader.datatype = 'RKHVH' AND tr.DATATYPE = 'RKHVH' AND DATE(tr.date1) = DATE('"+date+"') " +
+                "AND tr.itemdata = 'DETAIL1' AND tr.uploaded IS NOT NULL AND rkhheader.uploaded IS NOT NULL;", null);
+        return cursor;
+    }
+
+    public Cursor listview_historyP2H(String date) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT md.text1 || ' - ' || md.text2 AS vehicle, " +
+                "tr2.text1 AS p2hitems, IFNULL(tr2.text3, '') AS notes FROM tr_02 tr2 " +
+                "INNER JOIN tr_01 tr1 ON tr1.documentno = tr2.documentno " +
+                "INNER JOIN md_01 md ON tr1.text2 = md.text1 AND md.datatype = 'VEHICLE' " +
+                "WHERE tr2.datatype = 'P2HVH' AND DATE(tr2.date1) = ('"+date+"');", null);
         return cursor;
     }
 

@@ -3,14 +3,11 @@ package com.julong.longtech.menusetup;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -24,17 +21,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.julong.longtech.DatabaseHelper;
-import com.julong.longtech.LoginActivity;
 import com.julong.longtech.R;
 import com.julong.longtech.ui.home.HomeFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -293,6 +285,7 @@ public class UploadData extends AppCompatActivity {
                             HomeFragment.loadlvinfohome(todayDate);
                             HomeFragment.loadLvHistoryCarLog(todayDate);
                             HomeFragment.loadLvHistoryApel(todayDate);
+                            HomeFragment.loadLvHistoryRKH(todayDate);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

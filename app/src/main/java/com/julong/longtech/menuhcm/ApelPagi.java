@@ -142,11 +142,7 @@ public class ApelPagi extends AppCompatActivity {
     }
 
     public void submitBriefing(View v) {
-        if (TextUtils.isEmpty(etLokasiApel.getText().toString().trim())) {
-            Snackbar.make(v, "Harap isi Lokasi Briefing", Snackbar.LENGTH_LONG).setAnchorView(btnBackApelPagi)
-                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
-                    .setAction("OKAY", view -> etLokasiApel.requestFocus()).show();
-        } else if (byteGambarApel == null) {
+        if (byteGambarApel == null) {
             Snackbar.make(v, "Harap foto kegiatan briefing", Snackbar.LENGTH_LONG).setAnchorView(btnBackApelPagi)
                 .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).setAction("OKAY", null).show();
         }

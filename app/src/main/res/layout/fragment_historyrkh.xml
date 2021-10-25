@@ -15,50 +15,65 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent" />
 
-    <TextView
-        android:id="@+id/tvVehicleHistoryRKH"
-        android:layout_width="80dp"
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:orientation="vertical"
         android:gravity="center"
-        android:text="EXC-000"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/dividerHistoryRKH"
+        app:layout_constraintBottom_toTopOf="@+id/dividerHistoryRKH"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvVehicleHistoryRKH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EXC-000"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDateNewRKH"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="26 Desember"
+            android:textColor="@color/black" />
+    </LinearLayout>
 
 
     <View
-        android:id="@+id/view"
+        android:id="@+id/dividerLvHistoryRKH"
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvVehicleHistoryRKH"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout3"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayoutCompat3"
+    <LinearLayout
+        android:id="@+id/layoutDetailLvHistoryRKH"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginHorizontal="8dp"
         android:layout_marginVertical="8dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="8dp"
         android:orientation="vertical"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/dividerHistoryRKH"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintStart_toEndOf="@+id/dividerLvHistoryRKH"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvActivityNewRKH"
+            android:id="@+id/tvActivityLvNewRKH"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:drawableStart="@drawable/ic_twotone_briefcase_16"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
@@ -67,11 +82,10 @@
             android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/tvLokNewRKH"
+            android:id="@+id/tvLokLvNewRKH"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
+            android:layout_marginTop="6dp"
             android:drawableStart="@drawable/ic_baseline_location_on_16"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
@@ -95,13 +109,13 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
+            android:layout_marginTop="6dp">
 
             <TextView
-                android:id="@+id/tvTargetKerjaReportRKH"
+                android:id="@+id/tvTargetKerjaHistoryNewRKH"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:drawableStart="@drawable/ic_baseline_target_24"
                 android:drawablePadding="6dp"
@@ -110,21 +124,65 @@
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvTimeNewRKH"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00.00" />
-
             <ImageView
                 android:id="@+id/imgUploadHistoryRKH"
-                android:layout_marginStart="4dp"
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="4dp"
                 android:src="@drawable/bluetick" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutDriverLvHistoryRKH"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="8dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/dividerHistoryRKH"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dividerLvHistoryRKH"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvEmployeeNameLvNewRKH"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Emp Name"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/imageView3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvEmployeeCodeLvNewRKH"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="8dp"
+            android:text="Emp Code"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/imageView3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvEmployeeNameLvNewRKH" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="50dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEmployeeCodeLvNewRKH"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvEmployeeNameLvNewRKH"
+            app:srcCompat="@drawable/personincharge"
+            app:tint="@color/silver" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

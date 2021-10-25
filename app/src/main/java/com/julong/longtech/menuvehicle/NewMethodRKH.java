@@ -289,7 +289,7 @@ public class NewMethodRKH extends AppCompatActivity {
         }
     }
 
-    public void submitNewRKH(View view) {
+    public void submitNewRKH(View view) { // Selesai penginputan RKH
         if (rkhWorkdate == null || selectedVehicle == null || TextUtils.isEmpty(acKondisiUnitNewRKH.getText().toString().trim())) {
             Snackbar.make(view, "Input data terlebih dahulu", Snackbar.LENGTH_LONG).setAnchorView(btnBackRKH)
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
@@ -316,7 +316,7 @@ public class NewMethodRKH extends AppCompatActivity {
 
                 submitDlg.dismiss();
                 Intent backIntent = new Intent();
-                setResult(727, backIntent);
+                setResult(5, backIntent);
                 finish();
             });
             submitDlg.show();
@@ -327,11 +327,11 @@ public class NewMethodRKH extends AppCompatActivity {
         DatabaseHelper dbhelper;
         dbhelper = new DatabaseHelper(activityContext);
 
-        LinearLayoutManager layoutMaterial = new LinearLayoutManager(activityContext);
-        lvLokasiKegiatanUnit.setLayoutManager(layoutMaterial);
+        LinearLayoutManager layoutLokasiActivity = new LinearLayoutManager(activityContext);
+        lvLokasiKegiatanUnit.setLayoutManager(layoutLokasiActivity);
 
         List<ListDetailNewRKH> listViewRKH;
-        AdapterDetailNewRKH adapterLvMaterial;
+        AdapterDetailNewRKH adapterLvLokasiActivity;
 
         listViewRKH = new ArrayList<>();
         listViewRKH.clear();
@@ -348,8 +348,8 @@ public class NewMethodRKH extends AppCompatActivity {
                 listViewRKH.add(paramsMaterial);
             } while (cursor.moveToNext());
         }
-        adapterLvMaterial = new AdapterDetailNewRKH(listViewRKH, activityContext);
-        lvLokasiKegiatanUnit.setAdapter(adapterLvMaterial);
+        adapterLvLokasiActivity = new AdapterDetailNewRKH(listViewRKH, activityContext);
+        lvLokasiKegiatanUnit.setAdapter(adapterLvLokasiActivity);
     }
 
     private void loadListViewOperator() {

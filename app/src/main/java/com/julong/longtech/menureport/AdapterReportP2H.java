@@ -103,7 +103,6 @@ public class AdapterReportP2H extends RecyclerView.Adapter<AdapterReportP2H.Hold
                 tvNoteP2H.setVisibility(View.VISIBLE);
                 tvNoteP2H.setText(noteP2H);
             }
-
         }
 
 

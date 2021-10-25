@@ -84,9 +84,10 @@ public class AbsensiMandiri extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tipeKeteranganAbsen = 1;
-                layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
-                layoutLokasiAbsenMandiri.setVisibility(View.VISIBLE);
-                btnSubmitAbsen.setVisibility(View.VISIBLE);
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    intentLaunchCamera.launch(takePictureIntent);
+                }
             }
         });
 
@@ -94,9 +95,10 @@ public class AbsensiMandiri extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tipeKeteranganAbsen = 2;
-                layoutAbsenMandiriCheckInOut.setVisibility(View.GONE);
-                layoutLokasiAbsenMandiri.setVisibility(View.VISIBLE);
-                btnSubmitAbsen.setVisibility(View.VISIBLE);
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    intentLaunchCamera.launch(takePictureIntent);
+                }
             }
         });
 
@@ -116,6 +118,7 @@ public class AbsensiMandiri extends AppCompatActivity {
                         dbhelper.insert_absmdr(nodocAbsensiMandiri, "CHECKIN", "FOTO",
                                 etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);
                     }
+
                     else if (tipeKeteranganAbsen == 2) {
                         dbhelper.insert_absmdr(nodocAbsensiMandiri, "CHECKOUT", "FOTO",
                                 etLokasiAbsensiMandiri.getText().toString(), latAbsenMandiri, longAbsenMandiri, imgAbsensiMandiri);

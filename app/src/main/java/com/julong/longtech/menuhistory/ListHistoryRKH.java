@@ -2,6 +2,7 @@ package com.julong.longtech.menuhistory;
 
 public class ListHistoryRKH {
 
+    private String itemdata;
     private String unitCode;
     private String division;
     private String blokCode;
@@ -9,12 +10,12 @@ public class ListHistoryRKH {
     private String targetKerja;
     private String satuanKerja;
     private String inputTime;
-
     private int isUploaded;
 
-    public ListHistoryRKH(String unitCode, String division, String blokCode, String activityName, String targetKerja,
+    public ListHistoryRKH(String itemdata, String unitCode, String division, String blokCode, String activityName, String targetKerja,
                           String satuanKerja, String inputTime, int isUploaded) {
 
+        this.itemdata = itemdata;
         this.unitCode = unitCode;
         this.division = division;
         this.blokCode = blokCode;
@@ -25,9 +26,14 @@ public class ListHistoryRKH {
         this.isUploaded = isUploaded;
     }
 
+    public String getItemdata() {
+        return itemdata;
+    }
+
     public String getUnitCode() {
         return unitCode;
     }
+
     public String getDivision() {
         return division;
     }
@@ -39,6 +45,7 @@ public class ListHistoryRKH {
     public String getActivityName() {
         return activityName;
     }
+
     public String getTargetKerja() {
         return targetKerja;
     }
@@ -46,6 +53,7 @@ public class ListHistoryRKH {
     public String getSatuanKerja() {
         return satuanKerja;
     }
+
     public String getInputTime() {return inputTime;}
 
     public int getIsUploaded() {

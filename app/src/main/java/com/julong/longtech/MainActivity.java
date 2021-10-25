@@ -86,6 +86,8 @@ import static com.julong.longtech.DatabaseHelper.url_api;
 import static com.julong.longtech.ui.home.HomeFragment.acMenuRiwayatHome;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryApel;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryCarLog;
+import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryP2H;
+import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryRKH;
 import static com.julong.longtech.ui.home.HomeFragment.loadlvinfohome;
 import static com.julong.longtech.ui.home.HomeFragment.lvfragment;
 import static com.julong.longtech.ui.home.HomeFragment.tvPlaceholder;
@@ -170,13 +172,6 @@ public class MainActivity extends AppCompatActivity {
                             });
                             warningExitDlg.show();
                         }
-                        else {
-                            arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
-                            arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
-
-                            adapterMenuHistory = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistoryName);
-                            acMenuRiwayatHome.setAdapter(adapterMenuHistory);
-                        }
                     }
 
                     if (result.getResultCode() == 2) {
@@ -198,12 +193,31 @@ public class MainActivity extends AppCompatActivity {
                         loadLvHistoryApel(todayDate);
                         tvPlaceholder.setVisibility(View.GONE);
                     }
+
+                    if (result.getResultCode() == 5) {
+                        loadlvinfohome(todayDate);
+                        loadLvHistoryRKH(todayDate);
+                        tvPlaceholder.setVisibility(View.GONE);
+                    }
+
+                    if (result.getResultCode() == 6) {
+                        loadlvinfohome(todayDate);
+                        loadLvHistoryP2H(todayDate);
+                        tvPlaceholder.setVisibility(View.GONE);
+                    }
+
                     if (result.getResultCode() == 727) {
                         loadlvinfohome(todayDate);
                         if (lvfragment.getAdapter().getCount() > 0) {
                             tvPlaceholder.setVisibility(View.GONE);
                         }
                     }
+
+                    arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
+                    arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
+
+                    adapterMenuHistory = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistoryName);
+                    acMenuRiwayatHome.setAdapter(adapterMenuHistory);
                 }
         );
 

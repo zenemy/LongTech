@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.julong.longtech.R;
@@ -50,10 +52,23 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
         final ListHistoryRKH historyDailyPlans = historyPlans.get(position);
 
         // Set the data to the views here
-        holderRKH.setVehicle(historyDailyPlans.getUnitCode());
+        if (historyDailyPlans.getItemdata().equals("DETAIL2")) {
+            holderRKH.layoutDriver.setVisibility(View.GONE);
+            holderRKH.layoutAktifitasLokasi.setVisibility(View.GONE);
+
+        }
+        if (historyDailyPlans.getItemdata().equals("DETAIL1")) {
+            holderRKH.layoutDriver.setVisibility(View.GONE);
+            holderRKH.layoutAktifitasLokasi.setVisibility(View.VISIBLE);
+
+        }
+
         holderRKH.setLokasi(historyDailyPlans.getDivision(), historyDailyPlans.getBlokCode());
         holderRKH.setActivity(historyDailyPlans.getActivityName());
         holderRKH.setTargetKerja(historyDailyPlans.getTargetKerja(), historyDailyPlans.getSatuanKerja());
+
+        holderRKH.setVehicle(historyDailyPlans.getUnitCode());
+
         holderRKH.setInputTime(historyDailyPlans.getInputTime());
 
         holderRKH.setUploaded(historyDailyPlans.getIsUploaded());
@@ -63,21 +78,26 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
     // This is your ViewHolder class that helps to populate data to the view
     public class HolderRKH extends RecyclerView.ViewHolder {
 
-        private TextView  tvUnitRKH, tvLokasi, tvActivity, tvTargetKerja, tvSatuanKerja,
-                tvInputTime;
-
+        private TextView  tvUnitRKH, tvLokasi, tvActivity, tvTargetKerja, tvInputTime,
+                tvEmployeeName, tvEmployeeCode;
+        private LinearLayout layoutAktifitasLokasi;
+        private ConstraintLayout layoutDriver;
         private ImageView imgUploaded;
 
         public HolderRKH(View itemView) {
             super(itemView);
 
-            tvUnitRKH = (TextView) itemView.findViewById(R.id.tvVehicleHistoryRKH);
-            tvLokasi = (TextView) itemView.findViewById(R.id.tvLokNewRKH);
-            tvActivity = (TextView) itemView.findViewById(R.id.tvActivityNewRKH);
-            tvTargetKerja = (TextView) itemView.findViewById(R.id.tvTargetKerjaReportRKH);
-            tvInputTime = (TextView) itemView.findViewById(R.id.tvTimeNewRKH);
+            tvUnitRKH = itemView.findViewById(R.id.tvVehicleHistoryRKH);
+            tvLokasi = itemView.findViewById(R.id.tvLokLvNewRKH);
+            tvActivity = itemView.findViewById(R.id.tvActivityLvNewRKH);
+            tvTargetKerja = itemView.findViewById(R.id.tvTargetKerjaHistoryNewRKH);
+            tvInputTime = itemView.findViewById(R.id.tvDateNewRKH);
+            tvEmployeeName = itemView.findViewById(R.id.tvEmployeeNameLvNewRKH);
+            tvEmployeeCode = itemView.findViewById(R.id.tvEmployeeCodeLvNewRKH);
+            layoutAktifitasLokasi = itemView.findViewById(R.id.layoutDetailLvHistoryRKH);
+            layoutDriver = itemView.findViewById(R.id.layoutDriverLvHistoryRKH);
 
-            imgUploaded = (ImageView) itemView.findViewById(R.id.imgUploadHistoryRKH);
+            imgUploaded = itemView.findViewById(R.id.imgUploadHistoryRKH);
 
         }
 
@@ -86,7 +106,7 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
         }
 
         public void setTargetKerja(String TargetKerja, String SatuanKerja) {
-            tvTargetKerja.setText(TargetKerja + " " + SatuanKerja);
+            tvTargetKerja.setText("Target " + TargetKerja + " " + SatuanKerja);
         }
 
         public void setActivity(String activityName) {

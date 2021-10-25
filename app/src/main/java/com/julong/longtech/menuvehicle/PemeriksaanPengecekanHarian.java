@@ -436,10 +436,10 @@ public class PemeriksaanPengecekanHarian extends AppCompatActivity {
 
                 dbHelper.update_kmhm(newValueKM);
 
-                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Berhasil Menyelesaikan P2H")
+                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE).setContentText("Selesai P2H")
                         .setConfirmText("OK") .setConfirmClickListener(sweetAlertDialog -> {
                             Intent backIntent = new Intent();
-                            setResult(727, backIntent);
+                            setResult(6, backIntent);
                             finish();
                         }).show();
             }

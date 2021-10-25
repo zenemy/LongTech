@@ -51,44 +51,30 @@ public class AdapterReportRKH extends RecyclerView.Adapter<AdapterReportRKH.Hold
         final ListHistoryRKH historyDailyPlans = historyPlans.get(position);
 
         // Set the data to the views here
-//        holderRKH.setDocumentNumber(historyDailyPlans.getDocumentNumber());
-//        holderRKH.setTglHistory(historyDailyPlans.getInputDate(), historyDailyPlans.getTglPelaksanaan());
-//        holderRKH.setVehicle(historyDailyPlans.getUnitCode());
-//        holderRKH.setEmployeeName(historyDailyPlans.getEmployeeName());
-//        holderRKH.setActivity(historyDailyPlans.getActivityName());
-//        holderRKH.setLocation(historyDailyPlans.getLocationName());
-//        holderRKH.setUploaded(historyDailyPlans.getIsUploaded());
-
+        holderRKH.setWorkDate(historyDailyPlans.getInputTime());
+        holderRKH.setVehicle(historyDailyPlans.getUnitCode());
+        holderRKH.setActivity(historyDailyPlans.getActivityName());
+        holderRKH.setLocation(historyDailyPlans.getDivision(), historyDailyPlans.getBlokCode());
+        holderRKH.setTargetKerja(historyDailyPlans.getTargetKerja(), historyDailyPlans.getSatuanKerja());
     }
 
     // This is your ViewHolder class that helps to populate data to the view
     public class HolderRKH extends RecyclerView.ViewHolder {
 
-        private TextView tvNoDoc, tvInputDate, tvTglPelaksanaan, tvUnitRKH,
-                tvEmployeeName, tvActivityName, tvLocationName;
-
-        private ImageView imgUploaded;
+        private TextView tvTglPelaksanaan, tvUnitRKH, tvActivityName, tvLocationName, tvTargetKerja;
 
         public HolderRKH(View itemView) {
             super(itemView);
 
-            tvNoDoc = (TextView) itemView.findViewById(R.id.tvNodocHistoryRKH);
-            tvInputDate = (TextView) itemView.findViewById(R.id.tvInputDateHistoryRKH);
-            tvTglPelaksanaan = (TextView) itemView.findViewById(R.id.tvWorkDateHistoryRKH);
-      //      tvEmployeeName = (TextView) itemView.findViewById(R.id.tvDriverHistoryRKH);
-            tvUnitRKH = (TextView) itemView.findViewById(R.id.tvVehicleHistoryRKH);
-            tvActivityName = (TextView) itemView.findViewById(R.id.tvKegiatanHistoryRKH);
-            tvLocationName = (TextView) itemView.findViewById(R.id.tvLokasiHistoryRKH);
-            imgUploaded = (ImageView) itemView.findViewById(R.id.imgUploadHistoryRKH);
+            tvTglPelaksanaan = itemView.findViewById(R.id.tvDateReportRKH);
+            tvUnitRKH = itemView.findViewById(R.id.tvVehicleReportRKH);
+            tvActivityName = itemView.findViewById(R.id.tvActivityReportRKH);
+            tvLocationName = itemView.findViewById(R.id.tvLocationReportRKH);
+            tvTargetKerja = itemView.findViewById(R.id.tvTargetKerjaReportRKH);
 
         }
 
-        public void setDocumentNumber(String nodoc) {
-            tvNoDoc.setText(nodoc);
-        }
-
-        public void setTglHistory(String inputDate, String workDate) {
-            tvInputDate.setText(inputDate);
+        public void setWorkDate(String workDate) {
             tvTglPelaksanaan.setText(workDate);
         }
 
@@ -96,28 +82,17 @@ public class AdapterReportRKH extends RecyclerView.Adapter<AdapterReportRKH.Hold
             tvUnitRKH.setText(vehicle);
         }
 
-        public void setEmployeeName(String employeeName) {
-            tvEmployeeName.setText(employeeName);
-        }
-
         public void setActivity(String activityName) {
             tvActivityName.setText(activityName);
         }
 
-        public void setLocation(String nameLocation) {
-            tvLocationName.setText(nameLocation);
+        public void setLocation(String division, String blokcode) {
+            tvLocationName.setText(division + " (" + blokcode + ")");
         }
 
-        public void setUploaded(int isUploaded) {
-            if (isUploaded == 0 ) {
-                imgUploaded.setImageResource(R.drawable.ic_baseline_accesstime_24);
-            }
-            else if (isUploaded == 1) {
-                imgUploaded.setImageResource(R.drawable.bluetick);
-            }
-            else {
-                imgUploaded.setVisibility(View.GONE);
-            }
+        public void setTargetKerja(String targetKerja, String unitOfMeasure) {
+            tvLocationName.setText("Target " + targetKerja + " " + unitOfMeasure);
         }
+
     }
 }

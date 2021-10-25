@@ -1,16 +1,13 @@
 package com.julong.longtech.ui.home;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.InputFilter;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,24 +30,15 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.julong.longtech.DatabaseHelper;
-import com.julong.longtech.GPSTracker;
 import com.julong.longtech.HashPassword;
 import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
@@ -61,34 +48,23 @@ import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryAdapterRKH;
 import com.julong.longtech.menuhistory.ListHistoryRKH;
-import com.julong.longtech.menusetup.DividerItemDecorator;
-import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
 import com.julong.longtech.menuvehicle.NewMethodCarLog;
 import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PermintaanBBM;
 import com.julong.longtech.menuvehicle.VerifikasiGIS;
 import com.julong.longtech.menuworkshop.PermintaanPerbaikan;
-import com.julong.longtech.menuvehicle.RencanaKerjaHarian;
 import com.julong.longtech.menuworkshop.LaporanPerbaikan;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static com.julong.longtech.DatabaseHelper.url_api;
 import static com.julong.longtech.menusetup.UploadData.uploadBL01;
 import static com.julong.longtech.menusetup.UploadData.uploadTR01public;
 import static com.julong.longtech.menusetup.UploadData.uploadTR02;
@@ -100,6 +76,8 @@ public class HomeFragment extends Fragment {
     ActivityResultLauncher<Intent> intentLaunchActivity;
 
     DatabaseHelper dbhelper;
+    SweetAlertDialog proDialog;
+
     public static TextView tvPlaceholder;
     BubbleTabBar bubbleTabBar;
     public static ListView lvfragment;
@@ -118,9 +96,6 @@ public class HomeFragment extends Fragment {
     List<String> arrayMenuHistoryName, arrayMenuHistoryCode;
     ArrayAdapter<String> adapterMenuHistory;
 
-    private List<ListHistoryRKH> listHistoriesRKH;
-    HistoryAdapterRKH adapterLvRKH;
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
@@ -128,6 +103,7 @@ public class HomeFragment extends Fragment {
         dbhelper = new DatabaseHelper(getContext());
         hashPassword = new HashPassword(11);
 
+        // Declare design ID
         layoutInfoFragment = root.findViewById(R.id.layoutInfoFragment);
         tvPlaceholder = root.findViewById(R.id.tvPlaceholderInfoHome);
         btnDateLvInfo = root.findViewById(R.id.btnDateLvInfoHome);
@@ -140,6 +116,7 @@ public class HomeFragment extends Fragment {
         acMenuRiwayatHome = root.findViewById(R.id.acMenuRiwayatHome);
         layoutRiwayatFragment = root.findViewById(R.id.layoutRiwayatFragment);
 
+        // Layout icon2
         etDatepickerHistory = root.findViewById(R.id.etDateHomeHistory);
         linearLayoutApel = root.findViewById(R.id.linearLayoutApel);
         linearLayoutAbsen = root.findViewById(R.id.linearLayoutAbsen);
@@ -156,7 +133,7 @@ public class HomeFragment extends Fragment {
         etDatepickerHistory.setText(todayDate);
         btnDateLvInfo.setText(todayDate);
 
-        eventClickMenu();
+        eventClickMenu(); // onClick event for icons
 
         if (lvfragment.getAdapter().getCount() > 0) {
             tvPlaceholder.setVisibility(View.GONE);
@@ -179,10 +156,12 @@ public class HomeFragment extends Fragment {
 
                 if (selectedHistoryMenu.equals("010105")) {
                     loadLvHistoryApel(etDatepickerHistory.getText().toString());
+                } else if (selectedHistoryMenu.equals("020202")) {
+                    loadLvHistoryP2H(etDatepickerHistory.getText().toString());
                 } else if (selectedHistoryMenu.equals("020203")) {
                     loadLvHistoryCarLog(etDatepickerHistory.getText().toString());
                 } else if (selectedHistoryMenu.equals("020201")) {
-                    loadListViewHistoryRKH(etDatepickerHistory.getText().toString());
+                    loadLvHistoryRKH(etDatepickerHistory.getText().toString());
                 }
 
             }
@@ -197,7 +176,7 @@ public class HomeFragment extends Fragment {
                 if (TextUtils.isEmpty(acMenuRiwayatHome.getText().toString().trim())) {
                     Toast.makeText(getContext(), "Pilih menu dahulu!", Toast.LENGTH_LONG).show();
                 }
-                else {
+                else { // Show datepicker to filter history(riwayat)
                     datePickerLvHistory.show(getParentFragmentManager(), "HISTORYHOME");
                 }
 
@@ -219,10 +198,13 @@ public class HomeFragment extends Fragment {
 
                 if (selectedHistoryMenu.equals("010105")) {
                     loadLvHistoryApel(simpleFormat.format(date));
-                } else if (selectedHistoryMenu.equals("020203")) {
+                } else if (selectedHistoryMenu.equals("020202")) {
+                    loadLvHistoryP2H(simpleFormat.format(date));
+                }
+                else if (selectedHistoryMenu.equals("020203")) {
                     loadLvHistoryCarLog(simpleFormat.format(date));
                 } else if (selectedHistoryMenu.equals("020201")) {
-                    loadListViewHistoryRKH(simpleFormat.format(date));
+                    loadLvHistoryRKH(simpleFormat.format(date));
                 }
             }
         });
@@ -254,6 +236,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+        // Tab layout onClick event
         bubbleTabBar.addBubbleListener(new OnBubbleClickListener() {
             @Override
             public void onBubbleClick(int id) {
@@ -282,9 +266,18 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void eventClickMenu() {
+    private void eventClickMenu() { // onClick event icons
 
-        btnrefresh.setOnClickListener(view -> new AsyncUploadData().execute());
+        btnrefresh.setOnClickListener(view -> {
+            proDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+            proDialog.setTitleText("Loading...");
+            proDialog.setCancelable(false);
+            proDialog.show();
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                new AsyncUploadData().execute();
+            }, 2000);
+        });
 
         linearLayoutQR.setOnClickListener(view -> ((MainActivity) getActivity()).eventShowQR(view));
 
@@ -305,6 +298,19 @@ public class HomeFragment extends Fragment {
                         tvPlaceholder.setVisibility(View.GONE);
                     }
                 }
+
+                if (result.getResultCode() == 5) {
+                    loadlvinfohome(todayDate);
+                    loadLvHistoryRKH(todayDate);
+                    tvPlaceholder.setVisibility(View.GONE);
+                }
+
+                if (result.getResultCode() == 6) {
+                    loadlvinfohome(todayDate);
+                    loadLvHistoryP2H(todayDate);
+                    tvPlaceholder.setVisibility(View.GONE);
+                }
+
                 if (result.getResultCode() == 727) {
                     loadlvinfohome(todayDate);
                     if (lvfragment.getAdapter().getCount() > 0) {
@@ -337,7 +343,7 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        linearLayoutApel.setOnClickListener(v -> {
+        linearLayoutApel.setOnClickListener(v -> { // Briefing pagi
             final SweetAlertDialog startApelDlg = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE);
             startApelDlg.setTitleText("Mulai briefing?");
             startApelDlg.setCancelText("KEMBALI");
@@ -356,17 +362,17 @@ public class HomeFragment extends Fragment {
             startApelDlg.show();
         });
 
-        linearLayoutAbsen.setOnClickListener(v -> {
+        linearLayoutAbsen.setOnClickListener(v -> { // Absensi mandiri
             Intent intent = new Intent(getActivity(), AbsensiMandiri.class);
             intentLaunchActivity.launch(intent);
         });
 
-        linearLayoutRKH.setOnClickListener(v -> {
+        linearLayoutRKH.setOnClickListener(v -> { // Rencana Kerja Harian
             Intent intent = new Intent(getActivity(), NewMethodRKH.class);
             intentLaunchActivity.launch(intent);
         });
 
-        linearLayoutCarLog.setOnClickListener(v -> {
+        linearLayoutCarLog.setOnClickListener(v -> { // Car Log
 
             Dialog dlgStartCarLog = new Dialog(getContext());
             dlgStartCarLog.setContentView(R.layout.dlg_startcarlog);
@@ -432,7 +438,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private class AsyncUploadData extends AsyncTask<Void, Void, Void> {
+    private class AsyncUploadData extends AsyncTask<Void, Void, Void> { // Data upload function
 
         protected Void doInBackground(Void... params) {
 
@@ -536,7 +542,8 @@ public class HomeFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void result) {
-
+            proDialog.dismiss();
+            new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE).setConfirmText("OK").show();
         }
     }
 
@@ -642,7 +649,13 @@ public class HomeFragment extends Fragment {
     }
 
     //Populate data list view rkh
-    private void loadListViewHistoryRKH(String selectedDate) {
+    public static void loadLvHistoryRKH(String selectedDate) {
+
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(lvHistory.getContext());
+
+        List<ListHistoryRKH> listHistoriesRKH;
+        HistoryAdapterRKH adapterLvRKH;
 
         LinearLayoutManager layoutRKH = new LinearLayoutManager(lvHistory.getContext());
         lvHistory.setLayoutManager(layoutRKH);
@@ -654,22 +667,52 @@ public class HomeFragment extends Fragment {
         if (cursor.moveToFirst()) {
             do {
                 ListHistoryRKH paramsHistoryRKH = new ListHistoryRKH(
+                        cursor.getString(cursor.getColumnIndex("itemdata")),
                         cursor.getString(cursor.getColumnIndex("unitcode")),
                         cursor.getString(cursor.getColumnIndex("division")),
                         cursor.getString(cursor.getColumnIndex("blokcode")),
                         cursor.getString(cursor.getColumnIndex("activity")),
                         cursor.getString(cursor.getColumnIndex("targetkerja")),
                         cursor.getString(cursor.getColumnIndex("satuankerja")),
-                        cursor.getString(cursor.getColumnIndex("timeinput")),
+                        cursor.getString(cursor.getColumnIndex("workdate")),
                         cursor.getInt(cursor.getColumnIndex("uploaded"))
                 );
                 listHistoriesRKH.add(paramsHistoryRKH);
             } while (cursor.moveToNext());
         }
-        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, getContext());
+        adapterLvRKH = new HistoryAdapterRKH(listHistoriesRKH, lvHistory.getContext());
         lvHistory.setAdapter(adapterLvRKH);
     }
 
+    //Populate data list view P2H
+    public static void loadLvHistoryP2H(String selectedDate) {
+
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(lvHistory.getContext());
+
+        List<ListHistoryHomeP2H> listHistoriesP2H;
+        HistoryHomeAdapterP2H adapterLvP2H;
+
+        LinearLayoutManager layoutRKH = new LinearLayoutManager(lvHistory.getContext());
+        lvHistory.setLayoutManager(layoutRKH);
+
+        listHistoriesP2H = new ArrayList<>();
+        listHistoriesP2H.clear();
+
+        final Cursor cursor = dbhelper.listview_historyP2H(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListHistoryHomeP2H paramsHistoryP2H = new ListHistoryHomeP2H(
+                        cursor.getString(cursor.getColumnIndex("vehicle")),
+                        cursor.getString(cursor.getColumnIndex("p2hitems")),
+                        cursor.getString(cursor.getColumnIndex("notes"))
+                );
+                listHistoriesP2H.add(paramsHistoryP2H);
+            } while (cursor.moveToNext());
+        }
+        adapterLvP2H = new HistoryHomeAdapterP2H(listHistoriesP2H, lvHistory.getContext());
+        lvHistory.setAdapter(adapterLvP2H);
+    }
 
 
 }
