@@ -82,6 +82,13 @@ public class AdapterHomeInfo extends ArrayAdapter<ParamListHomeInfo> {
             tvNoteTambahan.setText(dbhelper.get_permintaanbbm_fragmentinfo(listInfo.getDocumentnumber(),0));
             tvInfoNoteTambahan.setText(dbhelper.get_permintaanbbm_fragmentinfo(listInfo.getDocumentnumber(),1)+" Liter");
         }
+
+        // Pengeluaran BBM
+        if (listInfo.getMenucode().equals("030102")) {
+            tvNoteTambahan.setText(dbhelper.get_pengeluaranbbm_fragmentinfo(listInfo.getDocumentnumber(),0));
+            tvInfoNoteTambahan.setText(dbhelper.get_pengeluaranbbm_fragmentinfo(listInfo.getDocumentnumber(),1)+" Liter");
+        }
+
         //penerimaanbbm
         if (listInfo.getMenucode().equals("030103")) {
             tvNoteTambahan.setText(dbhelper.get_penerimaanbbm_fragmentinfo(listInfo.getDocumentnumber(), 0));

@@ -70,7 +70,6 @@
                         android:id="@+id/tvFirstNameReportCarLog"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:drawableStart="@drawable/ic_twotone_person_20"
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"

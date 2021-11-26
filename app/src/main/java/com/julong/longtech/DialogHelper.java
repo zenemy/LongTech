@@ -133,7 +133,7 @@ public class DialogHelper extends Dialog {
         dlgSelesaiVerifikasi.show();
         btnBackSummary.setOnClickListener(view1 -> dlgSelesaiVerifikasi.dismiss());
 
-        tvUnitSummary.setText(dbhelper.get_vehiclename(0, VerifikasiGIS.selectedVehicleGIS));
+        tvUnitSummary.setText(VerifikasiGIS.selectedVehicleGIS);
         tvDriverSummary.setText(dbhelper.get_empname(VerifikasiGIS.selectedDriverGIS));
         tvLokasiSummary.setText(VerifikasiGIS.acLokasiGIS.getText().toString());
         tvKegiatanSummary.setText(VerifikasiGIS.acKegiatanGIS.getText().toString());

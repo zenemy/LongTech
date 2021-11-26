@@ -1,4 +1,4 @@
-package com.julong.longtech;
+ package com.julong.longtech;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
     public static int versionNumber = 1;
-    public static String versionName = "Version 0.13";
+    public static String versionName = "Version 0.14";
     Context activityContext;
 
     public DatabaseHelper(Context context) {
@@ -504,7 +504,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean insert_pengeluaranbbm(String nodoc, String vehiclecode, String terimaLiter, String notes) {
+    public boolean insert_pengeluaranbbm(String nodoc, String vehiclecode, String terimaLiter, String notes, int uploaded) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
@@ -517,7 +517,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text1", vehiclecode);
         contentValues.put("text2", terimaLiter);
         contentValues.put("text3", notes);
-        contentValues.put("uploaded", 0);
+        contentValues.put("uploaded", uploaded);
 
         long insert = db.insert("tr_01", null, contentValues);
         if (insert == -1) {
@@ -1974,6 +1974,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String get_permintaanbbm_fragmentinfo(String documentno, int index) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT text1, text4 FROM tr_01 WHERE datatype = 'PRBBM' AND documentno = '"+documentno+"';", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(index).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public String get_pengeluaranbbm_fragmentinfo(String documentno, int index) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT text1, text2 FROM tr_01 WHERE datatype = 'SIVBBM' AND documentno = '"+documentno+"';", null);
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
             cursor.moveToPosition(0);

@@ -651,7 +651,8 @@ public class MainActivity extends AppCompatActivity {
                     if (dbhelper.check_menufragment("020207").equals("0")) {
                         HomeFragment.linearLayoutGIS.setVisibility(View.GONE);
                     }
-                    if (dbhelper.check_menufragment("030101").equals("0")) {
+                    if (dbhelper.check_menufragment("030101").equals("0")
+                            & dbhelper.check_menufragment("030102").equals("0")) {
                         HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
                     }
 
@@ -800,7 +801,8 @@ public class MainActivity extends AppCompatActivity {
             if (dbhelper.check_menufragment("020207").equals("0")) {
                 HomeFragment.linearLayoutGIS.setVisibility(View.GONE);
             }
-            if (dbhelper.check_menufragment("030101").equals("0")) {
+            if (dbhelper.check_menufragment("030101").equals("0")
+                    && dbhelper.check_menufragment("030102").equals("0")) {
                 HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
             }
             if (dbhelper.check_menufragment("020101").equals("0")

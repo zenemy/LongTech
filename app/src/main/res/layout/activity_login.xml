@@ -117,6 +117,7 @@
                         android:textAlignment="center"
                         android:textColor="@color/colorPrimary"
                         android:textSize="24dp"
+                        android:visibility="invisible"
                         android:textStyle="bold" />
 
                     <LinearLayout

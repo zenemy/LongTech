@@ -9,7 +9,6 @@
     tools:context=".menuinventory.PermintaanBBM">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clHeaderPermintaanBBM"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@drawable/tbl_lr_bottom"

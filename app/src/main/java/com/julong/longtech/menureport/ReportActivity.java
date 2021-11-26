@@ -62,17 +62,23 @@ public class ReportActivity extends AppCompatActivity {
     RecyclerView lvReport;
     Button btnResetReport;
 
-    private List<ListReportCarLog> listReportCarLogs;
+    List<ListReportCarLog> listReportCarLogs;
     AdapterReportCarLog adapterLvCarlog;
 
-    private List<ListHistoryApel> listReportApels;
+    List<ListHistoryApel> listReportApels;
     HistoryApelAdapter adapterLvApel;
 
-    private List<ListHistoryRKH> listReportRKH;
+    List<ListHistoryRKH> listReportRKH;
     AdapterReportRKH adapterLvRKH;
 
-    private List<ListReportP2H> listReportP2H;
+    List<ListReportP2H> listReportP2H;
     AdapterReportP2H adapterLvP2H;
+
+    List<ListReportMintaBBM> listReportReqBBM;
+    AdapterReportMintaBBM adapterReqBBM;
+
+    List<ListReportGIS> listReportGIS;
+    AdapterReportGIS adapterLvGIS;
 
     ArrayList<String> listReportMenuGroup = new ArrayList<>();
     ArrayList<String> listReportMenuName = new ArrayList<>();
@@ -194,6 +200,9 @@ public class ReportActivity extends AppCompatActivity {
         }
         else if (selectedReportMenu.equals("020203")) {
             loadLvReportCarLog(selectedTeamCode);
+        }
+        else if (selectedReportMenu.equals("030101")) {
+            loadLvReportMintaBBM();
         }
 
     }
@@ -390,6 +399,56 @@ public class ReportActivity extends AppCompatActivity {
                         }
                         adapterLvRKH = new AdapterReportRKH(listReportRKH, ReportActivity.this);
                         lvReport.setAdapter(adapterLvRKH);
+
+                    }
+                    else {
+                        lvReport.setAdapter(null);
+                    }
+                    progressDialog.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, error -> {
+            error.printStackTrace();
+            progressDialog.dismiss();
+            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
+                    .setContentText("Empty Data").show();
+        });
+        requestQueue.add(jsonRequest);
+    }
+
+    private void loadLvReportMintaBBM() {
+
+        LinearLayoutManager layoutReport = new LinearLayoutManager(this);
+        lvReport.setLayoutManager(layoutReport);
+
+        listReportReqBBM = new ArrayList<>();
+        listReportReqBBM.clear();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url_data = url_api + "fetchdata/reportmenu/report_permintaanbbm.php?selectdate="+selectedDate+"&warehouse="+dbhelper.get_tbl_username(17);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response.has("REPORTMINTABBM")) {
+                        JSONArray jsonArrayMintaBBM = response.getJSONArray("REPORTMINTABBM");
+                        int i = 0;
+                        while (i < jsonArrayMintaBBM.length()) {
+                            JSONObject jsonObjectMintaBBM = jsonArrayMintaBBM.getJSONObject(i);
+
+                            ListReportMintaBBM paramsReportMintaBBM = new ListReportMintaBBM(
+                                    jsonObjectMintaBBM.getString("EMPNAME"),
+                                    jsonObjectMintaBBM.getString("JAMINPUT"),
+                                    jsonObjectMintaBBM.getString("UNITCODE"),
+                                    jsonObjectMintaBBM.getInt("JUMLAHLITER")
+                            );
+                            listReportReqBBM.add(paramsReportMintaBBM);
+                            i++;
+                        }
+                        adapterReqBBM = new AdapterReportMintaBBM(listReportReqBBM, ReportActivity.this);
+                        lvReport.setAdapter(adapterReqBBM);
 
                     }
                     else {

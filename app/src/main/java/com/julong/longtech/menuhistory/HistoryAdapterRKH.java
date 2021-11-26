@@ -55,12 +55,11 @@ public class HistoryAdapterRKH extends RecyclerView.Adapter<HistoryAdapterRKH.Ho
         if (historyDailyPlans.getItemdata().equals("DETAIL2")) {
             holderRKH.layoutDriver.setVisibility(View.GONE);
             holderRKH.layoutAktifitasLokasi.setVisibility(View.GONE);
-
         }
+
         if (historyDailyPlans.getItemdata().equals("DETAIL1")) {
             holderRKH.layoutDriver.setVisibility(View.GONE);
             holderRKH.layoutAktifitasLokasi.setVisibility(View.VISIBLE);
-
         }
 
         holderRKH.setLokasi(historyDailyPlans.getDivision(), historyDailyPlans.getBlokCode());

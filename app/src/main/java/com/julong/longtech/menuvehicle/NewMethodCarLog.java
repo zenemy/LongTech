@@ -291,9 +291,9 @@ public class NewMethodCarLog extends AppCompatActivity {
             selectedBlok = null;
         }
 
-        if (selectedCategory == null) {
+        if (selectedActivity == null) {
             SweetAlertDialog dlgError = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
-            dlgError.setContentText("Pilih tipe pekerjaan").setConfirmText("OK").show();
+            dlgError.setContentText("Pilih aktifitas pekerjaan").setConfirmText("OK").show();
             new Handler(Looper.getMainLooper()).postDelayed(() -> dlgError.dismiss(), 3000);
         } else if (selectedDivision == null) {
             SweetAlertDialog dlgError = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
@@ -304,6 +304,7 @@ public class NewMethodCarLog extends AppCompatActivity {
             dbhelper.insert_new_carlog(selectedCategory, selectedActivity, selectedEstate, selectedDivision,
                     selectedBlok, etInputWorkResult.getText().toString(), latitudeWork, longitudeWork, byteImgWorkResult);
 
+            selectedCategory = null;
             selectedActivity = null;
             selectedEstate = null;
             selectedDivision = null;

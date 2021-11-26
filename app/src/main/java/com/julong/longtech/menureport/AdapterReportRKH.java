@@ -91,7 +91,7 @@ public class AdapterReportRKH extends RecyclerView.Adapter<AdapterReportRKH.Hold
         }
 
         public void setTargetKerja(String targetKerja, String unitOfMeasure) {
-            tvLocationName.setText("Target " + targetKerja + " " + unitOfMeasure);
+            tvTargetKerja.setText("Target " + targetKerja + " " + unitOfMeasure);
         }
 
     }

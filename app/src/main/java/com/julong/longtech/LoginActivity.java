@@ -103,8 +103,7 @@ public class LoginActivity extends AppCompatActivity {
     SweetAlertDialog pDialog;
 
     //Object
-    TextView tvversion, tvnamasystem, tvLoginHeader, tvKeteranganBahasa,
-            tvDlgInfoTitle;
+    TextView tvversion, tvnamasystem, tvKeteranganBahasa, tvDlgInfoTitle;
     EditText et_username, et_password;
     Button btnlogin, btnDialogInfo;
     ImageView imglogo;
@@ -122,7 +121,6 @@ public class LoginActivity extends AppCompatActivity {
         dialogHelper = new DialogHelper(this);
 
         //Declare design ID
-        tvLoginHeader = findViewById(R.id.tvHeaderLogin);
         tvversion = findViewById(R.id.tvversion);
         tvnamasystem = findViewById(R.id.textView2);
         tvKeteranganBahasa = findViewById(R.id.tvKeteranganPilihanBahasa);
@@ -401,6 +399,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 layoutDlgInsertPassword.setError(null);
                                                 layoutDlgConfirmPassword.setError(null);
                                                 layoutDlgRegistKey.setError(null);
+
                                                 RequestQueue requestQueueChangePassword = Volley.newRequestQueue(LoginActivity.this);
                                                 url_data = url_api + "dlgchangepassword.php";
                                                 StringRequest stringRequest = new StringRequest(Request.Method.POST,

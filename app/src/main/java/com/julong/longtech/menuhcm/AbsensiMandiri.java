@@ -80,6 +80,8 @@ public class AbsensiMandiri extends AppCompatActivity {
         tvEmpPosition.setText(dbhelper.get_tbl_username(13));
         todayDate();
 
+        tipeKeteranganAbsen = 1;
+
         btnAbsensiMandiriMasuk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

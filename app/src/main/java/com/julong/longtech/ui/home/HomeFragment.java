@@ -48,6 +48,8 @@ import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryAdapterRKH;
 import com.julong.longtech.menuhistory.ListHistoryRKH;
+import com.julong.longtech.menuinventory.PengeluaranBBM;
+import com.julong.longtech.menureport.ReportActivity;
 import com.julong.longtech.menuvehicle.NewMethodCarLog;
 import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
@@ -91,7 +93,7 @@ public class HomeFragment extends Fragment {
 
     ConstraintLayout clBgMainActivity, layoutInfoFragment;
     public static LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
-            linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel, linearLayoutGIS;
+            linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel, linearLayoutGIS, linearLayoutReport;
 
     List<String> arrayMenuHistoryName, arrayMenuHistoryCode;
     ArrayAdapter<String> adapterMenuHistory;
@@ -127,6 +129,7 @@ public class HomeFragment extends Fragment {
         linearLayoutService = root.findViewById(R.id.linearLayoutService);
         linearLayoutQR = root.findViewById(R.id.linearLayoutMyQR);
         linearLayoutGIS = root.findViewById(R.id.linearLayoutGIS);
+        linearLayoutReport = root.findViewById(R.id.linearLayoutReport);
 
         todayDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -268,6 +271,11 @@ public class HomeFragment extends Fragment {
 
     private void eventClickMenu() { // onClick event icons
 
+        if (dbhelper.get_tbl_username(3).equals("OPR")
+                || dbhelper.get_tbl_username(3).equals("GIS")) {
+            linearLayoutReport.setVisibility(View.GONE);
+        }
+
         btnrefresh.setOnClickListener(view -> {
             proDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
             proDialog.setTitleText("Loading...");
@@ -320,14 +328,29 @@ public class HomeFragment extends Fragment {
             }
         );
 
+
         linearLayoutBBM.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), PermintaanBBM.class);
-            intentLaunchActivity.launch(intent);
+            if (dbhelper.get_tbl_username(3).equals("GDG")) {
+                Intent intent = new Intent(getActivity(), PengeluaranBBM.class);
+                intentLaunchActivity.launch(intent);
+            } else {
+                Intent intent = new Intent(getActivity(), PermintaanBBM.class);
+                intentLaunchActivity.launch(intent);
+            }
+
         });
 
         linearLayoutGIS.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), VerifikasiGIS.class);
             intentLaunchActivity.launch(intent);
+        });
+
+        linearLayoutReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ReportActivity.class);
+                intentLaunchActivity.launch(intent);
+            }
         });
 
         if (dbhelper.get_tbl_username(3).equals("SPV-WS")) {
