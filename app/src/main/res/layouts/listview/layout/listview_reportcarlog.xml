@@ -7,6 +7,7 @@
     android:background="#EFECEC">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layoutCarLogReport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -85,11 +86,11 @@
                         android:textColor="@color/black" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-
                 <TextView
                     android:id="@+id/tvReportKMHMCarLog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1"
                     android:drawableStart="@drawable/ic_baseline_speedometer_20"
                     android:drawablePadding="8dp"
@@ -98,18 +99,36 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <TextView
-                android:id="@+id/tvLoadCategoryCarLogReport"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="Kategori Kerja"
-                android:paddingStart="2dp"
-                android:drawablePadding="10dp"
-                android:drawableStart="@drawable/ic_twotone_briefcase_16"
-                android:textColor="@color/black"/>
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/tvLoadCategoryCarLogReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Kategori Kerja"
+                    android:paddingStart="2dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_twotone_briefcase_16"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/tvLocationCarLogReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lokasi Kerja"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_baseline_location_on_16"
+                    android:textColor="@color/black"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"

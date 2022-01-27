@@ -1,6 +1,7 @@
 package com.julong.longtech.menureport;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -11,10 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.R;
+import com.julong.longtech.menuinventory.PengeluaranBBM;
+import com.julong.longtech.menuvehicle.VerifikasiGIS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +28,13 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
     // List to store all the contact details
     private List<ListReportCarLog> carLogList;
     private Context mContext;
+    private DatabaseHelper dbhelper;
 
     // Counstructor for the Class
     public AdapterReportCarLog(List carLogList, Context context) {
         this.carLogList = carLogList;
         this.mContext = context;
+        dbhelper = new DatabaseHelper(context);
     }
 
     // This method creates views for the RecyclerView by inflating the layout
@@ -59,26 +65,48 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
         holder.setEmpName(carLogReports.getFirstName(), carLogReports.getLastName());
         holder.setCarLogResult(carLogReports.getHasilPekerjaan(), carLogReports.getSatuanPekerjaan());
         holder.setActivityLoad(carLogReports.getActivityLog());
+        holder.setLocation(carLogReports.getBlokCode());
         holder.setCarKMHM(carLogReports.getKmAwal(), carLogReports.getKmAkhir());
+
+        holder.layoutCarLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dbhelper.get_tbl_username(3).equals("SPV-TRS")
+                        || dbhelper.get_tbl_username(2).equals("GIS") || dbhelper.get_tbl_username(3).equals("GIS")) {
+                    Intent intent = new Intent(mContext, VerifikasiGIS.class);
+                    intent.putExtra("nodoc", carLogReports.getDocumentNumber());
+                    intent.putExtra("workdate", carLogReports.getTglCarLog());
+                    intent.putExtra("unitcode", carLogReports.getUnitCarLog());
+                    intent.putExtra("drivername", carLogReports.getEmployeeName());
+                    intent.putExtra("drivercode", carLogReports.getEmployeeCode());
+                    intent.putExtra("kegiatanunit", carLogReports.getActivityLog());
+                    intent.putExtra("blokcode", carLogReports.getBlokCode());
+                    mContext.startActivity(intent);
+                }
+            }
+        });
     }
 
     // This class that helps to populate data to the view
     public class CarLogReportHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvNoDoc, tvTglCarLog, tvVehicle, tvFirstName, tvLastName,
-                tvCarKMHM, tvActivityLoad, tvCarLogResult;
+        private CardView layoutCarLog;
+        private TextView tvNoDoc, tvTglCarLog, tvVehicle, tvLocation,
+                tvFirstName, tvLastName, tvCarKMHM, tvActivityLoad, tvCarLogResult;
 
         public CarLogReportHolder(View itemView) {
             super(itemView);
 
-            tvNoDoc = (TextView) itemView.findViewById(R.id.tvNodocReportCarLog);
-            tvTglCarLog = (TextView) itemView.findViewById(R.id.tvDateReportCarLog);
-            tvVehicle = (TextView) itemView.findViewById(R.id.tvUnitReportCarLog);
-            tvFirstName = (TextView) itemView.findViewById(R.id.tvFirstNameReportCarLog);
-            tvLastName = (TextView) itemView.findViewById(R.id.tvLastNameReportCarLog);
-            tvCarKMHM = (TextView) itemView.findViewById(R.id.tvReportKMHMCarLog);
-            tvActivityLoad = (TextView) itemView.findViewById(R.id.tvLoadCategoryCarLogReport);
-            tvCarLogResult = (TextView) itemView.findViewById(R.id.tvHasilReportCarLog);
+            layoutCarLog = itemView.findViewById(R.id.layoutCarLogReport);
+            tvNoDoc = itemView.findViewById(R.id.tvNodocReportCarLog);
+            tvTglCarLog = itemView.findViewById(R.id.tvDateReportCarLog);
+            tvVehicle = itemView.findViewById(R.id.tvUnitReportCarLog);
+            tvFirstName = itemView.findViewById(R.id.tvFirstNameReportCarLog);
+            tvLastName = itemView.findViewById(R.id.tvLastNameReportCarLog);
+            tvCarKMHM = itemView.findViewById(R.id.tvReportKMHMCarLog);
+            tvActivityLoad = itemView.findViewById(R.id.tvLoadCategoryCarLogReport);
+            tvCarLogResult = itemView.findViewById(R.id.tvHasilReportCarLog);
+            tvLocation = itemView.findViewById(R.id.tvLocationCarLogReport);
 
         }
 
@@ -102,6 +130,10 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
             } else {
                 tvLastName.setText(lastname);
             }
+        }
+
+        public void setLocation(String blokCode) {
+            tvLocation.setText("Blok " + blokCode);
         }
 
         public void setActivityLoad(String activityLoad) {

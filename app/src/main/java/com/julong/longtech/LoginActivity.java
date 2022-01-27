@@ -226,15 +226,9 @@ public class LoginActivity extends AppCompatActivity {
                     boolean checkDecryptPassword = hashPassword.CheckPassword(decryptedValue[1], dbhelper.get_tbl_username(4));
 
                     if (decryptedValue[0].equals(dbhelper.get_tbl_username(0)) && checkDecryptPassword) {
-                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                pDialog.dismiss();
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                            }
-                        }, 2000);
-
+                        et_username.setText(dbhelper.get_tbl_username(1));
+                        et_password.setText(decryptedValue[1]);
+                        btnlogin.performClick();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

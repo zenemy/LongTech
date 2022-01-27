@@ -10,7 +10,6 @@ public class ListOperatorNewRKH {
         this.employeeCode = employeeCode;
     }
 
-
     public String getEmployeeName() {
         return employeeName;
     }

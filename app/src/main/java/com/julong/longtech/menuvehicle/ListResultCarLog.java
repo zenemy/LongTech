@@ -9,9 +9,10 @@ public class ListResultCarLog {
     private String satuanKerja;
     private String vehicleCode;
     private String inputDate;
+    private String inputTime;
 
     public ListResultCarLog(String activityType, String division, String blokLocation, String hasilKerja,
-                            String satuanKerja, String vehicleCode, String inputDate) {
+                            String satuanKerja, String vehicleCode, String inputDate, String inputTime) {
 
         this.activityType = activityType;
         this.division = division;
@@ -20,6 +21,7 @@ public class ListResultCarLog {
         this.satuanKerja = satuanKerja;
         this.vehicleCode = vehicleCode;
         this.inputDate = inputDate;
+        this.inputTime = inputTime;
 
     }
 
@@ -49,5 +51,9 @@ public class ListResultCarLog {
 
     public String getInputDate() {
         return inputDate;
+    }
+
+    public String getInputTime() {
+        return inputTime;
     }
 }

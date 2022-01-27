@@ -41,8 +41,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
-
 public class ApelPagiAdapter extends RecyclerView.Adapter<ApelPagiAdapter.MaterialHolder> {
 
     // List to store all the contact details

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,6 +21,7 @@ import com.julong.longtech.menuhistory.HistoryApelAdapter;
 import com.julong.longtech.menuhistory.ListHistoryApel;
 import com.julong.longtech.menuhistory.ListHistoryRKH;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -97,19 +99,20 @@ public class ReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report);
 
         dbhelper = new DatabaseHelper(this);
+
+        lvReport = findViewById(R.id.lvReportCarLog);
+        acTeamSelect = findViewById(R.id.acSelectTeamReport);
+        etDateReport = findViewById(R.id.etDateReportActivity);
+        acVehicleReport = findViewById(R.id.acUnitReportActivity);
+        acSelectReportMenu = findViewById(R.id.acSelectReportMenu);
+        inputLayoutDate = findViewById(R.id.inputLayoutDateReport);
+        btnResetReport = findViewById(R.id.btnResetReportActivity);
+        inputLayoutTeamSelect = findViewById(R.id.inputLayoutTeamReport);
+        inputLayoutAcVehicle = findViewById(R.id.inputLayoutAcVehicleRpeort);
+
         progressDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         progressDialog.setTitleText("Loading");
         progressDialog.setCancelable(false);
-
-        etDateReport = findViewById(R.id.etDateReportActivity);
-        acVehicleReport = findViewById(R.id.acUnitReportActivity);
-        lvReport = findViewById(R.id.lvReportCarLog);
-        acSelectReportMenu = findViewById(R.id.acSelectReportMenu);
-        acTeamSelect = findViewById(R.id.acSelectTeamReport);
-        inputLayoutAcVehicle = findViewById(R.id.inputLayoutAcVehicleRpeort);
-        inputLayoutDate = findViewById(R.id.inputLayoutDateReport);
-        inputLayoutTeamSelect = findViewById(R.id.inputLayoutTeamReport);
-        btnResetReport = findViewById(R.id.btnResetReportActivity);
 
         btnResetReport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +129,8 @@ public class ReportActivity extends AppCompatActivity {
             }
         });
 
-        if (dbhelper.get_tbl_username(2).equals("MGR") || dbhelper.get_tbl_username(3).equals("MGR")) {
+        if (dbhelper.get_tbl_username(2).equals("MGR") || dbhelper.get_tbl_username(3).equals("MGR")
+                || dbhelper.get_tbl_username(2).equals("GIS") || dbhelper.get_tbl_username(3).equals("GIS")) {
             selectedTeamCode = null;
             inputLayoutTeamSelect.setVisibility(View.VISIBLE);
         } else {
@@ -282,6 +286,9 @@ public class ReportActivity extends AppCompatActivity {
                                 jsonObject1.getString("VEHICLE"),
                                 jsonObject1.getString("FIRSTNAME"),
                                 jsonObject1.getString("LASTNAME"),
+                                jsonObject1.getString("EMPCODE"),
+                                jsonObject1.getString("EMPNAME"),
+                                jsonObject1.getString("LOCATION"),
                                 jsonObject1.getString("ACTIVITY"),
                                 jsonObject1.getString("HASILKERJA"),
                                 jsonObject1.getString("SATUANKERJA"),
@@ -360,6 +367,10 @@ public class ReportActivity extends AppCompatActivity {
             new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Empty Data").show();
         });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
+                20000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonRequest);
     }
 
@@ -526,6 +537,12 @@ public class ReportActivity extends AppCompatActivity {
                     .setContentText("Empty Data").show();
         });
         requestQueue.add(jsonRequest);
+    }
+
+    public void onBackPressed() {
+        Intent backIntent = new Intent();
+        setResult(727, backIntent);
+        finish();
     }
 
 }

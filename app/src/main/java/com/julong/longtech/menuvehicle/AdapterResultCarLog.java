@@ -52,7 +52,8 @@ public class AdapterResultCarLog extends RecyclerView.Adapter<AdapterResultCarLo
         holder.setLokasi(workDetailPlans.getDivision(), workDetailPlans.getBlokLocation());
         holder.setAktivitas(workDetailPlans.getActivityType());
         holder.setTarget(workDetailPlans.getHasilKerja(), workDetailPlans.getSatuanKerja());
-        holder.setInputDate(workDetailPlans.getVehicleCode(), workDetailPlans.getInputDate());
+        holder.setWorkDate(workDetailPlans.getInputDate());
+        holder.setInputTime(workDetailPlans.getVehicleCode(), workDetailPlans.getInputTime());
 
     }
 
@@ -61,7 +62,7 @@ public class AdapterResultCarLog extends RecyclerView.Adapter<AdapterResultCarLo
 
         DatabaseHelper dbhelper;
 
-        private TextView tvLokasi, tvAktifitas, tvTarget, tvInputDate;
+        private TextView tvLokasi, tvAktifitas, tvTarget, tvTime, tvDate;
 
         public ResultDetailHolder(View itemView) {
             super(itemView);
@@ -70,7 +71,8 @@ public class AdapterResultCarLog extends RecyclerView.Adapter<AdapterResultCarLo
             tvAktifitas = itemView.findViewById(R.id.tvActivityLvCarLog);
             tvLokasi = itemView.findViewById(R.id.tvLokasiKerjaCarLog);
             tvTarget = itemView.findViewById(R.id.tvHasilKerjaLvCarLog);
-            tvInputDate = itemView.findViewById(R.id.tvInputDateLvNewCarLog);
+            tvDate = itemView.findViewById(R.id.tvDateLvCarLog);
+            tvTime = itemView.findViewById(R.id.tvTimeLvNewCarLog);
         }
 
         public void setAktivitas(String setAktifitas) {
@@ -89,8 +91,13 @@ public class AdapterResultCarLog extends RecyclerView.Adapter<AdapterResultCarLo
             tvTarget.setText(setTarget + " " + satuanKerja);
         }
 
-        public void setInputDate(String unitCode, String timeInput) {
-            tvInputDate.setText(unitCode + " | " + timeInput);
+        public void setWorkDate(String dateInput) {
+            tvDate.setText(dateInput);
+        }
+
+
+        public void setInputTime(String unitCode, String timeInput) {
+            tvTime.setText(unitCode + " | " + timeInput);
         }
     }
 }

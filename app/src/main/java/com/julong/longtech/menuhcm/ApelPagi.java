@@ -191,7 +191,6 @@ public class ApelPagi extends AppCompatActivity {
         lvAnggotaApel.setAdapter(adapterApel);
     }
 
-
     private void getLocation() {
         GPSTracker gpsTracker = new GPSTracker(this);
         if (gpsTracker.getIsGPSTrackingEnabled()){

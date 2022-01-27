@@ -5,14 +5,35 @@
     android:layout_height="wrap_content"
     android:paddingTop="8dp">
 
-    <TextView
-        android:id="@+id/tvActivityLvCarLog"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:text="TextView" />
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/tvActivityLvCarLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/tvDateLvCarLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:gravity="end"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:text="TextView" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
     <TextView
         android:id="@+id/tvLokasiKerjaCarLog"
@@ -52,7 +73,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/tvInputDateLvNewCarLog"
+            android:id="@+id/tvTimeLvNewCarLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

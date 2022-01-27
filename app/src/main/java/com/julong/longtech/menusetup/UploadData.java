@@ -286,6 +286,7 @@ public class UploadData extends AppCompatActivity {
                             HomeFragment.loadLvHistoryCarLog(todayDate);
                             HomeFragment.loadLvHistoryApel(todayDate);
                             HomeFragment.loadLvHistoryRKH(todayDate);
+                            HomeFragment.loadLvHistoryGIS(todayDate);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -307,6 +307,7 @@
                 android:layout_marginBottom="8dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:paddingStart="8dp"
                 android:paddingEnd="16dp">

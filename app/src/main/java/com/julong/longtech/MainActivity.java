@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -213,8 +214,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
-                    arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
+                    if (dbhelper.get_tbl_username(2).equals("GIS") || dbhelper.get_tbl_username(3).equals("GIS")) {
+                        arrayMenuHistoryName = dbhelper.get_menuHistoryGIS(1);
+                        arrayMenuHistoryCode = dbhelper.get_menuHistoryGIS(0);
+                    } else {
+                        arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
+                        arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
+                    }
 
                     adapterMenuHistory = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistoryName);
                     acMenuRiwayatHome.setAdapter(adapterMenuHistory);
@@ -416,9 +422,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (menuGroupCode.equals("0401") && menuSubCode.equals("040101")) {
-                    Intent intent = new Intent(MainActivity.this, ReportActivity.class);
+                    Intent intent = new Intent(MainActivity.this, InspeksiHasilKerja.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    intentLaunchMainActivity.launch(intent);
                     onPause();
                 }
 

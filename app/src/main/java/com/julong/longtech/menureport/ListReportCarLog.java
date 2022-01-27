@@ -8,15 +8,18 @@ public class ListReportCarLog {
     private String unitCarLog;
     private String firstName;
     private String lastName;
+    private String employeeName;
+    private String employeeCode;
+    private String blokCode;
     private String activityLog;
     private String hasilPekerjaan;
     private String satuanPekerjaan;
     private String kmAwal;
     private String kmAkhir;
 
-    public ListReportCarLog(String documentNumber, String tglCarLog, String waktuCarLog, String unitCarLog,
-                            String firstName, String lastName, String activityLog, String hasilPekerjaan,
-                            String satuanPekerjaan, String kmAwal, String kmAkhir) {
+    public ListReportCarLog(String documentNumber, String tglCarLog, String waktuCarLog, String unitCarLog, String firstName,
+                            String lastName, String employeeCode, String employeeName, String blokCode, String activityLog,
+                            String hasilPekerjaan, String satuanPekerjaan, String kmAwal, String kmAkhir) {
 
         this.documentNumber = documentNumber;
         this.tglCarLog = tglCarLog;
@@ -24,6 +27,9 @@ public class ListReportCarLog {
         this.unitCarLog = unitCarLog;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.employeeName = employeeName;
+        this.employeeCode = employeeCode;
+        this.blokCode = blokCode;
         this.activityLog = activityLog;
         this.hasilPekerjaan = hasilPekerjaan;
         this.satuanPekerjaan = satuanPekerjaan;
@@ -45,6 +51,18 @@ public class ListReportCarLog {
 
     public String getUnitCarLog() {
         return unitCarLog;
+    }
+
+    public String getBlokCode() {
+        return blokCode;
+    }
+
+    public String getEmployeeCode() {
+        return employeeCode;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
     }
 
     public String getFirstName() {

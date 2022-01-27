@@ -17,6 +17,7 @@ import com.julong.longtech.R;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -70,7 +71,8 @@ public class VerifikasiGIS extends AppCompatActivity {
     private boolean isRunning;
     public static byte[] byteFotoGIS;
     public static String selectedDriverGIS, selectedVehicleGIS;
-    String selectedDate, selectedVehicleGroup, selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan, latGIS, longGIS;
+    String nodocCarLog, selectedDate, selectedVehicleGroup, selectedLokasiGIS,
+            selectedKegiatanGIS, selectedSatuanKegiatan, latGIS, longGIS;
     public static String nodocVerifikasiGIS;
 
     DatabaseHelper dbhelper;
@@ -101,6 +103,38 @@ public class VerifikasiGIS extends AppCompatActivity {
         btnStartInterval = findViewById(R.id.btnStartIntervalGIS);
         inputLayoutHasilGIS = findViewById(R.id.inputLayoutHasilGIS);
         layoutBtnVerifikasi = findViewById(R.id.layoutBtnVerifikasi);
+
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            etDateGIS.setText(extras.getString("workdate"));
+            acLokasiGIS.setText(extras.getString("blokcode"));
+            acKegiatanGIS.setText(extras.getString("kegiatanunit"));
+            acVehicleGIS.setText(extras.getString("unitcode"));
+            acDriverGIS.setText(extras.getString("drivercode") + " - " + extras.getString("drivername"));
+
+            nodocCarLog = extras.getString("nodoc");
+            selectedDate = extras.getString("workdate");
+            selectedDriverGIS = dbhelper.get_empcode(0, acDriverGIS.getText().toString());
+            selectedVehicleGIS = acVehicleGIS.getText().toString();
+            selectedKegiatanGIS = dbhelper.get_singlekegiatancode(acKegiatanGIS.getText().toString());
+            selectedSatuanKegiatan = dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 1);
+            selectedLokasiGIS = dbhelper.get_singlelokasiCode(acLokasiGIS.getText().toString());
+
+            acVehicleGIS.setKeyListener(null);
+            acDriverGIS.setKeyListener(null);
+            acKegiatanGIS.setKeyListener(null);
+            acLokasiGIS.setKeyListener(null);
+
+            acVehicleGIS.setDropDownHeight(0);
+            acDriverGIS.setDropDownHeight(0);
+            acKegiatanGIS.setDropDownHeight(0);
+            acLokasiGIS.setDropDownHeight(0);
+
+            inputLayoutHasilGIS.setSuffixText(selectedSatuanKegiatan);
+            inputLayoutHasilGIS.setEnabled(true);
+            btnTagLocation.setVisibility(View.VISIBLE);
+        }
 
         prepareHeaderData();
 
@@ -152,17 +186,11 @@ public class VerifikasiGIS extends AppCompatActivity {
                             .setAnchorView(layoutBtnVerifikasi).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
                     }
                     else {
-                        nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-                        dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedDate, selectedVehicleGIS, selectedDriverGIS,
-                                selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
-                                etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString());
-
                         dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
                         loadListViewKoordinat();
                     }
                 } else if (dbhelper.get_statusverifikasigis(0).equals("1")) {
-                    nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
-                    dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS);
+                    dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
                     loadListViewKoordinat();
                 }
             }
@@ -209,8 +237,7 @@ public class VerifikasiGIS extends AppCompatActivity {
                 isRunning = false;
                 btnStopInterval.setVisibility(View.GONE);
                 btnStartInterval.setVisibility(View.VISIBLE);
-                nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
-                dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS);
+                dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
             }
         });
 
@@ -223,14 +250,9 @@ public class VerifikasiGIS extends AppCompatActivity {
 
         getLocation();
         if (dbhelper.get_statusverifikasigis(0).equals("0")) {
-            nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-            dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedDate, selectedVehicleGIS, selectedDriverGIS,
-                    selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
-                    etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString());
             dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
         } else if (dbhelper.get_statusverifikasigis(0).equals("1")) {
-            nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
-            dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS);
+            dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
         }
         loadListViewKoordinat();
 
@@ -250,8 +272,7 @@ public class VerifikasiGIS extends AppCompatActivity {
                             runOnUiThread(() -> getLocation());
 
                             if (latGIS != null) {
-                                nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
-                                dbhelper.insert_verifikasigis_detail(dbhelper.get_statusverifikasigis(1), latGIS, longGIS);
+                                dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
                             }
 
                             runOnUiThread(() -> loadListViewKoordinat());
@@ -268,6 +289,8 @@ public class VerifikasiGIS extends AppCompatActivity {
     }
 
     private void prepareHeaderData() throws SQLiteException {
+
+        nodocVerifikasiGIS = dbhelper.get_tbl_username(0) + "/GISVH/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
 
         listDriverGIS = dbhelper.get_operatoronly();
         adapterDriverGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listDriverGIS);
@@ -286,7 +309,6 @@ public class VerifikasiGIS extends AppCompatActivity {
         acLokasiGIS.setAdapter(adapterLokasiGIS);
 
         //Datepicker tgl pelaksanaan
-
         datePickerRKH = MaterialDatePicker.Builder.datePicker().setTitleText("Tanggal Unit Kerja").build();
 
         datePickerRKH.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
@@ -359,36 +381,9 @@ public class VerifikasiGIS extends AppCompatActivity {
 
         btnBackGIS.setOnClickListener(view -> onBackPressed());
 
-        // if the verification still on processs
-        if (dbhelper.get_statusverifikasigis(0).equals("1") && dbhelper.get_statusverifikasigis(8).equals("")) {
-            nodocVerifikasiGIS = dbhelper.get_statusverifikasigis(1);
-            selectedDate = dbhelper.get_statusverifikasigis(2);
-            selectedVehicleGIS = dbhelper.get_statusverifikasigis(3);
-            selectedDriverGIS = dbhelper.get_statusverifikasigis(4);
-            selectedLokasiGIS = dbhelper.get_statusverifikasigis(5);
-            selectedKegiatanGIS = dbhelper.get_statusverifikasigis(6);
-            selectedSatuanKegiatan = dbhelper.get_statusverifikasigis(7);
-
-            acDriverGIS.setDropDownHeight(0);
-            acVehicleGIS.setDropDownHeight(0);
-            acLokasiGIS.setDropDownHeight(0);
-            acLokasiGIS.setKeyListener(null);
-            acKegiatanGIS.setKeyListener(null);
-            acKegiatanGIS.setDropDownHeight(0);
-
-            etDateGIS.setText(selectedDate);
-            inputLayoutHasilGIS.setEnabled(true);
-            btnTagLocation.setVisibility(View.VISIBLE);
-            acDriverGIS.setText(dbhelper.get_empname(selectedDriverGIS));
-            acLokasiGIS.setText(dbhelper.get_singlelokasi(selectedLokasiGIS));
-            etHasilVerifikasi.setText(dbhelper.get_statusverifikasigis(8));
-            etHasilVerifikasi.setText(dbhelper.get_statusverifikasigis(9));
-            acVehicleGIS.setText(dbhelper.get_vehiclename(2, selectedVehicleGIS));
-            acKegiatanGIS.setText(dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 0));
-
-            loadListViewKoordinat();
-        }
     }
+
+
 
     // Finish verification work
     public void eventSubmitVerifikasi(View v) {
@@ -403,7 +398,11 @@ public class VerifikasiGIS extends AppCompatActivity {
                     .setContentText("Hentikan location tagging!").show();
         }
         else {
-            dialogHelper.showSummaryVerifikasiGIS();
+            loadListViewKoordinat();
+            dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedDate, selectedVehicleGIS, selectedDriverGIS,
+                    selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
+                    etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString());
+            dialogHelper.showSummaryVerifikasiGIS(adapterKoordinatGIS.getCount());
         }
     }
 
@@ -420,7 +419,7 @@ public class VerifikasiGIS extends AppCompatActivity {
                 listParamGIS.add(parametersGIS);
             } while (cursor.moveToNext());
         }
-        adapterKoordinatGIS = new AdapterKoordinatGIS(this, R.layout.item_lvrkh, listParamGIS);
+        adapterKoordinatGIS = new AdapterKoordinatGIS(this, R.layout.listview_koordinatgis, listParamGIS);
         lvKoordinat.setAdapter(adapterKoordinatGIS);
     }
 
@@ -434,6 +433,10 @@ public class VerifikasiGIS extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        SQLiteDatabase db = dbhelper.getWritableDatabase();
+
+        db.execSQL("DELETE FROM tr_01 WHERE datatype = 'GISVH' AND uploaded IS NULL");
+        db.execSQL("DELETE FROM tr_02 WHERE datatype = 'GISVH' AND uploaded IS NULL");
         Intent backIntent = new Intent();
         setResult(727, backIntent);
         finish();

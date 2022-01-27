@@ -12,6 +12,8 @@ import android.os.Looper;
 import android.os.StrictMode;
 
 import com.julong.longtech.menuhcm.ApelPagi;
+import com.julong.longtech.menuvehicle.NewMethodCarLog;
+import com.julong.longtech.menuvehicle.NewMethodRKH;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -35,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
     public static int versionNumber = 1;
-    public static String versionName = "Version 0.14";
+    public static String versionName = "Version 0.15.1";
     Context activityContext;
 
     public DatabaseHelper(Context context) {
@@ -1225,7 +1227,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_koordinatgis(String nodoc) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT time(date1), text1, text2 FROM tr_02 WHERE datatype = 'GISVH' AND documentno = '"+nodoc+"'", null);
+        Cursor cursor = db.rawQuery("SELECT time(date1), text1, text2 FROM tr_02 " +
+                "WHERE datatype = 'GISVH' AND documentno = '"+nodoc+"' AND uploaded IS NULL", null);
         return cursor;
     }
 
@@ -1315,6 +1318,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor listview_historygis(String selectedDate) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.text1 AS unitcode, strftime('%H:%M', tr.date1) AS timetr, mdemp.text2 AS empname, " +
+                "mdactivity.text6 AS activity, IFNULL(mdblok.text2, ' ') AS blok, tr.text6 AS hasilkerja, " +
+                "mdactivity.text7 AS satuankerja,  tr.uploaded AS uploaded FROM tr_01 tr " +
+                "INNER JOIN md_01 mdemp ON mdemp.subdatatype = tr.text2 AND mdemp.datatype = 'EMPLOYEE'" +
+"                INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 AND mdactivity.datatype = 'TRANSPORTRATE' " +
+                "INNER JOIN md_01 mdblok ON mdblok.text1 = tr.text3 AND mdblok.datatype = 'FIELDCROP' " +
+                "WHERE tr.datatype = 'GISVH' AND DATE(tr.date1) = DATE('"+selectedDate+"') AND tr.uploaded IS NOT NULL;", null);
+        return cursor;
+    }
+
     public Cursor listview_rkh(String nodoc) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT subitemdata, text2, text3 FROM tr_02 " +
@@ -1351,13 +1366,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor listview_new_carlogs() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.text1 AS unitcode, strftime('%H:%M', tr.date1) AS timetr, " +
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tr.text1 AS unitcode, DATE(tr.date1) AS datetr, strftime('%H:%M', tr.date1) AS timetr, " +
                 "mdactivity.text6 AS activity, mdestate.text4 AS divisi, IFNULL(mdblok.text2, '') AS blok, " +
                 "tr.text16 AS hasilkerja, mdactivity.text7 AS satuankerja FROM tr_01 tr " +
                 "INNER JOIN md_01 mdactivity ON mdactivity.subdatatype = tr.text4 AND mdactivity.datatype = 'TRANSPORTRATE' " +
                 "INNER JOIN md_01 mdestate ON mdestate.text3 = tr.text11 AND mdestate.datatype = 'ORG_STRUCTURE' " +
                 "LEFT JOIN md_01 mdblok ON mdblok.text1 = tr.text12 AND mdblok.datatype = 'FIELDCROP' " +
-                "WHERE tr.datatype = 'CARLOG' AND DATE(tr.date1) = DATE('now', 'localtime');", null);
+                "WHERE tr.datatype = 'CARLOG' AND DATE(tr.date1) BETWEEN DATE('now', '-1 day') AND DATE('now', 'localtime');", null);
         return cursor;
     }
 
@@ -1397,27 +1412,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public boolean submitNewCarLog(String nodoc, String kilometerAwal, String kilometerAkhir,
+    public boolean submitNewCarLog(String kilometerAwal, String kilometerAkhir,
                                    String carLogDesc, byte[] fotoKilometer) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValuesTR01 = new ContentValues();
-        contentValuesTR01.put("documentno", nodoc);
         contentValuesTR01.put("text2", kilometerAwal);
         contentValuesTR01.put("text17", carLogDesc);
         contentValuesTR01.put("text18", kilometerAkhir);
         contentValuesTR01.put("uploaded", 0);
 
         ContentValues contentValuesBL01 = new ContentValues();
-        contentValuesBL01.put("documentno", nodoc);
         contentValuesBL01.put("blob2", fotoKilometer);
         contentValuesBL01.put("uploaded", 0);
 
         long updateTR01 = db.update("tr_01", contentValuesTR01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
-        long updateBL01 = db.update("tr_01", contentValuesTR01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
+        long updateBL01 = db.update("bl_01", contentValuesBL01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
         if (updateTR01 == -1) {
             return false;
         } else {
+            NewMethodCarLog.loadListViewCarLogs(activityContext);
             return true;
         }
     }
@@ -1481,18 +1495,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_new_carlog(String jenismuatan, String kategorimuatan, String tujuankebun,
+    public boolean insert_new_carlog(String documentNumber, String workDate, String jenismuatan, String kategorimuatan, String tujuankebun,
                                      String tujuandivisi, String tujuanlokasi, String hasilkerja,
                                      String latitude, String longitude, byte[] fotohasilkerja) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
 
+        String savetime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        contentValues.put("documentno", documentNumber);
         contentValues.put("datatype", "CARLOG");
         contentValues.put("subdatatype", get_tbl_username(0));
         contentValues.put("comp_id", get_tbl_username(14));
         contentValues.put("site_id", get_tbl_username(15));
-        contentValues.put("date1", savedate);
+        contentValues.put("date1", workDate + " " + savetime);
         contentValues.put("text1", get_tbl_username(19));
         contentValues.put("text3", jenismuatan);
         contentValues.put("text4", kategorimuatan);
@@ -1521,6 +1536,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (insert == -1 || insertPhoto == -1) {
             return false;
         } else {
+            NewMethodCarLog.loadListViewCarLogs(activityContext);
             SweetAlertDialog dlgError = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
             dlgError.setTitleText("BERHASIL").setConfirmText("OK").show();
             new Handler(Looper.getMainLooper()).postDelayed(() -> dlgError.dismiss(), 3000);
@@ -2746,7 +2762,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT gs2.submodulecode AS MENUCODE, gs2.submoduledesc AS MENUNAME FROM gs_08 gs8 " +
-                        "INNER JOIN gs_02 gs2 ON gs2.SUBMODULECODE = gs8.SUBMODULECODE WHERE gs8.AUTHORIZED_REPORT = 1 ";
+                        "INNER JOIN gs_02 gs2 ON gs2.SUBMODULECODE = gs8.SUBMODULECODE WHERE gs8.AUTHORIZED_REPORT = 1";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {
@@ -2757,6 +2773,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return dataList ;
+    }
+
+    public List<String> get_menuHistoryGIS(int index) {
+        ArrayList<String> nameList = new ArrayList<String>();
+        ArrayList<String> codeList = new ArrayList<String>();
+
+        nameList.add("Verifikasi");
+        codeList.add("020207");
+
+        if (index == 0) {
+            return codeList;
+        } else {
+            return nameList;
+        }
     }
 
     public Boolean updateselesai_apelpagi(String nodoc, String lokasiAbsen, String latitude,

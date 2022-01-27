@@ -89,7 +89,6 @@ public class DialogHelper extends Dialog {
     ArrayAdapter<String> adapterDivisionRKH, adapterBlok;
 
     // Dialog CarLog
-    private Dialog dlgSelesaiCarLog;
     public static ImageView btnFotoKilometer;
 
     public DialogHelper(Context context) {
@@ -116,7 +115,7 @@ public class DialogHelper extends Dialog {
         return dialogInfo;
     }
 
-    public Dialog showSummaryVerifikasiGIS() {
+    public Dialog showSummaryVerifikasiGIS(Integer totalKoordinat) {
         dlgSelesaiVerifikasi = new Dialog(activityContext);
         dlgSelesaiVerifikasi.setContentView(R.layout.dialog_summarygis);
         dlgSelesaiVerifikasi.getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -138,7 +137,7 @@ public class DialogHelper extends Dialog {
         tvLokasiSummary.setText(VerifikasiGIS.acLokasiGIS.getText().toString());
         tvKegiatanSummary.setText(VerifikasiGIS.acKegiatanGIS.getText().toString());
         tvHasilSummary.setText(VerifikasiGIS.etHasilVerifikasi.getText());
-        tvTotalKoordinat.setText(dbhelper.get_count_totalkoordinatgis(VerifikasiGIS.nodocVerifikasiGIS));
+        tvTotalKoordinat.setText(String.valueOf(totalKoordinat));
 
         btnDoneSummary.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +146,8 @@ public class DialogHelper extends Dialog {
                 dbhelper.updatestatus_verifikasigis(VerifikasiGIS.nodocVerifikasiGIS,
                         VerifikasiGIS.etHasilVerifikasi.getText().toString(),
                         VerifikasiGIS.byteFotoGIS, VerifikasiGIS.etSesuaiSOP.getText().toString());
+                VerifikasiGIS.nodocVerifikasiGIS = null;
+                VerifikasiGIS.byteFotoGIS = null;
 
                 SweetAlertDialog sweetDlgVerifikasiDone = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
                 sweetDlgVerifikasiDone.setTitleText("Verifikasi Selesai");
@@ -491,9 +492,9 @@ public class DialogHelper extends Dialog {
 
     }
 
-    public Dialog submitSelesaiCarLog(ActivityResultLauncher<Intent> intentFotoKM) {
+    public Dialog submitSelesaiCarLog(ActivityResultLauncher<Intent> intentFotoKM, EditText etWorkDate) {
         //Showing finishDlg
-        dlgSelesaiCarLog = new Dialog(activityContext);
+        Dialog dlgSelesaiCarLog = new Dialog(activityContext);
         dlgSelesaiCarLog.setContentView(R.layout.dlg_selesaicarlog);
         dlgSelesaiCarLog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Window dlgDoneCarLogWindow = dlgSelesaiCarLog.getWindow();
@@ -560,7 +561,7 @@ public class DialogHelper extends Dialog {
                     tvJudulFotoKM.startAnimation(AnimationUtils.loadAnimation(activityContext, R.anim.errorshake));
                     Toast.makeText(activityContext, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
                 }
-                else if (Float.parseFloat(currentValue) >= Float.parseFloat(etKMHMAkhirDlgCarLog.getText().toString())) {
+                else if (Float.parseFloat(currentValue) > Float.parseFloat(etKMHMAkhirDlgCarLog.getText().toString())) {
                     Toast.makeText(activityContext, "Kilometer akhir salah", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -570,18 +571,19 @@ public class DialogHelper extends Dialog {
                     String newEndValue = etKMHMAkhirDlgCarLog.getText().toString().replace(".",",");
                     etKMHMAkhirDlgCarLog.setText(newEndValue);
 
-                    String nodocCarLog = dbhelper.get_tbl_username(0) + "/CARLOG/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-
                     dbhelper.update_kmhm(etKMHMAkhirDlgCarLog.getText().toString());
-                    dbhelper.submitNewCarLog(nodocCarLog, etKMHMAwalDlgCarLog.getText().toString(), etKMHMAkhirDlgCarLog.getText().toString(),
+                    dbhelper.submitNewCarLog(etKMHMAwalDlgCarLog.getText().toString(), etKMHMAkhirDlgCarLog.getText().toString(),
                             etNoteDlgCarLog.getText().toString(), NewMethodCarLog.byteFotoKilometer);
 
                     dlgSelesaiCarLog.dismiss();
 
                     SweetAlertDialog okCarLogDlg = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai");
+                    okCarLogDlg.setCancelable(false);
                     okCarLogDlg.setCanceledOnTouchOutside(false);
                     okCarLogDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        NewMethodCarLog.byteFotoKilometer = null;
                         Intent backIntent = new Intent();
+                        backIntent.putExtra("workdate", etWorkDate.getText().toString());
                         ((Activity) activityContext).setResult(3, backIntent);
                         ((Activity) activityContext).finish();
                     }).setConfirmText("OK").show();

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,8 @@ import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryAdapterRKH;
 import com.julong.longtech.menuhistory.ListHistoryRKH;
 import com.julong.longtech.menuinventory.PengeluaranBBM;
+import com.julong.longtech.menureport.AdapterReportGIS;
+import com.julong.longtech.menureport.ListReportGIS;
 import com.julong.longtech.menureport.ReportActivity;
 import com.julong.longtech.menuvehicle.NewMethodCarLog;
 import com.julong.longtech.menuvehicle.NewMethodRKH;
@@ -142,8 +145,13 @@ public class HomeFragment extends Fragment {
             tvPlaceholder.setVisibility(View.GONE);
         }
 
-        arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
-        arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
+        if (dbhelper.get_tbl_username(2).equals("GIS") || dbhelper.get_tbl_username(3).equals("GIS")) {
+            arrayMenuHistoryName = dbhelper.get_menuHistoryGIS(1);
+            arrayMenuHistoryCode = dbhelper.get_menuHistoryGIS(0);
+        } else {
+            arrayMenuHistoryName = dbhelper.get_menuInfoHome(1);
+            arrayMenuHistoryCode = dbhelper.get_menuInfoHome(0);
+        }
 
         adapterMenuHistory = new ArrayAdapter<String>(getContext(), R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistoryName);
         acMenuRiwayatHome.setAdapter(adapterMenuHistory);
@@ -153,20 +161,26 @@ public class HomeFragment extends Fragment {
         acMenuRiwayatHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedHistoryMenu = arrayMenuHistoryCode.get(position);
+                try {
+                    selectedHistoryMenu = arrayMenuHistoryCode.get(position);
 
-                etDatepickerHistory.setText(todayDate);
+                    etDatepickerHistory.setText(todayDate);
 
-                if (selectedHistoryMenu.equals("010105")) {
-                    loadLvHistoryApel(etDatepickerHistory.getText().toString());
-                } else if (selectedHistoryMenu.equals("020202")) {
-                    loadLvHistoryP2H(etDatepickerHistory.getText().toString());
-                } else if (selectedHistoryMenu.equals("020203")) {
-                    loadLvHistoryCarLog(etDatepickerHistory.getText().toString());
-                } else if (selectedHistoryMenu.equals("020201")) {
-                    loadLvHistoryRKH(etDatepickerHistory.getText().toString());
+                    if (selectedHistoryMenu.equals("010105")) {
+                        loadLvHistoryApel(etDatepickerHistory.getText().toString());
+                    } else if (selectedHistoryMenu.equals("020202")) {
+                        loadLvHistoryP2H(etDatepickerHistory.getText().toString());
+                    } else if (selectedHistoryMenu.equals("020203")) {
+                        loadLvHistoryCarLog(etDatepickerHistory.getText().toString());
+                    } else if (selectedHistoryMenu.equals("020201")) {
+                        loadLvHistoryRKH(etDatepickerHistory.getText().toString());
+                    } else if (selectedHistoryMenu.equals("020207")) {
+                        loadLvHistoryGIS(etDatepickerHistory.getText().toString());
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
             }
         });
 
@@ -208,6 +222,8 @@ public class HomeFragment extends Fragment {
                     loadLvHistoryCarLog(simpleFormat.format(date));
                 } else if (selectedHistoryMenu.equals("020201")) {
                     loadLvHistoryRKH(simpleFormat.format(date));
+                } else if (selectedHistoryMenu.equals("020207")) {
+                    loadLvHistoryGIS(simpleFormat.format(date));
                 }
             }
         });
@@ -238,7 +254,6 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-
 
         // Tab layout onClick event
         bubbleTabBar.addBubbleListener(new OnBubbleClickListener() {
@@ -271,8 +286,7 @@ public class HomeFragment extends Fragment {
 
     private void eventClickMenu() { // onClick event icons
 
-        if (dbhelper.get_tbl_username(3).equals("OPR")
-                || dbhelper.get_tbl_username(3).equals("GIS")) {
+        if (dbhelper.get_tbl_username(3).equals("OPR")) {
             linearLayoutReport.setVisibility(View.GONE);
         }
 
@@ -293,8 +307,10 @@ public class HomeFragment extends Fragment {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == 3) {
-                    loadlvinfohome(todayDate);
-                    loadLvHistoryCarLog(todayDate);
+                    loadlvinfohome(result.getData().getStringExtra("workdate"));
+                    loadLvHistoryCarLog(result.getData().getStringExtra("workdate"));
+                    btnDateLvInfo.setText(result.getData().getStringExtra("workdate"));
+                    etDatepickerHistory.setText(result.getData().getStringExtra("workdate"));
                     if (lvfragment.getAdapter().getCount() > 0) {
                         tvPlaceholder.setVisibility(View.GONE);
                     }
@@ -359,6 +375,7 @@ public class HomeFragment extends Fragment {
                 intentLaunchActivity.launch(intent);
             });
         }
+
         else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
             linearLayoutService.setOnClickListener(v -> {
                 Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
@@ -707,6 +724,39 @@ public class HomeFragment extends Fragment {
         lvHistory.setAdapter(adapterLvRKH);
     }
 
+    public static void loadLvHistoryGIS(String selectedDate) {
+
+        List<ListReportGIS> listHistoryGIS;
+        AdapterReportGIS adapterGIS;
+
+        DatabaseHelper dbhelper;
+        dbhelper = new DatabaseHelper(lvHistory.getContext());
+
+        LinearLayoutManager layoutCarLog = new LinearLayoutManager(lvHistory.getContext());
+        lvHistory.setLayoutManager(layoutCarLog);
+
+        listHistoryGIS = new ArrayList<>();
+        listHistoryGIS.clear();
+        final Cursor cursor = dbhelper.listview_historygis(selectedDate);
+        if (cursor.moveToFirst()) {
+            do {
+                ListReportGIS paramsHistoryGIS = new ListReportGIS(
+                        cursor.getString(cursor.getColumnIndex("empname")),
+                        cursor.getString(cursor.getColumnIndex("blok")),
+                        cursor.getString(cursor.getColumnIndex("unitcode")),
+                        cursor.getString(cursor.getColumnIndex("activity")),
+                        cursor.getString(cursor.getColumnIndex("hasilkerja")),
+                        cursor.getString(cursor.getColumnIndex("satuankerja")),
+                        cursor.getString(cursor.getColumnIndex("timetr")),
+                        cursor.getInt(cursor.getColumnIndex("uploaded"))
+                );
+                listHistoryGIS.add(paramsHistoryGIS);
+            } while (cursor.moveToNext());
+        }
+        adapterGIS = new AdapterReportGIS(listHistoryGIS, lvHistory.getContext());
+        lvHistory.setAdapter(adapterGIS);
+    }
+
     //Populate data list view P2H
     public static void loadLvHistoryP2H(String selectedDate) {
 
@@ -736,6 +786,5 @@ public class HomeFragment extends Fragment {
         adapterLvP2H = new HistoryHomeAdapterP2H(listHistoriesP2H, lvHistory.getContext());
         lvHistory.setAdapter(adapterLvP2H);
     }
-
 
 }
