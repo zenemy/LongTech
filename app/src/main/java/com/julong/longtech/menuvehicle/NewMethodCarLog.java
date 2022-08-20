@@ -21,16 +21,21 @@ import com.julong.longtech.GPSTracker;
 import com.julong.longtech.R;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,8 +60,6 @@ import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static com.julong.longtech.DialogHelper.btnFotoKilometer;
-
 public class NewMethodCarLog extends AppCompatActivity {
 
     DatabaseHelper dbhelper;
@@ -77,15 +80,17 @@ public class NewMethodCarLog extends AppCompatActivity {
     AutoCompleteTextView acWorkCategory, acWorkActivity,
             acEstate, acDivision, acWorkLocation;
 
+    // Dialog KM / HM
+    ImageView btnFotoKilometer;
+
     String selectedCategory, selectedActivity,
             selectedEstate, selectedDivision, selectedBlok, latitudeWork, longitudeWork;
-    byte[] byteImgWorkResult;
-    public static byte[] byteFotoKilometer;
+    byte[] byteImgWorkResult, byteFotoKilometer;
 
     MaterialDatePicker<Long> datePickerVKP;
     ActivityResultLauncher<Intent> intentLaunchCameraHasil, intentLaunchCameraKM;
 
-    List<String> listCategoryCode, listActivityCode, listEstateCode, listDivisionCode;
+    List<String> listCategoryCode, listEstateCode, listDivisionCode;
     List<String> listCategoryName, listActivityName, listEstateName, listDivisionName, listBlokName;
     ArrayAdapter<String> adapterCategory, adapterActivity, adapterEstate, adapterDivision, adapterBlok;
 
@@ -195,7 +200,8 @@ public class NewMethodCarLog extends AppCompatActivity {
         etWorkDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                datePickerVKP.show(getSupportFragmentManager(), "TGLCARLOG");
+                if (!datePickerVKP.isAdded())
+                    datePickerVKP.show(getSupportFragmentManager(), "TGLCARLOG");
             }
         });
 
@@ -240,9 +246,7 @@ public class NewMethodCarLog extends AppCompatActivity {
                     byteFotoKilometer = stream.toByteArray();
                     btnFotoKilometer.setImageBitmap(photoCamera);
                     btnFotoKilometer.setBackground(null);
-
                 }
-
             }
         );
 
@@ -258,7 +262,6 @@ public class NewMethodCarLog extends AppCompatActivity {
             tvInfoVehicle.setText(dbhelper.get_tbl_username(19));
         }
 
-        acWorkActivity.setKeyListener(null);
         acWorkCategory.setKeyListener(null);
         acEstate.setKeyListener(null);
         acDivision.setKeyListener(null);
@@ -285,7 +288,6 @@ public class NewMethodCarLog extends AppCompatActivity {
 
                 // When category selected, populate detailed activity data
                 listActivityName = dbhelper.get_loadcategory(dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)), selectedCategory, 1);
-                listActivityCode = dbhelper.get_loadcategory(dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)), selectedCategory, 0);
                 adapterActivity = new ArrayAdapter<>(NewMethodCarLog.this, R.layout.spinnerlist, R.id.spinnerItem, listActivityName);
                 acWorkActivity.setAdapter(adapterActivity);
             }
@@ -294,7 +296,7 @@ public class NewMethodCarLog extends AppCompatActivity {
         acWorkActivity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedActivity = listActivityCode.get(position);
+                selectedActivity = dbhelper.get_selected_activity(dbhelper.get_vehiclecodegroup(1, dbhelper.get_tbl_username(19)), selectedCategory, adapterActivity.getItem(position));
                 inputLayoutWorkResult.setSuffixText(dbhelper.get_singlekegiatanname(selectedActivity, 1));
             }
         });
@@ -360,9 +362,7 @@ public class NewMethodCarLog extends AppCompatActivity {
         else {
             getLocation();
 
-            String nodocCarLog = dbhelper.get_tbl_username(0) + "/CARLOG/" + new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
-
-            dbhelper.insert_new_carlog(nodocCarLog, etWorkDate.getText().toString(), selectedCategory, selectedActivity, selectedEstate,
+            dbhelper.insert_new_carlog(etWorkDate.getText().toString(), selectedCategory, selectedActivity, selectedEstate,
                     selectedDivision, selectedBlok, etInputWorkResult.getText().toString(), latitudeWork, longitudeWork, byteImgWorkResult);
 
             selectedActivity = null;
@@ -382,7 +382,109 @@ public class NewMethodCarLog extends AppCompatActivity {
     }
 
     public void submitSelesaiCarLog(View v) {
-        dlgHelper.submitSelesaiCarLog(intentLaunchCameraKM, etWorkDate);
+        submitSelesaiCarLog().show();
+    }
+
+    public Dialog submitSelesaiCarLog() {
+        //Showing finishDlg
+        Dialog dlgSelesaiCarLog = new Dialog(this);
+        dlgSelesaiCarLog.setContentView(R.layout.dlg_selesaicarlog);
+        dlgSelesaiCarLog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Window dlgDoneCarLogWindow = dlgSelesaiCarLog.getWindow();
+        dlgDoneCarLogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        // Declare design ID
+        Button btnCancelDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnCancelDlgCarLog);
+        Button btnDoneDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnDoneDlgCarLog);
+        EditText etDateDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etDateDlgCarLog);
+        EditText tvJamAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.tvJamAkhirDlgCarLog);
+        EditText etKMHMAwalDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAwalDlgCarLog);
+        EditText etKMHMAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirDlgCarLog);
+        EditText etNoteDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etNoteDlgCarLog);
+        TextView tvJudulFotoKM = dlgSelesaiCarLog.findViewById(R.id.tvJudulFotoKM);
+        TextInputLayout inputlayoutDlgKmAkhir = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhir);
+        btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
+
+        String currenttdate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+        String currenttime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        etDateDlgCarLog.setText(currenttdate);
+        tvJamAkhirDlgCarLog.setText(currenttime);
+
+        if (dbhelper.get_tbl_username(27) != null) {
+            etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
+        }
+
+        btnCancelDlgCarLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dlgSelesaiCarLog.dismiss();
+                byteFotoKilometer = null;
+                etKMHMAkhirDlgCarLog.setText(null);
+                etNoteDlgCarLog.setText(null);
+            }
+        });
+
+        btnFotoKilometer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    intentLaunchCameraKM.launch(takePictureIntent);
+                }
+            }
+        });
+
+        btnDoneDlgCarLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String currentValue = etKMHMAwalDlgCarLog.getText().toString().replace(",",".");
+
+                if (TextUtils.isEmpty(etKMHMAwalDlgCarLog.getText().toString().trim()) || TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim())) {
+
+                    inputlayoutDlgKmAkhir.setHelperTextEnabled(false);
+                    inputlayoutDlgKmAkhir.setHelperText(null);
+                    inputlayoutDlgKmAkhir.setErrorEnabled(true);
+                    inputlayoutDlgKmAkhir.setError("Wajib diisi!");
+                    Toast.makeText(NewMethodCarLog.this, "Isi info kilometer!", Toast.LENGTH_LONG).show();
+
+                }
+                else if (byteFotoKilometer == null) {
+                    btnFotoKilometer.startAnimation(AnimationUtils.loadAnimation(NewMethodCarLog.this, R.anim.errorshake));
+                    tvJudulFotoKM.startAnimation(AnimationUtils.loadAnimation(NewMethodCarLog.this, R.anim.errorshake));
+                    Toast.makeText(NewMethodCarLog.this, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
+                }
+                else if (Float.parseFloat(currentValue) > Float.parseFloat(etKMHMAkhirDlgCarLog.getText().toString())) {
+                    Toast.makeText(NewMethodCarLog.this, "Kilometer akhir salah", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    //Replace dot with comma
+                    String newStartValue = etKMHMAwalDlgCarLog.getText().toString().replace(".",",");
+                    etKMHMAwalDlgCarLog.setText(newStartValue);
+                    String newEndValue = etKMHMAkhirDlgCarLog.getText().toString().replace(".",",");
+                    etKMHMAkhirDlgCarLog.setText(newEndValue);
+
+                    dbhelper.update_kmhm(etKMHMAkhirDlgCarLog.getText().toString());
+                    dbhelper.submitNewCarLog(etKMHMAwalDlgCarLog.getText().toString(), etKMHMAkhirDlgCarLog.getText().toString(),
+                            etNoteDlgCarLog.getText().toString(), byteFotoKilometer);
+
+                    dlgSelesaiCarLog.dismiss();
+
+                    SweetAlertDialog okCarLogDlg = new SweetAlertDialog(NewMethodCarLog.this, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai");
+                    okCarLogDlg.setCancelable(false);
+                    okCarLogDlg.setCanceledOnTouchOutside(false);
+                    okCarLogDlg.setConfirmClickListener(sweetAlertDialog -> {
+                        byteFotoKilometer = null;
+                        Intent backIntent = new Intent();
+                        backIntent.putExtra("workdate", etWorkDate.getText().toString());
+                        setResult(3, backIntent);
+                        finish();
+                    }).setConfirmText("OK").show();
+                }
+            }
+        });
+
+        return dlgSelesaiCarLog;
     }
 
     public static void loadListViewCarLogs(Context activityContext) {

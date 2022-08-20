@@ -37,11 +37,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
     public static int versionNumber = 1;
-    public static String versionName = "Version 0.15.1";
+    public static String versionName = "Version 0.16";
     Context activityContext;
 
     public DatabaseHelper(Context context) {
-        super(context, "db_dsi.db", null, 37);
+        super(context, "db_dsi.db", null, 38);
         activityContext = context;
     }
 
@@ -805,17 +805,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_verifikasigis_header(String nodoc, String tglunitkerja, String vehiclecode, String drivercode, String lokasi,
-                                       String kegiatan, String satuankerja, String hasilverifikasi, String catatanSOP) {
+    public boolean insert_verifikasigis_header(String nodocGIS, String nodocCarLog, String tglunitkerja, String vehiclecode, String drivercode, String lokasi,
+                                       String kegiatan, String satuankerja, String hasilverifikasi, String catatanSOP, int uploaded) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         ContentValues contentValues = new ContentValues();
-        contentValues.put("documentno", nodoc);
+        contentValues.put("documentno", nodocGIS);
         contentValues.put("datatype", "GISVH");
         contentValues.put("subdatatype", get_tbl_username(8));
         contentValues.put("comp_id", get_tbl_username(14));
         contentValues.put("site_id", get_tbl_username(15));
         contentValues.put("date1", savedate);
+        contentValues.put("date2", savedate);
         contentValues.put("date3", tglunitkerja);
         contentValues.put("text1", vehiclecode);
         contentValues.put("text2", drivercode);
@@ -824,6 +825,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text5", satuankerja);
         contentValues.put("text6", hasilverifikasi);
         contentValues.put("text7", catatanSOP);
+        contentValues.put("text8", nodocCarLog);
+        contentValues.put("uploaded", uploaded);
 
         long insert = db.insert("tr_01", null, contentValues);
         if (insert == -1) {
@@ -832,6 +835,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
     public boolean insert_verifikasigis_detail(String nodoc, String latitude, String longitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -852,19 +856,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         } else {
             return true;
-        }
-    }
-
-    public String get_kmhmunit(String vehiclecode) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT IFNULL(text28, '') AS kmhm FROM md_01 WHERE " +
-                "datatype = 'VEHICLE' AND subdatatype = '" + vehiclecode + "';", null);
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            cursor.moveToPosition(0);
-            return cursor.getString(0).toString();
-        } else {
-            return null;
         }
     }
 
@@ -1427,7 +1418,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValuesBL01.put("uploaded", 0);
 
         long updateTR01 = db.update("tr_01", contentValuesTR01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
-        long updateBL01 = db.update("bl_01", contentValuesBL01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
+        db.update("bl_01", contentValuesBL01, "datatype = 'CARLOG' AND uploaded IS NULL", null);
         if (updateTR01 == -1) {
             return false;
         } else {
@@ -1495,13 +1486,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insert_new_carlog(String documentNumber, String workDate, String jenismuatan, String kategorimuatan, String tujuankebun,
+    public boolean insert_new_carlog(String workDate, String jenismuatan, String kategorimuatan, String tujuankebun,
                                      String tujuandivisi, String tujuanlokasi, String hasilkerja,
                                      String latitude, String longitude, byte[] fotohasilkerja) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         String savetime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        String documentNumber = get_tbl_username(0) + "/CARLOG/" +
+                new SimpleDateFormat("ddMMyy/HHmmss", Locale.getDefault()).format(new Date());
+
         contentValues.put("documentno", documentNumber);
         contentValues.put("datatype", "CARLOG");
         contentValues.put("subdatatype", get_tbl_username(0));
@@ -1520,6 +1514,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text21", get_tbl_username(20));
 
         ContentValues contentValuesPhoto = new ContentValues();
+        contentValues.put("documentno", documentNumber);
         contentValuesPhoto.put("datatype", "CARLOG");
         contentValuesPhoto.put("subdatatype", get_tbl_username(0));
         contentValuesPhoto.put("itemdata", "HEADER");
@@ -1902,7 +1897,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     //Finish get Name based on its code
 
-
+    public String get_selected_activity(String vehiclegroup, String loadtype, String activityName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT DISTINCT text5 FROM md_01 " +
+                "WHERE datatype = 'TRANSPORTRATE' AND text1 = '"+vehiclegroup+"' " +
+                "AND text3 = '"+loadtype+"' AND text6 = '"+activityName+"'", null);
+        cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            cursor.moveToPosition(0);
+            return cursor.getString(0).toString();
+        } else {
+            return null;
+        }
+    }
 
     public String get_statusrkh(int index) {
         SQLiteDatabase db = this.getReadableDatabase();

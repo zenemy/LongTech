@@ -87,10 +87,12 @@ import static com.julong.longtech.DatabaseHelper.url_api;
 import static com.julong.longtech.ui.home.HomeFragment.acMenuRiwayatHome;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryApel;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryCarLog;
+import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryGIS;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryP2H;
 import static com.julong.longtech.ui.home.HomeFragment.loadLvHistoryRKH;
 import static com.julong.longtech.ui.home.HomeFragment.loadlvinfohome;
 import static com.julong.longtech.ui.home.HomeFragment.lvfragment;
+import static com.julong.longtech.ui.home.HomeFragment.selectedHistoryMenu;
 import static com.julong.longtech.ui.home.HomeFragment.tvPlaceholder;
 
 public class MainActivity extends AppCompatActivity {
@@ -224,6 +226,30 @@ public class MainActivity extends AppCompatActivity {
 
                     adapterMenuHistory = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayMenuHistoryName);
                     acMenuRiwayatHome.setAdapter(adapterMenuHistory);
+
+                    acMenuRiwayatHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                            try {
+                                selectedHistoryMenu = arrayMenuHistoryCode.get(position);
+
+                                if (selectedHistoryMenu.equals("010105")) {
+                                    loadLvHistoryApel(todayDate);
+                                } else if (selectedHistoryMenu.equals("020202")) {
+                                    loadLvHistoryP2H(todayDate);
+                                } else if (selectedHistoryMenu.equals("020203")) {
+                                    loadLvHistoryCarLog(todayDate);
+                                } else if (selectedHistoryMenu.equals("020201")) {
+                                    loadLvHistoryRKH(todayDate);
+                                } else if (selectedHistoryMenu.equals("020207")) {
+                                    loadLvHistoryGIS(todayDate);
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 }
         );
 

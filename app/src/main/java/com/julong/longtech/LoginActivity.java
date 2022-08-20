@@ -222,16 +222,18 @@ public class LoginActivity extends AppCompatActivity {
                 pDialog.show();
                 try {
                     String[] decryptedValue = AESEnkrip.decrypt(dbhelper.get_tbl_username(5)).split(";");
-
                     boolean checkDecryptPassword = hashPassword.CheckPassword(decryptedValue[1], dbhelper.get_tbl_username(4));
 
                     if (decryptedValue[0].equals(dbhelper.get_tbl_username(0)) && checkDecryptPassword) {
                         et_username.setText(dbhelper.get_tbl_username(1));
                         et_password.setText(decryptedValue[1]);
                         btnlogin.performClick();
+                    } else {
+                        pDialog.dismiss();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    pDialog.dismiss();
                 }
             }
 

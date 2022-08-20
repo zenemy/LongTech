@@ -1,5 +1,7 @@
 package com.julong.longtech.menureport;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,8 +61,8 @@ public class ReportActivity extends AppCompatActivity {
     String selectedReportGroup, selectedReportMenu, selectedDate, selectedTeamCode;
 
     EditText etDateReport;
-    AutoCompleteTextView acSelectReportMenu, acVehicleReport, acTeamSelect;
-    TextInputLayout inputLayoutAcVehicle, inputLayoutDate, inputLayoutTeamSelect;
+    AutoCompleteTextView acCarLogVerified, acSelectReportMenu, acVehicleReport, acTeamSelect;
+    TextInputLayout inputLayoutAcVehicle, inputLayoutDate, inputLayoutTeamSelect, inputLayoutVerified;
     RecyclerView lvReport;
     Button btnResetReport;
 
@@ -82,6 +84,9 @@ public class ReportActivity extends AppCompatActivity {
     List<ListReportGIS> listReportGIS;
     AdapterReportGIS adapterLvGIS;
 
+    String[] arrayVerifiedCarLog = {"SUDAH VERIFIKASI", "BELUM VERIFIKASI"};
+    ArrayAdapter<String> adapterVerified;
+
     ArrayList<String> listReportMenuGroup = new ArrayList<>();
     ArrayList<String> listReportMenuName = new ArrayList<>();
     ArrayList<String> listReportMenuCode = new ArrayList<>();
@@ -93,6 +98,8 @@ public class ReportActivity extends AppCompatActivity {
     private List<String> listTeamName, listTeamCode;
     ArrayAdapter<String> adapterTeamSelect;
 
+    ActivityResultLauncher<Intent> intentLaunchActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,11 +110,13 @@ public class ReportActivity extends AppCompatActivity {
         lvReport = findViewById(R.id.lvReportCarLog);
         acTeamSelect = findViewById(R.id.acSelectTeamReport);
         etDateReport = findViewById(R.id.etDateReportActivity);
+        acCarLogVerified = findViewById(R.id.acCarLogVerifiedGIS);
         acVehicleReport = findViewById(R.id.acUnitReportActivity);
         acSelectReportMenu = findViewById(R.id.acSelectReportMenu);
         inputLayoutDate = findViewById(R.id.inputLayoutDateReport);
         btnResetReport = findViewById(R.id.btnResetReportActivity);
         inputLayoutTeamSelect = findViewById(R.id.inputLayoutTeamReport);
+        inputLayoutVerified = findViewById(R.id.inputLayoutAcVerifiedGIS);
         inputLayoutAcVehicle = findViewById(R.id.inputLayoutAcVehicleRpeort);
 
         progressDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
@@ -122,6 +131,7 @@ public class ReportActivity extends AppCompatActivity {
                 selectedReportMenu = null;
                 selectedTeamCode = null;
                 etDateReport.setText(null);
+                acCarLogVerified.setText(null);
                 acSelectReportMenu.setText(null);
                 acTeamSelect.setText(null);
                 acVehicleReport.setText(null);
@@ -142,6 +152,11 @@ public class ReportActivity extends AppCompatActivity {
         MaterialDatePicker<Long> reportDatepicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
 
         etDateReport.setOnClickListener(v -> reportDatepicker.show(getSupportFragmentManager(), "REPORT_DATEPICKER"));
+
+        // Populate dropdown Tipe Pekerjaan
+        acCarLogVerified.setKeyListener(null);
+        adapterVerified = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayVerifiedCarLog);
+        acCarLogVerified.setAdapter(adapterVerified);
 
         reportDatepicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
@@ -167,11 +182,18 @@ public class ReportActivity extends AppCompatActivity {
                 selectedReportMenu = listReportMenuCode.get(position);
 
                 if (selectedReportMenu.equals("020202")) {
+                    inputLayoutVerified.setVisibility(View.GONE);
                     inputLayoutAcVehicle.setVisibility(View.VISIBLE);
+                    inputLayoutDate.setPadding(6, 0, 0, 0);
+                }
+                else if (selectedReportMenu.equals("020203")) {
+                    inputLayoutAcVehicle.setVisibility(View.GONE);
+                    inputLayoutVerified.setVisibility(View.VISIBLE);
                     inputLayoutDate.setPadding(6, 0, 0, 0);
                 }
                 else {
                     inputLayoutAcVehicle.setVisibility(View.GONE);
+                    inputLayoutVerified.setVisibility(View.GONE);
                     inputLayoutDate.setPadding(0, 0, 0, 0);
                 }
             }
@@ -183,8 +205,26 @@ public class ReportActivity extends AppCompatActivity {
                 selectedTeamCode = listTeamCode.get(position);
             }
         });
-    }
 
+        intentLaunchActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+
+                if (result.getResultCode() == 727) {
+                    selectedTeamCode = result.getData().getStringExtra("teamcode");
+                    selectedDate = result.getData().getStringExtra("workdate");
+
+                    inputLayoutVerified.setVisibility(View.VISIBLE);
+                    acCarLogVerified.setText("SUDAH VERIFIKASI");
+                    etDateReport.setText(selectedDate);
+                    loadLvReportCarLogVerified(selectedTeamCode, 1);
+
+                    adapterVerified = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayVerifiedCarLog);
+                    acCarLogVerified.setAdapter(adapterVerified);
+                }
+            }
+        );
+    }
 
     public void showReport(View v) {
         progressDialog.show();
@@ -203,7 +243,11 @@ public class ReportActivity extends AppCompatActivity {
             loadLvReportP2H(acVehicleReport.getText().toString());
         }
         else if (selectedReportMenu.equals("020203")) {
-            loadLvReportCarLog(selectedTeamCode);
+            if (acCarLogVerified.getText().toString().equals("BELUM VERIFIKASI")) {
+                loadLvReportCarLogUnverified(selectedTeamCode, 0);
+            } else if (acCarLogVerified.getText().toString().equals("SUDAH VERIFIKASI")) {
+                loadLvReportCarLogVerified(selectedTeamCode, 1);
+            }
         }
         else if (selectedReportMenu.equals("030101")) {
             loadLvReportMintaBBM();
@@ -261,7 +305,7 @@ public class ReportActivity extends AppCompatActivity {
         acVehicleReport.setAdapter(adapterVehicleReport);
     }
 
-    private void loadLvReportCarLog(String teamcode) {
+    private void loadLvReportCarLogVerified(String teamcode, int isVerified) {
 
         LinearLayoutManager layoutReport = new LinearLayoutManager(this);
         lvReport.setLayoutManager(layoutReport);
@@ -270,7 +314,7 @@ public class ReportActivity extends AppCompatActivity {
         listReportCarLogs.clear();
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url_data = url_api + "fetchdata/reportmenu/report_carlog.php?selectdate="+ selectedDate + "&teamcode=" + teamcode;
+        String url_data = url_api + "fetchdata/reportmenu/report_carlog_verified.php?selectdate="+ selectedDate + "&teamcode=" + teamcode;
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -298,7 +342,62 @@ public class ReportActivity extends AppCompatActivity {
                         listReportCarLogs.add(paramsCarLogReport);
                         i++;
                     }
-                    adapterLvCarlog = new AdapterReportCarLog(listReportCarLogs, ReportActivity.this);
+                    adapterLvCarlog = new AdapterReportCarLog(listReportCarLogs, ReportActivity.this,
+                            intentLaunchActivity, isVerified, teamcode);
+                    lvReport.setAdapter(adapterLvCarlog);
+                    progressDialog.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, error -> {
+            error.printStackTrace();
+            progressDialog.dismiss();
+            new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
+                    .setContentText("Empty Data").show();
+        });
+        requestQueue.add(jsonRequest);
+    }
+
+    private void loadLvReportCarLogUnverified(String teamcode, int isVerified) {
+
+        LinearLayoutManager layoutReport = new LinearLayoutManager(this);
+        lvReport.setLayoutManager(layoutReport);
+
+        listReportCarLogs = new ArrayList<>();
+        listReportCarLogs.clear();
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url_data = url_api + "fetchdata/reportmenu/report_carlog_unverified.php?selectdate="+ selectedDate + "&teamcode=" + teamcode;
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("REPORTCARLOG");
+                    int i = 0;
+                    while (i < jsonArray.length()) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        ListReportCarLog paramsCarLogReport = new ListReportCarLog(
+                                jsonObject1.getString("DOCUMENTNO"),
+                                jsonObject1.getString("TGLINPUT"),
+                                jsonObject1.getString("JAMINPUT"),
+                                jsonObject1.getString("VEHICLE"),
+                                jsonObject1.getString("FIRSTNAME"),
+                                jsonObject1.getString("LASTNAME"),
+                                jsonObject1.getString("EMPCODE"),
+                                jsonObject1.getString("EMPNAME"),
+                                jsonObject1.getString("LOCATION"),
+                                jsonObject1.getString("ACTIVITY"),
+                                jsonObject1.getString("HASILKERJA"),
+                                jsonObject1.getString("SATUANKERJA"),
+                                jsonObject1.getString("KMAWAL"),
+                                jsonObject1.getString("KMAKHIR")
+                        );
+                        listReportCarLogs.add(paramsCarLogReport);
+                        i++;
+                    }
+                    adapterLvCarlog = new AdapterReportCarLog(listReportCarLogs, ReportActivity.this,
+                            intentLaunchActivity, isVerified, teamcode);
                     lvReport.setAdapter(adapterLvCarlog);
                     progressDialog.dismiss();
                 } catch (JSONException e) {

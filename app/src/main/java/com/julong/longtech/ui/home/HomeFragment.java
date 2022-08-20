@@ -92,8 +92,9 @@ public class HomeFragment extends Fragment {
     EditText etDatepickerHistory;
     Button btnDateLvInfo;
     ImageButton btnrefresh, openDrawerBtn;
-    String todayDate, todayDateTime, selectedHistoryMenu;
+    String todayDate, todayDateTime;
 
+    public static String selectedHistoryMenu;
     ConstraintLayout clBgMainActivity, layoutInfoFragment;
     public static LinearLayout layoutRiwayatFragment, linearLayoutQR, linearLayoutAbsen, linearLayoutRKH, linearLayoutP2H,
             linearLayoutCarLog, linearLayoutBBM, linearLayoutService, linearLayoutApel, linearLayoutGIS, linearLayoutReport;
@@ -194,7 +195,8 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), "Pilih menu dahulu!", Toast.LENGTH_LONG).show();
                 }
                 else { // Show datepicker to filter history(riwayat)
-                    datePickerLvHistory.show(getParentFragmentManager(), "HISTORYHOME");
+                    if (!datePickerLvHistory.isAdded())
+                        datePickerLvHistory.show(getParentFragmentManager(), "HISTORYHOME");
                 }
 
             }
@@ -231,7 +233,8 @@ public class HomeFragment extends Fragment {
         btnDateLvInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerLvInfo.show(getParentFragmentManager(), "INFOHOMIE");
+                if (!datePickerLvInfo.isAdded())
+                    datePickerLvInfo.show(getParentFragmentManager(), "INFOHOMIE");
             }
         });
 

@@ -88,9 +88,6 @@ public class DialogHelper extends Dialog {
     private List<String> listDivisionNameRKH, listDivisionCodeRKH, listBlokRKH;
     ArrayAdapter<String> adapterDivisionRKH, adapterBlok;
 
-    // Dialog CarLog
-    public static ImageView btnFotoKilometer;
-
     public DialogHelper(Context context) {
         super(context);
         activityContext = context;
@@ -490,111 +487,6 @@ public class DialogHelper extends Dialog {
         dlgAddDetailRKH.show();
         return dlgAddDetailRKH;
 
-    }
-
-    public Dialog submitSelesaiCarLog(ActivityResultLauncher<Intent> intentFotoKM, EditText etWorkDate) {
-        //Showing finishDlg
-        Dialog dlgSelesaiCarLog = new Dialog(activityContext);
-        dlgSelesaiCarLog.setContentView(R.layout.dlg_selesaicarlog);
-        dlgSelesaiCarLog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        Window dlgDoneCarLogWindow = dlgSelesaiCarLog.getWindow();
-        dlgDoneCarLogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        Button btnCancelDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnCancelDlgCarLog);
-        Button btnDoneDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnDoneDlgCarLog);
-        EditText etDateDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etDateDlgCarLog);
-        EditText tvJamAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.tvJamAkhirDlgCarLog);
-        EditText etKMHMAwalDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAwalDlgCarLog);
-        EditText etKMHMAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirDlgCarLog);
-        EditText etNoteDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etNoteDlgCarLog);
-        TextView tvJudulFotoKM = dlgSelesaiCarLog.findViewById(R.id.tvJudulFotoKM);
-        TextInputLayout inputlayoutDlgKmAkhir = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhir);
-        btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
-
-        String currenttdate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-        String currenttime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        etDateDlgCarLog.setText(currenttdate);
-        tvJamAkhirDlgCarLog.setText(currenttime);
-
-        if (dbhelper.get_tbl_username(27) != null) {
-            etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
-        }
-
-        dlgSelesaiCarLog.show();
-
-        btnCancelDlgCarLog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dlgSelesaiCarLog.dismiss();
-                NewMethodCarLog.byteFotoKilometer = null;
-                etKMHMAkhirDlgCarLog.setText(null);
-                etNoteDlgCarLog.setText(null);
-            }
-        });
-
-        btnFotoKilometer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(activityContext.getPackageManager()) != null) {
-                    intentFotoKM.launch(takePictureIntent);
-                }
-            }
-        });
-
-        btnDoneDlgCarLog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String currentValue = etKMHMAwalDlgCarLog.getText().toString().replace(",",".");
-
-                if (TextUtils.isEmpty(etKMHMAwalDlgCarLog.getText().toString().trim()) || TextUtils.isEmpty(etKMHMAkhirDlgCarLog.getText().toString().trim())) {
-
-                    inputlayoutDlgKmAkhir.setHelperTextEnabled(false);
-                    inputlayoutDlgKmAkhir.setHelperText(null);
-                    inputlayoutDlgKmAkhir.setErrorEnabled(true);
-                    inputlayoutDlgKmAkhir.setError("Wajib diisi!");
-                    Toast.makeText(activityContext, "Isi info kilometer!", Toast.LENGTH_LONG).show();
-
-                }
-                else if (NewMethodCarLog.byteFotoKilometer == null) {
-                    btnFotoKilometer.startAnimation(AnimationUtils.loadAnimation(activityContext, R.anim.errorshake));
-                    tvJudulFotoKM.startAnimation(AnimationUtils.loadAnimation(activityContext, R.anim.errorshake));
-                    Toast.makeText(activityContext, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
-                }
-                else if (Float.parseFloat(currentValue) > Float.parseFloat(etKMHMAkhirDlgCarLog.getText().toString())) {
-                    Toast.makeText(activityContext, "Kilometer akhir salah", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    //Replace dot with comma
-                    String newStartValue = etKMHMAwalDlgCarLog.getText().toString().replace(".",",");
-                    etKMHMAwalDlgCarLog.setText(newStartValue);
-                    String newEndValue = etKMHMAkhirDlgCarLog.getText().toString().replace(".",",");
-                    etKMHMAkhirDlgCarLog.setText(newEndValue);
-
-                    dbhelper.update_kmhm(etKMHMAkhirDlgCarLog.getText().toString());
-                    dbhelper.submitNewCarLog(etKMHMAwalDlgCarLog.getText().toString(), etKMHMAkhirDlgCarLog.getText().toString(),
-                            etNoteDlgCarLog.getText().toString(), NewMethodCarLog.byteFotoKilometer);
-
-                    dlgSelesaiCarLog.dismiss();
-
-                    SweetAlertDialog okCarLogDlg = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE).setTitleText("Pekerjaan Selesai");
-                    okCarLogDlg.setCancelable(false);
-                    okCarLogDlg.setCanceledOnTouchOutside(false);
-                    okCarLogDlg.setConfirmClickListener(sweetAlertDialog -> {
-                        NewMethodCarLog.byteFotoKilometer = null;
-                        Intent backIntent = new Intent();
-                        backIntent.putExtra("workdate", etWorkDate.getText().toString());
-                        ((Activity) activityContext).setResult(3, backIntent);
-                        ((Activity) activityContext).finish();
-                    }).setConfirmText("OK").show();
-
-
-                }
-
-            }
-        });
-
-        return dlgSelesaiCarLog;
     }
 
 

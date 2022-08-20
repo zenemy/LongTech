@@ -109,8 +109,6 @@ public class DownloadData extends AppCompatActivity {
         paramsMD.put("gangcode", dbhelper.get_tbl_username(18));
         JSONObject postParametersMD = new JSONObject(paramsMD);
 
-        Log.d("postm", String.valueOf(postParametersMD));
-
         // Downloading MD
         RequestQueue requestQueueDownloadMD = Volley.newRequestQueue(this);
         String url_md = DatabaseHelper.url_api + "fetchdata/get_masterdatapost.php";

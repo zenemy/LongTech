@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,10 +31,19 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
     private Context mContext;
     private DatabaseHelper dbhelper;
 
+    int isVerified;
+    String teamCode;
+
+    ActivityResultLauncher<Intent> intentLaunchGIS;
+
     // Counstructor for the Class
-    public AdapterReportCarLog(List carLogList, Context context) {
+    public AdapterReportCarLog(List carLogList, Context context, ActivityResultLauncher<Intent> intentLaunchGIS,
+                               int isVerified, String teamCode) {
         this.carLogList = carLogList;
         this.mContext = context;
+        this.intentLaunchGIS = intentLaunchGIS;
+        this.isVerified = isVerified;
+        this.teamCode = teamCode;
         dbhelper = new DatabaseHelper(context);
     }
 
@@ -71,17 +81,23 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
         holder.layoutCarLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (dbhelper.get_tbl_username(3).equals("SPV-TRS")
-                        || dbhelper.get_tbl_username(2).equals("GIS") || dbhelper.get_tbl_username(3).equals("GIS")) {
-                    Intent intent = new Intent(mContext, VerifikasiGIS.class);
-                    intent.putExtra("nodoc", carLogReports.getDocumentNumber());
-                    intent.putExtra("workdate", carLogReports.getTglCarLog());
-                    intent.putExtra("unitcode", carLogReports.getUnitCarLog());
-                    intent.putExtra("drivername", carLogReports.getEmployeeName());
-                    intent.putExtra("drivercode", carLogReports.getEmployeeCode());
-                    intent.putExtra("kegiatanunit", carLogReports.getActivityLog());
-                    intent.putExtra("blokcode", carLogReports.getBlokCode());
-                    mContext.startActivity(intent);
+                if (isVerified == 1) {
+
+                } else if (isVerified == 0) {
+                    if (dbhelper.get_tbl_username(3).equals("SPV-TRS")
+                            || dbhelper.get_tbl_username(2).equals("GIS")
+                            || dbhelper.get_tbl_username(3).equals("GIS")) {
+                        Intent intent = new Intent(mContext, VerifikasiGIS.class);
+                        intent.putExtra("teamcode", teamCode);
+                        intent.putExtra("nodoc", carLogReports.getDocumentNumber());
+                        intent.putExtra("workdate", carLogReports.getTglCarLog());
+                        intent.putExtra("unitcode", carLogReports.getUnitCarLog());
+                        intent.putExtra("drivername", carLogReports.getEmployeeName());
+                        intent.putExtra("drivercode", carLogReports.getEmployeeCode());
+                        intent.putExtra("kegiatanunit", carLogReports.getActivityLog());
+                        intent.putExtra("blokcode", carLogReports.getBlokCode());
+                        intentLaunchGIS.launch(intent);
+                    }
                 }
             }
         });

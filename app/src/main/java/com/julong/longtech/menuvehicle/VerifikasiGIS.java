@@ -1,9 +1,18 @@
 package com.julong.longtech.menuvehicle;
 
+import static com.julong.longtech.DatabaseHelper.url_api;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -13,7 +22,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.DialogHelper;
 import com.julong.longtech.GPSTracker;
+import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
+import com.julong.longtech.menuinventory.PengeluaranBBM;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,12 +49,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -71,7 +87,7 @@ public class VerifikasiGIS extends AppCompatActivity {
     private boolean isRunning;
     public static byte[] byteFotoGIS;
     public static String selectedDriverGIS, selectedVehicleGIS;
-    String nodocCarLog, selectedDate, selectedVehicleGroup, selectedLokasiGIS,
+    String nodocCarLog, selectedTeamCode, selectedDate, selectedVehicleGroup, selectedLokasiGIS,
             selectedKegiatanGIS, selectedSatuanKegiatan, latGIS, longGIS;
     public static String nodocVerifikasiGIS;
 
@@ -115,6 +131,7 @@ public class VerifikasiGIS extends AppCompatActivity {
 
             nodocCarLog = extras.getString("nodoc");
             selectedDate = extras.getString("workdate");
+            selectedTeamCode = extras.getString("teamcode");
             selectedDriverGIS = dbhelper.get_empcode(0, acDriverGIS.getText().toString());
             selectedVehicleGIS = acVehicleGIS.getText().toString();
             selectedKegiatanGIS = dbhelper.get_singlekegiatancode(acKegiatanGIS.getText().toString());
@@ -134,6 +151,18 @@ public class VerifikasiGIS extends AppCompatActivity {
             inputLayoutHasilGIS.setSuffixText(selectedSatuanKegiatan);
             inputLayoutHasilGIS.setEnabled(true);
             btnTagLocation.setVisibility(View.VISIBLE);
+        } else {
+            SweetAlertDialog dlgFinish = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
+            dlgFinish.setCancelable(false);
+            dlgFinish.setContentText("Data Car Log tidak ada");
+            dlgFinish.setConfirmClickListener(sweetAlertDialog -> {
+                Intent loginIntent = new Intent(this, MainActivity.class);
+                loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(loginIntent);
+            });
+            dlgFinish.setConfirmText("OK").show();
         }
 
         prepareHeaderData();
@@ -383,8 +412,6 @@ public class VerifikasiGIS extends AppCompatActivity {
 
     }
 
-
-
     // Finish verification work
     public void eventSubmitVerifikasi(View v) {
         if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
@@ -399,10 +426,84 @@ public class VerifikasiGIS extends AppCompatActivity {
         }
         else {
             loadListViewKoordinat();
-            dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, selectedDate, selectedVehicleGIS, selectedDriverGIS,
-                    selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
-                    etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString());
-            dialogHelper.showSummaryVerifikasiGIS(adapterKoordinatGIS.getCount());
+
+            String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
+            RequestQueue requestQueueGIS = Volley.newRequestQueue(this);
+            String url_uploadbbm = url_api + "dataupload/uploadverifgis.php";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_uploadbbm, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonPostUploadBBM = new JSONObject(response);
+                        if (jsonPostUploadBBM.getString("UPLOADBBM").equals("SUCCESS")) {
+                            dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, nodocCarLog, selectedDate, selectedVehicleGIS, selectedDriverGIS,
+                                    selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
+                                    etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString(), 1);
+                            SweetAlertDialog dlgFinish = new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.SUCCESS_TYPE);
+                            dlgFinish.setCancelable(false);
+                            dlgFinish.setTitleText("Berhasil Simpan");
+                            dlgFinish.setConfirmText("SELESAI");
+                            dlgFinish.setConfirmClickListener(sweetAlertDialog -> {
+                                Intent backIntent = new Intent();
+                                backIntent.putExtra("workdate", selectedDate);
+                                backIntent.putExtra("teamcode", selectedTeamCode);
+                                setResult(727, backIntent);
+                                finish();
+                            });
+                            dlgFinish.setConfirmText("OK").show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    requestQueueGIS.stop();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    requestQueueGIS.stop();
+                    dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, nodocCarLog, selectedDate, selectedVehicleGIS, selectedDriverGIS,
+                            selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
+                            etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString(), 1);
+                    SweetAlertDialog dlgFinish = new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.SUCCESS_TYPE);
+                    dlgFinish.setCancelable(false);
+                    dlgFinish.setConfirmText("SELESAI");
+                    dlgFinish.setConfirmClickListener(sweetAlertDialog -> {
+                        Intent backIntent = new Intent();
+                        backIntent.putExtra("workdate", selectedDate);
+                        backIntent.putExtra("teamcode", selectedTeamCode);
+                        setResult(727, backIntent);
+                        finish();
+                    });
+                    dlgFinish.setConfirmText("OK").show();
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("nodoc", nodocVerifikasiGIS);
+                    params.put("datatype", "GISVH");
+                    params.put("subdatatype", dbhelper.get_tbl_username(0));
+                    params.put("compid", dbhelper.get_tbl_username(14));
+                    params.put("siteid", dbhelper.get_tbl_username(15));
+                    params.put("date1", savedate);
+                    params.put("date2", savedate);
+                    params.put("date3", selectedDate);
+                    params.put("text1", selectedVehicleGIS);
+                    params.put("text2", selectedDriverGIS);
+                    params.put("text3", selectedLokasiGIS);
+                    params.put("text4", selectedKegiatanGIS);
+                    params.put("text5", selectedSatuanKegiatan);
+                    params.put("text6", etHasilVerifikasi.getText().toString());
+                    params.put("text7", etSesuaiSOP.getText().toString());
+                    params.put("text8", nodocCarLog);
+                    params.put("userid", dbhelper.get_tbl_username(0));
+                    return params;
+                }
+            };
+            requestQueueGIS.add(stringRequest);
+
         }
     }
 
@@ -434,11 +535,8 @@ public class VerifikasiGIS extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         SQLiteDatabase db = dbhelper.getWritableDatabase();
-
         db.execSQL("DELETE FROM tr_01 WHERE datatype = 'GISVH' AND uploaded IS NULL");
         db.execSQL("DELETE FROM tr_02 WHERE datatype = 'GISVH' AND uploaded IS NULL");
-        Intent backIntent = new Intent();
-        setResult(727, backIntent);
         finish();
     }
 }
