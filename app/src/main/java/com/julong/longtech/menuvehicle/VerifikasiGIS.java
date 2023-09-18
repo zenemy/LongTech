@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -66,30 +67,25 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class VerifikasiGIS extends AppCompatActivity {
 
-    public static AutoCompleteTextView acLokasiGIS, acKegiatanGIS;
-    public static EditText etHasilVerifikasi, etDateGIS, etSesuaiSOP;
+    AutoCompleteTextView acLokasiGIS, acKegiatanGIS;
+    EditText etHasilVerifikasi, etHasilOperator, etDateGIS, etSesuaiSOP, etDescOpr, etLokasiOpr;
 
     AutoCompleteTextView acDriverGIS, acVehicleGIS;
-    TextInputLayout inputLayoutHasilGIS;
-    Button btnStartInterval, btnStopInterval, btnSubmitGIS, btnBackGIS;
-    ImageButton imgTakePictGIS;
-    FloatingActionButton btnTagLocation;
-    ListView lvKoordinat;
+    TextInputLayout inputLayoutHasilGIS, inputLayoutHasilOpr;
+    Button btnSubmitGIS, btnBackGIS;
+    ImageView imgTakePicGIS;
     LinearLayout layoutBtnVerifikasi;
 
-    private List<ListParamGIS> listParamGIS;
-    AdapterKoordinatGIS adapterKoordinatGIS;
     MaterialDatePicker<Long> datePickerRKH;
 
     private List<String> listVehicleGIS, listLokasiGIS, listDriverGIS, listKegiatanGIS;
     ArrayAdapter<String> adapterVehicleGIS, adapterDriverGIS, adapterLokasiGIS, adapterKegiatanGIS;
 
-    private boolean isRunning;
-    public static byte[] byteFotoGIS;
-    public static String selectedDriverGIS, selectedVehicleGIS;
+    byte[] byteFotoGIS;
+    String selectedDriverGIS, selectedVehicleGIS;
     String nodocCarLog, selectedTeamCode, selectedDate, selectedVehicleGroup, selectedLokasiGIS,
             selectedKegiatanGIS, selectedSatuanKegiatan, latGIS, longGIS;
-    public static String nodocVerifikasiGIS;
+    String nodocVerifikasiGIS;
 
     DatabaseHelper dbhelper;
     DialogHelper dialogHelper;
@@ -110,23 +106,26 @@ public class VerifikasiGIS extends AppCompatActivity {
         acVehicleGIS = findViewById(R.id.acVehicleGIS);
         btnSubmitGIS = findViewById(R.id.btnSubmitGIS);
         etSesuaiSOP = findViewById(R.id.etSesuaiSOPGIS);
-        lvKoordinat = findViewById(R.id.lvKoordinatGIS);
         acKegiatanGIS = findViewById(R.id.acKegiatanGIS);
-        etHasilVerifikasi = findViewById(R.id.etHasilGIS);
-        imgTakePictGIS = findViewById(R.id.imgTakePictGIS);
-        btnTagLocation = findViewById(R.id.btnTagLocationGIS);
-        btnStopInterval = findViewById(R.id.btnStopIntervalGIS);
-        btnStartInterval = findViewById(R.id.btnStartIntervalGIS);
+        imgTakePicGIS = findViewById(R.id.imgTakePictGIS);
+        etDescOpr = findViewById(R.id.etOprDescVerification);
+        etLokasiOpr = findViewById(R.id.etLokasiOprVerification);
+        etHasilOperator = findViewById(R.id.etHasilOprVerification);
+        etHasilVerifikasi = findViewById(R.id.etHasilVerificationGIS);
         inputLayoutHasilGIS = findViewById(R.id.inputLayoutHasilGIS);
         layoutBtnVerifikasi = findViewById(R.id.layoutBtnVerifikasi);
+        inputLayoutHasilOpr = findViewById(R.id.inputLayoutHasilOprVerification);
 
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
             etDateGIS.setText(extras.getString("workdate"));
             acLokasiGIS.setText(extras.getString("blokcode"));
+            etLokasiOpr.setText(extras.getString("blokcode"));
             acKegiatanGIS.setText(extras.getString("kegiatanunit"));
             acVehicleGIS.setText(extras.getString("unitcode"));
+            etDescOpr.setText(extras.getString("descopr"));
+            etHasilOperator.setText(extras.getString("resultopr"));
             acDriverGIS.setText(extras.getString("drivercode") + " - " + extras.getString("drivername"));
 
             nodocCarLog = extras.getString("nodoc");
@@ -138,19 +137,21 @@ public class VerifikasiGIS extends AppCompatActivity {
             selectedSatuanKegiatan = dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 1);
             selectedLokasiGIS = dbhelper.get_singlelokasiCode(acLokasiGIS.getText().toString());
 
+            etLokasiOpr.setKeyListener(null);
+            etHasilOperator.setKeyListener(null);
+            etDescOpr.setKeyListener(null);
             acVehicleGIS.setKeyListener(null);
             acDriverGIS.setKeyListener(null);
             acKegiatanGIS.setKeyListener(null);
-            acLokasiGIS.setKeyListener(null);
 
             acVehicleGIS.setDropDownHeight(0);
             acDriverGIS.setDropDownHeight(0);
             acKegiatanGIS.setDropDownHeight(0);
-            acLokasiGIS.setDropDownHeight(0);
 
+            inputLayoutHasilOpr.setSuffixText(selectedSatuanKegiatan);
             inputLayoutHasilGIS.setSuffixText(selectedSatuanKegiatan);
             inputLayoutHasilGIS.setEnabled(true);
-            btnTagLocation.setVisibility(View.VISIBLE);
+
         } else {
             SweetAlertDialog dlgFinish = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
             dlgFinish.setCancelable(false);
@@ -175,16 +176,16 @@ public class VerifikasiGIS extends AppCompatActivity {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     photoCamera.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                     byteFotoGIS = stream.toByteArray();
-                    imgTakePictGIS.setImageBitmap(photoCamera);
-                    imgTakePictGIS.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imgTakePicGIS.setImageBitmap(photoCamera);
+                    imgTakePicGIS.setScaleType(ImageView.ScaleType.FIT_XY);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        imgTakePictGIS.setForeground(null);
+                        imgTakePicGIS.setForeground(null);
                     }
                 }
             }
         );
 
-        imgTakePictGIS.setOnClickListener(new View.OnClickListener() {
+        imgTakePicGIS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 byteFotoGIS = null;
@@ -195,126 +196,6 @@ public class VerifikasiGIS extends AppCompatActivity {
             }
         });
 
-        // Single tag loc
-        btnTagLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanGIS;
-                ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiGIS;
-                
-                getLocation();
-                if (dbhelper.get_statusverifikasigis(0).equals("0")) {
-                    if (selectedDate == null) {
-                        Snackbar.make(view, "Tentukan tanggal bekerja Unit", Snackbar.LENGTH_LONG)
-                            .setAnchorView(layoutBtnVerifikasi).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
-                    }
-                    else if (lokasiOutput.indexOf(acLokasiGIS.getText().toString()) == -1
-                            || kegiatanOutput.indexOf(acKegiatanGIS.getText().toString()) == -1) {
-                        Snackbar.make(view, "Lokasi / Kegiatan tidak valid", Snackbar.LENGTH_LONG)
-                            .setAnchorView(layoutBtnVerifikasi).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
-                    }
-                    else {
-                        dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
-                        loadListViewKoordinat();
-                    }
-                } else if (dbhelper.get_statusverifikasigis(0).equals("1")) {
-                    dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
-                    loadListViewKoordinat();
-                }
-            }
-        });
-
-        // Start loop location tagging
-        btnStartInterval.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ArrayList<String> kegiatanOutput = (ArrayList<String>) listKegiatanGIS;
-                ArrayList<String> lokasiOutput = (ArrayList<String>) listLokasiGIS;
-
-                if (selectedDate == null) {
-                    Snackbar.make(view, "Tentukan tanggal bekerja Unit", Snackbar.LENGTH_LONG)
-                        .setAnchorView(layoutBtnVerifikasi).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
-                }
-                else if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
-                        || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())) {
-                    new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.ERROR_TYPE).setTitleText("Lengkapi Data!").show();
-                }
-                else if (dbhelper.get_statusverifikasigis(0).equals("1") && dbhelper.get_statusverifikasigis(8).equals("")) {
-                    startIntervalGIS(5000);
-                }
-                else {
-                    // Checking data validation as usual
-                    if (lokasiOutput.indexOf(acLokasiGIS.getText().toString()) == -1
-                            || kegiatanOutput.indexOf(acKegiatanGIS.getText().toString()) == -1) {
-                        Snackbar.make(view, "Lokasi / Kegiatan tidak valid", Snackbar.LENGTH_LONG)
-                            .setAnchorView(layoutBtnVerifikasi).setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE).show();
-                    }
-                    else {
-                        isRunning = true;
-                        startIntervalGIS(5000);
-                    }
-                }
-            }
-        });
-
-        // Event stop intervel koordinat
-        btnStopInterval.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isRunning = false;
-                btnStopInterval.setVisibility(View.GONE);
-                btnStartInterval.setVisibility(View.VISIBLE);
-                dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
-            }
-        });
-
-    }
-
-    // Loop Interval Tag Location
-    private void startIntervalGIS(int selectedMillis) {
-        btnStopInterval.setVisibility(View.VISIBLE);
-        btnStartInterval.setVisibility(View.INVISIBLE);
-
-        getLocation();
-        if (dbhelper.get_statusverifikasigis(0).equals("0")) {
-            dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
-        } else if (dbhelper.get_statusverifikasigis(0).equals("1")) {
-            dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
-        }
-        loadListViewKoordinat();
-
-        new Thread(new Runnable() {
-            public void run() {
-                while (isRunning) {
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            try {
-                                Thread.sleep(selectedMillis);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            runOnUiThread(() -> getLocation());
-
-                            if (latGIS != null) {
-                                dbhelper.insert_verifikasigis_detail(nodocVerifikasiGIS, latGIS, longGIS);
-                            }
-
-                            runOnUiThread(() -> loadListViewKoordinat());
-                        }
-                    });
-                }
-            }
-        }).start();
-
-    }
-
-    static void post(Runnable runnable) {
-        runnable.run();
     }
 
     private void prepareHeaderData() throws SQLiteException {
@@ -358,7 +239,10 @@ public class VerifikasiGIS extends AppCompatActivity {
             }
         });
 
-        etDateGIS.setOnClickListener(view -> datePickerRKH.show(getSupportFragmentManager(), "DATEPICKER_GIS"));
+        etDateGIS.setOnClickListener(view -> {
+            if (getIntent().getExtras() == null)
+                datePickerRKH.show(getSupportFragmentManager(), "DATEPICKER_GIS");
+        });
 
         acDriverGIS.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -400,8 +284,6 @@ public class VerifikasiGIS extends AppCompatActivity {
                 selectedSatuanKegiatan = dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 1);
                 inputLayoutHasilGIS.setSuffixText(selectedSatuanKegiatan);
                 inputLayoutHasilGIS.setEnabled(true);
-                btnTagLocation.setVisibility(View.VISIBLE);
-
 
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acKegiatanGIS.getWindowToken(), 0);
@@ -419,18 +301,12 @@ public class VerifikasiGIS extends AppCompatActivity {
             || TextUtils.isEmpty(etHasilVerifikasi.getText().toString().trim())) {
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Lengkapi Data!").show();
-        }
-        else if (isRunning) {
-            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                    .setContentText("Hentikan location tagging!").show();
-        }
-        else {
-            loadListViewKoordinat();
-
+        } else {
+            v.setEnabled(false);
             String savedate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
             RequestQueue requestQueueGIS = Volley.newRequestQueue(this);
-            String url_uploadbbm = url_api + "dataupload/uploadverifgis.php";
+            String url_uploadbbm = url_api + "dataupload/uploadverifgis_new.php";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url_uploadbbm, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -465,7 +341,7 @@ public class VerifikasiGIS extends AppCompatActivity {
                     requestQueueGIS.stop();
                     dbhelper.insert_verifikasigis_header(nodocVerifikasiGIS, nodocCarLog, selectedDate, selectedVehicleGIS, selectedDriverGIS,
                             selectedLokasiGIS, selectedKegiatanGIS, selectedSatuanKegiatan,
-                            etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString(), 1);
+                            etHasilVerifikasi.getText().toString(), etSesuaiSOP.getText().toString(), 0);
                     SweetAlertDialog dlgFinish = new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.SUCCESS_TYPE);
                     dlgFinish.setCancelable(false);
                     dlgFinish.setConfirmText("SELESAI");
@@ -505,31 +381,6 @@ public class VerifikasiGIS extends AppCompatActivity {
             requestQueueGIS.add(stringRequest);
 
         }
-    }
-
-    private void loadListViewKoordinat() {
-        lvKoordinat = findViewById(R.id.lvKoordinatGIS);
-        listParamGIS = new ArrayList<>();
-        listParamGIS.clear();
-        final Cursor cursor = dbhelper.listview_koordinatgis(nodocVerifikasiGIS);
-        if (cursor.moveToFirst()) {
-            do {
-                ListParamGIS parametersGIS = new ListParamGIS(cursor.getString(1),
-                        cursor.getString(2), cursor.getString(0)
-                );
-                listParamGIS.add(parametersGIS);
-            } while (cursor.moveToNext());
-        }
-        adapterKoordinatGIS = new AdapterKoordinatGIS(this, R.layout.listview_koordinatgis, listParamGIS);
-        lvKoordinat.setAdapter(adapterKoordinatGIS);
-    }
-
-    private void getLocation() {
-        GPSTracker gps = new GPSTracker(this);
-        double latitude = gps.getLatitude();
-        double longitude = gps.getLongitude();
-        latGIS = String.valueOf(latitude);
-        longGIS = String.valueOf(longitude);
     }
 
     @Override

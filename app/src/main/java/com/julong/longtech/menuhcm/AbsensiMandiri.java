@@ -1,5 +1,7 @@
 package com.julong.longtech.menuhcm;
 
+import static android.content.DialogInterface.BUTTON_NEGATIVE;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,12 +14,15 @@ import com.julong.longtech.LoginActivity;
 import com.julong.longtech.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -226,6 +231,40 @@ public class AbsensiMandiri extends AppCompatActivity {
 
         tvTodayDate.setText(savedate);
 
+    }
+
+    private void checkAutoDateTime() {
+        try {
+            if (Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME) == 1) {
+
+            } else {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                alertDialog.setCancelable(false);
+                alertDialog.setTitle("Tanggal dan Waktu Otomatis");
+                alertDialog.setMessage("Pengaturan tanggal dan waktu tidak otomatis. " +
+                        "Mohon aktifkan tanggal dan waktu otomatis di menu pengaturan.");
+
+                alertDialog.setPositiveButton("Pengaturan", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+
+                AlertDialog alert = alertDialog.create();
+                alert.show();
+
+                alert.getButton(BUTTON_NEGATIVE).setVisibility(View.GONE);
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAutoDateTime();
     }
 
     private void getLocation() {

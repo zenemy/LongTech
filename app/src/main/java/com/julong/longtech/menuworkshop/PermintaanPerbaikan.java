@@ -10,8 +10,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.GPSTracker;
 import com.julong.longtech.R;
-import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
-import com.julong.longtech.menuvehicle.VerifikasiGIS;
 
 import android.content.Intent;
 import android.graphics.Bitmap;

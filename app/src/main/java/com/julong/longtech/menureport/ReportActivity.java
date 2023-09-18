@@ -293,6 +293,9 @@ public class ReportActivity extends AppCompatActivity {
                         .setContentText("Periksa Jaringan").show();
             }
         });
+        jsonRequestUserType.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         Volley.newRequestQueue(getApplicationContext()).add(jsonRequestUserType);
 
         listTeamCode = dbhelper.get_teamname(0);
@@ -336,6 +339,7 @@ public class ReportActivity extends AppCompatActivity {
                                 jsonObject1.getString("ACTIVITY"),
                                 jsonObject1.getString("HASILKERJA"),
                                 jsonObject1.getString("SATUANKERJA"),
+                                jsonObject1.getString("CATATANKERJA"),
                                 jsonObject1.getString("KMAWAL"),
                                 jsonObject1.getString("KMAKHIR")
                         );
@@ -356,6 +360,9 @@ public class ReportActivity extends AppCompatActivity {
             new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Empty Data").show();
         });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonRequest);
     }
 
@@ -390,6 +397,7 @@ public class ReportActivity extends AppCompatActivity {
                                 jsonObject1.getString("ACTIVITY"),
                                 jsonObject1.getString("HASILKERJA"),
                                 jsonObject1.getString("SATUANKERJA"),
+                                jsonObject1.getString("CATATANKERJA"),
                                 jsonObject1.getString("KMAWAL"),
                                 jsonObject1.getString("KMAKHIR")
                         );
@@ -410,6 +418,9 @@ public class ReportActivity extends AppCompatActivity {
             new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Empty Data").show();
         });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonRequest);
     }
 
@@ -466,8 +477,7 @@ public class ReportActivity extends AppCompatActivity {
             new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Empty Data").show();
         });
-        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(
-                20000,
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonRequest);
@@ -525,6 +535,9 @@ public class ReportActivity extends AppCompatActivity {
             new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Empty Data").show();
         });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonRequest);
     }
 
@@ -575,6 +588,9 @@ public class ReportActivity extends AppCompatActivity {
             new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Empty Data").show();
         });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonRequest);
     }
 
@@ -635,6 +651,9 @@ public class ReportActivity extends AppCompatActivity {
             new SweetAlertDialog(ReportActivity.this, SweetAlertDialog.ERROR_TYPE)
                     .setContentText("Empty Data").show();
         });
+        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonRequest);
     }
 

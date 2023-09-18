@@ -112,57 +112,6 @@ public class DialogHelper extends Dialog {
         return dialogInfo;
     }
 
-    public Dialog showSummaryVerifikasiGIS(Integer totalKoordinat) {
-        dlgSelesaiVerifikasi = new Dialog(activityContext);
-        dlgSelesaiVerifikasi.setContentView(R.layout.dialog_summarygis);
-        dlgSelesaiVerifikasi.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        Window windowVerificationDone = dlgSelesaiVerifikasi.getWindow();
-        windowVerificationDone.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        TextView tvUnitSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvHESummaryGIS);
-        TextView tvDriverSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvDriverSummaryGIS);
-        TextView tvLokasiSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvBlokSummaryGIS);
-        TextView tvKegiatanSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvActivitySummaryGIS);
-        TextView tvHasilSummary = dlgSelesaiVerifikasi.findViewById(R.id.tvResultSummaryGIS);
-        TextView tvTotalKoordinat = dlgSelesaiVerifikasi.findViewById(R.id.tvTotalKoordinatSummary);
-        Button btnBackSummary = dlgSelesaiVerifikasi.findViewById(R.id.btnBackSummaryGIS);
-        Button btnDoneSummary = dlgSelesaiVerifikasi.findViewById(R.id.btnDoneSummaryGIS);
-        dlgSelesaiVerifikasi.show();
-        btnBackSummary.setOnClickListener(view1 -> dlgSelesaiVerifikasi.dismiss());
-
-        tvUnitSummary.setText(VerifikasiGIS.selectedVehicleGIS);
-        tvDriverSummary.setText(dbhelper.get_empname(VerifikasiGIS.selectedDriverGIS));
-        tvLokasiSummary.setText(VerifikasiGIS.acLokasiGIS.getText().toString());
-        tvKegiatanSummary.setText(VerifikasiGIS.acKegiatanGIS.getText().toString());
-        tvHasilSummary.setText(VerifikasiGIS.etHasilVerifikasi.getText());
-        tvTotalKoordinat.setText(String.valueOf(totalKoordinat));
-
-        btnDoneSummary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dlgSelesaiVerifikasi.dismiss();
-                dbhelper.updatestatus_verifikasigis(VerifikasiGIS.nodocVerifikasiGIS,
-                        VerifikasiGIS.etHasilVerifikasi.getText().toString(),
-                        VerifikasiGIS.byteFotoGIS, VerifikasiGIS.etSesuaiSOP.getText().toString());
-                VerifikasiGIS.nodocVerifikasiGIS = null;
-                VerifikasiGIS.byteFotoGIS = null;
-
-                SweetAlertDialog sweetDlgVerifikasiDone = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
-                sweetDlgVerifikasiDone.setTitleText("Verifikasi Selesai");
-                sweetDlgVerifikasiDone.setConfirmText("SELESAI");
-                sweetDlgVerifikasiDone.setCancelable(false);
-                sweetDlgVerifikasiDone.setConfirmClickListener(sweetAlertDialog -> {
-                    sweetAlertDialog.dismiss();
-                    Intent backIntent = new Intent();
-                    ((Activity) activityContext).setResult(727, backIntent);
-                    ((Activity) activityContext).finish();
-                });
-                sweetDlgVerifikasiDone.show();
-            }
-        });
-
-        return dlgSelesaiVerifikasi;
-    }
-
     public Dialog showDlgAddMaterialService(TextView tvPlaceholderLvMaterial) {
 
         selectedMaterial = null;

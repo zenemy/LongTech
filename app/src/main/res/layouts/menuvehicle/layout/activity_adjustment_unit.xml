@@ -78,27 +78,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:hint="Driver / Operator"
-                    app:endIconMode="dropdown_menu">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/acNamaSupirGantiDriver"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:imeOptions="actionDone"
-                        android:paddingStart="12dp"
-                        android:paddingTop="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="4dp"
-                        android:singleLine="true"
-                        android:textSize="14sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:hint="@string/judulvehicle"
                     app:endIconMode="dropdown_menu">
 

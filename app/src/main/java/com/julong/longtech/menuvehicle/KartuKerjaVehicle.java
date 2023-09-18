@@ -459,20 +459,10 @@ public class KartuKerjaVehicle extends AppCompatActivity {
             dlgDoneCarLogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             Button btnCancelDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnCancelDlgCarLog);
             Button btnDoneDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.btnDoneDlgCarLog);
-            EditText etDateDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etDateDlgCarLog);
-            EditText tvJamAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.tvJamAkhirDlgCarLog);
             EditText etKMHMAwalDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAwalDlgCarLog);
             EditText etKMHMAkhirDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etKMHMAkhirDlgCarLog);
-            EditText etNoteDlgCarLog = dlgSelesaiCarLog.findViewById(R.id.etNoteDlgCarLog);
-            TextView tvJudulFotoKM = dlgSelesaiCarLog.findViewById(R.id.tvJudulFotoKM);
             TextInputLayout inputlayoutDlgKmAkhir = dlgSelesaiCarLog.findViewById(R.id.inputlayoutDlgKmAkhir);
             btnFotoKilometer = dlgSelesaiCarLog.findViewById(R.id.imgKilometerDlgCarLog);
-
-            String currenttdate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
-            String currenttime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-            etDateDlgCarLog.setText(currenttdate);
-            etNoteDlgCarLog.setText(etCatatanCarLog.getText().toString());
-            tvJamAkhirDlgCarLog.setText(currenttime);
 
             if (dbhelper.get_tbl_username(27) != null) {
                 etKMHMAwalDlgCarLog.setText(dbhelper.get_tbl_username(27));
@@ -511,7 +501,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     dlgSelesaiCarLog.dismiss();
                     fotoKilometer = null;
                     etKMHMAkhirDlgCarLog.setText(null);
-                    etNoteDlgCarLog.setText(null);
                 }
             });
 
@@ -543,7 +532,6 @@ public class KartuKerjaVehicle extends AppCompatActivity {
                     }
                     else if (fotoKilometer == null) {
                         btnFotoKilometer.startAnimation(AnimationUtils.loadAnimation(KartuKerjaVehicle.this, R.anim.errorshake));
-                        tvJudulFotoKM.startAnimation(AnimationUtils.loadAnimation(KartuKerjaVehicle.this, R.anim.errorshake));
                         Toast.makeText(KartuKerjaVehicle.this, "Foto Kilometer Akhir!", Toast.LENGTH_LONG).show();
                     }
                     else if (Float.parseFloat(currentValue) >= Float.parseFloat(etKMHMAkhirDlgCarLog.getText().toString())) {

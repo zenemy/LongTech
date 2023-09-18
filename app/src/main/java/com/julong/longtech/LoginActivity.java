@@ -212,10 +212,10 @@ public class LoginActivity extends AppCompatActivity {
 
             et_username.setText(dbhelper.get_tbl_username(1));
 
-
             if (getIntent().hasExtra("currentuser")) {
                 Bundle bundle = getIntent().getExtras();
                 et_username.setText(bundle.getString("currentuser"));
+                dbhelper.delete_data_username();
                 pDialog.dismiss();
             }
             else {
@@ -494,7 +494,7 @@ public class LoginActivity extends AppCompatActivity {
         protected Integer doInBackground(String... jsonObjectsLogin) {
             Integer insertedResult = -1;
             try {
-                JSONObject jsonPost = new JSONObject(jsonObjectsLogin[0].toString());
+                JSONObject jsonPost = new JSONObject(jsonObjectsLogin[0]);
 
                 if (!jsonPost.getString("EMPCODE").equals(dbhelper.get_tbl_username(8))) {
                     dbhelper.delete_data_username();
@@ -505,42 +505,33 @@ public class LoginActivity extends AppCompatActivity {
                     dbhelper.delete_menuGS02("INVENTORY");
                     dbhelper.delete_masterdata();
                     dbhelper.delete_alltrasanction();
-                }
-                else {
-                    dbhelper.delete_data_username();
+
+                    try {
+                        dbhelper.insert_tblusername(
+                                jsonPost.getString("USERID"),
+                                jsonPost.getString("USERNAME"),
+                                jsonPost.getString("USERTYPE"),
+                                jsonPost.getString("USERROLE"),
+                                jsonPost.getString("POSITION_ID"),
+                                jsonPost.getString("POSITION_NAME"),
+                                jsonPost.getString("COMP_ID"),
+                                jsonPost.getString("SITE_ID"),
+                                jsonPost.getString("DEPTCODE"),
+                                jsonPost.getString("DIVCODE"),
+                                jsonPost.getString("GANGCODE"),
+                                jsonPost.getString("ANCAKCODE"),
+                                jsonPost.getString("SHIFTCODE"),
+                                jsonPost.getString("NO_TELP"),
+                                jsonPost.getString("EMAILUSER"),
+                                jsonPost.getString("EMPNAME"),
+                                jsonPost.getString("EMPCODE"),
+                                jsonPost.getString("USERPASSWORD"),
+                                AESEnkrip.encrypt(jsonPost.getString("EMPCODE") + ";" + et_password.getText().toString() + ";"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
-                try {
-                    dbhelper.insert_tblusername(
-                            jsonPost.getString("USERID"),
-                            jsonPost.getString("USERNAME"),
-                            jsonPost.getString("USERTYPE"),
-                            jsonPost.getString("USERROLE"),
-                            jsonPost.getString("POSITION_ID"),
-                            jsonPost.getString("POSITION_NAME"),
-                            jsonPost.getString("COMP_ID"),
-                            jsonPost.getString("SITE_ID"),
-                            jsonPost.getString("DEPTCODE"),
-                            jsonPost.getString("DIVCODE"),
-                            jsonPost.getString("GANGCODE"),
-                            jsonPost.getString("ANCAKCODE"),
-                            jsonPost.getString("SHIFTCODE"),
-                            jsonPost.getString("NO_TELP"),
-                            jsonPost.getString("EMAILUSER"),
-                            jsonPost.getString("EMPNAME"),
-                            jsonPost.getString("EMPCODE"),
-                            jsonPost.getString("USERPASSWORD"),
-                            AESEnkrip.encrypt(jsonPost.getString("EMPCODE") + ";" + et_password.getText().toString() + ";"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (!jsonPost.getString("USERPHOTO").equals("")) {
-                    byte[] decodedUserPhoto = Base64.decode(
-                            jsonPost.getString("USERPHOTO"),
-                            Base64.DEFAULT);
-                    dbhelper.update_userpphoto(decodedUserPhoto);
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

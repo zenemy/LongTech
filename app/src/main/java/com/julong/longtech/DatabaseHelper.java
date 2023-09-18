@@ -10,6 +10,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
+import android.widget.EditText;
 
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuvehicle.NewMethodCarLog;
@@ -33,11 +34,11 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static String url_api = "http://longtech.julongindonesia.com/longtech/mobilesync/";
+    public static String url_api = "http://julongsmartagri.com/long-t/api/mobilesync/";
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
-    public static int versionNumber = 1;
-    public static String versionName = "Version 0.16";
+    public static int versionNumber = 19;
+    public static String versionName = "Version 0.19.2";
     Context activityContext;
 
     public DatabaseHelper(Context context) {
@@ -1403,13 +1404,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public boolean submitNewCarLog(String kilometerAwal, String kilometerAkhir,
-                                   String carLogDesc, byte[] fotoKilometer) {
+    public boolean submitNewCarLog(String kilometerAwal, String kilometerAkhir, byte[] fotoKilometer) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValuesTR01 = new ContentValues();
         contentValuesTR01.put("text2", kilometerAwal);
-        contentValuesTR01.put("text17", carLogDesc);
         contentValuesTR01.put("text18", kilometerAkhir);
         contentValuesTR01.put("uploaded", 0);
 
@@ -1487,8 +1486,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean insert_new_carlog(String workDate, String jenismuatan, String kategorimuatan, String tujuankebun,
-                                     String tujuandivisi, String tujuanlokasi, String hasilkerja,
-                                     String latitude, String longitude, byte[] fotohasilkerja) {
+                                     String tujuandivisi, String tujuanlokasi, EditText etHasilkerja,
+                                     EditText etDescKerja, String latitude, String longitude, byte[] fotohasilkerja) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -1508,13 +1507,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("text10", tujuankebun);
         contentValues.put("text11", tujuandivisi);
         contentValues.put("text12", tujuanlokasi);
-        contentValues.put("text16", hasilkerja);
+        contentValues.put("text16", etHasilkerja.getText().toString());
+        contentValues.put("text17", etDescKerja.getText().toString());
         contentValues.put("text19", latitude);
         contentValues.put("text20", longitude);
         contentValues.put("text21", get_tbl_username(20));
 
         ContentValues contentValuesPhoto = new ContentValues();
-        contentValues.put("documentno", documentNumber);
+        contentValuesPhoto.put("documentno", documentNumber);
         contentValuesPhoto.put("datatype", "CARLOG");
         contentValuesPhoto.put("subdatatype", get_tbl_username(0));
         contentValuesPhoto.put("itemdata", "HEADER");
@@ -1531,6 +1531,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (insert == -1 || insertPhoto == -1) {
             return false;
         } else {
+            etHasilkerja.setText(null);
+            etDescKerja.setText(null);
             NewMethodCarLog.loadListViewCarLogs(activityContext);
             SweetAlertDialog dlgError = new SweetAlertDialog(activityContext, SweetAlertDialog.SUCCESS_TYPE);
             dlgError.setTitleText("BERHASIL").setConfirmText("OK").show();
@@ -2120,6 +2122,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<String> dataList = new ArrayList<String>();
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT parametercode, parameterdesc FROM gs_01 WHERE groupparamcode = 'GS16' ORDER BY CAST(seq_no AS UNSIGNED)";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast()) {
+            do {
+                dataList.add(cursor.getString(index));
+            }
+
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        return dataList;
+    }
+
+    public List<String> get_list_adjustmenu(int index) {
+        ArrayList<String> dataList = new ArrayList<String>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT parametercode, parameterdesc FROM gs_01 WHERE groupparamcode = 'GS15' AND INACTIVE = 0 ORDER BY CAST(seq_no AS UNSIGNED)";
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         if (!cursor.isAfterLast()) {

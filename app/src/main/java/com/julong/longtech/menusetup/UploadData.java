@@ -8,12 +8,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -348,6 +350,8 @@ public class UploadData extends AppCompatActivity {
                 return params;
             }
         };
+        stringRequestTR01.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueueTR01.add(stringRequestTR01);
     }
 
@@ -433,9 +437,12 @@ public class UploadData extends AppCompatActivity {
                 paramstr02.put("text29", text29);
                 paramstr02.put("text30", text30);
                 paramstr02.put("userid", dbHelper.get_tbl_username(0));
+                Log.e("postTR02", paramstr02.toString());
                 return paramstr02;
             }
         };
+        stringRequestTR02.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueueTR02.add(stringRequestTR02);
     }
 
@@ -491,6 +498,8 @@ public class UploadData extends AppCompatActivity {
                 return paramsImg;
             }
         };
+        stringRequestImg.setRetryPolicy(new DefaultRetryPolicy(0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueueBlob.add(stringRequestImg);
     }
 

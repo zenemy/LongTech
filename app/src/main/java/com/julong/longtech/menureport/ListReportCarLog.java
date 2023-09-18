@@ -14,12 +14,13 @@ public class ListReportCarLog {
     private String activityLog;
     private String hasilPekerjaan;
     private String satuanPekerjaan;
+    private String workDesc;
     private String kmAwal;
     private String kmAkhir;
 
     public ListReportCarLog(String documentNumber, String tglCarLog, String waktuCarLog, String unitCarLog, String firstName,
                             String lastName, String employeeCode, String employeeName, String blokCode, String activityLog,
-                            String hasilPekerjaan, String satuanPekerjaan, String kmAwal, String kmAkhir) {
+                            String hasilPekerjaan, String satuanPekerjaan, String workDesc, String kmAwal, String kmAkhir) {
 
         this.documentNumber = documentNumber;
         this.tglCarLog = tglCarLog;
@@ -33,6 +34,7 @@ public class ListReportCarLog {
         this.activityLog = activityLog;
         this.hasilPekerjaan = hasilPekerjaan;
         this.satuanPekerjaan = satuanPekerjaan;
+        this.workDesc = workDesc;
         this.kmAwal = kmAwal;
         this.kmAkhir = kmAkhir;
     }
@@ -83,6 +85,10 @@ public class ListReportCarLog {
 
     public String getSatuanPekerjaan() {
         return satuanPekerjaan;
+    }
+
+    public String getWorkDesc() {
+        return workDesc;
     }
 
     public String getKmAwal() {

@@ -49,6 +49,7 @@ import com.julong.longtech.menuhcm.AbsensiMandiri;
 import com.julong.longtech.menuhcm.ApelPagi;
 import com.julong.longtech.menuhistory.HistoryAdapterRKH;
 import com.julong.longtech.menuhistory.ListHistoryRKH;
+import com.julong.longtech.menuinventory.PenerimaanBBM;
 import com.julong.longtech.menuinventory.PengeluaranBBM;
 import com.julong.longtech.menureport.AdapterReportGIS;
 import com.julong.longtech.menureport.ListReportGIS;
@@ -347,16 +348,9 @@ public class HomeFragment extends Fragment {
             }
         );
 
-
         linearLayoutBBM.setOnClickListener(v -> {
-            if (dbhelper.get_tbl_username(3).equals("GDG")) {
-                Intent intent = new Intent(getActivity(), PengeluaranBBM.class);
-                intentLaunchActivity.launch(intent);
-            } else {
-                Intent intent = new Intent(getActivity(), PermintaanBBM.class);
-                intentLaunchActivity.launch(intent);
-            }
-
+            Intent intent = new Intent(getActivity(), PenerimaanBBM.class);
+            intentLaunchActivity.launch(intent);
         });
 
         linearLayoutGIS.setOnClickListener(view -> {
@@ -372,19 +366,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        if (dbhelper.get_tbl_username(3).equals("SPV-WS")) {
-            linearLayoutService.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), LaporanPerbaikan.class);
-                intentLaunchActivity.launch(intent);
-            });
-        }
-
-        else if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
-            linearLayoutService.setOnClickListener(v -> {
+        linearLayoutService.setOnClickListener(v -> {
+            if (dbhelper.get_tbl_username(3).equals("SPV-TRS")) {
                 Intent intent = new Intent(getActivity(), PermintaanPerbaikan.class);
                 intentLaunchActivity.launch(intent);
-            });
-        }
+            } else if (dbhelper.get_tbl_username(3).equals("SPV-WS")) {
+                Intent intent = new Intent(getActivity(), LaporanPerbaikan.class);
+                intentLaunchActivity.launch(intent);
+            }
+        });
 
         linearLayoutApel.setOnClickListener(v -> { // Briefing pagi
             final SweetAlertDialog startApelDlg = new SweetAlertDialog(getContext(), SweetAlertDialog.WARNING_TYPE);

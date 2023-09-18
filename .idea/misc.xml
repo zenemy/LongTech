@@ -1,10 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/drawable/ic_logohome.xml" value="0.35" />
+        <entry key="..\:/Android Source Code/LongTech/app/src/main/res/drawable/tbl_lr_bottom.xml" value="0.3635" />
+        <entry key="..\:/Android Source Code/LongTech/app/src/main/res/drawable/tbl_lr_top.xml" value="0.3635" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layout/activity_download.xml" value="0.2753623188405797" />
+        <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layout/activity_laporan_perbaikan.xml" value="0.2368659420289855" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layout/activity_login.xml" value="0.296195652173913" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layout/activity_newmethod_carlog.xml" value="0.2753623188405797" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layout/activity_pengeluaran_bbm.xml" value="0.17426545086119555" />
@@ -13,6 +15,8 @@
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/dialogs/layout/dialog_gambar.xml" value="0.1762917933130699" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/dialogs/layout/dialog_summarygis.xml" value="0.2753623188405797" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/listview/layout/apelpagi_adapter.xml" value="0.2753623188405797" />
+        <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/listview/layout/listview_material.xml" value="0.2368659420289855" />
+        <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/listview/layout/listview_mekanik.xml" value="0.2368659420289855" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/menuhcm/layout/activity_absensi_mandiri.xml" value="0.296195652173913" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/menuvehicle/layout/activity_kartukerja_vehicle.xml" value="0.1762917933130699" />
         <entry key="..\:/Android Source Code/LongTech/app/src/main/res/layouts/menuvehicle/layout/activity_verifikasi_gis.xml" value="0.27309782608695654" />
@@ -73,7 +77,7 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="corretto-1.8" project-jdk-type="JavaSDK" />
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>

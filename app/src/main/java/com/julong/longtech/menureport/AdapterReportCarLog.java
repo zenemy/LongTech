@@ -73,7 +73,8 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
         holder.setVehicle(carLogReports.getUnitCarLog());
         holder.setDate(carLogReports.getTglCarLog(), carLogReports.getWaktuCarLog());
         holder.setEmpName(carLogReports.getFirstName(), carLogReports.getLastName());
-        holder.setCarLogResult(carLogReports.getHasilPekerjaan(), carLogReports.getSatuanPekerjaan());
+        holder.setCarLogResult(carLogReports.getHasilPekerjaan(),
+                carLogReports.getSatuanPekerjaan(), carLogReports.getWorkDesc());
         holder.setActivityLoad(carLogReports.getActivityLog());
         holder.setLocation(carLogReports.getBlokCode());
         holder.setCarKMHM(carLogReports.getKmAwal(), carLogReports.getKmAkhir());
@@ -96,6 +97,8 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
                         intent.putExtra("drivercode", carLogReports.getEmployeeCode());
                         intent.putExtra("kegiatanunit", carLogReports.getActivityLog());
                         intent.putExtra("blokcode", carLogReports.getBlokCode());
+                        intent.putExtra("descopr", carLogReports.getWorkDesc());
+                        intent.putExtra("resultopr", carLogReports.getHasilPekerjaan());
                         intentLaunchGIS.launch(intent);
                     }
                 }
@@ -107,22 +110,23 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
     public class CarLogReportHolder extends RecyclerView.ViewHolder {
 
         private CardView layoutCarLog;
-        private TextView tvNoDoc, tvTglCarLog, tvVehicle, tvLocation,
+        private TextView tvNoDoc, tvTglCarLog, tvVehicle, tvLocation, tvDescription,
                 tvFirstName, tvLastName, tvCarKMHM, tvActivityLoad, tvCarLogResult;
 
         public CarLogReportHolder(View itemView) {
             super(itemView);
 
-            layoutCarLog = itemView.findViewById(R.id.layoutCarLogReport);
             tvNoDoc = itemView.findViewById(R.id.tvNodocReportCarLog);
-            tvTglCarLog = itemView.findViewById(R.id.tvDateReportCarLog);
             tvVehicle = itemView.findViewById(R.id.tvUnitReportCarLog);
-            tvFirstName = itemView.findViewById(R.id.tvFirstNameReportCarLog);
-            tvLastName = itemView.findViewById(R.id.tvLastNameReportCarLog);
             tvCarKMHM = itemView.findViewById(R.id.tvReportKMHMCarLog);
-            tvActivityLoad = itemView.findViewById(R.id.tvLoadCategoryCarLogReport);
-            tvCarLogResult = itemView.findViewById(R.id.tvHasilReportCarLog);
+            tvTglCarLog = itemView.findViewById(R.id.tvDateReportCarLog);
+            layoutCarLog = itemView.findViewById(R.id.layoutCarLogReport);
+            tvLastName = itemView.findViewById(R.id.tvLastNameReportCarLog);
             tvLocation = itemView.findViewById(R.id.tvLocationCarLogReport);
+            tvCarLogResult = itemView.findViewById(R.id.tvHasilReportCarLog);
+            tvDescription = itemView.findViewById(R.id.tvOprDescCarLogReport);
+            tvFirstName = itemView.findViewById(R.id.tvFirstNameReportCarLog);
+            tvActivityLoad = itemView.findViewById(R.id.tvLoadCategoryCarLogReport);
 
         }
 
@@ -156,8 +160,9 @@ public class AdapterReportCarLog extends RecyclerView.Adapter<AdapterReportCarLo
             tvActivityLoad.setText(activityLoad);
         }
 
-        public void setCarLogResult(String totalResult, String unitOfMeasure) {
+        public void setCarLogResult(String totalResult, String unitOfMeasure, String workDesc) {
             tvCarLogResult.setText(totalResult + " (" + unitOfMeasure + ")");
+            tvDescription.setText(workDesc);
         }
 
         public void setCarKMHM(String awalKMHM, String akhirKHM) {

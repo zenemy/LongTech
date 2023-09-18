@@ -1,6 +1,12 @@
 package com.julong.longtech;
 
+import static android.content.DialogInterface.BUTTON_NEGATIVE;
+
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -60,6 +67,7 @@ import com.julong.longtech.menusetup.UploadData;
 import com.julong.longtech.menuvehicle.AdjustmentUnit;
 import com.julong.longtech.menuvehicle.InspeksiHasilKerja;
 import com.julong.longtech.menuvehicle.KartuKerjaVehicle;
+import com.julong.longtech.menuvehicle.NewMethodCarLog;
 import com.julong.longtech.menuvehicle.NewMethodRKH;
 import com.julong.longtech.menuvehicle.PemeriksaanPengecekanHarian;
 import com.julong.longtech.menuinventory.PengeluaranBBM;
@@ -80,6 +88,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -383,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
                                 String selectedCarLogVehicle = dbhelper.get_vehiclecodeonly(acDlgVehicleCarLog.getText().toString());
                                 dbhelper.update_ancakcode_user(selectedCarLogVehicle, acDlgShiftCarLog.getText().toString());
 
-                                Intent intent = new Intent(MainActivity.this, KartuKerjaVehicle.class);
+                                Intent intent = new Intent(MainActivity.this, NewMethodCarLog.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intentLaunchMainActivity.launch(intent);
                                 onPause();
@@ -684,7 +693,8 @@ public class MainActivity extends AppCompatActivity {
                         HomeFragment.linearLayoutGIS.setVisibility(View.GONE);
                     }
                     if (dbhelper.check_menufragment("030101").equals("0")
-                            & dbhelper.check_menufragment("030102").equals("0")) {
+                            & dbhelper.check_menufragment("030102").equals("0")
+                            & dbhelper.check_menufragment("030103").equals("0")) {
                         HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
                     }
 
@@ -711,6 +721,40 @@ public class MainActivity extends AppCompatActivity {
             });
 
         Volley.newRequestQueue(this).add(jsonRequest);
+    }
+
+    private void checkAutoDateTime() {
+        try {
+            if (Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME) == 1) {
+
+            } else {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                alertDialog.setCancelable(false);
+                alertDialog.setTitle("Tanggal dan Waktu Otomatis");
+                alertDialog.setMessage("Pengaturan tanggal dan waktu tidak otomatis. " +
+                        "Mohon aktifkan tanggal dan waktu otomatis di menu pengaturan.");
+
+                alertDialog.setPositiveButton("Pengaturan", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+
+                AlertDialog alert = alertDialog.create();
+                alert.show();
+
+                alert.getButton(BUTTON_NEGATIVE).setVisibility(View.GONE);
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAutoDateTime();
     }
 
     private class AsyncJsonMenuGS extends AsyncTask<JSONObject, Void, Integer> {
@@ -834,7 +878,8 @@ public class MainActivity extends AppCompatActivity {
                 HomeFragment.linearLayoutGIS.setVisibility(View.GONE);
             }
             if (dbhelper.check_menufragment("030101").equals("0")
-                    && dbhelper.check_menufragment("030102").equals("0")) {
+                    && dbhelper.check_menufragment("030102").equals("0")
+                    & dbhelper.check_menufragment("030103").equals("0")) {
                 HomeFragment.linearLayoutBBM.setVisibility(View.GONE);
             }
             if (dbhelper.check_menufragment("020101").equals("0")
