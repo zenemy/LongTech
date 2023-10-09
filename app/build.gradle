@@ -37,6 +37,7 @@ android {
             }
         }
     }
+    namespace 'com.julong.longtech'
 }
 
 dependencies {
