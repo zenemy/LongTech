@@ -34,11 +34,11 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static String url_api = "http://julongsmartagri.com/long-t/api/mobilesync/";
+    public static String url_api = "http://smartagri.julongindonesia.com/long-t/api/mobilesync/";
     public static String systemCode = "LONGTECH01";
     public static String systemName = "LONG TECH";
-    public static int versionNumber = 19;
-    public static String versionName = "Version 0.19.2";
+    public static int versionNumber = 21;
+    public static String versionName = "Version 0.21";
     Context activityContext;
 
     public DatabaseHelper(Context context) {

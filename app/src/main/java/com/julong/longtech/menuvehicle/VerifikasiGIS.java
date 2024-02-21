@@ -15,23 +15,16 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.julong.longtech.DatabaseHelper;
 import com.julong.longtech.DialogHelper;
-import com.julong.longtech.GPSTracker;
 import com.julong.longtech.MainActivity;
 import com.julong.longtech.R;
-import com.julong.longtech.menuinventory.PengeluaranBBM;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -44,10 +37,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -55,7 +46,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +60,7 @@ public class VerifikasiGIS extends AppCompatActivity {
     AutoCompleteTextView acLokasiGIS, acKegiatanGIS;
     EditText etHasilVerifikasi, etHasilOperator, etDateGIS, etSesuaiSOP, etDescOpr, etLokasiOpr;
 
-    AutoCompleteTextView acDriverGIS, acVehicleGIS;
+    AutoCompleteTextView acDriverGIS, acVehicleGIS, acKegiatanOpr;
     TextInputLayout inputLayoutHasilGIS, inputLayoutHasilOpr;
     Button btnSubmitGIS, btnBackGIS;
     ImageView imgTakePicGIS;
@@ -111,9 +101,10 @@ public class VerifikasiGIS extends AppCompatActivity {
         etDescOpr = findViewById(R.id.etOprDescVerification);
         etLokasiOpr = findViewById(R.id.etLokasiOprVerification);
         etHasilOperator = findViewById(R.id.etHasilOprVerification);
-        etHasilVerifikasi = findViewById(R.id.etHasilVerificationGIS);
+        acKegiatanOpr = findViewById(R.id.acKegiatanOprVerification);
         inputLayoutHasilGIS = findViewById(R.id.inputLayoutHasilGIS);
         layoutBtnVerifikasi = findViewById(R.id.layoutBtnVerifikasi);
+        etHasilVerifikasi = findViewById(R.id.etHasilVerificationGIS);
         inputLayoutHasilOpr = findViewById(R.id.inputLayoutHasilOprVerification);
 
         Bundle extras = getIntent().getExtras();
@@ -122,6 +113,7 @@ public class VerifikasiGIS extends AppCompatActivity {
             etDateGIS.setText(extras.getString("workdate"));
             acLokasiGIS.setText(extras.getString("blokcode"));
             etLokasiOpr.setText(extras.getString("blokcode"));
+            acKegiatanOpr.setText(extras.getString("kegiatanunit"));
             acKegiatanGIS.setText(extras.getString("kegiatanunit"));
             acVehicleGIS.setText(extras.getString("unitcode"));
             etDescOpr.setText(extras.getString("descopr"));
@@ -133,7 +125,7 @@ public class VerifikasiGIS extends AppCompatActivity {
             selectedTeamCode = extras.getString("teamcode");
             selectedDriverGIS = dbhelper.get_empcode(0, acDriverGIS.getText().toString());
             selectedVehicleGIS = acVehicleGIS.getText().toString();
-            selectedKegiatanGIS = dbhelper.get_singlekegiatancode(acKegiatanGIS.getText().toString());
+            selectedKegiatanGIS = dbhelper.get_singlekegiatancode(acKegiatanOpr.getText().toString());
             selectedSatuanKegiatan = dbhelper.get_singlekegiatanname(selectedKegiatanGIS, 1);
             selectedLokasiGIS = dbhelper.get_singlelokasiCode(acLokasiGIS.getText().toString());
 
@@ -142,11 +134,11 @@ public class VerifikasiGIS extends AppCompatActivity {
             etDescOpr.setKeyListener(null);
             acVehicleGIS.setKeyListener(null);
             acDriverGIS.setKeyListener(null);
-            acKegiatanGIS.setKeyListener(null);
+            acKegiatanOpr.setKeyListener(null);
 
             acVehicleGIS.setDropDownHeight(0);
             acDriverGIS.setDropDownHeight(0);
-            acKegiatanGIS.setDropDownHeight(0);
+            acKegiatanOpr.setDropDownHeight(0);
 
             inputLayoutHasilOpr.setSuffixText(selectedSatuanKegiatan);
             inputLayoutHasilGIS.setSuffixText(selectedSatuanKegiatan);
@@ -212,6 +204,10 @@ public class VerifikasiGIS extends AppCompatActivity {
 
         listKegiatanGIS = dbhelper.get_all_transport();
         adapterKegiatanGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanGIS);
+        acKegiatanOpr.setAdapter(adapterKegiatanGIS);
+
+        listKegiatanGIS = dbhelper.get_all_transport();
+        adapterKegiatanGIS = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanGIS);
         acKegiatanGIS.setAdapter(adapterKegiatanGIS);
 
         listLokasiGIS = dbhelper.get_fieldcrop(1);
@@ -261,7 +257,7 @@ public class VerifikasiGIS extends AppCompatActivity {
 
                 listKegiatanGIS = dbhelper.get_transportactivity(selectedVehicleGroup);
                 adapterKegiatanGIS = new ArrayAdapter<>(VerifikasiGIS.this, R.layout.spinnerlist, R.id.spinnerItem, listKegiatanGIS);
-                acKegiatanGIS.setAdapter(adapterKegiatanGIS);
+                acKegiatanOpr.setAdapter(adapterKegiatanGIS);
 
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.INPUT_METHOD_SERVICE);
                 keyboardMgr.hideSoftInputFromWindow(acVehicleGIS.getWindowToken(), 0);
@@ -286,7 +282,7 @@ public class VerifikasiGIS extends AppCompatActivity {
                 inputLayoutHasilGIS.setEnabled(true);
 
                 InputMethodManager keyboardMgr = (InputMethodManager) getSystemService(VerifikasiGIS.INPUT_METHOD_SERVICE);
-                keyboardMgr.hideSoftInputFromWindow(acKegiatanGIS.getWindowToken(), 0);
+                keyboardMgr.hideSoftInputFromWindow(acKegiatanOpr.getWindowToken(), 0);
             }
         });
 
@@ -297,7 +293,7 @@ public class VerifikasiGIS extends AppCompatActivity {
     // Finish verification work
     public void eventSubmitVerifikasi(View v) {
         if (TextUtils.isEmpty(acLokasiGIS.getText().toString().trim())
-            || TextUtils.isEmpty(acKegiatanGIS.getText().toString().trim())
+            || TextUtils.isEmpty(acKegiatanOpr.getText().toString().trim())
             || TextUtils.isEmpty(etHasilVerifikasi.getText().toString().trim())) {
             new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Lengkapi Data!").show();
@@ -375,12 +371,73 @@ public class VerifikasiGIS extends AppCompatActivity {
                     params.put("text7", etSesuaiSOP.getText().toString());
                     params.put("text8", nodocCarLog);
                     params.put("userid", dbhelper.get_tbl_username(0));
+                    Log.e("dsdp", params.toString());
                     return params;
                 }
             };
             requestQueueGIS.add(stringRequest);
 
         }
+    }
+
+    public void eventDeleteCarLog(View v) {
+        v.setEnabled(false);
+        final SweetAlertDialog warningExitDlg = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        warningExitDlg.setTitleText("Anda yakin ingin menghapus?");
+        warningExitDlg.setCancelText("KEMBALI");
+        warningExitDlg.setConfirmText("YA");
+        warningExitDlg.showCancelButton(true);
+        warningExitDlg.setConfirmClickListener(sDialog  -> {
+            sDialog.dismiss();
+
+            RequestQueue requestQueueGIS = Volley.newRequestQueue(this);
+            String url_delete_carlog = url_api + "dataupload/delete_carlog.php";
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete_carlog, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject jsonPostDeleteCarLog = new JSONObject(response);
+                        if (jsonPostDeleteCarLog.getString("DELETECARLOG").equals("SUCCESS")) {
+                            SweetAlertDialog dlgFinish = new SweetAlertDialog(VerifikasiGIS.this, SweetAlertDialog.SUCCESS_TYPE);
+                            dlgFinish.setCancelable(false);
+                            dlgFinish.setTitleText("Berhasil Menghapus");
+                            dlgFinish.setConfirmText("SELESAI");
+                            dlgFinish.setConfirmClickListener(sweetAlertDialog -> {
+                                Intent backIntent = new Intent();
+                                backIntent.putExtra("workdate", selectedDate);
+                                backIntent.putExtra("teamcode", selectedTeamCode);
+                                setResult(82, backIntent);
+                                finish();
+                            });
+                            dlgFinish.setConfirmText("OK").show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    requestQueueGIS.stop();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    requestQueueGIS.stop();
+                    Toast.makeText(VerifikasiGIS.this, "Periksa Jaringan", Toast.LENGTH_LONG).show();
+                    v.setEnabled(true);
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("nodoc", nodocCarLog);
+                    Log.e("delete", params.toString());
+                    return params;
+                }
+            };
+            requestQueueGIS.add(stringRequest);
+        });
+        warningExitDlg.setCancelClickListener(sweetAlertDialog -> v.setEnabled(true));
+        warningExitDlg.show();
+
     }
 
     @Override

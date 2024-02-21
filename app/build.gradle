@@ -10,8 +10,8 @@ android {
         applicationId "com.julong.longtech"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 19
-        versionName "0.19.2"
+        versionCode 21
+        versionName "0.21"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

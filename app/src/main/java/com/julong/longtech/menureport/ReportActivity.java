@@ -58,11 +58,11 @@ public class ReportActivity extends AppCompatActivity {
 
     DatabaseHelper dbhelper;
     SweetAlertDialog progressDialog;
-    String selectedReportGroup, selectedReportMenu, selectedDate, selectedTeamCode;
+    String selectedReportGroup, selectedReportMenu, selectedDate, selectedTeamCode, selectedOperator;
 
     EditText etDateReport;
-    AutoCompleteTextView acCarLogVerified, acSelectReportMenu, acVehicleReport, acTeamSelect;
-    TextInputLayout inputLayoutAcVehicle, inputLayoutDate, inputLayoutTeamSelect, inputLayoutVerified;
+    AutoCompleteTextView acCarLogVerified, acEmployee, acSelectReportMenu, acVehicleReport, acTeamSelect;
+    TextInputLayout inputLayoutAcVehicle, inputLayoutDate, inputLayoutAcOpr, inputLayoutTeamSelect, inputLayoutVerified;
     RecyclerView lvReport;
     Button btnResetReport;
 
@@ -92,11 +92,8 @@ public class ReportActivity extends AppCompatActivity {
     ArrayList<String> listReportMenuCode = new ArrayList<>();
     ArrayAdapter<String> adapterReportMenu;
 
-    private List<String> listVehicleReport;
-    ArrayAdapter<String> adapterVehicleReport;
-
-    private List<String> listTeamName, listTeamCode;
-    ArrayAdapter<String> adapterTeamSelect;
+    private List<String> listTeamName, listTeamCode, listVehicleReport, listOperator;
+    ArrayAdapter<String> adapterTeamSelect, adapterVehicleReport, adapterOperator;
 
     ActivityResultLauncher<Intent> intentLaunchActivity;
 
@@ -108,10 +105,12 @@ public class ReportActivity extends AppCompatActivity {
         dbhelper = new DatabaseHelper(this);
 
         lvReport = findViewById(R.id.lvReportCarLog);
+        acEmployee = findViewById(R.id.acSelectEmpReport);
         acTeamSelect = findViewById(R.id.acSelectTeamReport);
         etDateReport = findViewById(R.id.etDateReportActivity);
         acCarLogVerified = findViewById(R.id.acCarLogVerifiedGIS);
         acVehicleReport = findViewById(R.id.acUnitReportActivity);
+        inputLayoutAcOpr = findViewById(R.id.inputLayoutEmpReport);
         acSelectReportMenu = findViewById(R.id.acSelectReportMenu);
         inputLayoutDate = findViewById(R.id.inputLayoutDateReport);
         btnResetReport = findViewById(R.id.btnResetReportActivity);
@@ -130,6 +129,8 @@ public class ReportActivity extends AppCompatActivity {
                 selectedReportGroup = null;
                 selectedReportMenu = null;
                 selectedTeamCode = null;
+                selectedOperator = null;
+                acEmployee.setText(null);
                 etDateReport.setText(null);
                 acCarLogVerified.setText(null);
                 acSelectReportMenu.setText(null);
@@ -183,6 +184,7 @@ public class ReportActivity extends AppCompatActivity {
 
                 if (selectedReportMenu.equals("020202")) {
                     inputLayoutVerified.setVisibility(View.GONE);
+                    inputLayoutAcOpr.setVisibility(View.GONE);
                     inputLayoutAcVehicle.setVisibility(View.VISIBLE);
                     inputLayoutDate.setPadding(6, 0, 0, 0);
                 }
@@ -190,27 +192,32 @@ public class ReportActivity extends AppCompatActivity {
                     inputLayoutAcVehicle.setVisibility(View.GONE);
                     inputLayoutVerified.setVisibility(View.VISIBLE);
                     inputLayoutDate.setPadding(6, 0, 0, 0);
+
+                    if (dbhelper.get_tbl_username(2).equals("SPV") || dbhelper.get_tbl_username(2).equals("GIS")) {
+                        inputLayoutAcOpr.setVisibility(View.VISIBLE);
+                    }
                 }
                 else {
                     inputLayoutAcVehicle.setVisibility(View.GONE);
                     inputLayoutVerified.setVisibility(View.GONE);
+                    inputLayoutAcOpr.setVisibility(View.GONE);
                     inputLayoutDate.setPadding(0, 0, 0, 0);
                 }
             }
         });
 
-        acTeamSelect.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                selectedTeamCode = listTeamCode.get(position);
-            }
-        });
+        acTeamSelect.setOnItemClickListener(
+                (adapterView, view, position, l) -> selectedTeamCode = listTeamCode.get(position));
+
+        acEmployee.setOnItemClickListener((adapterView, view, position, l)
+                -> selectedOperator = dbhelper.get_empcode(0, acEmployee.getText().toString()));
 
         intentLaunchActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
 
                 if (result.getResultCode() == 727) {
+                    lvReport.setAdapter(null);
                     selectedTeamCode = result.getData().getStringExtra("teamcode");
                     selectedDate = result.getData().getStringExtra("workdate");
 
@@ -218,6 +225,18 @@ public class ReportActivity extends AppCompatActivity {
                     acCarLogVerified.setText("SUDAH VERIFIKASI");
                     etDateReport.setText(selectedDate);
                     loadLvReportCarLogVerified(selectedTeamCode, 1);
+
+                    adapterVerified = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayVerifiedCarLog);
+                    acCarLogVerified.setAdapter(adapterVerified);
+                } else if (result.getResultCode() == 82) {
+                    lvReport.setAdapter(null);
+                    selectedTeamCode = result.getData().getStringExtra("teamcode");
+                    selectedDate = result.getData().getStringExtra("workdate");
+
+                    inputLayoutVerified.setVisibility(View.VISIBLE);
+                    acCarLogVerified.setText("BELUM VERIFIKASI");
+                    etDateReport.setText(selectedDate);
+                    loadLvReportCarLogUnverified(selectedTeamCode, 0);
 
                     adapterVerified = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, arrayVerifiedCarLog);
                     acCarLogVerified.setAdapter(adapterVerified);
@@ -298,14 +317,21 @@ public class ReportActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         Volley.newRequestQueue(getApplicationContext()).add(jsonRequestUserType);
 
+        // Populate dropdown team
         listTeamCode = dbhelper.get_teamname(0);
         listTeamName = dbhelper.get_teamname(1);
-        adapterTeamSelect = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listTeamName);
+        adapterTeamSelect = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listTeamName);
         acTeamSelect.setAdapter(adapterTeamSelect);
 
+        // Populate dropdown vehicle
         listVehicleReport = dbhelper.get_vehiclecodelist();
-        adapterVehicleReport = new ArrayAdapter<String>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleReport);
+        adapterVehicleReport = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listVehicleReport);
         acVehicleReport.setAdapter(adapterVehicleReport);
+
+        // Populate dropdown operator
+        listOperator = dbhelper.get_operatoronly();
+        adapterOperator = new ArrayAdapter<>(this, R.layout.spinnerlist, R.id.spinnerItem, listOperator);
+        acEmployee.setAdapter(adapterOperator);
     }
 
     private void loadLvReportCarLogVerified(String teamcode, int isVerified) {
@@ -316,9 +342,16 @@ public class ReportActivity extends AppCompatActivity {
         listReportCarLogs = new ArrayList<>();
         listReportCarLogs.clear();
 
+        Map<String, String> params = new HashMap();
+        params.put("selectdate", selectedDate);
+        params.put("teamcode", teamcode);
+        params.put("smoothopr", selectedOperator);
+        JSONObject postParameters = new JSONObject(params);
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url_data = url_api + "fetchdata/reportmenu/report_carlog_verified.php?selectdate="+ selectedDate + "&teamcode=" + teamcode;
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url_data, postParameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -374,9 +407,18 @@ public class ReportActivity extends AppCompatActivity {
         listReportCarLogs = new ArrayList<>();
         listReportCarLogs.clear();
 
+        Map<String, String> params = new HashMap();
+        params.put("selectdate", selectedDate);
+        params.put("teamcode", teamcode);
+        params.put("smoothopr", selectedOperator);
+        JSONObject postParameters = new JSONObject(params);
+
+        Log.e("paramsUnverifiedCarlog", params.toString());
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url_data = url_api + "fetchdata/reportmenu/report_carlog_unverified.php?selectdate="+ selectedDate + "&teamcode=" + teamcode;
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url_data, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST,
+                url_data, postParameters, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {

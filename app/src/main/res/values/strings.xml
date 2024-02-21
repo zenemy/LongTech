@@ -24,6 +24,7 @@
     <string name="okbtn">SIMPAN</string>
 
     <string name="judul_hasilgis">HASIL VERIFICATOR <font color='#FF0000'>*</font></string>
+    <string name="hint_activitygis">Kegiatan Verifikasi<font color='#FF0000'>*</font></string>
     <string name="hint_lokasigis">Lokasi<font color='#FF0000'>*</font></string>
     <string name="hint_hasilgis">Hasil Kerja<font color='#FF0000'>*</font></string>
 </resources>
